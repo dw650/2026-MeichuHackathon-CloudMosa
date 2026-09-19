@@ -237,7 +237,8 @@
     "demo": "畫面上的價格都是示範資料。",
     "source": "資料來源",
     "noMoney": "本 App 不會向你要錢、密碼或驗證碼。",
-    "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）"
+    "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）",
+    "version": "版本 {{version}}"
   },
   "errors": {
     "screen": {

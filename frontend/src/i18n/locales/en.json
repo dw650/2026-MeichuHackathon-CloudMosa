@@ -237,7 +237,8 @@
     "demo": "All prices shown are demo data.",
     "source": "Data source",
     "noMoney": "We never ask for money, PINs or codes.",
-    "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)"
+    "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
+    "version": "Version {{version}}"
   },
   "errors": {
     "screen": {

@@ -153,7 +153,7 @@ export interface paths {
         };
         /**
          * Health check
-         * @description Database status and the latest successful fetch of every data source. Returns 503 `db_unavailable` when the database is down.
+         * @description Database status, the latest successful fetch of every data source and the running version (commit). Returns 503 `db_unavailable` when the database is down.
          */
         get: operations["health"];
         put?: never;
@@ -382,6 +382,8 @@ export interface components {
             sources: components["schemas"]["SourceStatusOut"][];
             /** Status */
             status: string;
+            /** Version */
+            version: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -1526,7 +1528,8 @@ export interface operations {
                      *           "source": "mock"
                      *         }
                      *       ],
-                     *       "status": "ok"
+                     *       "status": "ok",
+                     *       "version": "f40c282"
                      *     }
                      */
                     "application/json": components["schemas"]["HealthOut"];

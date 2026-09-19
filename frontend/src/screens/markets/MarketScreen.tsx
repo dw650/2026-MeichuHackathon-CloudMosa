@@ -139,7 +139,10 @@ export default function MarketScreen() {
     )
   } else if (market) {
     const { price_per_kg: price, low_per_kg: low, high_per_kg: high, change } = market
-    const source = [pick(country?.source_label), pick(market.source?.name)].filter(Boolean)
+    // With real data the quote's source and the country's label are often the same words.
+    const source = [...new Set([pick(country?.source_label), pick(market.source?.name)])].filter(
+      Boolean,
+    )
     body = (
       <>
         {oldData && <OldDataCard since={fetchedAt(market, dates)} />}

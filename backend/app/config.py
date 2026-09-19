@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     geoip_db_path: str = "/data/geoip/city.mmdb"
     datagov_api_key: str = ""
     log_level: str = "INFO"
+    # The running commit, passed by `make up` and scripts/deploy.sh (APP_VERSION).
+    app_version: str = "dev"
 
     @property
     def provider_ids(self) -> list[str]:

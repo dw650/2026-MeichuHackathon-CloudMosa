@@ -582,3 +582,11 @@
 - 決定：沒有任何啟用中來源的國家，保留原本的價格並記一筆警告；只有在有來源可以取代時，才刪掉其他來源的價格。
 - 理由：設定錯誤頂多讓資料停在舊的，不能讓資料消失。
 - 影響：`backend/app/ingest/pipeline.py`、`backend/tests/ingest/test_pipeline.py`。
+
+## 2026-09-20 顯示執行中的版本、單一市場的來源不重複
+- 情況：組員分不出線上是不是新版本；開啟真實資料後，單一市場畫面的來源會變成「農業部 農產品交易行情 · 農業部 農產品交易行情」。
+- 決定：
+  - `APP_VERSION`（commit 短 hash）由 `make up` 與 `scripts/deploy.sh` 帶進 api 容器，沒有時是 `dev`；`/api/v1/health` 多一個 `version` 欄位，「關於」頁最後一張卡片顯示「版本 xxxxxxx」。msw 的 health fixture 固定是 `dev`，重產生時不會變。
+  - 單一市場畫面的來源：國家的資料來源與這筆報價的來源相同時只顯示一次。
+- 理由：部署是否成功一眼可以確認；同一段字不重複出現。
+- 影響：`backend/app/{config.py,schemas/health.py,api/v1/health.py}`、`compose.yaml`、`Makefile`、`scripts/deploy.sh`、`frontend/src/api/queries.ts`、`frontend/src/screens/{about,markets}/`、docs/02、docs/04、docs/07。

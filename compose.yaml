@@ -27,6 +27,8 @@ services:
       DEMO_MODE: ${DEMO_MODE:-false}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       GEOIP_DB_PATH: ${GEOIP_DB_PATH:-/data/geoip/city.mmdb}
+      # The running commit for /api/v1/health and the About page (make up, scripts/deploy.sh).
+      APP_VERSION: ${APP_VERSION:-dev}
     volumes:
       # Optional IP database for /locate (see infra/geoip/README.md); never in Git.
       - ./infra/geoip:/data/geoip:ro

@@ -46,6 +46,7 @@ function queryOf(request: Request): URLSearchParams {
 }
 
 export const handlers = [
+  http.get('*/api/v1/health', () => HttpResponse.json(find('/health', {}))),
   http.get('*/api/v1/countries', () => HttpResponse.json(find('/countries', {}))),
 
   http.get('*/api/v1/countries/:cc/:kind', ({ params }) => {

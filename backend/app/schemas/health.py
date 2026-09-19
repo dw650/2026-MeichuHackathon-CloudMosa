@@ -13,3 +13,4 @@ class HealthOut(BaseModel):
     status: str
     database: str
     sources: list[SourceStatusOut]
+    version: str
