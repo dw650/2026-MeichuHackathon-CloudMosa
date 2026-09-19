@@ -74,6 +74,22 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/keys/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/screens', '@/screens/*', '**/screens', '**/screens/*'],
+              message: 'keys/ must not know any screen.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['*.config.{js,ts}', 'e2e/**/*.ts', 'scripts/**/*.{js,ts}'],
     languageOptions: { globals: globals.node },
   },
