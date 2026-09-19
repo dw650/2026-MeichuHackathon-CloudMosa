@@ -193,7 +193,7 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   await expect.poll(() => focusedId(page)).toBe('nearby-low')
 })
 
-test('international prices by key only: menu → list → a series → back', async ({
+test('international prices by key only: grid tile → list → a series → back', async ({
   page,
   errors,
 }) => {
@@ -215,11 +215,12 @@ test('international prices by key only: menu → list → a series → back', as
   await step(page, errors, /^\/intl\/sugar$/)
   await page.goBack()
   await step(page, errors, /^\/intl$/)
+  // Back to the grid: switching tabs replaced the home entry, so 關注 is not in the history.
   await page.goBack()
-  await step(page, errors, /^\/$/)
+  await step(page, errors, /tab=all/)
 })
 
-test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async ({ page, errors }) => {
+test('news by key: home tab → an item → 1 (its crop) → back', async ({ page, errors }) => {
   await seed(page, { country: 'TW', lang: 'zh-TW' })
   await waitForNews(page, 'TW', 'taipei')
   await page.goto('/')
@@ -245,6 +246,8 @@ test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async
   await step(page, errors, /^\/news\/\d+$/)
   expect(where(page)).not.toBe(item)
   await page.goBack()
-  await page.goBack()
-  await step(page, errors, /^\/$/)
+  await step(page, errors, /^\/news$/)
+  // ◀ goes back to 全部作物 in place, like the other tabs.
+  await press(page, 'ArrowLeft')
+  await step(page, errors, /tab=all/)
 })
