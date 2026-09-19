@@ -13,7 +13,7 @@ from app.seed.loader import load_seed_files
 
 TODAY = date(2026, 9, 19)
 NOW = datetime(2026, 9, 19, 6, 10, tzinfo=UTC)
-DAYS = {"IN": TODAY, "TW": TODAY}
+DAYS = {"IN": TODAY, "TW": TODAY, "MY": TODAY}
 
 
 class FakeProvider:

@@ -377,11 +377,11 @@ async def test_a_country_never_mixes_demo_and_real_prices(
     real = settings.model_copy(update={"providers": "mock,tw_moa"})
 
     await worker.run_once(demo, clock)
-    assert await sources() == [("IN", "mock"), ("TW", "mock")]
+    assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "mock")]
 
     summaries = await worker.run_once(real, clock)
     assert [(s.source, s.status) for s in summaries] == [("mock", "ok"), ("tw_moa", "ok")]
-    assert await sources() == [("IN", "mock"), ("TW", "tw_moa")]
+    assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "tw_moa")]
     # Nothing of the demo is left in Taiwan: no retail, no days before the real sample.
     assert await count("price_type = 'retail'") == 0
     assert await count("trade_date < :d") == 0
@@ -392,4 +392,4 @@ async def test_a_country_never_mixes_demo_and_real_prices(
     assert [(s.source, s.status) for s in refreshed] == [("tw_moa", "ok")]
 
     await worker.run_once(demo, clock)
-    assert await sources() == [("IN", "mock"), ("TW", "mock")]
+    assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "mock")]

@@ -133,3 +133,59 @@ def test_normalize_all_counts_unmapped_and_malformed_rows(maps: SourceMaps) -> N
     quotes, counts = normalize_all(PROVIDER, rows, maps)
     assert len(quotes) == 1
     assert counts == {"unmapped": 2, "malformed": 1}
+
+
+# ---------- Malaysia PriceCatcher (real rows from tests/fixtures/my_pricecatcher) ----------
+
+
+def pricecatcher(**overrides: str) -> dict[str, str]:
+    """A real row: Pasar Pudu (a Kuala Lumpur wet market), TOMATO, 2026-09-17."""
+    row = {
+        "_country": "MY",
+        "_type": "retail",
+        "date": "2026-09-17",
+        "premise_code": "3181",
+        "item_code": "114",
+        "price": "9.0",
+    }
+    return row | overrides
+
+
+def test_malaysia_wet_market_rows_are_retail_points_of_their_area(maps: SourceMaps) -> None:
+    q = PROVIDER.normalize(pricecatcher(), maps)
+    assert q is not None
+    assert (q.country, q.price_type, q.area_id, q.market_id, q.crop_id, q.point) == (
+        "MY",
+        "retail",
+        "kualalumpur",
+        None,
+        "tomato",
+        "3181",
+    )
+    assert (q.trade_date, q.rep_price, q.variety) == (date(2026, 9, 17), 9.0, "114")
+    assert (q.low_price, q.high_price, q.volume_kg) == (None, None, None)
+
+
+def test_malaysia_wholesale_market_rows_are_market_quotes(maps: SourceMaps) -> None:
+    # A real row of Pasar Borong Pandan Kangkar Tebrau (Johor Bahru), June 2025.
+    row = pricecatcher(_type="wholesale", date="2025-06-18", premise_code="18151", price="3.0")
+    q = PROVIDER.normalize(row, maps)
+    assert q is not None
+    assert (q.price_type, q.area_id, q.market_id, q.point, q.rep_price) == (
+        "wholesale",
+        "johorbahru",
+        "jbborong",
+        "",
+        3.0,
+    )
+
+
+def test_malaysia_unmapped_premises_and_items_return_none(maps: SourceMaps) -> None:
+    assert PROVIDER.normalize(pricecatcher(premise_code="17532"), maps) is None  # mini market
+    assert PROVIDER.normalize(pricecatcher(item_code="105"), maps) is None  # local cabbage
+    assert PROVIDER.normalize(pricecatcher(item_code="1"), maps) is None  # chicken
+
+
+def test_malaysia_bad_dates_are_malformed(maps: SourceMaps) -> None:
+    with pytest.raises(RowError, match="date"):
+        PROVIDER.normalize(pricecatcher(date="17/09/2026"), maps)

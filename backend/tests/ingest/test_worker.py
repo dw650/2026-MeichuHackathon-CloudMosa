@@ -34,7 +34,7 @@ def test_a_real_source_takes_its_country_over_from_the_mock() -> None:
     seeds = load_seed_files()
     providers = build_providers(["mock", "tw_moa"], seeds, clock=lambda: datetime.now(UTC))
     assert [(type(p), p.countries) for p in providers] == [
-        (MockProvider, ("IN",)),
+        (MockProvider, ("IN", "MY")),
         (TwMoaProvider, ("TW",)),
     ]
     tw = providers[1]
