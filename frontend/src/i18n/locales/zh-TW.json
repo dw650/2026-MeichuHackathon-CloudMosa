@@ -186,7 +186,8 @@
   "markets": {
     "vsMedian": "與中位數 {{price}} 比較",
     "noRetail": "這個市場沒有零售報價",
-    "seeAreaRetail": "看 {{area}} 的零售價"
+    "seeAreaRetail": "看 {{area}} 的零售價",
+    "distance": "{{km}} km"
   },
   "areas": {
     "title": "選擇地區",
