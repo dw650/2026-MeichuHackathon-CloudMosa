@@ -76,3 +76,16 @@
   - 新增 `countries.source_label`（關於頁的資料來源名稱），用第二個 migration 補上。
 - 理由：mock 和真實資料走同一條管線；加國家＝加一個 YAML 檔。
 - 影響：`backend/app/seed/`、`backend/app/ingest/seed.py`、`backend/app/repositories/catalog.py`。
+
+## 2026-09-19 T09 Mock 原始資料的格式與產生細節
+- 情況：06 §7 規定 mock 輸出來源格式，但零售來源（DoCA、物價查報）的格式還是【待確認】；data.gov.in 沒有到貨量；文件也沒寫市場的 ±2% 是每天不同還是固定、到貨量怎麼分到各市場、今天休市時基準價落在哪天。
+- 決定：
+  - 印度批發用 data.gov.in 的欄位（`state`、`district`、`market`、`commodity`、`variety`、`grade`、`arrival_date` dd/mm/yyyy、`min_price`／`max_price`／`modal_price` 字串、₹／quintal），另外加一個 mock 專用的 `arrival_qtl`；接真實資料後沒有這欄，到貨量就顯示「—」。
+  - 台灣批發用 FarmTransData 的欄位（`交易日期` 民國日期、`作物名稱`「甘藍-初秋」、`市場名稱`、`上價`／`中價`／`下價`／`平均價`、`交易量` 公斤）。
+  - 零售先自訂接近來源的格式：印度 `centre`、`commodity`、`date`、`retail_price`（₹／公斤）；台灣 `調查日期`、`縣市`、`品項`、`零售價`（元／公斤）。
+  - 每列多兩個 mock 專用的欄位 `_country`、`_type`（wholesale／retail），讓同一個 provider 可以涵蓋兩國兩種價格。
+  - 市場的 ±2%、零售的 ±2.5%、隨機漫步都用「國家、作物、市場或地區、日期」當種子，每天不同但重跑相同。
+  - 「今天」如果是休市日，基準價落在今天以前最近的交易日。
+  - 到貨量是地區層級：最新交易日＝`arr`，前 7 個交易日的平均剛好是 `arr ÷ arrR`，再平均分給地區內的各市場。
+- 理由：照文件的規則，缺的部分選最簡單、之後好換成真實格式的做法。
+- 影響：`backend/app/ingest/providers/mock.py`。接上真實零售來源（B4）時換掉零售格式即可。
