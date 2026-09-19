@@ -2,15 +2,23 @@
 
 import os
 from collections.abc import AsyncIterator
+from pathlib import Path
 
 import httpx
 import psycopg
 import pytest
+from alembic import command
+from alembic.config import Config
 from psycopg import sql
 from sqlalchemy.engine import make_url
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
+from app.db.models import DATA_TABLES
+from app.db.session import create_engine, create_sessionmaker
 from app.main import create_app
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
 
 
 def _default_test_url() -> str:
@@ -44,15 +52,55 @@ def _ensure_database(url: str) -> None:
             conn.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
 
 
+def _connect(url: str) -> psycopg.Connection:
+    parsed = make_url(url)
+    return psycopg.connect(
+        host=parsed.host,
+        port=parsed.port,
+        user=parsed.username,
+        password=parsed.password,
+        dbname=parsed.database,
+        autocommit=True,
+    )
+
+
+def alembic_config(url: str) -> Config:
+    cfg = Config(str(BACKEND_DIR / "alembic.ini"))
+    cfg.set_main_option("sqlalchemy.url", url.replace("%", "%%"))
+    cfg.attributes["configure_logger"] = False
+    return cfg
+
+
+def truncate_all(url: str) -> None:
+    with _connect(url) as conn:
+        conn.execute(f"TRUNCATE {', '.join(DATA_TABLES)} RESTART IDENTITY CASCADE")
+
+
 @pytest.fixture(scope="session")
 def database_url() -> str:
     _ensure_database(TEST_DATABASE_URL)
+    command.upgrade(alembic_config(TEST_DATABASE_URL), "head")
     return TEST_DATABASE_URL
+
+
+@pytest.fixture
+def clean_db(database_url: str) -> str:
+    """Empties every data table before the test (not after, so failures stay inspectable)."""
+    truncate_all(database_url)
+    return database_url
 
 
 @pytest.fixture
 def settings(database_url: str) -> Settings:
     return Settings(database_url=database_url, db_null_pool=True, demo_mode=False)
+
+
+@pytest.fixture
+async def session(settings: Settings, clean_db: str) -> AsyncIterator[AsyncSession]:
+    engine = create_engine(settings)
+    async with create_sessionmaker(engine)() as s:
+        yield s
+    await engine.dispose()
 
 
 @pytest.fixture

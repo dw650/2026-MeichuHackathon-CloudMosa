@@ -53,3 +53,15 @@
 - 決定：`vite.config.ts` 一律 `define` `import.meta.env.VITE_DEMO`（預設 `"false"`）；旗標集中在 `src/app/flags.ts` 的 `IS_DEMO_BUILD`（dev 或 `VITE_DEMO=true`）。後端的 `/api/v1/debug/headers` 只在 `DEMO_MODE=true` 時註冊，而且不列入 OpenAPI，產生的前端型別不受 demo 設定影響。
 - 理由：正式建置的路由表裡完全沒有除錯頁（已用正式與 demo 兩種映像實測）。Rolldown 仍會輸出沒有被引用的 chunk 檔，無法從路由到達，暫不處理。
 - 影響：`frontend/vite.config.ts`、`frontend/src/app/flags.ts`、`backend/app/main.py`。
+
+## 2026-09-19 T07 資料表的補充欄位與零售對照
+- 情況：04 §7 只列主要欄位。零售資料沒有市場，`source_market_map` 對照不到地區；`quotes` 的唯一鍵（來源、市場、作物、品種、交易日）遇到零售列時市場是空值。
+- 決定：
+  - 新增 `source_area_map`（來源的回報中心或城市 → 地區），給零售資料用。
+  - `quotes` 唯一鍵改成（來源、價格類型、地區、市場、作物、品種、交易日），並設 `NULLS NOT DISTINCT`；批發列的市場決定地區，所以等同文件的鍵，零售列也能擋重複。品種空白存成 `''`。
+  - `countries` 另外存名稱、涵蓋範圍、預設最近地區、地區名稱後綴（「 縣」）、代表價名稱（常見價／平均價）、單位表（JSONB）；`closed_weekdays` 用 ISO 星期（1＝週一…7＝週日）。
+  - `crops.has_retail`、`markets.sort`、`ingest_runs.drop_reasons`（各原因的丟棄筆數）、`quotes.country`、`market_daily.country／area_id／fetched_at`、`area_daily.country`。
+  - 除了文件要求的 `ix_area_daily_lookup`，另加 `ix_area_daily_compare`（國家、作物、類型、日期），給比價查詢用。
+  - 用 CHECK 限制價格類型、代表價 > 0、「批發一定有市場、零售一定沒有」。
+- 理由：API 需要的國家設定都能從資料庫讀；零售與批發走同一條管線。
+- 影響：`backend/app/db/models.py`、`backend/app/db/migrations/versions/`。改欄位要新增 migration。
