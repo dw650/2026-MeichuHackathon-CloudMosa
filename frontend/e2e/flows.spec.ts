@@ -63,6 +63,8 @@ test('first-run setup of Malaysia in English', async ({ page, errors }) => {
   await press(page, 'Enter')
   await step(page, errors, /^\/(\?.*)?$/)
   await expect(page.getByText('RM/kg').first()).toBeVisible()
+  // PriceCatcher has retail prices only, so Malaysia starts on retail.
+  await expect(page.getByText('Retail', { exact: true }).first()).toBeVisible()
 })
 
 test.describe('on a Hindi phone', () => {
