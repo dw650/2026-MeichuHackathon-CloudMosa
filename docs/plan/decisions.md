@@ -855,3 +855,17 @@
 - 情況：跨國比同一種作物的功能要求三國的作物清單有交集，還缺香蕉、芒果、茄子（協調者要求）。
 - 決定：只加**茄子**（`eggplant`，PriceCatcher 的 TERUNG BULAT `1923`，以 1 公斤計價，52 個縣有報價，60 天裡 17 天有資料≈每週兩次，中位數 RM 9.00；示範資料 `p: 6.2`、`rt: 1.45`、`lag: 2`，和印度共用圖示）。**香蕉與芒果不加**：香蕉（PISANG BERANGAN 18、PISANG EMAS 19）以公斤計價，但 7/23–9/20 濕巴剎一列都沒有（只有超市、迷你市場、雜貨店報）；`lookup_item.csv` 裡沒有生鮮芒果（只有芒果汁 `1340`）。要有這兩種就得收超市價，和「零售＝濕巴剎的中位數」的決定衝突，交給團隊決定。
 - 影響：`backend/app/seed/MY.yaml`、`backend/tests/fixtures/my_pricecatcher/lookup_item.csv`（多一列 1923）、`backend/tests/ingest/test_{seed,my_pricecatcher}.py`、`frontend/src/test/fixtures/`、docs/06 §7.3。
+## 2026-09-20 跨國比價：各國參考價卡片（使用者要求，改掉【決定】）
+- 情況：00 的決定表原本寫「比價範圍：只在同一個國家內比較各地區；不做跨國比價」。使用者要求在作物詳情的比價頁加一張卡片，讓人看得出本地價格是高還是低。
+- 決定：
+  - 00 的「比價範圍」那一列改成「地區排名只在同一個國家內；另外在比價頁加一張各國參考價卡片」，並標明是 2026-09-20 使用者要求改的；「不做」那一列刪掉「跨國比價」。
+  - **全國價**＝那個國家在自己最新交易日、各地區價的中位數，附地區數（和地區價標市場數同一個做法），不另外發明算法。
+  - 每一行標那個國家報的是批發還是零售：優先用使用者選的那一種，沒有就用另一種（馬來西亞只有零售）。批發與零售不混算。
+  - 換算用 B5 已經存好的 `fx_rates`（美元中轉），畫面寫匯率日期；用到多個幣別時取最舊的一天。缺價格是 `no_data`、缺匯率是 `no_fx`，都顯示「—」與原因。
+  - 哪些作物有跨國資料由 catalog 決定（同一個 `crop_id` 出現在幾個國家），不寫死作物清單。
+  - 有 Pink Sheet 序列的作物（rice、wheat、maize、soybean→soybeans、sugarcane→sugar）最後加一行世界銀行世界價，標成國際參考、不是國家。
+  - 其他國家都沒有這項作物時，卡片只寫一行「其他國家沒有這項作物的報價」，不畫空卡片、不顯示 0。
+  - 卡片是資訊，不可選（焦點清單不變），128×160 每國一行。
+  - 走現有的 `GET /crops/{crop}/compare`（多一個 `other_countries` 欄位），不開新端點、不加新表。
+- 理由：農夫要判斷的是「我這裡算貴還是便宜」，全國中位數＋既有匯率就夠，而且不必新增資料管線；卡片不可選，按鍵操作不變。
+- 影響：`backend/app/services/crosscountry.py`（新）、`app/services/prices.py`、`app/repositories/{catalog,intl,prices}.py`、`app/schemas/prices.py`、`frontend/src/screens/crop-detail/OtherCountriesCard.tsx`（新）、`CompareTab.tsx`、四個字串檔、關於頁；docs/00、02 §5.4、04、06 §4.1。

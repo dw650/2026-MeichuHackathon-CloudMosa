@@ -30,6 +30,7 @@ export default function AboutScreen() {
     t('about.areaPrice'),
     t('about.distance'),
     t('about.nearby'),
+    t('about.otherCountries'),
     t('about.retail'),
     t('about.gap'),
     t('about.news'),

@@ -32,6 +32,8 @@ const IN_SCREENS = [
   // Nearby prices: no area within 100 km has today's price (Kolar is 3 days old).
   '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',
+  // 各國參考價: wheat also carries the World Bank world price row.
+  '/crop/wheat/compare',
   '/crop/onion/markets?area=kurnool',
   '/intl',
   '/intl/rice',
