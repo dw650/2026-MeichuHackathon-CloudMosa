@@ -1,0 +1,32 @@
+# Production Caddyfile: static files, /api proxy and security headers.
+# SITE_ADDRESS is ":8080" locally (plain HTTP, any Host, works behind a tunnel);
+# in production set it to the domain and Caddy obtains HTTPS certificates itself.
+{$SITE_ADDRESS::8080} {
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+		Permissions-Policy "geolocation=(), camera=(), microphone=()"
+		-Server
+		# No X-Frame-Options / frame-ancestors: the Simulator may load the app in an iframe.
+	}
+
+	handle /api/* {
+		reverse_proxy api:8000 {
+			# Caddy does not trust the incoming X-Forwarded-For; pass the original on for /locate.
+			header_up X-Client-Forwarded-For {http.request.header.X-Forwarded-For}
+		}
+	}
+
+	# Everything else is the SPA. CSP applies here only: /api/docs loads Swagger UI from a CDN.
+	handle {
+		header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'"
+		@hashed path /assets/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+		header ?Cache-Control "no-cache"
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

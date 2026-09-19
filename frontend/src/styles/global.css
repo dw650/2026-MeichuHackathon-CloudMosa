@@ -1,0 +1,49 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font);
+  font-size: var(--fs-1);
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The app always fills the real viewport height (--app-h is set from innerHeight). */
+#root {
+  height: var(--app-h, 100vh);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* Focus must always be visible (docs/03 §5). Components may draw a richer ring. */
+:focus-visible,
+[data-focus-id]:focus {
+  outline: var(--ring) solid var(--focus);
+  outline-offset: calc(-1 * var(--ring));
+}

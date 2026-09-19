@@ -1,0 +1,8 @@
+dist
+coverage
+node_modules
+package-lock.json
+src/api/schema.d.ts
+e2e/artifacts
+test-results
+playwright-report

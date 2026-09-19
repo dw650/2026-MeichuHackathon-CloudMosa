@@ -1,0 +1,83 @@
+.shell {
+  position: relative;
+  display: grid;
+  grid-template-rows: var(--hdr) minmax(0, 1fr) var(--sk);
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding-inline: var(--gut);
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.title {
+  font-size: var(--fs-t);
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Scrolled by the focus logic (no smooth scrolling); the scrollbar is hidden. */
+.content {
+  position: relative;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.content::-webkit-scrollbar {
+  display: none;
+}
+
+.softkeys {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-inline: var(--gut);
+  background: var(--card);
+  color: var(--ink);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sk);
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.left {
+  justify-self: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right {
+  justify-self: end;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.center {
+  justify-self: center;
+}
+
+.center:not(:empty) {
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+@media (max-width: 176px) {
+  .center:not(:empty) {
+    padding: 0 5px;
+  }
+}

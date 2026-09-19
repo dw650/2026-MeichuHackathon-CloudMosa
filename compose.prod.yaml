@@ -1,0 +1,8 @@
+# Production overrides. Set SITE_ADDRESS to the domain in .env, then:
+#   docker compose -f compose.yaml -f compose.prod.yaml up -d --build
+services:
+  web:
+    ports: !override
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
