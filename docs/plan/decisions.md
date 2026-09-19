@@ -123,3 +123,18 @@
   - 比價名次用競賽排名（1、2、2、4），價格先四捨五入到 4 位小數（資料庫精度）再比；有報價但是舊資料的地區仍然排名，只標示新舊。
 - 理由：畫面上的數字和走勢圖對得起來；資料不足就顯示「—」，不補值。
 - 影響：`backend/app/services/stats.py`、`freshness.py`、`compare.py`。
+
+## 2026-09-19 T14 價格 API 的細節
+- 情況：04 §6 列了端點與 quote 範例，但沒寫 `/prices` 裡不存在的作物怎麼辦、「本地區 N 個市場」的 N 是哪個數、到貨量與波動要不要附數值、資料時間用哪個時區。
+- 決定：
+  - `/prices` 的 `crops` 裡不存在的作物直接略過（首頁不會因為關注清單裡有一個舊作物就整頁 404）；地區不存在仍回 404 `area_not_found`。單一作物的端點遇到不存在的作物回 404 `crop_not_found`，市場回 `market_not_found`，國家回 `country_not_found`。
+  - quote 的 `markets` 同時給 `count`（最新交易日有報價的市場數，用在「{n} 個市場中位數」）與 `total`（地區全部市場數，用在「本地區 {N} 個市場」卡片），`min_per_kg`／`max_per_kg` 只算最新交易日有報價的市場。
+  - `stats` 除了文件範例的欄位，另外給 `volatility_pct`、`arrivals_ratio`、`high30_per_kg`、`low30_per_kg`、`change7_pct`、`change30_pct`，給走勢頁與「▲18%」用。
+  - `fetched_at` 換成該國的時區偏移（例：`+05:30`），前端直接顯示字串裡的時間。
+  - 比價列預設依價格高到低、沒有資料的排最後、同價依距離；名次由後端算，不受前端排序影響。
+  - 各市場列表的每個市場用它自己 30 天內最新的價格（附新舊），差額是和地區中位數比。
+  - 零售沒有 `markets` 端點；quote 在零售時 `markets` 為 null、`arrivals` 為 null。
+  - 所有價格端點加 `Cache-Control: public, max-age=60`；demo 模式另外加 `Vary: X-Demo-Fail, X-Demo-Stale`。服務層留一個 `Demo` 參數（地區往前推 N 天），T15 接上標頭。
+  - pytest 的 coverage 設定 `concurrency = ["greenlet", "thread"]`：SQLAlchemy async 用 greenlet 切換，不設定的話 `await` 之後的程式會被當成沒執行。
+- 理由：前端需要的數值都由後端算好；缺的資料一律回 null 與原因。
+- 影響：`backend/app/services/prices.py`、`backend/app/schemas/prices.py`、`backend/app/api/v1/prices.py`、`backend/pyproject.toml`。

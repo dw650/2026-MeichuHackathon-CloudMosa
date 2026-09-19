@@ -8,6 +8,7 @@ from fastapi import Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
+from app.services.prices import NO_DEMO, Demo
 
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
@@ -38,3 +39,11 @@ def public_cache(response: Response, settings: SettingsDep) -> None:
 
 
 NowDep = Annotated[datetime, Depends(get_now)]
+
+
+def get_demo(request: Request, settings: SettingsDep) -> Demo:
+    """Demo switches read from request headers (only in demo mode; see app/demo.py)."""
+    return NO_DEMO
+
+
+DemoDep = Annotated[Demo, Depends(get_demo)]

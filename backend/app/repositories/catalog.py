@@ -128,3 +128,22 @@ async def latest_wholesale_dates(
         .group_by(AreaDaily.area_id)
     )
     return dict(result.tuples().all())
+
+
+async def get_area(session: AsyncSession, area_id: str) -> Area | None:
+    return await session.get(Area, area_id)
+
+
+async def get_crop(session: AsyncSession, country: str, crop_id: str) -> Crop | None:
+    return await session.get(Crop, (country, crop_id))
+
+
+async def get_market(session: AsyncSession, market_id: str) -> Market | None:
+    return await session.get(Market, market_id)
+
+
+async def get_markets(session: AsyncSession, area_id: str) -> list[Market]:
+    result = await session.execute(
+        select(Market).where(Market.area_id == area_id).order_by(Market.sort)
+    )
+    return list(result.scalars().all())
