@@ -655,7 +655,7 @@ async def test_budgets_are_shared_by_the_day(maker: async_sessionmaker[AsyncSess
         await session.execute(
             text(
                 "INSERT INTO news_runs (country, source, started_at, status, articles, model_calls)"
-                " VALUES ('IN', 'google', :t, 'ok', 30, 28)"
+                " VALUES ('IN', 'google', :t, 'ok', 60, 58)"
             ),
             {"t": NOW - timedelta(hours=3)},
         )

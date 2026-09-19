@@ -27,8 +27,8 @@ from app.repositories import catalog as catalog_repo
 from app.repositories import news as repo
 
 NEWS_SOURCES = ("google", "demo")
-DAILY_ARTICLES = 30
-DAILY_MODEL_CALLS = 30
+DAILY_ARTICLES = 60
+DAILY_MODEL_CALLS = 60
 FRESH_FOR = timedelta(days=1)  # start-up runs skip countries fetched more recently
 
 logger = logging.getLogger("app.ingest.news")
