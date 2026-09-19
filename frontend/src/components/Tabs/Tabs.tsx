@@ -18,7 +18,7 @@ export interface TabsProps {
  */
 export function Tabs({ tabs, activeId }: TabsProps) {
   return (
-    <div className={styles.tabs}>
+    <div className={styles.tabs} data-fixed="">
       <span className={styles.arrow} aria-hidden="true">
         ◀
       </span>
