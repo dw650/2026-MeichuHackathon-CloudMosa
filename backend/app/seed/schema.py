@@ -291,7 +291,8 @@ class CountryDerive(_Model):
     from_type: PriceType = Field(alias="from")
     to_type: PriceType = Field(alias="to")
     default: float = Field(gt=0, le=MAX_RATIO)
-    categories: dict[Category, float] = {}
+    # Keys are the country's own category ids (`country.categories`, or the default seven).
+    categories: dict[str, float] = {}
     crops: dict[str, float] = {}
     # Retail → wholesale only: how far a derived market price may sit from the area price.
     market_spread: float = Field(default=0.0, ge=0, lt=1)

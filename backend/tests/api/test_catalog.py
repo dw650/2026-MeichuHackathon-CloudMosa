@@ -185,9 +185,11 @@ async def test_an_estimated_price_type_carries_a_ratio_per_crop(
         assert taiwan["estimated_price_types"] == ["retail"]
         crops = {c["id"]: c for c in (await api.get("/api/v1/countries/TW/crops")).json()["crops"]}
         assert crops["bokchoy"]["estimate_ratio"] == 1.8  # leafy
-        assert crops["cabbage"]["estimate_ratio"] == 1.7  # other vegetables
-        assert crops["rice"]["estimate_ratio"] == 1.3  # cereals
-        assert crops["mushroom"]["estimate_ratio"] == 1.6  # the default
+        assert crops["cabbage"]["estimate_ratio"] == 1.7  # a firm head, not a loose leaf
+        assert crops["taro"]["estimate_ratio"] == 1.5  # roots
+        assert crops["loofah"]["estimate_ratio"] == 1.7  # gourds
+        assert crops["guava"]["estimate_ratio"] == 1.6  # fruit
+        assert crops["ginger"]["estimate_ratio"] == 1.5  # a rhizome filed under spices
         india = next(
             c for c in (await api.get("/api/v1/countries")).json()["countries"] if c["code"] == "IN"
         )

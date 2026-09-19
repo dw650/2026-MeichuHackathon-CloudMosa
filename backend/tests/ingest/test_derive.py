@@ -26,6 +26,7 @@ def source(source_id: str, countries: tuple[str, ...], types: tuple[str, ...], *
 MOCK = source("mock", (), ("wholesale", "retail"), fallback=True)
 TW_REAL = source("tw_moa", ("TW",), ("wholesale",))
 MY_REAL = source("my_pricecatcher", ("MY",), ("retail",))
+IN_REAL = source("in_agmarknet", ("IN",), ("wholesale",))
 
 
 def plan_for(*infos: SourceInfo) -> dict[str, derive.Derivation]:
@@ -81,16 +82,18 @@ def test_a_country_key_that_is_not_a_country_code_is_rejected() -> None:
 
 
 def test_a_crop_ratio_wins_over_its_category_and_the_default() -> None:
+    """Taiwan names its own categories (`country.categories`), so the ratios follow them."""
     rules = plan_for(MOCK, TW_REAL)["TW"]
-    assert rules.ratio("bokchoy", "veg") == 1.8  # leafy, listed under crops
-    assert rules.ratio("tomato", "veg") == 1.7  # its category
-    assert rules.ratio("mushroom", "other") == 1.6  # the default
+    assert rules.ratio("cabbage", "leafy") == 1.7  # a firm head, listed under crops
+    assert rules.ratio("bokchoy", "leafy") == 1.8  # its category
+    assert rules.ratio("mushroom", "unknown") == 1.6  # the default
 
 
 def test_storable_staples_get_the_smallest_markup() -> None:
     rules = plan_for(MOCK, TW_REAL)["TW"]
-    assert rules.ratio("rice", "cereal") == 1.3
+    assert rules.ratio("taro", "root") == 1.5
     assert rules.ratio("garlic", "spice") == 1.5
+    assert plan_for(MOCK, IN_REAL)["IN"].ratio("wheat", "cereal") == 1.3
 
 
 # ---------- the market spread ----------

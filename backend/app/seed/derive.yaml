@@ -22,26 +22,30 @@ countries:
     to: retail
     # Nothing below fits the crop or its category: the middle of the range.
     default: 1.6
+    # Taiwan names its own categories (seed `country.categories`).
     categories:
+      # Wilts in a day: the largest trimming and shrinkage loss.
+      leafy: 1.8
+      # Keeps for weeks: little waste, thinner retail margin.
+      root: 1.5
       # Delivered daily, trimmed and sold in small lots; moderate waste.
-      veg: 1.7
+      gourd: 1.7
+      fruitveg: 1.7
+      # Dry spices keep, but sell in very small lots.
+      spice: 1.6
       # Graded and boxed at the wholesale market, so less trimming loss than vegetables.
       fruit: 1.6
-      # Dry, packed, storable staples with high turnover and thin retail margins.
-      cereal: 1.3
-      pulse: 1.3
     crops:
-      # Leafy and bunched: wilts in a day, the largest trimming and shrinkage loss.
-      bokchoy: 1.8
-      waterspinach: 1.8
+      # Firm heads that keep a week or more, unlike the loose leaves beside them.
+      cabbage: 1.7
+      napacabbage: 1.7
+      # Bunched and sold by the handful: wilts like the leafy greens it sits next to.
       scallion: 1.8
       # Fresh chilli is sold like a vegetable, not like a dry spice.
       chilli: 1.7
-      # Edamame is a fresh vegetable soybean, not a dry pulse.
-      soybean: 1.7
-      # Roots and bulbs keep for weeks: little waste, thinner retail margin.
-      sweetpotato: 1.5
+      # Bulbs and rhizomes keep for weeks, whatever category they are filed under.
       garlic: 1.5
+      ginger: 1.5
 
   # India: the Agmarknet source (bonus B3, not registered yet) publishes mandi (wholesale)
   # prices only (docs/06 §1.1); until it is enabled India stays on mock data and estimates
@@ -55,6 +59,11 @@ countries:
       fruit: 1.6
       cereal: 1.3
       pulse: 1.3
+      # Dry spices keep, but sell in very small lots.
+      spice: 1.6
+      # Oilseeds are dry and storable like cereals.
+      oil: 1.3
+      other: 1.6
     crops:
       # Roots and bulbs: stored and sold from the sack, so the retail markup is smaller.
       potato: 1.5
@@ -72,6 +81,11 @@ countries:
       fruit: 1.6
       cereal: 1.3
       pulse: 1.3
+      # Dry spices keep, but sell in very small lots.
+      spice: 1.6
+      # Oilseeds are dry and storable like cereals.
+      oil: 1.3
+      other: 1.6
     crops:
       bokchoy: 1.8
       waterspinach: 1.8
