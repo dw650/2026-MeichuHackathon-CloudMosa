@@ -62,7 +62,7 @@ test('turning on API failure in Settings › Demo keeps the old data and marks i
   await page.keyboard.press('5') // 設定
   await settled(page)
   await expect.poll(() => new URL(page.url()).pathname).toBe('/settings')
-  await page.keyboard.press('6') // Demo (demo builds only)
+  await page.keyboard.press('7') // Demo (demo builds only)
   await settled(page)
   await expect.poll(() => new URL(page.url()).pathname).toBe('/settings/demo')
   await page.keyboard.press('Enter') // 模擬 API 失敗: on
