@@ -1,0 +1,51 @@
+# International reference prices (bonus B5, docs/06 §1.3): six World Bank "Pink Sheet"
+# series, in the order of the list (keys 1–6). The worker syncs this file into `intl_series`.
+#
+#   column  the series name in the "Monthly Prices" sheet of CMO-Historical-Data-Monthly.xlsx,
+#           kept as published (docs/06 §1.3: named series, never "the world price")
+#   unit    the unit of its US dollar price in that sheet: mt (metric ton) or kg
+#   icon, category   crop illustration and colour family of the list (docs/03 §8)
+#   name, spec       what the screens show: a short name and the grade or origin
+series:
+  - id: rice
+    column: "Rice, Thai 5%"
+    unit: mt
+    icon: rice
+    category: cereal
+    name: { zh-TW: 稻米, en: Rice }
+    spec: { zh-TW: 泰國 5% 碎米, en: Thai 5% broken }
+  - id: wheat
+    column: "Wheat, US HRW"
+    unit: mt
+    icon: wheat
+    category: cereal
+    name: { zh-TW: 小麥, en: Wheat }
+    spec: { zh-TW: 美國硬紅冬麥, en: US hard red winter }
+  - id: maize
+    column: Maize
+    unit: mt
+    icon: maize
+    category: cereal
+    name: { zh-TW: 玉米, en: Maize }
+    spec: { zh-TW: 美國 2 號黃玉米, en: US No. 2 yellow }
+  - id: soybeans
+    column: Soybeans
+    unit: mt
+    icon: soybean
+    category: pulse
+    name: { zh-TW: 大豆, en: Soybeans }
+    spec: { zh-TW: 美國產, en: US }
+  - id: sugar
+    column: "Sugar, world"
+    unit: kg
+    icon: sugarcane
+    category: other
+    name: { zh-TW: 原糖, en: Sugar }
+    spec: { zh-TW: 國際糖協定價格, en: World (ISA) raw }
+  - id: palm_oil
+    column: Palm oil
+    unit: mt
+    icon: oil
+    category: oil
+    name: { zh-TW: 棕櫚油, en: Palm oil }
+    spec: { zh-TW: 馬來西亞粗油, en: Malaysia crude }
