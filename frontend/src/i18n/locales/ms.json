@@ -15,7 +15,8 @@
     "trend": "Trend",
     "today": "Hari ini",
     "retry": "Cuba lagi",
-    "markets": "Pasar"
+    "markets": "Pasar",
+    "prices": "Harga"
   },
   "hints": {
     "markets": "Pasar",
@@ -83,7 +84,8 @@
     "settings": "Tetapan",
     "addWatch": "Tambah ke kegemaran",
     "removeWatch": "Buang dari kegemaran",
-    "intl": "Harga antarabangsa"
+    "intl": "Harga antarabangsa",
+    "news": "Berita"
   },
   "categories": {
     "cereal": "Bijirin",
@@ -200,6 +202,17 @@
     "seeAreaRetail": "Lihat runcit {{area}}",
     "distance": "{{km}} km"
   },
+  "news": {
+    "title": "Berita",
+    "loading": "Memuatkan berita",
+    "empty": "Tiada berita buat masa ini",
+    "emptyNote": "Dikemas kini setiap hari pada 00:00",
+    "today": "Hari ini",
+    "aiNote": "Ringkasan AI daripada artikel; mungkin ada kesilapan",
+    "related": "Tanaman berkaitan",
+    "notFound": "Berita ini sudah tiada dalam senarai",
+    "notFoundNote": "Berita disimpan selama 7 hari"
+  },
   "areas": {
     "title": "Pilih kawasan",
     "change": "Tukar kawasan",
@@ -273,15 +286,16 @@
     "title": "Perihal & data",
     "areaPrice": "Harga kawasan = median harga pasar di kawasan itu; bilangan pasar ditunjukkan.",
     "distance": "Jarak = garis lurus antara pusat kawasan, bukan jarak jalan.",
-    "nearby": "Tertinggi dan terendah berdekatan = 3 kawasan terdekat dalam 300 km, dengan harga pada hari dagangan yang sama.",
+    "nearby": "Tertinggi dan terendah berdekatan = semua kawasan dalam 100 km (garis lurus) yang ada harga pada hari dagangan yang sama.",
     "retail": "Harga runcit ikut kawasan; tiada pecahan ikut pasar.",
     "gap": "Beza runcit–borong bukan untung; ia termasuk pengangkutan, kerugian dan pembungkusan.",
-    "demo": "Semua harga yang dipaparkan ialah data demo.",
+    "demo": "Harga negara ialah data demo buat masa ini; harga antarabangsa ialah data sebenar World Bank.",
     "source": "Sumber data",
     "noMoney": "Kami tidak akan meminta wang, PIN atau kod.",
     "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
     "version": "Versi {{version}}",
-    "intlCredit": "Harga antarabangsa: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API"
+    "intlCredit": "Harga antarabangsa: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API",
+    "news": "Berita: tajuk berita harga pertanian daripada Google News, disimpan selama 7 hari. Ringkasan ditulis oleh AI daripada artikel dan mungkin salah; jika artikel tidak dapat dibaca, hanya tajuk dipaparkan."
   },
   "errors": {
     "screen": {
