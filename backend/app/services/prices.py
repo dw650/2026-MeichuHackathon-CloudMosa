@@ -13,8 +13,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Area, AreaDaily, Country, Crop, MarketDaily
 from app.errors import ApiError
 from app.repositories import catalog as catalog_repo
+from app.repositories import intl as intl_repo
 from app.repositories import prices as repo
-from app.services import stats
+from app.services import crosscountry, stats
 from app.services.catalog import require_country
 from app.services.compare import competition_ranks, diff, haversine_km, market_rows
 from app.services.demo import NO_DEMO, Demo
@@ -390,6 +391,72 @@ async def compare(
         "today": today,
         "rank": {"position": ranks[base.id], "total": sum(p is not None for p in prices.values())},
         "rows": out,
+        "other_countries": await _other_countries(session, country, crop, price_type, now, demo),
+    }
+
+
+async def _other_countries(
+    session: AsyncSession,
+    country: Country,
+    crop: Crop,
+    price_type: str,
+    now: datetime,
+    demo: Demo,
+) -> dict[str, Any] | None:
+    """各國參考價 (docs/02 §5.4): the same crop's national price in the other countries that
+    have it, in the viewer's currency. None when no other country's catalog has this crop."""
+    codes = set(await catalog_repo.crop_countries(session, crop.id))
+    others = [
+        c
+        for c in await catalog_repo.get_countries(session)
+        if c.code in codes and c.code != country.code
+    ]
+    if not others:
+        return None
+    todays = {c.code: local_today(c.utc_offset_min, now) for c in others}
+    rows = await repo.country_daily_rows(
+        session,
+        countries=[c.code for c in others],
+        crop_id=crop.id,
+        start=min(todays.values()) - timedelta(days=WINDOW_DAYS - 1),
+        end=max(todays.values()),
+    )
+    points: dict[str, list[crosscountry.Point]] = {c.code: [] for c in others}
+    for row in rows:
+        today = todays[row.country]
+        if (
+            today - timedelta(days=WINDOW_DAYS - 1)
+            <= row.trade_date
+            <= demo.until(row.area_id, today)
+        ):
+            points[row.country].append((row.price_type, row.trade_date, _money(row.price)))
+    currencies = sorted({c.currency for c in others} | {country.currency})
+    stored = await intl_repo.get_rates(session, currencies)
+    rates = {code: crosscountry.Rate(float(r.per_usd), r.rate_date) for code, r in stored.items()}
+    card = crosscountry.card(
+        currency=country.currency,
+        price_type=price_type,
+        others=[crosscountry.CountryPoints(c.code, c.currency, points[c.code]) for c in others],
+        rates=rates,
+    )
+    if card is None:
+        return None
+    return {
+        "currency": card.currency,
+        "fx_date": card.fx_date,
+        "rows": [
+            {
+                "country": r.country,
+                "currency": r.currency,
+                "type": r.price_type,
+                "local_per_kg": r.local_per_kg,
+                "price_per_kg": r.price_per_kg,
+                "n_areas": r.n_areas,
+                "trade_date": r.trade_date,
+                "reason": r.reason,
+            }
+            for r in card.rows
+        ],
     }
 
 

@@ -73,7 +73,7 @@ export interface paths {
         };
         /**
          * Compare one crop across the areas of a country
-         * @description Each area's latest price, market count, straight-line distance from the area being viewed, difference and rank (highest price first, ties share a rank, no data is not ranked). Sorting for display is left to the client.
+         * @description Each area's latest price, market count, straight-line distance from the area being viewed, difference and rank (highest price first, ties share a rank, no data is not ranked). Sorting for display is left to the client. `other_countries` adds the same crop's national price in every other country that has it (median of that country's area prices on its own latest trading day), converted to this country's currency with the stored US-dollar rates.
          */
         get: operations["compare"];
         put?: never;
@@ -341,6 +341,8 @@ export interface components {
             crop_id: string;
             /** Currency */
             currency: string;
+            /** @description Null when no other country's catalog has this crop. */
+            other_countries?: components["schemas"]["OtherCountriesOut"] | null;
             rank: components["schemas"]["RankOut"];
             /** Rows */
             rows: components["schemas"]["CompareRowOut"][];
@@ -949,6 +951,60 @@ export interface components {
              */
             name: string;
         };
+        /**
+         * OtherCountriesOut
+         * @description 各國參考價 (docs/02 §5.4): the same crop in the other countries that have it. A country's
+         *     national price is the median of its area prices on its own latest trading day. Wholesale and
+         *     retail are not comparable and the rate is a reference, so the client says so.
+         */
+        OtherCountriesOut: {
+            /**
+             * Currency
+             * @description The viewer's currency, which `price_per_kg` is in.
+             */
+            currency: string;
+            /**
+             * Fx Date
+             * @description Oldest rate date behind a converted row; null when nothing was converted.
+             */
+            fx_date: string | null;
+            /** Rows */
+            rows: components["schemas"]["OtherCountryRowOut"][];
+        };
+        /** OtherCountryRowOut */
+        OtherCountryRowOut: {
+            /** Country */
+            country: string;
+            /**
+             * Currency
+             * @description The other country's own currency.
+             */
+            currency: string;
+            /**
+             * Local Per Kg
+             * @description National price in `currency`, as stored.
+             */
+            local_per_kg: number | null;
+            /**
+             * N Areas
+             * @description Areas behind the median (0 when there is no price).
+             */
+            n_areas: number;
+            /**
+             * Price Per Kg
+             * @description The same price converted to the viewer's currency; null without a rate.
+             */
+            price_per_kg: number | null;
+            /** Reason */
+            reason: ("no_data" | "no_fx") | null;
+            /** Trade Date */
+            trade_date: string | null;
+            /**
+             * Type
+             * @description What that country publishes for this crop (Malaysia retail, Taiwan and India wholesale); null when it has no price.
+             */
+            type: ("wholesale" | "retail") | null;
+        };
         /** PriceItemOut */
         PriceItemOut: {
             change: components["schemas"]["ChangeOut"] | null;
@@ -1182,6 +1238,8 @@ export type SchemaNewsItemDetailOut = components['schemas']['NewsItemDetailOut']
 export type SchemaNewsItemOut = components['schemas']['NewsItemOut'];
 export type SchemaNewsOut = components['schemas']['NewsOut'];
 export type SchemaNewsSourceOut = components['schemas']['NewsSourceOut'];
+export type SchemaOtherCountriesOut = components['schemas']['OtherCountriesOut'];
+export type SchemaOtherCountryRowOut = components['schemas']['OtherCountryRowOut'];
 export type SchemaPriceItemOut = components['schemas']['PriceItemOut'];
 export type SchemaPricesOut = components['schemas']['PricesOut'];
 export type SchemaQuoteOut = components['schemas']['QuoteOut'];
@@ -1510,6 +1568,21 @@ export interface operations {
                      *       "area_id": "nashik",
                      *       "crop_id": "onion",
                      *       "currency": "INR",
+                     *       "other_countries": {
+                     *         "currency": "INR",
+                     *         "fx_date": "2026-09-19",
+                     *         "rows": [
+                     *           {
+                     *             "country": "TW",
+                     *             "currency": "TWD",
+                     *             "local_per_kg": 31.4,
+                     *             "n_areas": 6,
+                     *             "price_per_kg": 86.8,
+                     *             "trade_date": "2026-09-19",
+                     *             "type": "wholesale"
+                     *           }
+                     *         ]
+                     *       },
                      *       "rank": {
                      *         "position": 3,
                      *         "total": 10

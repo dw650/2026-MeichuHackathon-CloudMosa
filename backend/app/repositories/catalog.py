@@ -128,6 +128,17 @@ async def latest_dates(
     return dict(result.tuples().all())
 
 
+async def crop_countries(session: AsyncSession, crop_id: str) -> list[str]:
+    """Every country whose catalog has this crop id, in the countries' display order."""
+    result = await session.execute(
+        select(Crop.country)
+        .join(Country, Country.code == Crop.country)
+        .where(Crop.id == crop_id)
+        .order_by(Country.sort)
+    )
+    return list(result.scalars().all())
+
+
 async def get_area(session: AsyncSession, area_id: str) -> Area | None:
     return await session.get(Area, area_id)
 

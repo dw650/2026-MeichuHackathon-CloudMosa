@@ -103,6 +103,12 @@ async def get_rate(session: AsyncSession, currency: str) -> FxRate | None:
     return await session.get(FxRate, currency)
 
 
+async def get_rates(session: AsyncSession, currencies: Sequence[str]) -> dict[str, FxRate]:
+    """The stored rate of each currency that has one."""
+    result = await session.execute(select(FxRate).where(FxRate.currency.in_(currencies)))
+    return {r.currency: r for r in result.scalars().all()}
+
+
 async def has_rates(session: AsyncSession) -> bool:
     return bool(await session.scalar(select(exists().where(FxRate.per_usd > 0))))
 
