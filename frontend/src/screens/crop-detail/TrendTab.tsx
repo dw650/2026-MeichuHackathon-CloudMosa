@@ -15,6 +15,7 @@ import { useKeys } from '@/keys/useKeys'
 import { directionOf } from '@/lib/change'
 import { parseLocalDate } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
+import { useCountryData } from '@/screens/shared/useCountryData'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -33,12 +34,21 @@ import {
 } from './useDetail'
 
 /** Days of the chosen range, oldest first, labelled for the X axis (docs/03 §4). */
-function pointsOf(quote: Quote, days: Days, weekdays: readonly string[], zh: boolean) {
+function pointsOf(
+  quote: Quote,
+  days: Days,
+  weekdays: readonly string[],
+  zh: boolean,
+  closedWeekdays: readonly number[],
+) {
   return quote.series.slice(-days).map((point): TrendPoint => {
     const date = parseLocalDate(point.date)
     const weekday = date ? (weekdays[date.weekday] ?? '') : ''
+    // Only the country's closed weekdays (ISO, 7 = Sunday) read 休; other gaps are missing data.
+    const isoWeekday = date ? (date.weekday === 0 ? 7 : date.weekday) : 0
     return {
       value: point.price_per_kg,
+      closed: point.price_per_kg === null && closedWeekdays.includes(isoWeekday),
       // 7 days: the weekday's initial (六, Sa); 30 days: 9/19 (the chart picks a few).
       label: !date ? '' : days === 7 ? weekday.slice(0, zh ? 1 : 2) : `${date.month}/${date.day}`,
     }
@@ -51,11 +61,14 @@ export function TrendTab({ detail }: { detail: Detail }) {
   const { nav, days } = detail
   const fmt = usePriceFormat()
   const setPriceType = useSettings((s) => s.setPriceType)
+  const closedWeekdays = useCountryData().country?.closed_weekdays ?? []
   const quote = useDetailQuote(detail)
   const data = quote.data
   const stage = stageOf(data, quote.error)
   const noRetail = data && isNoRetail(data.reason) ? data.reason : null
-  const points = data ? pointsOf(data, days, dates.weekdays, lang.startsWith('zh')) : []
+  const points = data
+    ? pointsOf(data, days, dates.weekdays, lang.startsWith('zh'), closedWeekdays)
+    : []
   const empty = points.every((point) => point.value === null)
   const oldData = stage === 'ready' && quote.error !== null
   const ids = [

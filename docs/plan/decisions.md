@@ -483,3 +483,13 @@
   - 距離「{km} km」新增 i18n `markets.distance`；載入中的「…」接在 `states.loading` 後面（照 02 §6）。
 - 理由：都是最簡單、和其他畫面一致的做法。
 - 影響：`frontend/src/screens/markets/`、`frontend/src/i18n/locales/*.json`。
+
+## 2026-09-19 T34 大段落檢查 B 的做法與修正
+- 情況：單頁應用在畫面內切換時，Playwright 的 `networkidle` 不會重設，按鍵太快會落在資料還沒載入的畫面；另外走勢圖把所有沒有資料的日子都標「休」，地區資料較舊時（例：Kolar）最近幾天會被誤標成休市。
+- 決定：
+  - e2e 在頁面載入前包一層 `fetch` 計算進行中的請求；`settled()` 等到沒有進行中的請求、畫面上沒有骨架（`Skeleton` 標 `data-skeleton`），再等兩個 animation frame。元件展示頁本來就展示骨架，所以允許骨架。
+  - 主要流程只用按鍵：首次設定（有推測、沒有推測兩條路）、首頁 → 詳情三個分頁（含 7／30 日切換）→ 本地區各市場 → 單一市場 → 返回、`*` 切換批發零售、`#` 面板換正在看的地區、選單 → 設定 → 返回；印度／台灣 × 繁中／English 四個組合；每一步都檢查溢出、焦點、字級與 console。
+  - 全部畫面清單補上設定子頁、最近看過、舊資料地區、比價其他排序、沒有資料地區的市場頁、零售的市場頁、台灣英文版的走勢與市場頁。
+  - `TrendPoint` 新增 `closed`：只有該國的休市星期（`closed_weekdays`）而且沒有價格的那天，7 日走勢的 X 軸才寫「休」；其他沒有資料的日子照常寫星期、只畫空白帶。
+- 理由：檢查結果要反映使用者真的會看到的畫面；「休」只能用在休市日，不能掩蓋資料延遲。
+- 影響：`frontend/e2e/`、`frontend/src/components/{Skeleton,TrendChart}/`、`frontend/src/screens/crop-detail/TrendTab.tsx`。
