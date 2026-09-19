@@ -16,6 +16,7 @@ import { MISSING } from './format'
 // Mirrors STR in docs/ui-mockup/src/data.js; the real labels come from i18n (T17).
 const zh: DateLabels = {
   weekdays: ['日', '一', '二', '三', '四', '五', '六'],
+  weekdayInitials: ['日', '一', '二', '三', '四', '五', '六'],
   date: ({ m, d, w }) => `${m}/${d} 週${w}`,
   dateTime: ({ m, d, time }) => `${m}/${d} ${time}`,
   yesterday: '昨天',
@@ -24,6 +25,7 @@ const zh: DateLabels = {
 }
 const en: DateLabels = {
   weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  weekdayInitials: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
   date: ({ m, d, w }) => `${w} ${d}/${m}`,
   dateTime: ({ m, d, time }) => `${m}/${d} ${time}`,
   yesterday: 'Yesterday',

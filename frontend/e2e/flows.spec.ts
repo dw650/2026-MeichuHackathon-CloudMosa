@@ -65,6 +65,40 @@ test('first-run setup of Malaysia in English', async ({ page, errors }) => {
   await expect(page.getByText('RM/kg').first()).toBeVisible()
 })
 
+test.describe('on a Hindi phone', () => {
+  test.use({ locale: 'hi-IN' })
+
+  test('first-run setup of India in Hindi', async ({ page, errors }) => {
+    await seed(page, { setupDone: false, locate: 'none' })
+    await page.goto('/')
+    await step(page, errors, /^\/setup\/lang$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'hi')
+    await press(page, 'Enter') // हिन्दी, the phone language, is first
+    await step(page, errors, /^\/setup\/country/)
+    await press(page, '1') // India
+    await step(page, errors, /^\/setup\/area/)
+    await press(page, 'Enter')
+    await step(page, errors, /^\/(\?.*)?$/)
+    await expect(page.locator('h1')).toContainText('के भाव')
+  })
+})
+
+test.describe('on a Malay phone', () => {
+  test.use({ locale: 'ms-MY' })
+
+  test('first-run setup of Malaysia in Malay with the location guess', async ({ page, errors }) => {
+    await seed(page, { setupDone: false, locate: 'MY:kualalumpur' })
+    await page.goto('/')
+    await step(page, errors, /^\/setup\/lang$/)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'ms')
+    await press(page, 'Enter') // Bahasa Melayu, the phone language, is first
+    await step(page, errors, /^\/setup\/locate/)
+    await press(page, 'Enter') // Ya, betul
+    await step(page, errors, /^\/(\?.*)?$/)
+    await expect(page.locator('h1')).toHaveText('Harga Kuala Lumpur')
+  })
+})
+
 const combos: [Country, Lang, string][] = [
   ['IN', 'en', 'onion'],
   ['IN', 'zh-TW', 'onion'],
@@ -72,6 +106,9 @@ const combos: [Country, Lang, string][] = [
   ['TW', 'en', 'cabbage'],
   ['MY', 'en', 'tomato'],
   ['MY', 'zh-TW', 'tomato'],
+  ['IN', 'hi', 'onion'],
+  ['MY', 'ms', 'tomato'],
+  ['TW', 'hi', 'cabbage'],
 ]
 
 for (const [country, lang, crop] of combos) {

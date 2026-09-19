@@ -129,7 +129,7 @@ export default function DebugComponents() {
 
   const week: TrendPoint[] = WEEK_VALUES.map((value, day) => ({
     value,
-    label: (labels.weekdays[day] ?? '').slice(0, zh ? 1 : 2),
+    label: labels.weekdayInitials[day] ?? '',
   }))
   const month: TrendPoint[] = MONTH_VALUES.map((value, i) => {
     const date = new Date(Date.UTC(2026, 7, 21 + i))

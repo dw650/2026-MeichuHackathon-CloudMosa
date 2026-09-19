@@ -14,17 +14,18 @@ import { useSettings } from '@/store/settings'
 import styles from './settings.module.css'
 
 /**
- * Settings → 語言: the three languages of first-run setup, in the same order (the phone's first).
- * The chosen one has a check mark; choosing one saves it and goes back to the settings.
- * हिन्दी is listed but shows English (docs/02 F15).
+ * Settings → 語言: the main languages of first-run setup, the phone's first, then the languages
+ * of the chosen country (docs/02 F10, F15). The chosen one has a check mark; choosing one saves
+ * it and goes back to the settings.
  */
 export function LanguageSettings() {
   const { t, lang } = useText()
   const nav = useNav()
   const chosen = useSettings((s) => s.language) ?? lang
+  const country = useSettings((s) => s.country)
   const chooseLanguage = useSettings((s) => s.chooseLanguage)
   const root = useRef<HTMLDivElement>(null)
-  const languages = mainLanguages(navigator.language)
+  const languages = mainLanguages(navigator.language, country)
 
   const list = useFocusList(
     languages.map((language) => language.id),
@@ -53,10 +54,10 @@ export function LanguageSettings() {
               focusId={language.id}
               lead={
                 <Tile tone={language.tone} keyCap={i + 1}>
-                  {language.glyph}
+                  <span lang={language.id}>{language.glyph}</span>
                 </Tile>
               }
-              name={language.name}
+              name={<span lang={language.id}>{language.name}</span>}
               meta={
                 language.isPhoneLanguage
                   ? t('setup.language.phone')

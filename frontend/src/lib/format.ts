@@ -1,5 +1,5 @@
 // Number and price formatting with Intl in the country's locale (docs/03 §7):
-// en-IN groups in lakhs (1,23,450), zh-TW in thousands.
+// en-IN groups in lakhs (1,23,450), zh-TW in thousands. Digits are always Latin (0–9).
 
 import { toUnit, type UnitSpec } from './units'
 
@@ -7,6 +7,12 @@ import { toUnit, type UnitSpec } from './units'
 export const MISSING = '—'
 /** Minus sign of signed values (U+2212), wider and clearer than Intl's hyphen-minus. */
 export const MINUS = '−'
+
+/**
+ * Intl option for 0–9 in every locale: some (mr-IN, a `-u-nu-deva` tag) default to their own
+ * digits, and prices must read the same whatever the UI language.
+ */
+export const LATIN_DIGITS = { numberingSystem: 'latn' } as const
 
 type Sign = -1 | 0 | 1
 
@@ -21,6 +27,7 @@ export const isFiniteNumber = (value: number | null | undefined): value is numbe
  */
 function splitSign(value: number, locale: string, decimals: number) {
   const formatter = new Intl.NumberFormat(locale, {
+    ...LATIN_DIGITS,
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
     signDisplay: 'exceptZero',

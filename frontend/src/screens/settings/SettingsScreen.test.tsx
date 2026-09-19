@@ -65,13 +65,17 @@ describe('SettingsScreen', () => {
     app.press('Enter')
     expect(app.path()).toBe('/settings/language')
     expect(softKeys(app)).toEqual(['', '選取', '返回'])
-    const order = mainLanguages(navigator.language).map((language) => language.id)
+    const order = mainLanguages(navigator.language, 'IN').map((language) => language.id)
+    // jsdom's phone language (en-US) first, then Hindi for India, then the others.
+    expect(order).toEqual(['en', 'hi', 'zh-TW', 'ms'])
     expect(
       Array.from(document.querySelectorAll('main [data-focus-id]'), (row) =>
         row.getAttribute('data-focus-id'),
       ),
     ).toEqual(order)
     expect(screen.getByText('हिन्दी')).toBeInTheDocument()
+    expect(screen.getByText('Bahasa Melayu')).toBeInTheDocument()
+    expect(screen.queryByText(/尚未提供/)).toBeNull()
 
     app.press(String(order.indexOf('en') + 1))
     expect(useSettings.getState().language).toBe('en')

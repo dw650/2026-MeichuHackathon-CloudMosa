@@ -32,6 +32,7 @@
   },
   "date": {
     "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "weekdayInitials": ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
     "short": "{{w}} {{d}}/{{m}}",
     "dataTime": "{{m}}/{{d}} {{time}}",
     "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

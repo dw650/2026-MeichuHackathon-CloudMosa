@@ -12,14 +12,18 @@
   white-space: nowrap;
 }
 
+/* max-width keeps a long side label inside its column, so it ends in an ellipsis instead of
+   running under the centre key (a single long word is otherwise as wide as itself). */
 .left {
   justify-self: start;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .right {
   justify-self: end;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
 }

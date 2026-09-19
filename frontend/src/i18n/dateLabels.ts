@@ -9,6 +9,7 @@ import type { DateLabels } from '@/lib/dates'
 export function dateLabels(t: TFunction): DateLabels {
   return {
     weekdays: t('date.weekdays', { returnObjects: true }),
+    weekdayInitials: t('date.weekdayInitials', { returnObjects: true }),
     date: (vars) => t('date.short', vars),
     dateTime: (vars) => t('date.dataTime', vars),
     yesterday: t('freshness.yesterday'),

@@ -11,7 +11,9 @@ describe('pickText', () => {
   })
 
   it('falls back to English', () => {
+    // Data names are only in zh-TW and en (seed files); Malay and Hindi show English.
     expect(pickText(onion, 'hi')).toBe('Onion')
+    expect(pickText(onion, 'ms')).toBe('Onion')
     expect(pickText({ en: 'Onion', 'zh-TW': '' }, 'zh-TW')).toBe('Onion')
   })
 

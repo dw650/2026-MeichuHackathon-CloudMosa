@@ -16,7 +16,7 @@ const MORE_ID = 'more'
 
 /**
  * A new user's first screen (F01, docs/02 §5.1): the phone language first and marked, the other
- * two main languages, then 「More・其他」. Untranslated languages say they fall back to English.
+ * main languages, then 「More・其他」. Untranslated languages say they fall back to English.
  */
 export default function LanguageScreen() {
   const { t } = useText()
@@ -54,7 +54,11 @@ export default function LanguageScreen() {
               key={language.id}
               focusId={language.id}
               compact
-              lead={<Tile tone={language.tone}>{language.glyph}</Tile>}
+              lead={
+                <Tile tone={language.tone}>
+                  <span lang={language.id}>{language.glyph}</span>
+                </Tile>
+              }
               name={<span lang={language.id}>{language.name}</span>}
               meta={note(language)}
             />

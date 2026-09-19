@@ -24,6 +24,11 @@ export interface LocalDateTime extends LocalDate {
 export interface DateLabels {
   /** Weekday names, Sunday first (STR `wd`). */
   readonly weekdays: readonly string[]
+  /**
+   * Weekday initials for the 7-day chart axis, Sunday first (`六`, `Sa`, `शु`): whole from the
+   * locale, because cutting a name would drop a vowel sign (शनि → शन).
+   */
+  readonly weekdayInitials: readonly string[]
   /** Short date, e.g. zh `9/19 週六`, en `Sat 19/9` (STR `date`). */
   readonly date: (vars: { m: number; d: number; w: string }) => string
   /** Data time, e.g. `9/19 11:40`; `time` is already `HH:mm`. */

@@ -1,0 +1,307 @@
+{
+  "app": {
+    "name": "AgriPrice"
+  },
+  "softkeys": {
+    "menu": "Menu",
+    "open": "Buka",
+    "back": "Balik",
+    "exit": "Keluar",
+    "select": "Pilih",
+    "close": "Tutup",
+    "toggle": "Tukar",
+    "view": "Lihat",
+    "compare": "Banding",
+    "trend": "Trend",
+    "today": "Hari ini",
+    "retry": "Cuba lagi",
+    "markets": "Pasar",
+    "prices": "Harga"
+  },
+  "hints": {
+    "markets": "Pasar",
+    "trend": "Trend",
+    "compare": "Banding",
+    "tabs": "Tab",
+    "open": "Buka",
+    "run": "Jalankan",
+    "area": "Kawasan",
+    "sort": "Susun",
+    "d7": "7 hari",
+    "d30": "30 hari"
+  },
+  "date": {
+    "weekdays": ["Ahd", "Isn", "Sel", "Rab", "Kha", "Jum", "Sab"],
+    "weekdayInitials": ["Ah", "Is", "Se", "Ra", "Kh", "Ju", "Sa"],
+    "short": "{{w}} {{d}}/{{m}}",
+    "dataTime": "{{d}}/{{m}} {{time}}",
+    "months": ["Jan", "Feb", "Mac", "Apr", "Mei", "Jun", "Jul", "Ogo", "Sep", "Okt", "Nov", "Dis"],
+    "day": "{{d}}/{{m}}",
+    "withYear": "{{month}} {{y}}"
+  },
+  "freshness": {
+    "today": "Hari ini",
+    "yesterday": "Semalam",
+    "daysAgo": "{{n}} hari lalu",
+    "none": "Tiada data",
+    "old": "Lama"
+  },
+  "priceType": {
+    "wholesale": "Borong",
+    "retail": "Runcit",
+    "switchTo": {
+      "wholesale": "Lihat borong",
+      "retail": "Lihat runcit"
+    }
+  },
+  "states": {
+    "loading": "Memuatkan harga {{area}}",
+    "loadingNote": "Ralat dipaparkan selepas 10 saat",
+    "error": "Sambungan gagal",
+    "showingOld": "Memaparkan data {{time}}",
+    "retry": "Cuba lagi",
+    "settingsKept": "Tetapan anda masih ada",
+    "notUpdated": "{{area}}: belum dikemas kini",
+    "usualUpdate": "Kawasan ini biasanya dikemas kini sebelum {{time}}",
+    "lastPrice": "Terakhir ({{when}}): {{price}}",
+    "otherAreas": "Kawasan lain",
+    "seeTrend": "Lihat trend",
+    "noRetail": "Tiada data runcit",
+    "noRetailCrop": "Tiada laporan runcit untuk tanaman ini",
+    "retailNote": "Harga runcit ikut kawasan, bukan ikut pasar"
+  },
+  "common": {
+    "distance": "{{km}} km lurus",
+    "page": "Halaman {{page}}/{{total}}",
+    "demoData": "Data demo"
+  },
+  "menu": {
+    "title": "Menu",
+    "changeArea": "Tukar kawasan",
+    "watchlist": "Kegemaran",
+    "refresh": "Muat semula",
+    "about": "Perihal & data",
+    "settings": "Tetapan",
+    "addWatch": "Tambah ke kegemaran",
+    "removeWatch": "Buang dari kegemaran",
+    "intl": "Harga antarabangsa",
+    "news": "Berita"
+  },
+  "categories": {
+    "cereal": "Bijirin",
+    "veg": "Sayur",
+    "fruit": "Buah",
+    "pulse": "Kacang",
+    "spice": "Rempah",
+    "oil": "Biji minyak",
+    "other": "Lain",
+    "all": "Semua",
+    "recent": "Terkini"
+  },
+  "setup": {
+    "welcome": "Harga tanaman hari ini, ikut kawasan",
+    "step": "Langkah {{step}} daripada {{total}}",
+    "language": {
+      "title": "Language・Bahasa",
+      "phone": "Bahasa telefon",
+      "more": "More・Lain-lain",
+      "moreSub": "अन्य・其他",
+      "notYet": "Belum tersedia",
+      "fallbackNote": "→ English・Belum tersedia"
+    },
+    "locate": {
+      "title": "Lokasi anda",
+      "question": "Anda berhampiran {{area}}?",
+      "how": "Diteka daripada rangkaian (tanpa GPS, tidak disimpan)",
+      "yes": "Ya, betul",
+      "no": "Tidak, saya pilih sendiri"
+    },
+    "country": {
+      "title": "Pilih negara"
+    },
+    "area": {
+      "title": "Kawasan anda"
+    }
+  },
+  "home": {
+    "title": "Harga {{area}}",
+    "tabs": {
+      "watch": "Kegemaran",
+      "all": "Tanaman"
+    },
+    "browse": "Lihat tanaman"
+  },
+  "detail": {
+    "tabs": {
+      "trend": "Trend",
+      "today": "Hari ini",
+      "compare": "Banding"
+    },
+    "trend": {
+      "title": "Trend {{days}} hari",
+      "closed": "Tutup",
+      "closedShort": "X"
+    },
+    "today": {
+      "median": "Median {{count}} pasar",
+      "oneMarket": "Hanya 1 pasar",
+      "retailSurvey": "Harga tinjauan runcit",
+      "vsPrev": "vs hari lalu",
+      "markets_one": "{{count}} pasar tempatan",
+      "markets_other": "{{count}} pasar tempatan",
+      "marketsRange": "Maks {{high}} · Min {{low}}",
+      "nearby": {
+        "highest": "Tertinggi berdekatan",
+        "lowest": "Terendah berdekatan",
+        "highestAt": "Tertinggi · {{distance}}",
+        "lowestAt": "Terendah · {{distance}}"
+      }
+    },
+    "stats": {
+      "vsAvg7": "vs 7 hari",
+      "arrivals": {
+        "label": "Bekalan",
+        "low": "Sedikit",
+        "normal": "Biasa",
+        "high": "Banyak"
+      },
+      "position30": {
+        "label": "Paras 30 hari",
+        "low": "Rendah",
+        "mid": "Tengah",
+        "high": "Tinggi"
+      },
+      "volatility": {
+        "label": "Turun naik",
+        "low": "Stabil",
+        "mid": "Biasa",
+        "high": "Ketara"
+      },
+      "average": "Purata",
+      "high": "Tinggi",
+      "low": "Rendah"
+    },
+    "compare": {
+      "sortTitle": "Susun ikut",
+      "sorts": {
+        "priceDesc": "Harga tinggi→rendah",
+        "priceAsc": "Harga rendah→tinggi",
+        "distanceAsc": "Terdekat dahulu",
+        "distanceDesc": "Terjauh dahulu"
+      },
+      "you": "Anda",
+      "rank": "{{area}}: kedudukan harga {{rank}}/{{total}}",
+      "rankNone": "{{area}}: tiada data, tiada kedudukan",
+      "marketCount_one": "{{count}} pasar",
+      "marketCount_other": "{{count}} pasar"
+    }
+  },
+  "markets": {
+    "vsMedian": "Berbanding median {{price}}",
+    "noRetail": "Tiada harga runcit untuk pasar ini",
+    "seeAreaRetail": "Lihat runcit {{area}}",
+    "distance": "{{km}} km"
+  },
+  "news": {
+    "title": "Berita",
+    "loading": "Memuatkan berita",
+    "empty": "Tiada berita buat masa ini",
+    "emptyNote": "Dikemas kini setiap hari pada 00:00",
+    "today": "Hari ini",
+    "aiNote": "Ringkasan AI daripada artikel; mungkin ada kesilapan",
+    "related": "Tanaman berkaitan",
+    "notFound": "Berita ini sudah tiada dalam senarai",
+    "notFoundNote": "Berita disimpan selama 7 hari"
+  },
+  "areas": {
+    "title": "Pilih kawasan",
+    "change": "Tukar kawasan",
+    "recent": "Terkini",
+    "all": "Semua kawasan",
+    "updated": "Dikemas kini",
+    "other": "Kawasan lain…",
+    "changeCountry": "Tukar negara…"
+  },
+  "watch": {
+    "title": "Kegemaran"
+  },
+  "intl": {
+    "title": "Harga antarabangsa",
+    "note": "Purata bulanan World Bank Pink Sheet, dikemas kini awal setiap bulan",
+    "loading": "Memuatkan harga antarabangsa",
+    "average": "Purata bulanan",
+    "rateDate": "Kadar pada {{date}}",
+    "rateShort": "Kadar {{date}}",
+    "perKg": "{{currency}}/kg",
+    "monthAverage": "Purata {{month}}",
+    "noData": "Belum ada data",
+    "noRate": "Belum ada kadar tukaran",
+    "showingOld": "Memaparkan harga sebelum ini",
+    "vsPrevMonth": "vs bulan lepas",
+    "trend": "12 bulan lepas",
+    "high": "Tinggi 12 bln",
+    "low": "Rendah 12 bln",
+    "vsAverage": "vs purata 12 bln",
+    "published": "Harga asal {{price}}",
+    "usd": "US${{price}}/{{unit}}",
+    "units": {
+      "mt": "tan",
+      "kg": "kg"
+    },
+    "rate": "US$1 = {{rate}} {{currency}}",
+    "series": "Siri: {{name}}",
+    "source": "Sumber: World Bank Pink Sheet (dikemas kini {{date}})",
+    "sourceUndated": "Sumber: World Bank Pink Sheet",
+    "credit": "Rates By Exchange Rate API"
+  },
+  "settings": {
+    "title": "Tetapan",
+    "rows": {
+      "language": "Bahasa",
+      "country": "Negara",
+      "area": "Kawasan",
+      "wholesaleUnit": "Unit borong",
+      "retailUnit": "Unit runcit"
+    },
+    "demo": {
+      "title": "Demo",
+      "fail": "Simulasi API gagal",
+      "failNote": "API harga memulangkan 503",
+      "stale": "Simulasi kawasan tidak dikemas kini",
+      "staleNote": "{{area}}: tarikh dagangan terkini diundur {{days}} hari",
+      "locate": "Simulasi teka lokasi",
+      "locateNote": "Tekaan IP semasa persediaan awal",
+      "on": "Hidup",
+      "off": "Mati",
+      "locations": {
+        "auto": "Auto",
+        "nashik": "India · Nashik",
+        "taipei": "Taiwan · Taipei",
+        "kualalumpur": "Malaysia · Kuala Lumpur",
+        "none": "Tiada tekaan"
+      }
+    }
+  },
+  "about": {
+    "title": "Perihal & data",
+    "areaPrice": "Harga kawasan = median harga pasar di kawasan itu; bilangan pasar ditunjukkan.",
+    "distance": "Jarak = garis lurus antara pusat kawasan, bukan jarak jalan.",
+    "nearby": "Tertinggi dan terendah berdekatan = semua kawasan dalam 100 km (garis lurus) yang ada harga pada hari dagangan yang sama.",
+    "retail": "Harga runcit ikut kawasan; tiada pecahan ikut pasar.",
+    "gap": "Beza runcit–borong bukan untung; ia termasuk pengangkutan, kerugian dan pembungkusan.",
+    "demo": "Harga negara ialah data demo buat masa ini; harga antarabangsa ialah data sebenar World Bank.",
+    "source": "Sumber data",
+    "noMoney": "Kami tidak akan meminta wang, PIN atau kod.",
+    "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
+    "version": "Versi {{version}}",
+    "intlCredit": "Harga antarabangsa: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API",
+    "news": "Berita: tajuk berita harga pertanian daripada Google News, disimpan selama 7 hari. Ringkasan ditulis oleh AI daripada artikel dan mungkin salah; jika artikel tidak dapat dibaca, hanya tajuk dipaparkan."
+  },
+  "errors": {
+    "screen": {
+      "title": "Skrin ini menghadapi masalah",
+      "note": "Tetapan anda masih ada; kembali ke laman utama dan cuba lagi",
+      "home": "Ke laman utama"
+    }
+  }
+}

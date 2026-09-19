@@ -13,8 +13,9 @@
   --row: 44px;
   --row-compact: 36px;
 
-  /* Type (px). Floor: 11px on 240×320; key caps are the only exception (9px). */
-  --font: Roboto, 'Noto Sans TC', 'Noto Sans', sans-serif;
+  /* Type (px). Floor: 11px on 240×320; key caps are the only exception (9px).
+     Devanagari (हिन्दी) is named so it never depends on the fallback font (docs/08 §12). */
+  --font: Roboto, 'Noto Sans TC', 'Noto Sans', 'Noto Sans Devanagari', sans-serif;
   --fs-t: 17px;
   --fs-hero: 30px;
   --fs-1: 15px;
@@ -151,10 +152,18 @@
     --fs-kpi-v: 12px;
   }
 
-  /* Chinese needs 11px to stay legible (docs/03 §3.2), in small tags (舊, 你, 批發) too. */
-  :root:lang(zh) {
+  /* Chinese and Hindi need 11px to stay legible (docs/03 §3.2), in small tags (舊, 你, 批發,
+     थोक) too. */
+  :root:lang(zh),
+  :root:lang(hi) {
     --fs-2: 11px;
     --fs-3: 11px;
+  }
+
+  /* Chinese or Hindi inside another UI language (language names and tile letters). */
+  [lang|='zh'],
+  [lang|='hi'] {
+    font-size: max(1em, 11px);
   }
 }
 

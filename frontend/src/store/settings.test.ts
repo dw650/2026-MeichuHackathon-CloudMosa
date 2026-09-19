@@ -239,7 +239,9 @@ describe('settings store', () => {
       settings().chooseLanguage('zh-TW')
       expect(i18n.language).toBe('zh-TW')
       settings().chooseLanguage('hi')
-      expect(settings().language).toBe('hi')
+      expect(i18n.language).toBe('hi')
+      settings().chooseLanguage('bn')
+      expect(settings().language).toBe('bn')
       expect(i18n.language).toBe('en')
     })
 

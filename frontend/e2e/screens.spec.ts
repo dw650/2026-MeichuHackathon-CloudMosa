@@ -38,7 +38,33 @@ const IN_SCREENS = [
   '/intl/sugar',
 ]
 
-const cases: { name: string; state: AppState; paths: string[] }[] = [
+const MY_SCREENS = [
+  '/',
+  '/?tab=all',
+  '/?sheet=menu',
+  '/?sheet=area',
+  '/cat/fruit',
+  '/cat/other',
+  '/crop/tomato/today',
+  '/crop/tomato/trend',
+  '/crop/tomato/trend?days=30',
+  '/crop/tomato/compare',
+  '/crop/tomato/compare?sheet=sort',
+  '/crop/tomato/markets',
+  '/crop/tomato/markets/klborong',
+  '/crop/tomato/today?area=timurlaut',
+  '/areas?for=home',
+  '/watch',
+  '/settings',
+  '/settings/language',
+  '/settings/demo',
+  '/about',
+  '/intl',
+  '/intl/palm_oil',
+]
+
+/** `locale` is the phone language (navigator.language), which a new user's setup follows. */
+const cases: { name: string; state: AppState; paths: string[]; locale?: string }[] = [
   { name: 'IN zh-TW', state: { country: 'IN', lang: 'zh-TW' }, paths: IN_SCREENS },
   {
     name: 'IN retail',
@@ -100,10 +126,41 @@ const cases: { name: string; state: AppState; paths: string[] }[] = [
     state: { setupDone: false },
     paths: ['/setup/lang', '/setup/langs', '/setup/country', '/setup/area'],
   },
+  // Bahasa Melayu and हिन्दी (machine translations): Devanagari is the tightest fit.
+  { name: 'IN hi', state: { country: 'IN', lang: 'hi' }, paths: IN_SCREENS },
+  {
+    name: 'IN hi retail',
+    state: { country: 'IN', lang: 'hi', priceType: 'retail' },
+    paths: ['/', '/crop/onion/today', '/crop/chilli/today', '/crop/onion/markets/lasalgaon'],
+  },
+  { name: 'MY ms', state: { country: 'MY', lang: 'ms' }, paths: MY_SCREENS },
+  {
+    name: 'MY ms retail',
+    state: { country: 'MY', lang: 'ms', priceType: 'retail' },
+    paths: ['/', '/crop/calamansi/today', '/crop/tomato/compare', '/crop/tomato/markets'],
+  },
+  {
+    name: 'TW ms',
+    state: { country: 'TW', lang: 'ms' },
+    paths: ['/', '/crop/cabbage/today', '/crop/cabbage/trend', '/intl/rice'],
+  },
+  {
+    name: 'first run on a Hindi phone',
+    state: { setupDone: false },
+    locale: 'hi-IN',
+    paths: ['/setup/lang', '/setup/langs', '/setup/country', '/setup/area'],
+  },
+  {
+    name: 'first run on a Malay phone',
+    state: { setupDone: false },
+    locale: 'ms-MY',
+    paths: ['/setup/lang', '/setup/langs', '/setup/country', '/setup/area'],
+  },
 ]
 
 for (const c of cases) {
   test.describe(c.name, () => {
+    if (c.locale) test.use({ locale: c.locale })
     for (const path of c.paths) {
       test(path, async ({ page, errors }) => {
         await seed(page, c.state)

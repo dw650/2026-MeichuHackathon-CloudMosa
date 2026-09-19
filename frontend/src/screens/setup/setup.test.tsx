@@ -26,29 +26,42 @@ afterEach(() => {
 })
 
 describe('language screen', () => {
-  it('lists the phone language first, marks हिन्दी and ends with More', async () => {
+  it('lists the phone language first, then the other main languages and More', async () => {
     const app = await renderApp('/setup/lang', { country: null })
     expect(screen.getByRole('heading')).toHaveTextContent('Language・語言')
     expect(screen.getByRole('img', { name: '第 1 步，共 3 步' })).toBeInTheDocument()
-    expect(rowIds()).toEqual(['zh-TW', 'en', 'hi', 'more'])
+    expect(rowIds()).toEqual(['zh-TW', 'en', 'hi', 'ms', 'more'])
     expect(app.focusedId()).toBe('zh-TW')
     expect(screen.getByText('手機語言')).toBeInTheDocument()
-    expect(screen.getByText('→ English・尚未提供')).toBeInTheDocument()
+    expect(screen.getByText('हिन्दी')).toBeInTheDocument()
+    expect(screen.getByText('Bahasa Melayu')).toBeInTheDocument()
+    // Every main language is translated, so none says it falls back to English.
+    expect(screen.queryByText('→ English・尚未提供')).toBeNull()
     expect(softKeys(app)).toEqual(['', '選取', '離開'])
     app.press('ArrowDown')
     expect(app.focusedId()).toBe('en')
   })
 
+  it('shows a Hindi phone the screen in Hindi', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('hi-IN')
+    const app = await renderApp('/setup/lang', { country: null, lang: 'hi' })
+    expect(screen.getByRole('heading')).toHaveTextContent('Language・भाषा')
+    expect(rowIds()).toEqual(['hi', 'zh-TW', 'en', 'ms', 'more'])
+    expect(screen.getByText('फ़ोन की भाषा')).toBeInTheDocument()
+    expect(softKeys(app)).toEqual(['', 'चुनें', 'बाहर'])
+    expect(document.documentElement.lang).toBe('hi')
+  })
+
   it('opens the other languages from More', async () => {
     const app = await renderApp('/setup/lang', { country: null })
-    app.press('4')
+    app.press('5')
     expect(app.path()).toBe('/setup/langs?depth=1')
     expect(screen.getByRole('heading')).toHaveTextContent('More・其他')
   })
 
   it('opens the next screen once when two OK presses arrive together', async () => {
     const app = await renderApp('/setup/lang', { country: null })
-    ;['ArrowDown', 'ArrowDown', 'ArrowDown'].forEach((key) => app.press(key))
+    ;['ArrowDown', 'ArrowDown', 'ArrowDown', 'ArrowDown'].forEach((key) => app.press(key))
     act(() => {
       fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Enter' })
       fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Enter' })
