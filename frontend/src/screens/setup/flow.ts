@@ -3,6 +3,7 @@
 // the setup entries opened on top of the first one, so finishing can drop them all and leave
 // home as the only entry (the back key then leaves the app instead of reopening setup).
 
+import { useRef } from 'react'
 import { useLocation } from 'react-router'
 
 import { useLocate } from '@/api/queries'
@@ -89,19 +90,27 @@ export interface SetupFlow {
 export function useSetupFlow(): SetupFlow {
   const nav = useNav()
   const depth = setupDepth(useLocation().search)
+  // One move per screen: keys can arrive in bursts on Cloud Phone, and a second OK before the
+  // next screen shows would add an entry that `depth` does not count.
+  const moved = useRef(false)
+  const once = (move: () => void) => {
+    if (moved.current) return
+    moved.current = true
+    move()
+  }
   return {
     depth,
-    next: (step) => nav.open(setupPath(step, depth + 1)),
-    finish: () => nav.backAndReplace(paths.home(), depth),
+    next: (step) => once(() => nav.open(setupPath(step, depth + 1))),
+    finish: () => once(() => nav.backAndReplace(paths.home(), depth)),
   }
 }
 
 /**
  * Choosing a language on either language screen: saves it (the UI switches at once) and moves
- * on. Also starts the network location lookup, so the guess is usually ready by then.
+ * on with the screen's `flow`. Also starts the network location lookup, so the guess is
+ * usually ready by then.
  */
-export function useChooseLanguage(): (language: LanguageId) => void {
-  const flow = useSetupFlow()
+export function useChooseLanguage(flow: SetupFlow): (language: LanguageId) => void {
   const locate = useLocate()
   const chooseLanguage = useSettings((s) => s.chooseLanguage)
   return (language) => {

@@ -21,7 +21,7 @@ const MORE_ID = 'more'
 export default function LanguageScreen() {
   const { t } = useText()
   const flow = useSetupFlow()
-  const choose = useChooseLanguage()
+  const choose = useChooseLanguage(flow)
   const languages = mainLanguages(navigator.language)
   const ids = [...languages.map((l) => l.id), MORE_ID]
 

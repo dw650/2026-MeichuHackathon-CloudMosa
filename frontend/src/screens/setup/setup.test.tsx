@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -44,6 +44,18 @@ describe('language screen', () => {
     app.press('4')
     expect(app.path()).toBe('/setup/langs?depth=1')
     expect(screen.getByRole('heading')).toHaveTextContent('More・其他')
+  })
+
+  it('opens the next screen once when two OK presses arrive together', async () => {
+    const app = await renderApp('/setup/lang', { country: null })
+    ;['ArrowDown', 'ArrowDown', 'ArrowDown'].forEach((key) => app.press(key))
+    act(() => {
+      fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Enter' })
+      fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Enter' })
+    })
+    expect(app.path()).toBe('/setup/langs?depth=1')
+    await app.back()
+    expect(app.path()).toBe('/setup/lang')
   })
 })
 

@@ -12,7 +12,7 @@ import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
 import { useText } from '@/screens/shared/useText'
 
-import { useChooseLanguage } from './flow'
+import { useChooseLanguage, useSetupFlow } from './flow'
 import styles from './setup.module.css'
 
 /** `?page=` is 1-based and left out on the first page. */
@@ -26,7 +26,7 @@ export default function MoreLanguagesScreen() {
   const { t } = useText()
   const nav = useNav()
   const { pathname, search } = useLocation()
-  const choose = useChooseLanguage()
+  const choose = useChooseLanguage(useSetupFlow())
   const requested = Number(new URLSearchParams(search).get(PAGE_PARAM) ?? 1) - 1
   const { items, page, pages } = moreLanguagesPage(requested)
 
