@@ -105,7 +105,7 @@ interface SeriesCardProps {
   fmt: IntlFormat
 }
 
-/** Tile with its number key, name, grade and month, local price and the monthly change. */
+/** Tile with its number key, name, month and grade, local price and the monthly change. */
 function SeriesCard({ item, index, today, old, fmt }: SeriesCardProps) {
   const { t, pick } = useText()
   const month = describeMonth(item.month, today, fmt.months)
@@ -113,10 +113,11 @@ function SeriesCard({ item, index, today, old, fmt }: SeriesCardProps) {
   if (item.price_per_kg === null) {
     meta = t(item.reason === 'no_fx' ? 'intl.noRate' : 'intl.noData')
   } else {
+    // The month first: a long grade may be cut off, the month never is.
     meta = (
       <>
-        {pick(item.spec)} ·{' '}
-        <span className={month.warn ? styles.warn : undefined}>{month.text}</span>
+        <span className={month.warn ? styles.warn : undefined}>{month.text}</span> ·{' '}
+        {pick(item.spec)}
       </>
     )
   }

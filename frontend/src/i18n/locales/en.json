@@ -213,7 +213,7 @@
   },
   "intl": {
     "title": "International prices",
-    "note": "World Bank Pink Sheet monthly averages, updated early each month. Rates By Exchange Rate API",
+    "note": "World Bank Pink Sheet monthly averages, updated early each month",
     "loading": "Loading international prices",
     "average": "Monthly avg",
     "rateDate": "At the {{date}} rate",

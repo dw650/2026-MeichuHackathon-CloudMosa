@@ -226,7 +226,7 @@
   },
   "intl": {
     "title": "國際參考價",
-    "note": "世界銀行 Pink Sheet 月均價，每月初更新；匯率 Rates By Exchange Rate API",
+    "note": "世界銀行 Pink Sheet 月均價，每月初更新",
     "loading": "正在取得國際參考價",
     "average": "月均價",
     "rateDate": "以 {{date}} 匯率換算",

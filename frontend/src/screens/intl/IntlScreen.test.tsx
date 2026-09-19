@@ -42,9 +42,9 @@ describe('IntlScreen', () => {
     expect(app.focusedId()).toBe('series:rice')
     expect(softKeys(app)).toEqual(['', '查看', '返回'])
 
-    // Number key, name, grade and month, local price per kg, change from the month before.
-    expect(card('rice')).toBe('1稻米泰國 5% 碎米 · 8 月45.2▲0.9%')
-    expect(card('sugar')).toBe('5原糖國際糖協定價格 · 8 月36.5▲12%')
+    // Number key, name, month and grade, local price per kg, change from the month before.
+    expect(card('rice')).toBe('1稻米8 月 · 泰國 5% 碎米45.2▲0.9%')
+    expect(card('sugar')).toBe('5原糖8 月 · 國際糖協定價格36.5▲12%')
     expect(card('palm_oil')).toContain('6棕櫚油')
 
     app.press('ArrowDown')
@@ -74,7 +74,7 @@ describe('IntlScreen', () => {
     expect(screen.getByRole('heading')).toHaveTextContent('International prices')
     expect(screen.getByText('NT$/kg')).toBeInTheDocument()
     expect(screen.getByText('At the 19/9 rate')).toBeInTheDocument()
-    expect(card('rice')).toBe('1RiceThai 5% broken · Aug15.0▲0.9%')
+    expect(card('rice')).toBe('1RiceAug · Thai 5% broken15.0▲0.9%')
   })
 
   it('names the year of an older month and flags one that is late', async () => {
@@ -135,7 +135,7 @@ describe('IntlScreen', () => {
 
     expect(await screen.findByText('連線失敗', {}, { timeout: 3000 })).toBeInTheDocument()
     expect(screen.getByText('先顯示之前取得的價格')).toBeInTheDocument()
-    expect(card('rice')).toBe('1稻米泰國 5% 碎米 · 8 月45.2舊')
+    expect(card('rice')).toBe('1稻米8 月 · 泰國 5% 碎米45.2舊')
     expect(app.focusedId()).toBe('series:rice')
     app.press('ArrowUp')
     expect(app.softKey('center')).toBe('重試')
