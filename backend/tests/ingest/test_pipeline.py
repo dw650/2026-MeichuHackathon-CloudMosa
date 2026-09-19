@@ -194,3 +194,15 @@ async def test_retiring_keeps_the_sources_still_enabled(seeded: AsyncSession) ->
     await retire_sources(seeded, {"IN": {"fake", "mock"}})
     price, n, _, _ = await area_row(seeded, "nashik")
     assert (float(price), n) == (15, 2)
+
+
+async def test_a_country_without_any_enabled_source_keeps_its_prices(
+    seeded: AsyncSession,
+) -> None:
+    # A PROVIDERS typo must not wipe a country: with nothing to replace them, old prices stay.
+    await run_provider(
+        seeded, FakeProvider([row("lasalgaon", 10), row("niphad", 20)]), DAYS, now=NOW
+    )
+    await retire_sources(seeded, {"IN": set()})
+    price, n, _, _ = await area_row(seeded, "nashik")
+    assert (float(price), n) == (15, 2)

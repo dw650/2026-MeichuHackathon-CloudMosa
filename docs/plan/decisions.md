@@ -576,3 +576,9 @@
   - 06 §3.5「真實資料接上後改成『全國當天都沒有報價』才算休市」這次**沒有做**，台灣仍用週一休市。原因：實際資料裡週一也有幾個市場交易（西螺、花蓮等），照字面做的話幾乎不會有休市日；而且抓取失敗時每一天都會被當成「全國沒有報價」，舊資料就不會被標示出來。之後要做的話，建議改用來源的休市公告。【待確認】
 - 理由：顯示的價格和畫面上的品種一致；對照不到就丟、不猜；一次完整執行約 1 萬列、30 秒，每小時更新只有幾百列；provider 介面、`run_provider` 與 mock 資料都不變。
 - 影響：`backend/app/ingest/providers/tw_moa.py`（新）、`backend/app/ingest/{normalize,pipeline}.py`、`backend/app/ingest/providers/base.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`backend/app/seed/TW.yaml`、`backend/tests/fixtures/tw_moa_farmtrans.json`、`backend/tests/ingest/test_tw_moa.py`；兩個既有測試改了前提（`test_seed` 的 tp2 要從每個來源的對照表拿掉、`test_worker` 的「未實作來源」改用 `in_datagov`）；`.env.example`、docs/06 §1.2、§8、docs/04 §2、§5.2。要加品種或市場時改 `TW.yaml` 的 `source_maps.tw_moa`。
+
+## 2026-09-20 B2 驗收：沒有任何來源的國家不刪資料
+- 情況：驗收 B2 時發現，`PROVIDERS` 設錯（例如只寫 `tw_moa`、忘了 `mock`）時，印度沒有任何來源，`retire_sources` 會刪掉印度的所有價格。
+- 決定：沒有任何啟用中來源的國家，保留原本的價格並記一筆警告；只有在有來源可以取代時，才刪掉其他來源的價格。
+- 理由：設定錯誤頂多讓資料停在舊的，不能讓資料消失。
+- 影響：`backend/app/ingest/pipeline.py`、`backend/tests/ingest/test_pipeline.py`。

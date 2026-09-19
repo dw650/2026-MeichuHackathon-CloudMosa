@@ -36,8 +36,12 @@ def _window(today: dict[str, date]) -> list[date]:
 async def retire_sources(session: AsyncSession, owners: dict[str, set[str]]) -> None:
     """Deletes each country's quotes from sources that no longer cover it (the mock's Taiwan
     prices once tw_moa is enabled, or the other way round) and re-aggregates the dates they
-    touched, so a country never mixes demo and real prices."""
+    touched, so a country never mixes demo and real prices. A country no enabled source covers
+    keeps its prices: with nothing to replace them, a PROVIDERS typo must not wipe it."""
     for country, sources in sorted(owners.items()):
+        if not sources:
+            logger.warning("%s: no enabled source; keeping its prices", country)
+            continue
         dates = await repo.delete_quotes_except(session, country, sorted(sources))
         if dates:
             await repo.aggregate(session, country, dates)
