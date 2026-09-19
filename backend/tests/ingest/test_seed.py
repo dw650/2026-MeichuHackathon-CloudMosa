@@ -18,8 +18,8 @@ def test_seed_files_have_the_expected_areas_and_crops() -> None:
     assert set(seeds) == {"IN", "TW"}
     assert len(seeds["IN"].areas) == 11
     assert len(seeds["TW"].areas) == 10
-    assert len(seeds["IN"].crops) == 10
-    assert len(seeds["TW"].crops) == 10
+    assert len(seeds["IN"].crops) == 21
+    assert len(seeds["TW"].crops) == 21
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
     assert len(nashik.markets) == 10
 
@@ -27,6 +27,13 @@ def test_seed_files_have_the_expected_areas_and_crops() -> None:
 def test_every_crop_category_is_allowed() -> None:
     for seed in load_seed_files():
         assert {c.category for c in seed.crops} <= CATEGORIES
+
+
+def test_every_category_has_at_least_two_crops_in_each_country() -> None:
+    # The home grid shows all seven categories, so none of them may open an empty list.
+    for seed in load_seed_files():
+        counts = {cat: sum(c.category == cat for c in seed.crops) for cat in CATEGORIES}
+        assert min(counts.values()) >= 2, (seed.country.code, counts)
 
 
 def test_default_watchlists_match_the_spec() -> None:
@@ -102,7 +109,7 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     assert await _counts(session) == first
     assert first["countries"] == 2
     assert first["areas"] == 21
-    assert first["crops"] == 20
+    assert first["crops"] == 42
     assert first["markets"] == 45
 
 

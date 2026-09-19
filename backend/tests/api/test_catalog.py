@@ -50,7 +50,7 @@ async def test_crops_list_names_categories_and_retail(api: httpx.AsyncClient) ->
     res = await api.get("/api/v1/countries/TW/crops")
     assert res.status_code == 200
     crops = {c["id"]: c for c in res.json()["crops"]}
-    assert len(crops) == 10
+    assert len(crops) == 21
     assert crops["cabbage"]["name"] == {"zh-TW": "甘藍", "en": "Cabbage"}
     assert crops["cabbage"]["variety"] == {"zh-TW": "初秋", "en": "Early autumn"}
     assert (crops["cabbage"]["category"], crops["cabbage"]["default_watch"]) == ("veg", True)
