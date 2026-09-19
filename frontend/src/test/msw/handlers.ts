@@ -152,5 +152,28 @@ export const handlers = [
     return notFound(find('/intl', { country }) ? 'series_not_found' : 'country_not_found')
   }),
 
+  http.get('*/api/v1/news', ({ request }) => {
+    const q = queryOf(request)
+    const country = q.get('country') ?? ''
+    const area = q.get('area') ?? ''
+    const data =
+      find('/news', { area, country }) ??
+      find('/news', { area: DEFAULT_AREA[country] ?? '', country })
+    if (!data) return notFound('area_not_found')
+    data.area_id = area
+    return HttpResponse.json(data)
+  }),
+
+  // One item: taken from the country lists, with the fields the detail adds.
+  http.get('*/api/v1/news/:id', ({ params }) => {
+    const id = Number(params.id)
+    for (const [country, area] of Object.entries(DEFAULT_AREA)) {
+      const list = find('/news', { area, country })
+      const item = (list?.items as Json[] | undefined)?.find((i) => i.id === id)
+      if (list && item) return HttpResponse.json({ ...item, country, today: list.today })
+    }
+    return notFound('news_not_found')
+  }),
+
   http.get('*/api/v1/locate', () => HttpResponse.json(find('/locate', {}))),
 ]

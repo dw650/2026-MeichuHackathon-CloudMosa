@@ -53,6 +53,17 @@ services:
       INTL_PRICES: ${INTL_PRICES:-true}
       PINK_SHEET_URL: ${PINK_SHEET_URL:-}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # News (docs/06 §1.6): google, demo (fixed items, no network) or off. Summaries need
+      # GEMINI_API_KEY or a self-hosted OpenAI-compatible model (SUMMARY_API_BASE, SUMMARY_MODEL).
+      NEWS_SOURCE: ${NEWS_SOURCE:-google}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-}
+      SUMMARY_API_BASE: ${SUMMARY_API_BASE:-}
+      SUMMARY_MODEL: ${SUMMARY_MODEL:-}
+      SUMMARY_API_KEY: ${SUMMARY_API_KEY:-}
+    extra_hosts:
+      # Lets SUMMARY_API_BASE reach a model tunnelled to this host (host.docker.internal).
+      - "host.docker.internal:host-gateway"
     depends_on:
       db:
         condition: service_healthy

@@ -23,6 +23,14 @@ class Settings(BaseSettings):
     pink_sheet_page_url: str = "https://www.worldbank.org/en/research/commodity-markets"
     pink_sheet_url: str = ""  # a fixed monthly file; empty = the one the page links today
     fx_url: str = "https://open.er-api.com/v6/latest/USD"
+    # News (docs/06 §1.6): google, demo (fixed items, no network) or off.
+    news_source: str = "google"
+    # Summaries: Gemini free tier, and/or a self-hosted OpenAI-compatible model. Empty = unused.
+    gemini_api_key: str = ""
+    gemini_model: str = ""
+    summary_api_base: str = ""
+    summary_model: str = ""
+    summary_api_key: str = ""
 
     @property
     def provider_ids(self) -> list[str]:

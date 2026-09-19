@@ -29,6 +29,8 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 I18n = dict[str, str]
 PRICE = Numeric(12, 4)
 PRICE_TYPES = ("wholesale", "retail")
+# News items older than this are deleted and never listed (docs/06 §1.6).
+NEWS_KEEP_DAYS = 7
 
 
 class Base(DeclarativeBase):
@@ -345,8 +347,71 @@ class IntlSource(Base):
 
 INTL_TABLES = ("intl_prices", "intl_series", "fx_rates", "intl_sources")
 
+
+class NewsItem(Base):
+    """A news headline of a country for the 新聞 page. Only the headline, a short summary, the
+    source, the link and the tags are stored, never the article text (docs/06 §1.6)."""
+
+    __tablename__ = "news_items"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    country: Mapped[str] = mapped_column(ForeignKey("countries.code", ondelete="CASCADE"))
+    source: Mapped[str] = mapped_column(String(20))  # google | demo
+    guid: Mapped[str] = mapped_column(String(400))
+    title: Mapped[str] = mapped_column(Text)
+    # The title's letters and digits only, for duplicates (match.title_key).
+    title_key: Mapped[str] = mapped_column(String(200))
+    lang: Mapped[str] = mapped_column(String(10))
+    source_name: Mapped[str] = mapped_column(String(120))
+    source_domain: Mapped[str | None] = mapped_column(String(120))
+    # The publisher's URL once resolved, else the Google News link. Never opened by the app.
+    url: Mapped[str] = mapped_column(Text)
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    summary: Mapped[str | None] = mapped_column(Text)
+    summary_lang: Mapped[str | None] = mapped_column(String(10))
+    summary_model: Mapped[str | None] = mapped_column(String(80))
+    summary_tries: Mapped[int] = mapped_column(SmallInteger, server_default="0")
+    crop_ids: Mapped[list[str]] = mapped_column(ARRAY(String(40)), server_default=text("'{}'"))
+    # Areas the title or summary mention; the list puts the user's area first.
+    area_ids: Mapped[list[str]] = mapped_column(ARRAY(String(40)), server_default=text("'{}'"))
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        UniqueConstraint("country", "guid", name="uq_news_items_guid"),
+        UniqueConstraint("country", "title_key", name="uq_news_items_title"),
+        Index("ix_news_items_country_published", "country", "published_at"),
+    )
+
+
+class NewsRun(Base):
+    """One news run of a country: what it fetched and what it spent (the daily budgets)."""
+
+    __tablename__ = "news_runs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    country: Mapped[str] = mapped_column(String(2))
+    source: Mapped[str] = mapped_column(String(20))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(10))  # running | ok | failed
+    items_in: Mapped[int] = mapped_column(Integer, server_default="0")
+    items_new: Mapped[int] = mapped_column(Integer, server_default="0")
+    requests: Mapped[int] = mapped_column(Integer, server_default="0")
+    articles: Mapped[int] = mapped_column(Integer, server_default="0")
+    model_calls: Mapped[int] = mapped_column(Integer, server_default="0")
+    summaries: Mapped[int] = mapped_column(Integer, server_default="0")
+    error: Mapped[str | None] = mapped_column(Text)
+
+    __table_args__ = (
+        CheckConstraint("status IN ('running', 'ok', 'failed')", name="ck_news_runs_status"),
+        Index("ix_news_runs_country_started", "country", "source", "started_at"),
+    )
+
+
 DATA_TABLES = (
     *INTL_TABLES,
+    "news_items",
+    "news_runs",
     "area_daily",
     "market_daily",
     "quotes",

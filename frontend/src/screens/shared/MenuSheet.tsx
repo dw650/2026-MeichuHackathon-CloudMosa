@@ -110,6 +110,13 @@ export function MenuSheet({ cropId }: MenuSheetProps) {
       label: t('menu.intl'),
       run: () => nav.leaveSheet(paths.intl()),
     },
+    // 新聞 (N1), added after B5 for the same reason.
+    {
+      focusId: 'news',
+      icon: 'news',
+      label: t('menu.news'),
+      run: () => nav.leaveSheet(paths.news()),
+    },
   ]
 
   const list = useFocusList(

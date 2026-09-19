@@ -14,6 +14,8 @@ import type {
   SchemaLocateOut,
   SchemaMarketOut,
   SchemaMarketsOut,
+  SchemaNewsItemDetailOut,
+  SchemaNewsOut,
   SchemaPricesOut,
   SchemaQuoteOut,
 } from './schema'
@@ -29,6 +31,9 @@ export type CompareRow = SchemaCompareOut['rows'][number]
 export type Markets = SchemaMarketsOut
 export type MarketRow = SchemaMarketsOut['rows'][number]
 export type Market = SchemaMarketOut
+export type NewsList = SchemaNewsOut
+export type NewsItem = SchemaNewsOut['items'][number]
+export type NewsItemDetail = SchemaNewsItemDetailOut
 export type Staleness = PriceItem['staleness']
 export type Change = NonNullable<PriceItem['change']>
 export type IntlPrices = SchemaIntlPricesOut
@@ -50,6 +55,8 @@ export const queryKeys = {
   market: (p: MarketParams) => ['market', p.country, p.crop, p.market] as const,
   intl: (country: string) => ['intl', country] as const,
   intlSeries: (country: string, series: string) => ['intl', country, series] as const,
+  news: (p: NewsParams) => ['news', p.country, p.area] as const,
+  newsItem: (id: number) => ['newsItem', id] as const,
   locate: ['locate'] as const,
   health: ['health'] as const,
 }
@@ -198,6 +205,31 @@ export function useIntlSeries(country: string | null | undefined, series: string
     queryFn: ({ signal }) =>
       apiGet<SchemaIntlSeriesOut>(`/intl/${encodeURIComponent(series)}`, { country }, { signal }),
     enabled: !!country && !!series,
+  })
+}
+
+export interface NewsParams {
+  country: string
+  /** My area: news mentioning it come first. */
+  area: string
+}
+
+/** The 新聞 list (docs/02 §5.9): up to 9 items, my area first. */
+export function useNews(p: NewsParams | null) {
+  return useQuery({
+    queryKey: p ? queryKeys.news(p) : ['news', 'off'],
+    queryFn: ({ signal }) =>
+      apiGet<SchemaNewsOut>('/news', { country: p!.country, area: p!.area }, { signal }),
+    enabled: !!p,
+  })
+}
+
+/** One news item for its detail screen. */
+export function useNewsItem(id: number | null) {
+  return useQuery({
+    queryKey: id === null ? ['newsItem', 'off'] : queryKeys.newsItem(id),
+    queryFn: ({ signal }) => apiGet<SchemaNewsItemDetailOut>(`/news/${id}`, {}, { signal }),
+    enabled: id !== null,
   })
 }
 

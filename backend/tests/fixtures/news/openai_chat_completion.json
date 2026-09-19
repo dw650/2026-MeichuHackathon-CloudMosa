@@ -1,0 +1,22 @@
+{
+  "_note": "Shape of an OpenAI-compatible /v1/chat/completions answer (as Ollama, vLLM and llama.cpp server return it); written for the tests, not recorded from a live model.",
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1789848000,
+  "model": "qwen2.5:7b-instruct",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "{\"summary\": \"Wholesale onion prices averaged Rs 3,736.61 per quintal on September 15, nearly four times the level a year earlier. Potato prices stayed below last year while tomato prices eased from early-September highs.\", \"crops\": [\"onion\", \"potato\", \"tomato\", \"garlic\"]}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 900,
+    "completion_tokens": 70,
+    "total_tokens": 970
+  }
+}

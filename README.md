@@ -13,6 +13,7 @@
 - **誠實**：缺資料就顯示「—」和原因，不是今天的資料一定標出「昨天」「3 天前」；所有日期由後端依國家時區計算。
 - **三國兩語**：印度（盧比）、台灣（新台幣）與馬來西亞（令吉），介面有繁體中文與 English；हिन्दी 等語言列在選單，暫時以英文顯示。
 - **國際參考價**（加分項 B5）：左軟鍵選單最後一項。世界銀行 Pink Sheet 的稻米、小麥、玉米、大豆、原糖、棕櫚油月均價，以最新匯率換算成當地幣別每公斤，標出月份、匯率日期與比上月；詳情頁有近 12 個月走勢與原始美元價。worker 只在到期時下載（每天約 3 個小請求），部署重啟不會重抓。
+- **新聞**：選單 › 新聞，列出本國最近 7 天的農產品價格新聞（Google 新聞搜尋），提到你地區的排前面；兩句摘要由 AI 依原文寫成（Gemini 免費額度，可不設定），讀不到原文就只顯示標題、發布者與日期，不會編造。
 
 ## 快速開始
 
@@ -34,6 +35,7 @@ make up                 # 起 db、api、worker、web；worker 啟動時就寫�
 | 重新同步 seed 並重新產生示範資料 | `make seed` |
 | 改用真實資料：台灣農業部批發價、馬來西亞 PriceCatcher 零售價（不需金鑰；沒開的國家仍是示範資料） | `.env` 設 `PROVIDERS=mock,tw_moa,my_pricecatcher`，再 `docker compose up -d worker` |
 | 看 api 與 worker 的日誌／停止 | `make logs`／`make down` |
+| 新聞摘要（選用；`.env` 設 `GEMINI_API_KEY`，見 [docs/06 §1.6](docs/06-data.md)）／手動抓一次新聞 | `docker compose exec worker python -m app.news --once [--country TW]` |
 
 ## 架構
 

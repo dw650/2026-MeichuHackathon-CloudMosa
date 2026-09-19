@@ -1,8 +1,9 @@
 """Worker: syncs the seed and runs every enabled source at start-up, then again each day at
 00:05 local time of every country; network sources also refresh hourly while their source
 publishes (docs/06 §8). The international reference prices (bonus B5) are checked at start-up
-and with the daily jobs, but only downloaded when due. `python -m app.worker --once` runs one
-pass.
+and with the daily jobs, but only downloaded when due. News runs at 00:00 local time of every
+country and once at start-up for countries whose news is missing or older than a day (docs/06
+§1.6). `python -m app.worker --once` runs one pass (no news).
 
 What a source is (countries, schedule, network or not) comes from `app.ingest.registry`; how
 much a network source downloads comes from the fetch policy (`app.ingest.policy`)."""
@@ -23,10 +24,12 @@ from app.db.session import create_engine, create_sessionmaker
 from app.ingest import registry
 from app.ingest.intl.pink_sheet import KNOWN_MONTHLY_URL
 from app.ingest.intl.refresh import IntlConfig, refresh_intl, sync_series
+from app.ingest.news.job import NEWS_SOURCES
 from app.ingest.pipeline import RunSummary, plan_run, retire_sources, run_provider
 from app.ingest.providers.base import BuildContext, PriceProvider
 from app.ingest.seed import sync_seed
 from app.middleware import configure_logging
+from app.news import news_options, run_news_once
 from app.seed.loader import load_intl_series, load_seed_files
 from app.seed.schema import SeedFile
 from app.timeutil import country_tz, local_today
@@ -219,6 +222,34 @@ def schedule_intl(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[S
         )
 
 
+def schedule_news(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[SeedFile]) -> None:
+    """News at 00:00 local time of every country, plus one start-up run right away that skips
+    countries fetched less than a day ago (a redeploy does not fetch again)."""
+    if news_options(settings).source not in NEWS_SOURCES:
+        logger.info("news is off (NEWS_SOURCE=%r)", settings.news_source)
+        return
+    for seed in seeds:
+        code = seed.country.code
+        scheduler.add_job(
+            run_news_once,
+            CronTrigger(hour=0, minute=0, timezone=country_tz(seed.country.utc_offset_min)),
+            args=[settings],
+            kwargs={"countries": [code]},
+            id=f"news-{code}",
+            coalesce=True,
+            max_instances=1,
+            misfire_grace_time=3600,
+        )
+    # No trigger: runs once as soon as the scheduler starts.
+    scheduler.add_job(
+        run_news_once,
+        args=[settings],
+        kwargs={"startup": True},
+        id="news-startup",
+        misfire_grace_time=3600,
+    )
+
+
 async def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--once", action="store_true", help="run one pass and exit")
@@ -246,6 +277,7 @@ async def main(argv: list[str] | None = None) -> None:
     schedule_daily(scheduler, settings, seeds)
     schedule_refresh(scheduler, settings, seeds)
     schedule_intl(scheduler, settings, seeds)
+    schedule_news(scheduler, settings, seeds)
     scheduler.start()
     logger.info("scheduled: %s", [str(j.trigger) for j in scheduler.get_jobs()])
     await asyncio.Event().wait()

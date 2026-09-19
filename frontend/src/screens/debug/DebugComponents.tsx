@@ -8,6 +8,7 @@ import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { MetricGrid } from '@/components/MetricGrid/MetricGrid'
+import { NewsCard } from '@/components/NewsCard/NewsCard'
 import { Pill } from '@/components/Pill/Pill'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { UpIsPosContext } from '@/components/rise'
@@ -300,6 +301,28 @@ export default function DebugComponents() {
               }
               name={t('states.seeTrend')}
               trailing={<Chevron />}
+            />
+          </CardList>
+        </Section>
+
+        <Section title="News cards">
+          <CardList>
+            <NewsCard
+              focusId="news:sample"
+              keyCap={1}
+              title="連日豪雨重創中南部產區 葉菜類價格一週內上漲三成，市場預估兩週後才會逐步回穩"
+              titleLang="zh-TW"
+              summary="中南部連日豪雨，葉菜類產區受損，批發價一週內上漲約三成。市場預估要兩週後新的葉菜上市，價格才會回穩。"
+              summaryLang="zh-TW"
+              meta={`${text({ 'zh-TW': '小白菜', en: 'Bok choy' })} · ${t('news.today')}`}
+              source="公視新聞網PNN"
+            />
+            <NewsCard
+              keyCap={2}
+              title="Government buffer sales keep potato prices steady across India"
+              titleLang="en"
+              meta={`${text({ 'zh-TW': '馬鈴薯', en: 'Potato' })} · ${labels.yesterday}`}
+              source="The Economic Times"
             />
           </CardList>
         </Section>

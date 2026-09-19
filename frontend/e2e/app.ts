@@ -1,5 +1,5 @@
 /** Opening the app in a known state for UI checks: storage is written before the app loads. */
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 
 export type Country = 'IN' | 'TW' | 'MY'
 export type Lang = 'zh-TW' | 'en'
@@ -114,4 +114,22 @@ export async function settled(page: Page, options: { skeletons?: boolean } = {})
   await page.evaluate(
     () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))),
   )
+}
+
+/**
+ * Waits until the worker has stored the demo news of a country: `make e2e` starts the tests as
+ * soon as the api is healthy, while the worker may still be writing its start-up data.
+ */
+export async function waitForNews(page: Page, country: Country, area: string): Promise<void> {
+  await expect
+    .poll(
+      async () => {
+        const res = await page.request.get(`/api/v1/news?country=${country}&area=${area}`)
+        if (!res.ok()) return 0
+        const body = (await res.json()) as { items: unknown[] }
+        return body.items.length
+      },
+      { timeout: 60_000, intervals: [500, 1000, 2000] },
+    )
+    .toBeGreaterThan(1)
 }

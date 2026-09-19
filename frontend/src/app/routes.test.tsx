@@ -63,6 +63,8 @@ describe('route table', () => {
     [paths.about(), 'about'],
     [paths.intl(), 'intl'],
     [paths.intlSeries('rice'), 'intl-series'],
+    [paths.news(), 'news'],
+    [paths.newsItem(12), 'news-item'],
     [paths.setup('lang'), 'setup-lang'],
     [paths.setup('langs'), 'setup-langs'],
     [paths.setup('locate'), 'setup-locate'],

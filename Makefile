@@ -79,16 +79,17 @@ audit-frontend: frontend/node_modules/.package-lock.json
 audit-backend:
 	cd backend && python3 ../scripts/audit.py pip
 
-## Playwright UI checks (milestones only): full stack in demo mode, JSON summary output.
+## Playwright UI checks (milestones only): full stack in demo mode (demo news, no network),
+## JSON summary output.
 E2E_BASE_URL ?= http://localhost:$(WEB_PORT)
 e2e: .env frontend/node_modules/.package-lock.json
-	VITE_DEMO=true DEMO_MODE=true $(COMPOSE) up -d --build --wait
+	VITE_DEMO=true DEMO_MODE=true NEWS_SOURCE=demo $(COMPOSE) up -d --build --wait
 	cd frontend && npx playwright install chromium >/dev/null
 	cd frontend && E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test
 
 ## Regenerate the README screenshots (docs/images/) from the running demo stack.
 screenshots: .env frontend/node_modules/.package-lock.json
-	VITE_DEMO=true DEMO_MODE=true $(COMPOSE) up -d --build --wait
+	VITE_DEMO=true DEMO_MODE=true NEWS_SOURCE=demo $(COMPOSE) up -d --build --wait
 	mkdir -p docs/images
 	cd frontend && SCREENSHOTS=1 E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test screenshots --project=qvga
 

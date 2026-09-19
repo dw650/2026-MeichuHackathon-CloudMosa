@@ -1,0 +1,94 @@
+{
+ "area_id": "kualalumpur",
+ "country": "MY",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "items": [
+  {
+   "area_ids": [
+    "kualalumpur"
+   ],
+   "crop_ids": [
+    "chilli"
+   ],
+   "days_ago": 0,
+   "id": 12,
+   "lang": "en",
+   "published_at": "2026-09-19T02:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.",
+   "summary_lang": "en",
+   "title": "Chilli prices ease at the Kuala Lumpur wholesale market",
+   "url": "https://demo.example/my/1"
+  },
+  {
+   "area_ids": [
+    "johorbahru"
+   ],
+   "crop_ids": [
+    "tomato"
+   ],
+   "days_ago": 0,
+   "id": 13,
+   "lang": "en",
+   "published_at": "2026-09-19T11:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Heavy rain cut tomato supply in Johor and retail prices rose. Farmers say the next harvest should bring prices down.",
+   "summary_lang": "en",
+   "title": "Tomato prices rise in Johor after heavy rain",
+   "url": "https://demo.example/my/2"
+  },
+  {
+   "area_ids": [
+    "kuantan"
+   ],
+   "crop_ids": [
+    "cabbage",
+    "bokchoy"
+   ],
+   "days_ago": 1,
+   "id": 14,
+   "lang": "ms",
+   "published_at": "2026-09-18T08:10:00+08:00",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": null,
+   "summary_lang": null,
+   "title": "Harga kubis dan sawi turun di Pahang",
+   "url": "https://demo.example/my/3"
+  },
+  {
+   "area_ids": [
+    "timurlaut"
+   ],
+   "crop_ids": [
+    "carrot",
+    "potato"
+   ],
+   "days_ago": 2,
+   "id": 15,
+   "lang": "en",
+   "published_at": "2026-09-17T02:10:00+08:00",
+   "published_date": "2026-09-17",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Carrot and potato prices in Penang stayed close to last week's level. Supply from Cameron Highlands was normal.",
+   "summary_lang": "en",
+   "title": "Carrot and potato prices steady in Penang",
+   "url": "https://demo.example/my/4"
+  }
+ ],
+ "today": "2026-09-19"
+}

@@ -4,7 +4,7 @@
  */
 import type { Page } from '@playwright/test'
 
-import { type Country, type Lang, seed, settled } from './app'
+import { type Country, type Lang, seed, settled, waitForNews } from './app'
 import { expect, expectCleanScreen, test } from './checks'
 
 async function press(page: Page, key: string) {
@@ -176,6 +176,34 @@ test('international prices by key only: menu → list → a series → back', as
   await step(page, errors, /^\/intl\/sugar$/)
   await page.goBack()
   await step(page, errors, /^\/intl$/)
+  await page.goBack()
+  await step(page, errors, /^\/$/)
+})
+
+test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async ({ page, errors }) => {
+  await seed(page, { country: 'TW', lang: 'zh-TW' })
+  await waitForNews(page, 'TW', 'taipei')
+  await page.goto('/')
+  await step(page, errors, /^\/$/)
+  await press(page, 'Escape')
+  await step(page, errors, /sheet=menu/)
+  await press(page, '7') // 新聞, after 國際參考價
+  await step(page, errors, /^\/news$/)
+  // The first item mentions my area (台北市) and is about cabbage.
+  await press(page, 'Enter')
+  await step(page, errors, /^\/news\/\d+$/)
+  const item = where(page)
+  await press(page, 'ArrowDown') // scrolls the page; nothing to select
+  await press(page, '1')
+  await step(page, errors, /^\/crop\/cabbage\/today/)
+  await page.goBack()
+  await step(page, errors, new RegExp(`^${item}$`))
+  await page.goBack()
+  await step(page, errors, /^\/news$/)
+  await press(page, '2') // the second item by its digit
+  await step(page, errors, /^\/news\/\d+$/)
+  expect(where(page)).not.toBe(item)
+  await page.goBack()
   await page.goBack()
   await step(page, errors, /^\/$/)
 })

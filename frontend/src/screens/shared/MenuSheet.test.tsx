@@ -76,6 +76,7 @@ describe('MenuSheet', () => {
       '5關於與資料說明',
       '6設定',
       '7國際參考價',
+      '8新聞',
     ])
     expect(menu.focusedId()).toBe('watchToggle')
     expect([menu.softKey('left'), menu.softKey('center'), menu.softKey('right')]).toEqual([
@@ -110,6 +111,12 @@ describe('MenuSheet', () => {
     menu.press('Escape')
     menu.press('6')
     expect(menu.path()).toBe('/intl')
+
+    // So does 新聞 (N1), after it.
+    await act(() => menu.router.navigate(-1))
+    menu.press('Escape')
+    menu.press('7')
+    expect(menu.path()).toBe('/news')
   })
 
   it('moves to the area sheet, and closes with the left soft key', async () => {

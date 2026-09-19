@@ -1,0 +1,109 @@
+{
+ "area_id": "nashik",
+ "country": "IN",
+ "fetched_at": "2026-09-19T11:40:00+05:30",
+ "items": [
+  {
+   "area_ids": [
+    "nashik"
+   ],
+   "crop_ids": [
+    "onion"
+   ],
+   "days_ago": 1,
+   "id": 7,
+   "lang": "en",
+   "published_at": "2026-09-18T23:40:00+05:30",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.",
+   "summary_lang": "en",
+   "title": "Onion prices ease at Lasalgaon as arrivals rise",
+   "url": "https://demo.example/in/1"
+  },
+  {
+   "area_ids": [
+    "pune"
+   ],
+   "crop_ids": [
+    "tomato"
+   ],
+   "days_ago": 0,
+   "id": 8,
+   "lang": "en",
+   "published_at": "2026-09-19T09:40:00+05:30",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Heavy rain cut tomato arrivals at the Pune wholesale market and prices climbed. Traders say supply should recover within a week.",
+   "summary_lang": "en",
+   "title": "Tomato prices climb in Pune wholesale market after heavy rain",
+   "url": "https://demo.example/in/2"
+  },
+  {
+   "area_ids": [],
+   "crop_ids": [
+    "potato"
+   ],
+   "days_ago": 1,
+   "id": 9,
+   "lang": "en",
+   "published_at": "2026-09-18T09:40:00+05:30",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": null,
+   "summary_lang": null,
+   "title": "Government buffer sales keep potato prices steady across India",
+   "url": "https://demo.example/in/3"
+  },
+  {
+   "area_ids": [
+    "kurnool"
+   ],
+   "crop_ids": [
+    "chilli"
+   ],
+   "days_ago": 2,
+   "id": 10,
+   "lang": "en",
+   "published_at": "2026-09-17T19:40:00+05:30",
+   "published_date": "2026-09-17",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Chilli growers in Kurnool are getting better rates than last season. Demand from traders in other states has increased.",
+   "summary_lang": "en",
+   "title": "Kurnool chilli growers see better rates this season",
+   "url": "https://demo.example/in/4"
+  },
+  {
+   "area_ids": [],
+   "crop_ids": [
+    "wheat"
+   ],
+   "days_ago": 3,
+   "id": 11,
+   "lang": "en",
+   "published_at": "2026-09-16T13:40:00+05:30",
+   "published_date": "2026-09-16",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Wheat prices in the mandis stayed firm this week. Farmers are holding stocks before the sowing season.",
+   "summary_lang": "en",
+   "title": "Mandi prices of wheat stay firm ahead of sowing",
+   "url": "https://demo.example/in/5"
+  }
+ ],
+ "today": "2026-09-19"
+}

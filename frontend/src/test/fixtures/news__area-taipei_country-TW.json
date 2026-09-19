@@ -1,0 +1,134 @@
+{
+ "area_id": "taipei",
+ "country": "TW",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "items": [
+  {
+   "area_ids": [
+    "taipei"
+   ],
+   "crop_ids": [
+    "cabbage"
+   ],
+   "days_ago": 0,
+   "id": 1,
+   "lang": "zh-TW",
+   "published_at": "2026-09-19T02:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "颱風接近，產地提前搶收，台北果菜市場的甘藍到貨量比上週少。盤商預估颱風過後幾天價格仍會偏高。",
+   "summary_lang": "zh-TW",
+   "title": "颱風前搶收 台北市場甘藍到貨減少 批發價走高",
+   "url": "https://demo.example/tw/1"
+  },
+  {
+   "area_ids": [
+    "pingtung"
+   ],
+   "crop_ids": [
+    "guava"
+   ],
+   "days_ago": 0,
+   "id": 2,
+   "lang": "zh-TW",
+   "published_at": "2026-09-19T12:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "屏東芭樂進入盛產期，產地收購價比上個月低。農會建議農民分批採收，避免價格繼續下跌。",
+   "summary_lang": "zh-TW",
+   "title": "芭樂盛產 屏東產地價格回落",
+   "url": "https://demo.example/tw/2"
+  },
+  {
+   "area_ids": [
+    "kaohsiung"
+   ],
+   "crop_ids": [
+    "banana"
+   ],
+   "days_ago": 1,
+   "id": 3,
+   "lang": "zh-TW",
+   "published_at": "2026-09-18T18:10:00+08:00",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": null,
+   "summary_lang": null,
+   "title": "香蕉外銷訂單增加 高雄產地價上揚",
+   "url": "https://demo.example/tw/3"
+  },
+  {
+   "area_ids": [],
+   "crop_ids": [
+    "bokchoy",
+    "waterspinach"
+   ],
+   "days_ago": 1,
+   "id": 4,
+   "lang": "zh-TW",
+   "published_at": "2026-09-18T08:10:00+08:00",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "中南部連日豪雨，葉菜類產區受損，批發價一週內上漲約三成。市場預估要兩週後新的葉菜上市，價格才會回穩。",
+   "summary_lang": "zh-TW",
+   "title": "連日豪雨重創中南部產區 葉菜類價格一週內上漲三成，市場預估兩週後才會逐步回穩",
+   "url": "https://demo.example/tw/4"
+  },
+  {
+   "area_ids": [
+    "newtaipei"
+   ],
+   "crop_ids": [
+    "waterspinach",
+    "bokchoy"
+   ],
+   "days_ago": 2,
+   "id": 5,
+   "lang": "zh-TW",
+   "published_at": "2026-09-17T12:10:00+08:00",
+   "published_date": "2026-09-17",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "新北市果菜市場的空心菜與小白菜到貨量恢復正常，批發價回到颱風前的水準。",
+   "summary_lang": "zh-TW",
+   "title": "空心菜、小白菜價格回穩 新北市場到貨恢復",
+   "url": "https://demo.example/tw/5"
+  },
+  {
+   "area_ids": [
+    "yilan"
+   ],
+   "crop_ids": [
+    "scallion"
+   ],
+   "days_ago": 3,
+   "id": 6,
+   "lang": "zh-TW",
+   "published_at": "2026-09-16T06:10:00+08:00",
+   "published_date": "2026-09-16",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "中秋節前烤肉需求增加，宜蘭三星蔥的批發價上漲。農民表示今年產量與去年差不多。",
+   "summary_lang": "zh-TW",
+   "title": "中秋前青蔥需求增 宜蘭三星蔥價格看漲",
+   "url": "https://demo.example/tw/6"
+  }
+ ],
+ "today": "2026-09-19"
+}

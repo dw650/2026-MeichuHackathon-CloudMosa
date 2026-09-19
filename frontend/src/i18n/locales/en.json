@@ -15,7 +15,8 @@
     "trend": "Trend",
     "today": "Today",
     "retry": "Retry",
-    "markets": "Markets"
+    "markets": "Markets",
+    "prices": "Prices"
   },
   "hints": {
     "markets": "Markets",
@@ -82,7 +83,8 @@
     "settings": "Settings",
     "addWatch": "Add to watchlist",
     "removeWatch": "Remove from list",
-    "intl": "International prices"
+    "intl": "International prices",
+    "news": "News"
   },
   "categories": {
     "cereal": "Cereals",
@@ -199,6 +201,17 @@
     "seeAreaRetail": "See {{area}} retail",
     "distance": "{{km}} km"
   },
+  "news": {
+    "title": "News",
+    "loading": "Loading news",
+    "empty": "No news right now",
+    "emptyNote": "Updated daily at 00:00",
+    "today": "Today",
+    "aiNote": "AI summary of the article; may contain errors",
+    "related": "Related crops",
+    "notFound": "This news item is no longer listed",
+    "notFoundNote": "News is kept for 7 days"
+  },
   "areas": {
     "title": "Choose area",
     "change": "Change area",
@@ -280,7 +293,8 @@
     "noMoney": "We never ask for money, PINs or codes.",
     "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
     "version": "Version {{version}}",
-    "intlCredit": "International prices: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API"
+    "intlCredit": "International prices: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API",
+    "news": "News: farm price headlines found by Google News, kept for 7 days. Summaries are written by AI from the article and may be wrong; when the article cannot be read, only the title is shown."
   },
   "errors": {
     "screen": {

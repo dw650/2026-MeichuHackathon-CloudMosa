@@ -15,7 +15,8 @@
     "trend": "走勢",
     "today": "行情",
     "retry": "重試",
-    "markets": "市場"
+    "markets": "市場",
+    "prices": "看行情"
   },
   "hints": {
     "markets": "看市場",
@@ -95,7 +96,8 @@
     "settings": "設定",
     "addWatch": "加入關注",
     "removeWatch": "取消關注",
-    "intl": "國際參考價"
+    "intl": "國際參考價",
+    "news": "新聞"
   },
   "categories": {
     "cereal": "穀物",
@@ -212,6 +214,17 @@
     "seeAreaRetail": "看 {{area}} 的零售價",
     "distance": "{{km}} km"
   },
+  "news": {
+    "title": "新聞",
+    "loading": "正在取得新聞",
+    "empty": "目前沒有新聞",
+    "emptyNote": "每天 00:00 更新",
+    "today": "今天",
+    "aiNote": "AI 依原文摘要，可能有誤",
+    "related": "相關作物",
+    "notFound": "這則新聞已經不在列表中",
+    "notFoundNote": "新聞只保留 7 天"
+  },
   "areas": {
     "title": "選擇地區",
     "change": "換地區",
@@ -293,7 +306,8 @@
     "noMoney": "本 App 不會向你要錢、密碼或驗證碼。",
     "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）",
     "version": "版本 {{version}}",
-    "intlCredit": "國際參考價：世界銀行 Pink Sheet（CC BY 4.0），匯率 Rates By Exchange Rate API"
+    "intlCredit": "國際參考價：世界銀行 Pink Sheet（CC BY 4.0），匯率 Rates By Exchange Rate API",
+    "news": "新聞：Google 新聞搜尋到的農產品價格新聞，保留 7 天。摘要由 AI 依原文寫成，可能有誤；讀不到原文時只顯示標題。"
   },
   "errors": {
     "screen": {

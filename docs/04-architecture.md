@@ -37,7 +37,7 @@
 |---|---|---|---|
 | `db` | `postgres:16` | 資料放在 named volume；有 healthcheck | 不對外 |
 | `api` | 自建（`backend/Dockerfile`） | 啟動前跑 `alembic upgrade head`；uvicorn | 不對外，由 web 轉發 |
-| `worker` | 同 `api` 的 image，不同指令 | APScheduler：啟動時執行一次 seed 與 mock 產生，之後依排程 | 不對外 |
+| `worker` | 同 `api` 的 image，不同指令 | APScheduler：啟動時執行一次 seed 與 mock 產生，之後依排程；新聞每天 00:00（各國當地時間）抓一次（[06](06-data.md) §1.6） | 不對外 |
 | `web` | 自建（`frontend/Dockerfile`：多階段，Node 建置 → `caddy:2` 放入 `dist/` 與 `Caddyfile`） | HTTPS、靜態檔、轉發 `/api` | 本機 8080；正式環境 80、443（`compose.prod.yaml`） |
 
 - 所有服務 `restart: unless-stopped`；`api`、`worker` 在 `db` healthy 後才啟動。
@@ -54,6 +54,9 @@
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
 | `GEOIP_DB_PATH` | IP 地理資料庫檔案路徑（DB-IP Lite City，免註冊；檔案不存在時位置推測回傳 `null`） | `/data/geoip/city.mmdb` |
 | `DATAGOV_API_KEY` | 印度 data.gov.in 金鑰（B3） | 空 |
+| `NEWS_SOURCE` | 新聞來源（worker）：`google`（Google 新聞搜尋，需要對外 HTTPS）、`demo`（固定的示範新聞，不連網；`make e2e` 用）、`off` | `google` |
+| `GEMINI_API_KEY`、`GEMINI_MODEL` | 新聞摘要用的 Gemini 免費額度金鑰（Google AI Studio）與模型（預設 `gemini-3.5-flash-lite`）；沒設定就不做摘要，只顯示標題 | 空 |
+| `SUMMARY_API_BASE`、`SUMMARY_MODEL`、`SUMMARY_API_KEY` | 自架模型的 OpenAI 相容端點（例：`http://host.docker.internal:11434/v1`），有設定時先用它，Gemini 當備援 | 空 |
 
 ### 2.1 開發環境
 
@@ -114,6 +117,7 @@
 | `/areas?for=home｜view` | 完整地區清單（F07） |
 | `/watch`、`/settings`、`/settings/:item`、`/about` | 編輯關注、設定、關於（F09–F11） |
 | `/intl`、`/intl/:seriesId` | 國際參考價清單與單一序列（B5，從左軟鍵選單進入） |
+| `/news`、`/news/:newsId` | 新聞清單、新聞內容（N1，[02](02-product-spec.md) §5.9） |
 
 - **面板**用查詢參數表示（`?sheet=menu｜area｜sort`），打開時 `push`，關閉時 `history.back()`。
 - **分頁**切換用 `replace`，不新增歷史（[02](02-product-spec.md) §4）。
@@ -160,6 +164,7 @@
 | db | `app/db/` | SQLAlchemy 模型、session、Alembic migration |
 | ingest | `app/ingest/` | provider、正規化、檢查、寫入、彙整 |
 | worker | `app/worker.py` | APScheduler 進入點，只呼叫 `ingest` |
+| news | `app/news.py` | 新聞的手動執行指令（`python -m app.news --once [--country TW]`）與 worker 的新聞排程工作，只呼叫 `ingest/news` |
 
 依賴方向只能往下：routers → services → repositories → db。`ingest` 和 `services` 共用 repositories，但彼此不互相呼叫。
 
@@ -207,6 +212,8 @@ class PriceProvider(Protocol):
 | `GET /crops/{crop}/markets/{market}?country=` | 單一市場 | 代表價、漲跌、當日區間、來源 |
 | `GET /intl?country=` | 國際參考價清單（B5） | 國家幣別與今天、換算用的匯率（`fx`：每美元多少、匯率日期）、Pink Sheet 更新日；每條序列：名稱、規格、原文名稱、最新月份、原始美元價與單位、每公斤當地價、比上月、`reason` |
 | `GET /intl/{series}?country=` | 單一國際序列（B5） | 同上一條序列的欄位，加上 12 個月序列（沒有價格的月份為 `null`）與這 12 個月的高、低、平均、比平均 |
+| `GET /news?country=&area=` | 新聞清單（N1） | 最近 7 天最多 9 則：提到 `area` 的排前面，其餘新到舊；每則有標題、語言、摘要（可能為 `null`）、發布者與網域、發布時間（國家時區）、當地日期、`days_ago`、相關作物、提到的地區；另有 `fetched_at`（最近一次成功抓取） |
+| `GET /news/{id}` | 新聞內容 | 同一則的欄位加上 `country`、`today`；不存在或超過 7 天回 404 `news_not_found` |
 
 - 比價頁的四種排序在**前端**做（地區最多幾十個，換排序不必重抓）；名次由後端算，不受排序影響。
 - `type` 是 `wholesale` 或 `retail`；零售沒有 `markets` 相關端點，前端依規格顯示說明。
@@ -257,6 +264,7 @@ class PriceProvider(Protocol):
 | 400 | `invalid_param` | 視為程式錯誤，回首頁 |
 | 404 | `area_not_found`、`crop_not_found` | 設定裡的地區或作物已經不存在：清掉並回到選擇畫面 |
 | 404 | `series_not_found`（B5） | 國際序列不存在（舊連結）：回到國際參考價清單 |
+| 404 | `news_not_found`（N1） | 新聞已經超過 7 天：說明「新聞只保留 7 天」，右軟鍵回清單 |
 | 503 | `upstream_unavailable`、`demo_failure` | 顯示連線失敗，有舊資料就顯示舊資料 |
 | 500 | `internal` | 同 503 |
 
@@ -293,6 +301,8 @@ class PriceProvider(Protocol):
 | `intl_prices` | `(series_id, month)` PK、`usd`、`fetched_at` | 每月月均價，美元／原始單位，照 Pink Sheet 原樣；`month` 是該月第一天 |
 | `fx_rates` | `currency` PK、`per_usd`、`rate_date`、`fetched_at` | 每種幣別最新的每日匯率（每美元多少） |
 | `intl_sources` | `id` PK（`wb_pink`、`er_api`）、`url`、`etag`、`last_modified`、`data_date`、`next_update_at`、`checked_at` | 國際參考價來源的下載狀態：上次檢查時間、條件式 GET 用的標頭、檔案更新日或匯率日期、匯率的下次更新時間 |
+| `news_items` | `id` PK、`country` FK、`source`（`google`／`demo`）、`guid`、`title`、`title_key`、`lang`、`source_name`、`source_domain`、`url`、`published_at`、`summary`、`summary_lang`、`summary_model`、`summary_tries`、`crop_ids`、`area_ids`、`fetched_at` | 新聞（N1）。`(country, guid)`、`(country, title_key)` 唯一；只存標題、摘要、來源、連結、日期與標籤，**不存原文**；超過 7 天刪除 |
+| `news_runs` | `id`、`country`、`source`、`started_at`、`finished_at`、`status`、`items_in`、`items_new`、`requests`、`articles`、`model_calls`、`summaries`、`error` | 每次新聞抓取的紀錄；每日額度（讀文章、呼叫模型）依最近 24 小時的加總計算 |
 
 - 價格欄位用 `numeric(12,4)`，單位都是每公斤。
 - `area_daily` 有 `(area_id, crop_id, price_type, trade_date DESC)` 索引；API 讀這張表，30 天序列與指標在請求時由 service 計算（每次最多 30 列）。
@@ -349,8 +359,8 @@ class PriceProvider(Protocol):
 │   ├── src/
 │   │   ├── main.tsx  App.tsx
 │   │   ├── app/                 # routes.tsx、providers.tsx、ErrorBoundary.tsx
-│   │   ├── screens/             # setup/、home/、crop-list/、crop-detail/、markets/、areas/、watch/、settings/、about/、intl/（B5）
-│   │   ├── components/          # Shell、Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、Sheet、StatusBox、Skeleton
+│   │   ├── screens/             # setup/、home/、crop-list/、crop-detail/、markets/、areas/、watch/、settings/、about/、intl/（B5）、news/（N1）
+│   │   ├── components/          # Shell、Header、InfoBar、SoftKeys、Tabs、Card、NewsCard、CropIcon、KeyCap、Pill、Sparkline、TrendChart、Sheet、StatusBox、Skeleton
 │   │   ├── keys/                # keyScope.ts、useKeys.ts
 │   │   ├── focus/               # useFocusList.ts、useGrid.ts、restore.ts
 │   │   ├── store/               # settings.ts、session.ts、migrate.ts
@@ -371,7 +381,9 @@ class PriceProvider(Protocol):
 │   │   ├── db/                  # models.py、session.py、migrations/
 │   │   ├── ingest/              # providers/（base、mock、tw_moa、my_pricecatcher）、registry、policy、http、normalize、validate、combine、pipeline
 │   │   │                        # intl/（B5：http、pink_sheet、fx、refresh）
+│   │   │                        # news/（N1：sources.yaml、rss、gnews（連結解碼）、article、reader、summarize、demo、pipeline、job）
 │   │   ├── seed/                # IN.yaml、TW.yaml、MY.yaml（地區、市場、作物、對照、mock 參數）、intl/series.yaml（B5）
+│   │   ├── news.py              # python -m app.news --once [--country TW]
 │   │   └── worker.py
 │   └── tests/                   # unit/、api/、ingest/、fixtures/
 ├── infra/
