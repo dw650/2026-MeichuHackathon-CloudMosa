@@ -1,0 +1,42 @@
+/* The current value at the end of a settings row (mockup `.val`); long values get an ellipsis. */
+.value {
+  max-width: 120px;
+  overflow: hidden;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink2);
+  font-size: var(--fs-2);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chosen language's check mark. */
+.check {
+  display: flex;
+  color: var(--brand);
+}
+
+.check > svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 128×160 (docs/03 §6): one-line rows. Rows that open another screen drop their value there;
+   the rows OK changes in place (units, demo switches) keep it, with less padding. */
+@media (max-width: 176px) {
+  .value {
+    max-width: 72px;
+    padding: 0 3px;
+  }
+
+  .optional {
+    display: none;
+  }
+
+  .check > svg {
+    width: 12px;
+    height: 12px;
+  }
+}

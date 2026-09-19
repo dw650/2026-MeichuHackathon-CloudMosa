@@ -1,0 +1,4 @@
+/* Data 3 days old or older (docs/02 §5.2). */
+.warn {
+  color: var(--warn);
+}

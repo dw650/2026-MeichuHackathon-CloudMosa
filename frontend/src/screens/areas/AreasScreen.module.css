@@ -1,0 +1,43 @@
+/* Section titles of the area list (最近使用, 全部地區). */
+.section {
+  padding: 2px 2px 0;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+/* Data status at the end of a row: a dot, plus text only for exceptions. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pos);
+}
+
+.stale {
+  background: var(--warn);
+}
+
+.none {
+  background: var(--line);
+}
+
+.warn {
+  color: var(--warn);
+}
+
+/* 128×160: one line per area, without section titles, meta or status (docs/03 §6). */
+@media (max-width: 176px) {
+  .section,
+  .status {
+    display: none;
+  }
+}

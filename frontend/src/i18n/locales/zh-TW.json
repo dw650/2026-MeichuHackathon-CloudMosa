@@ -186,7 +186,8 @@
   "markets": {
     "vsMedian": "與中位數 {{price}} 比較",
     "noRetail": "這個市場沒有零售報價",
-    "seeAreaRetail": "看 {{area}} 的零售價"
+    "seeAreaRetail": "看 {{area}} 的零售價",
+    "distance": "{{km}} km"
   },
   "areas": {
     "title": "選擇地區",
@@ -208,6 +209,23 @@
       "area": "我的地區",
       "wholesaleUnit": "批發單位",
       "retailUnit": "零售單位"
+    },
+    "demo": {
+      "title": "Demo",
+      "fail": "模擬 API 失敗",
+      "failNote": "價格 API 回傳 503",
+      "stale": "模擬地區未更新",
+      "staleNote": "{{area}} 的最新交易日往前推 {{days}} 天",
+      "locate": "模擬推測位置",
+      "locateNote": "首次設定時的 IP 位置推測",
+      "on": "開",
+      "off": "關",
+      "locations": {
+        "auto": "自動",
+        "nashik": "印度 Nashik",
+        "taipei": "台灣 台北市",
+        "none": "推測不到"
+      }
     }
   },
   "about": {
@@ -218,6 +236,7 @@
     "gap": "批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。",
     "demo": "畫面上的價格都是示範資料。",
     "source": "資料來源",
-    "noMoney": "本 App 不會向你要錢、密碼或驗證碼。"
+    "noMoney": "本 App 不會向你要錢、密碼或驗證碼。",
+    "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）"
   }
 }
