@@ -385,3 +385,38 @@
 - 決定：所有作物清單共用一次不帶 `crops` 的 `/prices`（我的地區、目前的批發／零售），在前端依分類篩選；「全部」依作物目錄的順序，「最近」依 `recentCrops`（最新在前）。狀態與首頁「關注」相同（含連線失敗的警示卡與「舊」）；沒有作物時顯示「無資料」、中間軟鍵留空；網址裡不認得的分類導回首頁。
 - 理由：瀏覽多個分類只需一次請求；卡片與狀態的程式和首頁共用一份。
 - 影響：`frontend/src/screens/crop-list/CropListScreen.tsx`（重用 `frontend/src/screens/home/` 的卡片與 hook）。
+## 2026-09-19 T33 面板開著時的軟鍵
+- 情況：面板開著時軟鍵要顯示「空／選取／關閉」（草圖 `shell`），但面板改不到畫面自己的 Shell。
+- 決定：`MenuSheet.tsx` 匯出 `useMenuSheetSoftKeys()`；畫面在 `nav.sheet` 有值時把它傳給 Shell 的 `softKeys`。選單開著時左軟鍵（Escape）也會關閉選單（同草圖）。react-refresh 規則不允許元件檔匯出 hook，這一行加註 `eslint-disable-next-line`。「換地區」照草圖把選單換成同一個畫面的 `?sheet=area`，所以放選單的畫面也要放 `AreaSheet`；`areaFor` 參數保留，但選單本身用不到。
+- 理由：標籤和面板放在一起，畫面只要一行判斷。
+- 影響：`frontend/src/screens/shared/MenuSheet.tsx`；首頁、作物清單、詳情、市場畫面接上選單時使用。
+
+## 2026-09-19 T33 沒有鍵帽的清單不理會數字鍵
+- 情況：02 §4 規定 1–9 開啟「標了該數字鍵帽的項目」；編輯關注（草圖沒有鍵帽）和 Demo 清單都沒有鍵帽，但 `useFocusList` 預設會把數字鍵對到第 N 項。
+- 決定：這兩個清單的數字鍵不做事（`onDigit: undefined`）；設定和語言清單畫鍵帽 1–N，數字鍵直接執行該列。
+- 理由：避免按數字鍵改到看不到編號的項目。
+- 影響：`frontend/src/screens/watch/WatchScreen.tsx`、`frontend/src/screens/settings/DemoSettings.tsx`。
+
+## 2026-09-19 T33 設定列在 128×160 的值
+- 情況：草圖在 128×160 把設定列右側的值全部拿掉；但批發／零售單位是按 OK 原地切換，拿掉值就看不到切換的結果。
+- 決定：128×160 只拿掉會打開另一個畫面的列（語言、國家、我的地區、Demo）的值；單位列和 Demo 開關保留值（膠囊變窄，名稱讓位、用省略號）。
+- 理由：原地切換的列一定要看得到結果。
+- 影響：`frontend/src/screens/settings/settings.module.css` 的 `.optional`。
+
+## 2026-09-19 T33 設定的語言清單
+- 情況：草圖的「語言」列是按 OK 在中英之間切換；T33 的規格改成打開清單，清單的順序與樣式沒寫。
+- 決定：`/settings/language` 用和首次設定相同的三個語言與順序（手機語言在前並標「手機語言」；हिन्दी 標「→ English・尚未提供」），目前的語言打勾，鍵帽 1–3；選了就存並返回設定。焦點照規則從第一項開始。
+- 理由：和首次設定一致，使用者看過同一份清單。
+- 影響：`frontend/src/screens/settings/LanguageSettings.tsx`、`SettingsItemScreen.tsx`（其他 `/settings/:item` 導回設定；正式建置的 `demo` 也導回）。
+
+## 2026-09-19 T33 Demo 開關的畫面
+- 情況：06 §7.5、04 §6.2 只寫了三個開關與標頭；列的樣式、循環順序、切換後已快取的資料怎麼辦都沒寫。
+- 決定：設定的「Demo」列（齒輪圖示）右側顯示「開」（任一開關開著）或「關」。`/settings/demo` 三列：模擬 API 失敗、模擬地區未更新（開／關，說明列寫出影響的地區與天數），模擬推測位置依「自動 → 印度 Nashik → 台灣 台北市 → 推測不到」循環。每次切換後把 TanStack Query 的快取全部標成過期（`invalidateQueries()`），之後每個畫面都用新的標頭重新取資料。
+- 理由：展示時切完開關回到首頁就看得到效果，不必再按「重新整理」；設定列的「開」提醒展示者還有開關沒關。
+- 影響：`frontend/src/screens/settings/DemoSettings.tsx`、`SettingsScreen.tsx`、`settings.demo.*` 字串。
+
+## 2026-09-19 T33 關於頁的資料來源與 DB-IP 標示
+- 情況：草圖寫「資料來源：{來源}」；T15 決定用 DB-IP Lite（CC BY 4.0），要標示「IP Geolocation by DB-IP」，位置沒寫。
+- 決定：「資料來源」卡片第一行是粗體標籤，接著一行是國家的資料來源，再一行「IP Geolocation by DB-IP（CC BY 4.0）」；「本 App 不會向你要錢、密碼或驗證碼。」維持最後一張卡。
+- 理由：兩者都是資料出處，放同一張卡；標籤自成一行就不用另外加標點字串。
+- 影響：`frontend/src/screens/about/AboutScreen.tsx`、`about.ipCredit` 字串。
