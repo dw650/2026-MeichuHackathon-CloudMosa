@@ -145,7 +145,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-A：資料管線（後端）
 
-- [ ] **T07 資料表**
+- [x] **T07 資料表**
   - 參考：[04](../04-architecture.md) §7
   - 內容：SQLAlchemy 模型與 Alembic migration，含全部資料表、唯一鍵、`area_daily` 的索引。
   - 測試：對測試資料庫跑 upgrade 與 downgrade 都成功；`quotes` 的唯一鍵會擋下重複資料。
