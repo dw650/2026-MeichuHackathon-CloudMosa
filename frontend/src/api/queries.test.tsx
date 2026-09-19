@@ -17,6 +17,8 @@ import {
   useLocate,
   useMarket,
   useMarkets,
+  useNews,
+  useNewsItem,
   usePrices,
   useQuote,
 } from './queries'
@@ -43,6 +45,8 @@ describe('query hooks', () => {
         compare: useCompare({ country: 'IN', area: 'nashik', crop: 'onion', type: 'wholesale' }),
         markets: useMarkets({ country: 'IN', area: 'nashik', crop: 'onion' }),
         market: useMarket({ country: 'IN', crop: 'onion', market: 'lasalgaon' }),
+        news: useNews({ country: 'TW', area: 'taichung' }),
+        newsItem: useNewsItem(7),
         locate: useLocate(),
         intl: useIntlPrices('TW'),
         intlSeries: useIntlSeries('IN', 'sugar'),
@@ -59,6 +63,9 @@ describe('query hooks', () => {
     expect(r.compare.data?.rows).toHaveLength(11)
     expect(r.markets.data?.rows).toHaveLength(10)
     expect(r.market.data?.market_id).toBe('lasalgaon')
+    expect(r.news.data?.area_id).toBe('taichung')
+    expect(r.news.data?.items).toHaveLength(6)
+    expect(r.newsItem.data?.country).toBe('IN')
     expect(r.locate.data).toEqual({ country: 'IN', area_id: 'nashik' })
     expect(r.intl.data?.items.map((i) => i.id)).toEqual([
       'rice',
@@ -76,10 +83,22 @@ describe('query hooks', () => {
   it('do not run without their required parameters', () => {
     const { Wrapper } = wrapper()
     const { result } = renderHook(
-      () => [useAreas(null), useIntlPrices(null), useIntlSeries('TW', '')],
+      () => [
+        useAreas(null),
+        useIntlPrices(null),
+        useIntlSeries('TW', ''),
+        useNews(null),
+        useNewsItem(null),
+      ],
       { wrapper: Wrapper },
     )
-    expect(result.current.map((q) => q.fetchStatus)).toEqual(['idle', 'idle', 'idle'])
+    expect(result.current.map((q) => q.fetchStatus)).toEqual([
+      'idle',
+      'idle',
+      'idle',
+      'idle',
+      'idle',
+    ])
   })
 
   it('tell a missing series from a missing country', async () => {

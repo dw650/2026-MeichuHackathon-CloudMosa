@@ -34,6 +34,8 @@ export const paths = {
   about: () => '/about',
   intl: () => '/intl',
   intlSeries: (seriesId: string) => `/intl/${seriesId}`,
+  news: () => '/news',
+  newsItem: (id: number) => `/news/${id}`,
   setup: (step: SetupStep) => `/setup/${step}`,
 }
 

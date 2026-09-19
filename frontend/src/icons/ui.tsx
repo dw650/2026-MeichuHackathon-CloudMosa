@@ -133,6 +133,12 @@ const ART: Readonly<Record<UiIconName, ReactElement>> = {
       <circle cx="17.5" cy="17.5" r="1.8" />
     </>
   ),
+  news: (
+    <>
+      <path d="M4 5h12v13.5a1.5 1.5 0 0 0 1.5 1.5H6a2 2 0 0 1-2-2z" />
+      <path d="M16 9h4v9.5a1.5 1.5 0 0 1-3 0M7 8.5h6M7 12h6M7 15.5h4" />
+    </>
+  ),
 }
 
 export interface UiIconProps {

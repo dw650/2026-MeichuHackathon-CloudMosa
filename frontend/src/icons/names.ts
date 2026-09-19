@@ -82,6 +82,7 @@ export const UI_ICON_NAMES = [
   'scale',
   'shield',
   'truck',
+  'news',
 ] as const
 
 export type UiIconName = (typeof UI_ICON_NAMES)[number]

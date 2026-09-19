@@ -15,10 +15,13 @@ from urllib.parse import urlencode
 import httpx
 
 from app.config import Settings
+from app.db.session import create_engine, create_sessionmaker
+from app.ingest.news.job import NewsOptions, run_news
 from app.main import create_app
 from tests.conftest import (
     NOW,
     TEST_DATABASE_URL,
+    _connect,
     _ensure_database,
     _ensure_intl_data,
     _ensure_mock_data,
@@ -52,6 +55,21 @@ SHOWCASES = {("nashik", "wholesale"), ("taipei", "wholesale"), ("kualalumpur", "
 INTL_SERIES = ["rice", "wheat", "maize", "soybeans", "sugar", "palm_oil"]
 
 
+# The 新聞 list of each country's default area, from the demo news (NEWS_SOURCE=demo).
+NEWS = [("TW", "taipei"), ("IN", "nashik")]
+
+
+async def _load_demo_news(settings: Settings) -> None:
+    """Demo news dated from the fixed test moment, with ids from 1 on every run."""
+    with _connect(settings.database_url) as conn:
+        conn.execute("TRUNCATE news_items, news_runs RESTART IDENTITY")
+    engine = create_engine(settings)
+    try:
+        await run_news(create_sessionmaker(engine), NewsOptions(source="demo"), clock=lambda: NOW)
+    finally:
+        await engine.dispose()
+
+
 def _name(path: str, params: dict[str, str]) -> str:
     """`/crops/onion/quote` + {country: IN, …} → `crops_onion_quote__country-IN_….json`."""
     base = path.strip("/").replace("/", "_")
@@ -70,6 +88,7 @@ async def collect() -> dict[str, object]:
     )  # fixed values so reruns give identical fixtures
     await _ensure_mock_data(settings)
     await _ensure_intl_data(settings)
+    await _load_demo_news(settings)
     app = create_app(settings, clock=lambda: NOW)
     requests: list[tuple[str, dict[str, str], dict[str, str]]] = [
         ("/health", {}, {}),
@@ -88,6 +107,7 @@ async def collect() -> dict[str, object]:
             requests.append((f"/crops/{crop}/quote", params | {"days": "7"}, {}))
             requests.append((f"/crops/{crop}/compare", params, {}))
             requests.append((f"/crops/{crop}/markets", {"country": cc, "area": area}, {}))
+    requests += [("/news", {"country": cc, "area": area}, {}) for cc, area in NEWS]
     requests += [
         ("/crops/onion/markets/lasalgaon", {"country": "IN"}, {}),
         ("/crops/cabbage/markets/tp1", {"country": "TW"}, {}),
