@@ -13,6 +13,7 @@ from datetime import date, timedelta
 from functools import cache
 from typing import Any
 
+from app.ingest import normalize as fmt
 from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
 from app.seed.schema import AreaSeed, CropSeed, MarketSeed, SeedFile
 from app.timeutil import to_roc
@@ -263,7 +264,17 @@ class MockProvider:
             "retail_price": f"{price / 100:.2f}",
         }
 
-    # ---------- normalize (T10) ----------
+    # ---------- normalize ----------
 
     def normalize(self, raw: RawRow, maps: SourceMaps) -> NormalizedQuote | None:
-        raise NotImplementedError
+        """Routes each row to the normalizer of the format it imitates."""
+        kind = (raw.get("_country"), raw.get("_type"))
+        if kind == ("IN", "wholesale"):
+            return fmt.datagov_mandi(raw, maps, SOURCE)
+        if kind == ("IN", "retail"):
+            return fmt.in_retail(raw, maps, SOURCE)
+        if kind == ("TW", "wholesale"):
+            return fmt.moa_farmtrans(raw, maps, SOURCE)
+        if kind == ("TW", "retail"):
+            return fmt.tw_retail(raw, maps, SOURCE)
+        raise fmt.RowError(f"unknown row kind {kind}")
