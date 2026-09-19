@@ -756,3 +756,10 @@
   - 國家變成三個，每國每次的額度是 30 ÷ 3 = 10。
 - 理由：馬來西亞的新聞一半是馬來文；州名是標題裡最常見的地名。
 - 影響：`backend/app/ingest/news/{sources.yaml,demo.yaml,demo.py}`、`backend/tests/news/`、`backend/tests/dump_api_fixtures.py`、`frontend/src/test/fixtures/news__area-kualalumpur_country-MY.json`、`frontend/src/screens/news/*.test.tsx`、`frontend/e2e/news.spec.ts`；docs 06 §1.6。
+
+## 2026-09-20 新聞：關掉搜尋備援、額度改成可設定
+- 情況：線上第一次抓新聞時，`gemini-2.5-flash` 回 404「不再開放給新使用者」；改用 `gemini-3.6-flash`、`gemini-3.5-flash` 實測 Google 搜尋（grounding）都回 429「超過額度」。也就是免費方案沒有 grounding 額度，抓不到原文的新聞只會白打一次 API。
+- 決定：
+  - `GEMINI_GROUNDED_MODEL` 預設空白＝關閉這一段；要用再指定模型（付費金鑰才有意義）。抓不到原文就只顯示標題，絕不編造摘要。
+  - 每天的篇數與模型呼叫次數改由 `NEWS_DAILY_ARTICLES`、`NEWS_DAILY_MODEL_CALLS` 設定，預設仍是 30。
+- 影響：`backend/app/config.py`、`backend/app/ingest/news/{summarize,job}.py`、`backend/app/news.py`、`backend/tests/news/`、`.env.example`、docs/06 §1.6。

@@ -28,9 +28,15 @@ class Settings(BaseSettings):
     # Summaries: Gemini free tier, and/or a self-hosted OpenAI-compatible model. Empty = unused.
     gemini_api_key: str = ""
     gemini_model: str = ""
+    # Google Search grounding for headlines without an article; the free tier has no quota for
+    # it (HTTP 429, checked 2026-09-20), so it is off unless a model is named here.
+    gemini_grounded_model: str = ""
     summary_api_base: str = ""
     summary_model: str = ""
     summary_api_key: str = ""
+    # Daily budgets for the news job (rolling 24 hours, all countries together).
+    news_daily_articles: int = 30
+    news_daily_model_calls: int = 30
 
     @property
     def provider_ids(self) -> list[str]:

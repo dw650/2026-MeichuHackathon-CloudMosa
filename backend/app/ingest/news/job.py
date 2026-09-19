@@ -46,9 +46,12 @@ class NewsOptions:
     source: str = "google"
     gemini_api_key: str = ""
     gemini_model: str = ""
+    gemini_grounded_model: str = ""
     summary_api_base: str = ""
     summary_model: str = ""
     summary_api_key: str = ""
+    daily_articles: int = DAILY_ARTICLES
+    daily_model_calls: int = DAILY_MODEL_CALLS
 
 
 def allowance(daily: int, used: int, countries: int) -> int:
@@ -110,14 +113,15 @@ async def run_news(
             articles = 0
             if source.id == "google":
                 used_articles, used_calls = await repo.usage_since(session, clock() - FRESH_FOR)
-                articles = allowance(DAILY_ARTICLES, used_articles, len(everywhere))
+                articles = allowance(options.daily_articles, used_articles, len(everywhere))
                 summaries = build_summaries(
                     gemini_api_key=options.gemini_api_key,
                     gemini_model=options.gemini_model,
+                    gemini_grounded_model=options.gemini_grounded_model,
                     summary_api_base=options.summary_api_base,
                     summary_model=options.summary_model,
                     summary_api_key=options.summary_api_key,
-                    calls=allowance(DAILY_MODEL_CALLS, used_calls, len(everywhere)),
+                    calls=allowance(options.daily_model_calls, used_calls, len(everywhere)),
                     transport=transport,
                     sleep=sleep,
                     clock=monotonic,

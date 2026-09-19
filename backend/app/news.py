@@ -29,9 +29,12 @@ def news_options(settings: Settings) -> NewsOptions:
         source=settings.news_source.strip().lower(),
         gemini_api_key=settings.gemini_api_key.strip(),
         gemini_model=settings.gemini_model.strip(),
+        gemini_grounded_model=settings.gemini_grounded_model.strip(),
         summary_api_base=settings.summary_api_base.strip(),
         summary_model=settings.summary_model.strip(),
         summary_api_key=settings.summary_api_key.strip(),
+        daily_articles=settings.news_daily_articles,
+        daily_model_calls=settings.news_daily_model_calls,
     )
 
 
