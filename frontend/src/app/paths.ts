@@ -43,3 +43,13 @@ export function withoutSheet(path: string): string {
   const text = query.toString()
   return text ? `${pathname}?${text}` : pathname
 }
+
+/** The same path with one query parameter set (or removed when `value` is undefined). */
+export function withParam(path: string, key: string, value: string | undefined): string {
+  const [pathname = '/', search = ''] = path.split('?', 2)
+  const query = new URLSearchParams(search)
+  if (value === undefined) query.delete(key)
+  else query.set(key, value)
+  const text = query.toString()
+  return text ? `${pathname}?${text}` : pathname
+}

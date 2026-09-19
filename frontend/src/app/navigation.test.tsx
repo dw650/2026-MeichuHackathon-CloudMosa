@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { useSettings } from '@/store/settings'
 
-import { type Nav, useNav } from './navigation'
+import { type Nav, useApplyPendingReplace, useNav } from './navigation'
 
 let nav: Nav
 
@@ -14,6 +14,7 @@ function keepNav(value: Nav) {
 
 function Probe({ onNav = keepNav }: { onNav?: (value: Nav) => void }) {
   onNav(useNav())
+  useApplyPendingReplace()
   const location = useLocation()
   return <p data-testid="where">{location.pathname + location.search}</p>
 }
@@ -83,5 +84,25 @@ describe('useNav', () => {
     render(<RouterProvider router={router} />)
     await act(() => nav.closeSheet())
     expect(where()).toBe('/watch')
+  })
+
+  it('closes a sheet and then changes the screen below without adding history', async () => {
+    const routes = [{ path: '*', Component: Probe }]
+    const router = createMemoryRouter(routes, {
+      initialEntries: [
+        '/start',
+        '/crop/onion/today?area=nashik',
+        '/crop/onion/today?area=nashik&sheet=area',
+      ],
+      initialIndex: 2,
+    })
+    const actions: string[] = []
+    router.subscribe((state) => actions.push(state.historyAction))
+    render(<RouterProvider router={router} />)
+    await act(() => nav.closeSheetAndReplace('/crop/onion/today?area=pune'))
+    expect(where()).toBe('/crop/onion/today?area=pune')
+    expect(actions).toEqual(['POP', 'REPLACE'])
+    await act(() => router.navigate(-1))
+    expect(where()).toBe('/start')
   })
 })
