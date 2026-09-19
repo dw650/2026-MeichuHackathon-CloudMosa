@@ -1,9 +1,9 @@
 {
  "area_id": "newtaipei",
  "change": {
-  "diff_per_kg": 8.5,
+  "diff_per_kg": 7.1,
   "direction": "up",
-  "pct": 0.15233,
+  "pct": 0.150106,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "cabbage",
@@ -16,30 +16,30 @@
    "diff_per_kg": 0.4,
    "distance_km": 11,
    "is_base": false,
-   "price_per_kg": 64.7
+   "price_per_kg": 54.8
   },
   "lowest": {
    "area_id": "taoyuan",
-   "diff_per_kg": -3.4,
+   "diff_per_kg": -2.9,
    "distance_km": 16,
    "is_base": false,
-   "price_per_kg": 60.9
+   "price_per_kg": 51.5
   }
  },
- "price_per_kg": 64.3,
+ "price_per_kg": 54.4,
  "reason": null,
  "series": [
   {
    "date": "2026-08-21",
-   "price_per_kg": 55.2
+   "price_per_kg": 46.7
   },
   {
    "date": "2026-08-22",
-   "price_per_kg": 53.0
+   "price_per_kg": 44.9
   },
   {
    "date": "2026-08-23",
-   "price_per_kg": 53.7
+   "price_per_kg": 45.5
   },
   {
    "date": "2026-08-24",
@@ -47,27 +47,27 @@
   },
   {
    "date": "2026-08-25",
-   "price_per_kg": 54.7
+   "price_per_kg": 46.3
   },
   {
    "date": "2026-08-26",
-   "price_per_kg": 55.2
+   "price_per_kg": 46.8
   },
   {
    "date": "2026-08-27",
-   "price_per_kg": 53.5
+   "price_per_kg": 45.3
   },
   {
    "date": "2026-08-28",
-   "price_per_kg": 52.2
+   "price_per_kg": 44.2
   },
   {
    "date": "2026-08-29",
-   "price_per_kg": 54.1
+   "price_per_kg": 45.8
   },
   {
    "date": "2026-08-30",
-   "price_per_kg": 52.9
+   "price_per_kg": 44.8
   },
   {
    "date": "2026-08-31",
@@ -75,27 +75,27 @@
   },
   {
    "date": "2026-09-01",
-   "price_per_kg": 53.8
+   "price_per_kg": 45.6
   },
   {
    "date": "2026-09-02",
-   "price_per_kg": 53.2
+   "price_per_kg": 45.0
   },
   {
    "date": "2026-09-03",
-   "price_per_kg": 51.0
+   "price_per_kg": 43.2
   },
   {
    "date": "2026-09-04",
-   "price_per_kg": 51.4
+   "price_per_kg": 43.5
   },
   {
    "date": "2026-09-05",
-   "price_per_kg": 51.6
+   "price_per_kg": 43.7
   },
   {
    "date": "2026-09-06",
-   "price_per_kg": 51.9
+   "price_per_kg": 43.9
   },
   {
    "date": "2026-09-07",
@@ -103,27 +103,27 @@
   },
   {
    "date": "2026-09-08",
-   "price_per_kg": 52.0
+   "price_per_kg": 44.0
   },
   {
    "date": "2026-09-09",
-   "price_per_kg": 53.8
+   "price_per_kg": 45.5
   },
   {
    "date": "2026-09-10",
-   "price_per_kg": 51.8
+   "price_per_kg": 43.8
   },
   {
    "date": "2026-09-11",
-   "price_per_kg": 51.7
+   "price_per_kg": 43.8
   },
   {
    "date": "2026-09-12",
-   "price_per_kg": 52.3
+   "price_per_kg": 44.3
   },
   {
    "date": "2026-09-13",
-   "price_per_kg": 53.7
+   "price_per_kg": 45.5
   },
   {
    "date": "2026-09-14",
@@ -131,23 +131,23 @@
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 54.5
+   "price_per_kg": 46.1
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 53.9
+   "price_per_kg": 45.7
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 54.9
+   "price_per_kg": 46.5
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 55.8
+   "price_per_kg": 47.3
   },
   {
    "date": "2026-09-19",
-   "price_per_kg": 64.3
+   "price_per_kg": 54.4
   }
  ],
  "source": {
@@ -164,16 +164,16 @@
  "stats": {
   "arrivals": null,
   "arrivals_ratio": null,
-  "change30_pct": 0.164855,
-  "change7_pct": 0.197393,
-  "high30_per_kg": 64.3,
-  "high7_per_kg": 64.3,
-  "low30_per_kg": 51.0,
-  "low7_per_kg": 53.7,
+  "change30_pct": 0.164882,
+  "change7_pct": 0.195604,
+  "high30_per_kg": 54.4,
+  "high7_per_kg": 54.4,
+  "low30_per_kg": 43.2,
+  "low7_per_kg": 45.5,
   "pos30": 1.0,
   "volatility": "mid",
-  "volatility_pct": 0.042637,
-  "vs_avg7_pct": 0.144468
+  "volatility_pct": 0.041336,
+  "vs_avg7_pct": 0.143257
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

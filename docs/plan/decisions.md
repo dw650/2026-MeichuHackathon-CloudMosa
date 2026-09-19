@@ -884,7 +884,7 @@
 - 情況：分類原本寫死七個（穀物、蔬菜、水果、豆類、香料、油籽、其他），九宮格還有「全部」。台灣的真實資料是果菜市場，沒有穀物、油籽，照七類分會有空格。使用者決定：每個國家可以在 seed 定義自己的分類（最多 8 個），沒定義的用現在的七個；九宮格是該國分類依序加「最近看過」，拿掉「全部」；分類名稱來自 API。
 - 決定：
   - seed 的 `country.categories`：`id`、`name`（zh-TW、en）、`icon`（作物圖示代號）、`tone`（既有的色系之一）。最多 8 個、代號不重複、不能用 `recent` 與 `all`；作物的 `category` 必須是其中之一。沒寫就是預設七個（名稱、圖示、色系照原本的），所以印度、馬來西亞的 seed 不用改。每個分類 2–9 種作物（馬來西亞原本的例外不變），測試檢查。
-  - 存在 `countries.categories`（jsonb，migration `5c3e1f7a9b20`，down_revision `74f6aadac0c6`），`GET /countries` 的每個國家多 `categories`。作物 API 不變（仍是 `category` 代號）。
+  - 存在 `countries.categories`（jsonb，migration `5c3e1f7a9b20`，down_revision `23655d2e487a`），`GET /countries` 的每個國家多 `categories`。作物 API 不變（仍是 `category` 代號）。
   - 台灣六類：葉菜類（Leafy）、根莖類（Roots）、瓜類（Gourds）、花果菜類（Veg）、辛香料（Spices）、水果（Fruit）。英文名稱要短：128×160 的格子約放 6 個英文字母，「Fruit veg」會被截成「Fruit…」，和「Fruit」分不出來，所以花果菜類的英文用「Veg」。
   - 前端：九宮格用 API 的分類加「最近」，分類載入前不畫格子（焦點才會落在第一格）；作物清單的標題用 API 的名稱，`/cat/<代號>` 不是這個國家的分類（包括 `/cat/all`）就回首頁。作物圖示方塊與圖表的顏色由該國分類的 `tone` 決定（`useCountryData().toneOf`）；國際參考價的序列仍用預設七類的顏色。i18n 只留「最近」，分類名稱的字串拿掉。
 - 理由：分類跟著各國的資料，九宮格不會有點進去是空的格子；分類名稱和作物名稱一樣由資料決定，新增國家不用改前端。
