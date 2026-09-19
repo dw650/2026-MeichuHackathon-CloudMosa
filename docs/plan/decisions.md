@@ -741,7 +741,7 @@
 - 決定：
   - `GET /api/v1/news?country=&area=`：最近 7 天最多 9 則，`area_ids` 含這個地區的排前面，其餘新到舊；回傳 `today`、`fetched_at`（最近一次成功執行的結束時間，國家時區）。每則有 `published_date` 與 `days_ago`（後端依國家時區算），前端只顯示「今天／昨天／日期」。`area` 不屬於這個國家時回 404 `area_not_found`。
   - `GET /api/v1/news/{id}`：同樣的欄位加 `country`、`today`；不存在或超過 7 天回 404 `news_not_found`。內容頁直接用這支，重新開啟 App 時也能還原。
-  - 新表 `news_items`、`news_runs`，migration `23655d2e487a`（down_revision `bec1dda1df2f`），只建立與刪除自己的兩張表，合併時可以直接接到新的 head 後面。
+  - 新表 `news_items`、`news_runs`，migration `23655d2e487a`，只建立與刪除自己的兩張表。rebase 到含 B5 的 main 時，down_revision 從 `bec1dda1df2f` 改成 B5 的 `80ac1f2d0366`，維持單一 head。
   - 多列 INSERT 以第一列的欄位為準，欄位不同的列要分組寫入（`repositories/news.insert_items`）。
 - 理由：沿用既有的錯誤格式、快取標頭與型別產生流程；排序在資料庫做，前端不必知道地區的別名。
 - 影響：`backend/app/{api/v1/news.py,schemas/news.py,services/news.py,repositories/news.py,db/models.py}`、migration、`frontend/src/api/{queries.ts,schema.d.ts}`、msw fixtures 與 handlers、`tests/dump_api_fixtures.py`；docs 04 §6、§7。
