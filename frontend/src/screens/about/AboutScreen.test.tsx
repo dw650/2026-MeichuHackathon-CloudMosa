@@ -10,6 +10,7 @@ describe('AboutScreen', () => {
     expect(screen.getByRole('heading')).toHaveTextContent('關於與資料說明')
     for (const text of [
       '地區價＝該地區各市場代表價的中位數，並標出市場數。',
+      '附近最高、最低＝直線 300 km 內最近的 3 個地區，和這裡同一個交易日的價格。',
       '批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。',
       '資料來源',
       '本 App 不會向你要錢、密碼或驗證碼。',
@@ -40,5 +41,10 @@ describe('AboutScreen', () => {
     expect(await screen.findByText('MOA wholesale prices (Govt)')).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveTextContent('About & data')
     expect(screen.getByText('We never ask for money, PINs or codes.')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Highest and lowest nearby = the 3 closest areas within 300 km, priced on the same trading day as here.',
+      ),
+    ).toBeInTheDocument()
   })
 })

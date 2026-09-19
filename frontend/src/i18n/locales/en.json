@@ -236,6 +236,7 @@
     "title": "About & data",
     "areaPrice": "Area price = median of the area’s market prices; the market count is shown.",
     "distance": "Distance = straight line between area centres, not road distance.",
+    "nearby": "Highest and lowest nearby = the 3 closest areas within 300 km, priced on the same trading day as here.",
     "retail": "Retail prices are per area; there is no market breakdown.",
     "gap": "The retail–wholesale gap is not profit; it includes transport, loss and packing.",
     "demo": "All prices shown are demo data.",

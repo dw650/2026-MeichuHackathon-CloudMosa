@@ -27,6 +27,7 @@ export default function AboutScreen() {
   const notes = [
     t('about.areaPrice'),
     t('about.distance'),
+    t('about.nearby'),
     t('about.retail'),
     t('about.gap'),
     t('about.demo'),
