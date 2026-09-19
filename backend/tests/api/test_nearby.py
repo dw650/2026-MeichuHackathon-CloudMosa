@@ -123,7 +123,8 @@ async def test_demo_stale_areas_drop_out(demo: httpx.AsyncClient) -> None:
     stale_new_taipei = {"X-Demo-Stale": "newtaipei:1"}
     nearby = await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_new_taipei)
     shown = {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]}
-    assert "newtaipei" not in shown and shown <= {"taipei", "taoyuan"}
+    assert "newtaipei" not in shown
+    assert shown <= {"taipei", "taoyuan"}
     assert fresh is not None
     stale_taipei = {"X-Demo-Stale": "taipei:3"}
     assert await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_taipei) is None
