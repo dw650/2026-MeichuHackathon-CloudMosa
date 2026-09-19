@@ -291,10 +291,11 @@ describe('crop detail · estimated prices (docs/06 §3.6)', () => {
     // The info bar holds one tag per screen size (only one is shown, docs/03 §6).
     expect(await screen.findAllByText('≈零售')).toHaveLength(2)
     const note = '零售價由批發價 ×1.5 推估，僅供參考'
-    expect(screen.getAllByText(note)).toHaveLength(1)
+    // The note sits with the price, so it arrives with the retail quote.
+    expect(await screen.findAllByText(note)).toHaveLength(1)
     // The same note on the 走勢 tab, still only once.
     await press(app, 'ArrowLeft')
     expect(app.path()).toBe('/crop/onion/trend')
-    expect(screen.getAllByText(note)).toHaveLength(1)
+    expect(await screen.findAllByText(note)).toHaveLength(1)
   })
 })

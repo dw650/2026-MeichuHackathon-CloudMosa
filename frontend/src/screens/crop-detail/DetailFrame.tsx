@@ -4,7 +4,6 @@ import { Navigate } from 'react-router'
 import { DETAIL_TABS, paths } from '@/app/paths'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
-import { Note } from '@/components/Note/Note'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell, type SoftKeyLabels } from '@/components/Shell/Shell'
 import { Tabs } from '@/components/Tabs/Tabs'
@@ -82,8 +81,6 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
         tabs={DETAIL_TABS.map((id) => ({ id, label: t(`detail.tabs.${id}`) }))}
         activeId={tab}
       />
-      {/* Once per screen, above the tab's own content: this price is an estimate (docs/06 §3.6). */}
-      <Note text={estimate.note(type, detail.cropId)} />
       {children}
     </Shell>
   )

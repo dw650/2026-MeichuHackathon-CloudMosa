@@ -8,6 +8,7 @@ import { CropIcon } from '@/components/CropIcon/CropIcon'
 import { cx } from '@/components/cx'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { type Metric, MetricGrid } from '@/components/MetricGrid/MetricGrid'
+import { Note } from '@/components/Note/Note'
 import { Pill } from '@/components/Pill/Pill'
 import { StatusBox } from '@/components/StatusBox/StatusBox'
 import { Tile } from '@/components/Tile/Tile'
@@ -18,6 +19,7 @@ import { useKeys } from '@/keys/useKeys'
 import { DIRECTION_GLYPH, directionOf } from '@/lib/change'
 import { describeFreshness } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat, type PriceFormat } from '@/screens/shared/usePriceFormat'
 import { useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -139,10 +141,13 @@ function Hero({ detail, quote, fmt }: ContentProps) {
  */
 function Ready({ detail, quote, fmt, keyCapOf }: ReadyProps) {
   const { t } = useText()
+  const estimate = useEstimate()
   const { markets } = quote
   return (
     <div className={styles.stack}>
       <Hero detail={detail} quote={quote} fmt={fmt} />
+      {/* Right under the price: this one is an estimate, and from what (docs/06 §3.6). */}
+      <Note text={estimate.note(quote.type, detail.cropId)} />
       {quote.type === 'wholesale' && markets && markets.total > 0 && (
         <Card
           focusId={MARKETS}
@@ -180,6 +185,7 @@ function Ready({ detail, quote, fmt, keyCapOf }: ReadyProps) {
 /** The area has not reported today: the latest price and two ways on (docs/02 §6). */
 function NotUpdated({ detail, quote, fmt }: ContentProps) {
   const { t, dates } = useText()
+  const estimate = useEstimate()
   const { text } = describeFreshness(quote.staleness, quote.trade_date, dates)
   return (
     <>
@@ -194,6 +200,7 @@ function NotUpdated({ detail, quote, fmt }: ContentProps) {
           }),
         ]}
       />
+      <Note text={estimate.note(quote.type, detail.cropId)} />
       <CardList>
         <ExitCard focusId={OTHER_AREAS} icon="store" label={t('states.otherAreas')} keyCap={1} />
         <ExitCard focusId={TREND} icon="trend" label={t('states.seeTrend')} keyCap={2} />
