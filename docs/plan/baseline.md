@@ -162,7 +162,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - 印度 11 個地區、台灣 10 個地區，每國 10 種作物。
   - 完成條件：測試通過。
 
-- [ ] **T09 Mock provider**
+- [x] **T09 Mock provider**
   - 參考：[06](../06-data.md) §7.1、§7.4；[04](../04-architecture.md) §5.2
   - 內容：
     - 依 `PriceProvider` 介面，輸出**來源格式**的原始資料：印度用 data.gov.in 欄位與 quintal；台灣用農業部欄位與民國日期。
