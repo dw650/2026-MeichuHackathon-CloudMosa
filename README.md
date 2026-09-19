@@ -104,7 +104,7 @@ flowchart TB
 
 ## 部署
 
-- `main` 的 CI 通過後，GitHub Actions 自動部署到 <http://203.116.30.131:3001>：[`deploy.yml`](.github/workflows/deploy.yml) 透過 SSH 執行伺服器上的 [`scripts/deploy.sh`](scripts/deploy.sh)。健康檢查失敗時，會自動回到上一個成功的版本。
+- `main` 的 CI 通過後自動部署到 <http://203.116.30.131:3001>：[`deploy.yml`](.github/workflows/deploy.yml) 把 `deploy` 分支移到這個 commit，伺服器每分鐘檢查一次，有新的就執行 [`scripts/deploy.sh`](scripts/deploy.sh)。健康檢查失敗時，會自動回到上一個成功的版本。
 - 手動部署或回復：在 GitHub 的 Actions 頁面手動執行 Deploy 並填入 ref，或 SSH 到伺服器執行 `scripts/deploy.sh <ref>`。細節見 [07 §5.2–5.3](docs/07-dev-workflow.md)。
 
 ## 專案結構

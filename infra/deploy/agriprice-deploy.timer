@@ -1,0 +1,11 @@
+# Checks for a new deploy one minute after the previous check finished (docs/07 §5.3).
+[Unit]
+Description=Check every minute whether there is a new commit to deploy
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
