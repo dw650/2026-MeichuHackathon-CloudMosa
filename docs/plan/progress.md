@@ -23,3 +23,4 @@
 - 2026-09-19 T14 完成：GET /prices、/crops/{crop}/quote（含 markets、change、stats、30 天序列、source）、/compare（名次、距離、差額）、/markets、/markets/{market}；沒有價格時附 reason；Cache-Control；前端型別已重新產生（a0cee3e）
 - 2026-09-19 T15 完成：GET /locate（X-Client-Forwarded-For 最左邊的公開 IP → mmdb → 300 km 內最近地區）、可替換查詢介面與缺檔時照常運作、make geoip 與 infra/geoip/README.md；X-Demo-Fail／Stale／IP／Locate 只在 DEMO_MODE 生效（bab0e23）
 - 2026-09-19 T19 完成：src/keys——keyScope（window 上唯一的 keydown 監聽器，只依 event.key 分派給最上層範圍；screen／overlay 兩層，面板打開時不穿透；長按只有方向鍵；處理的鍵與 Enter 一律 preventDefault；略過 Ctrl／Meta／Alt 與輸入法組字）與 useKeys（handler 永遠最新、重新 render 不改順序）；ESLint 擋 keys/ import screens/（2680565）
+- 2026-09-19 T20 完成：src/focus——useFocusList（↑↓ 到兩端停住、OK 與 1–9 直接開啟並可略過沒有鍵帽的警示卡、真正的 DOM focus、捲到可見範圍留 6px、第一項放得下時捲到最上面、沒有項目時捲 60%）、useGrid（↑↓ 跳一列、◀▶ 同一列、最左欄呼叫 onLeftEdge）、restore（依 location.key 記進 session store、依 ID 還原、清單變動時留在原項目或原位置、面板打開時不搶焦點）；開啟前端覆蓋率門檻（lib＋keys＋focus＋store 合計 ≥ 90%，目前 99%）（67e55ed）

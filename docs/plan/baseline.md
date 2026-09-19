@@ -272,7 +272,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - `Escape` 會觸發 `onMenu`；處理過的按鍵會 `preventDefault`。
   - 完成條件：測試通過。
 
-- [ ] **T20 焦點**
+- [x] **T20 焦點**
   - 參考：[04](../04-architecture.md) §4.4；[03](../03-ux-ui.md) §5；[02](../02-product-spec.md) §4
   - 內容：
     - `useFocusList`、`useGrid`：九宮格的 ◀ ▶ 在同一列移動，最左欄再按 ◀ 呼叫 callback。
