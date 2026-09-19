@@ -31,6 +31,12 @@ export interface Nav {
    * the panel (back), then replaces that screen's entry with `to`, so no history is added.
    */
   closeSheetAndReplace(to: string): void
+  /**
+   * Goes back `steps` entries, then replaces the entry landed on with `to`: e.g. the full area
+   * list changing the viewed area of the screen below it, or the end of first-run setup
+   * turning its first entry into home.
+   */
+  backAndReplace(to: string, steps?: number): void
 }
 
 // Where to go once the pending history.back() of closeSheetAndReplace has landed.
@@ -87,6 +93,14 @@ export function useNav(): Nav {
       }
       pendingReplace = to
       void navigate(-1)
+    },
+    backAndReplace: (to, steps = 1) => {
+      if (steps <= 0 || location.key === 'default') {
+        void navigate(to, { replace: true })
+        return
+      }
+      pendingReplace = to
+      void navigate(-steps)
     },
   }
 }
