@@ -10,6 +10,22 @@
  "currency": "MYR",
  "fetched_at": "2026-09-19T14:10:00+08:00",
  "markets": null,
+ "nearby": {
+  "highest": {
+   "area_id": "kualalumpur",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
+   "price_per_kg": 10.46
+  },
+  "lowest": {
+   "area_id": "kinta",
+   "diff_per_kg": -0.88,
+   "distance_km": 175,
+   "is_base": false,
+   "price_per_kg": 9.58
+  }
+ },
  "price_per_kg": 10.46,
  "reason": null,
  "series": [
