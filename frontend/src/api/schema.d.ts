@@ -224,6 +224,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Farm price news of a country
+         * @description Up to 9 news items of the last 7 days: those mentioning the area (any of its names) first, then the newest first. `summary` is null when no summary could be made from the article; never invented. Updated once a day at 00:00 local time.
+         */
+        get: operations["news"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/news/{news_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One news item
+         * @description The item with its country and local today; 404 once it is older than 7 days.
+         */
+        get: operations["news_item"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/prices": {
         parameters: {
             query?: never;
@@ -758,6 +798,152 @@ export interface components {
             highest: components["schemas"]["NearbyAreaOut"];
             lowest: components["schemas"]["NearbyAreaOut"];
         };
+        /** NewsItemDetailOut */
+        NewsItemDetailOut: {
+            /**
+             * Area Ids
+             * @description Areas the title or summary mention.
+             */
+            area_ids: string[];
+            /** Country */
+            country: string;
+            /**
+             * Crop Ids
+             * @description Related crops of the country, most related first.
+             */
+            crop_ids: string[];
+            /**
+             * Days Ago
+             * @description 0 = today, 1 = yesterday… (local dates).
+             */
+            days_ago: number;
+            /** Id */
+            id: number;
+            /**
+             * Lang
+             * @description Language of the title: `zh-TW`, `en`, `ms`…
+             */
+            lang: string;
+            /**
+             * Published At
+             * Format: date-time
+             * @description In the country's own UTC offset.
+             */
+            published_at: string;
+            /**
+             * Published Date
+             * Format: date
+             * @description Local date of publication.
+             */
+            published_date: string;
+            source: components["schemas"]["NewsSourceOut"];
+            /**
+             * Summary
+             * @description Two sentences written by a model from the article; null when there is none (then show the title, source and date only).
+             */
+            summary: string | null;
+            /** Summary Lang */
+            summary_lang: string | null;
+            /** Title */
+            title: string;
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /**
+             * Url
+             * @description Publisher's URL when known. The app does not open it.
+             */
+            url: string;
+        };
+        /** NewsItemOut */
+        NewsItemOut: {
+            /**
+             * Area Ids
+             * @description Areas the title or summary mention.
+             */
+            area_ids: string[];
+            /**
+             * Crop Ids
+             * @description Related crops of the country, most related first.
+             */
+            crop_ids: string[];
+            /**
+             * Days Ago
+             * @description 0 = today, 1 = yesterday… (local dates).
+             */
+            days_ago: number;
+            /** Id */
+            id: number;
+            /**
+             * Lang
+             * @description Language of the title: `zh-TW`, `en`, `ms`…
+             */
+            lang: string;
+            /**
+             * Published At
+             * Format: date-time
+             * @description In the country's own UTC offset.
+             */
+            published_at: string;
+            /**
+             * Published Date
+             * Format: date
+             * @description Local date of publication.
+             */
+            published_date: string;
+            source: components["schemas"]["NewsSourceOut"];
+            /**
+             * Summary
+             * @description Two sentences written by a model from the article; null when there is none (then show the title, source and date only).
+             */
+            summary: string | null;
+            /** Summary Lang */
+            summary_lang: string | null;
+            /** Title */
+            title: string;
+            /**
+             * Url
+             * @description Publisher's URL when known. The app does not open it.
+             */
+            url: string;
+        };
+        /** NewsOut */
+        NewsOut: {
+            /** Area Id */
+            area_id: string;
+            /** Country */
+            country: string;
+            /**
+             * Fetched At
+             * @description End of the latest successful news run.
+             */
+            fetched_at: string | null;
+            /**
+             * Items
+             * @description At most 9: items mentioning the area first, then the newest first.
+             */
+            items: components["schemas"]["NewsItemOut"][];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+        };
+        /** NewsSourceOut */
+        NewsSourceOut: {
+            /**
+             * Domain
+             * @description Publisher's domain, e.g. `news.pts.org.tw`.
+             */
+            domain: string | null;
+            /**
+             * Name
+             * @description Publisher, as Google News names it.
+             */
+            name: string;
+        };
         /** PriceItemOut */
         PriceItemOut: {
             change: components["schemas"]["ChangeOut"] | null;
@@ -987,6 +1173,10 @@ export type SchemaMarketsOut = components['schemas']['MarketsOut'];
 export type SchemaMarketsSummaryOut = components['schemas']['MarketsSummaryOut'];
 export type SchemaNearbyAreaOut = components['schemas']['NearbyAreaOut'];
 export type SchemaNearbyOut = components['schemas']['NearbyOut'];
+export type SchemaNewsItemDetailOut = components['schemas']['NewsItemDetailOut'];
+export type SchemaNewsItemOut = components['schemas']['NewsItemOut'];
+export type SchemaNewsOut = components['schemas']['NewsOut'];
+export type SchemaNewsSourceOut = components['schemas']['NewsSourceOut'];
 export type SchemaPriceItemOut = components['schemas']['PriceItemOut'];
 export type SchemaPricesOut = components['schemas']['PricesOut'];
 export type SchemaQuoteOut = components['schemas']['QuoteOut'];
@@ -2111,6 +2301,184 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["LocateOut"];
+                };
+            };
+        };
+    };
+    news: {
+        parameters: {
+            query: {
+                /** @description The user's area, listed first */
+                area: string;
+                /** @description Country code */
+                country: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "yunlin",
+                     *       "country": "TW",
+                     *       "fetched_at": "2026-09-20T00:03:12+08:00",
+                     *       "items": [
+                     *         {
+                     *           "area_ids": [
+                     *             "yunlin"
+                     *           ],
+                     *           "crop_ids": [
+                     *             "bokchoy",
+                     *             "cabbage"
+                     *           ],
+                     *           "days_ago": 6,
+                     *           "id": 12,
+                     *           "lang": "zh-TW",
+                     *           "published_at": "2026-09-14T15:00:00+08:00",
+                     *           "published_date": "2026-09-14",
+                     *           "source": {
+                     *             "domain": "news.pts.org.tw",
+                     *             "name": "公視新聞網PNN"
+                     *           },
+                     *           "summary": "西螺果菜市場蔬菜到貨量減至約720公噸，平均每公斤約50元，比半個月前漲約3成。市場預估還要約10天，復耕的葉菜上市後價格才會回穩。",
+                     *           "summary_lang": "zh-TW",
+                     *           "title": "連續降雨全台農損逾2.3億 西螺果菜市場菜價漲3成",
+                     *           "url": "https://news.pts.org.tw/article/825149"
+                     *         }
+                     *       ],
+                     *       "today": "2026-09-20"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["NewsOut"];
+                };
+            };
+            /** @description country: Field required */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "country: Field required",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Area 'xyz' not found in TW */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "area_not_found",
+                     *         "message": "Area 'xyz' not found in TW",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    news_item: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description News item id */
+                news_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_ids": [
+                     *         "yunlin"
+                     *       ],
+                     *       "country": "TW",
+                     *       "crop_ids": [
+                     *         "bokchoy",
+                     *         "cabbage"
+                     *       ],
+                     *       "days_ago": 6,
+                     *       "id": 12,
+                     *       "lang": "zh-TW",
+                     *       "published_at": "2026-09-14T15:00:00+08:00",
+                     *       "published_date": "2026-09-14",
+                     *       "source": {
+                     *         "domain": "news.pts.org.tw",
+                     *         "name": "公視新聞網PNN"
+                     *       },
+                     *       "summary": "西螺果菜市場蔬菜到貨量減至約720公噸，平均每公斤約50元，比半個月前漲約3成。市場預估還要約10天，復耕的葉菜上市後價格才會回穩。",
+                     *       "summary_lang": "zh-TW",
+                     *       "title": "連續降雨全台農損逾2.3億 西螺果菜市場菜價漲3成",
+                     *       "today": "2026-09-20",
+                     *       "url": "https://news.pts.org.tw/article/825149"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["NewsItemDetailOut"];
+                };
+            };
+            /** @description News item 12 not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "news_not_found",
+                     *         "message": "News item 12 not found",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

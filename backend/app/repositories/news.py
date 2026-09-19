@@ -72,12 +72,17 @@ async def known_keys(session: AsyncSession, country: str) -> tuple[set[str], set
 
 async def insert_items(session: AsyncSession, rows: Sequence[dict[str, Any]]) -> int:
     """Adds new items; duplicates (same guid or title) are skipped. Returns how many were added."""
-    if not rows:
-        return 0
-    result = await session.execute(
-        insert(NewsItem).values(list(rows)).on_conflict_do_nothing().returning(NewsItem.id)
-    )
-    return len(result.all())
+    # A multi-row INSERT takes its columns from the first row, so rows are grouped by keys.
+    groups: dict[tuple[str, ...], list[dict[str, Any]]] = {}
+    for row in rows:
+        groups.setdefault(tuple(sorted(row)), []).append(row)
+    added = 0
+    for group in groups.values():
+        result = await session.execute(
+            insert(NewsItem).values(group).on_conflict_do_nothing().returning(NewsItem.id)
+        )
+        added += len(result.all())
+    return added
 
 
 async def pending_summaries(
