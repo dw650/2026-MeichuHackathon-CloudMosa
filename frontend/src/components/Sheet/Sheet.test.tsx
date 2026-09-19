@@ -20,7 +20,7 @@ describe('Sheet', () => {
       'row:1',
       'row:2',
     ])
-    for (const row of targets) expect(row).toHaveAttribute('tabindex', '-1')
+    for (const row of Array.from(targets)) expect(row).toHaveAttribute('tabindex', '-1')
   })
 
   it('numbers the first nine rows with key caps 1–9', () => {
