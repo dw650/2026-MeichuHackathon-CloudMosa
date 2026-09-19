@@ -11,3 +11,33 @@
 > - 影響：改到哪些檔案；之後要改的話要動哪裡
 > ```
 
+
+## 2026-09-19 T03 TypeScript 版本
+- 情況：05 要求「建專案時取最新穩定版」。npm 上 TypeScript 最新是 7.0，create-vite 範本預設 6.0；但 `openapi-typescript`（型別產生）只接受 TypeScript 5，`typescript-eslint` 也只支援到 6.0。
+- 決定：固定 `typescript@~5.9`。
+- 理由：工具鏈（openapi-typescript、typescript-eslint）都支援的最新版本。
+- 影響：`frontend/package.json`。等 openapi-typescript 支援新版再升級（單獨開分支）。
+
+## 2026-09-19 T03 react-router 版本
+- 情況：05 寫 `react-router` 7；npm 上最新是 8。
+- 決定：照 05 用 7（`^7.18`）。
+- 理由：文件寫明 7；路由與歷史的做法（04 §4.3）以 7 的 API 為準。
+- 影響：`frontend/package.json`。
+
+## 2026-09-19 T03 前端套件一次裝齊
+- 情況：前端線由子 agent 在 worktree 平行開發，兩邊都改 `package-lock.json` 容易衝突。
+- 決定：T03 就把 05 §2 列的套件全部裝好（react-router、zustand、TanStack Query、i18next、msw、openapi-typescript、Playwright 等）。
+- 理由：之後的任務不必再動 `package.json`，合併時比較不會衝突。
+- 影響：`frontend/package.json`、`package-lock.json`。
+
+## 2026-09-19 T03 用 ESLint 檢查分層規則
+- 情況：04 §4.1 規定 `components/` 不讀 store、不呼叫 API；`screens/` 不直接用 `fetch`、`localStorage`；08 規定只用 `event.key`、不用 `alert`。文件沒寫要怎麼檢查。
+- 決定：在 `frontend/eslint.config.js` 用 `no-restricted-imports`、`no-restricted-globals`、`no-restricted-properties`（`keyCode`、`which`、`navigator.geolocation`）與 `no-alert` 擋下來。
+- 理由：違規在 `make lint` 就會失敗，不必靠人工檢查。
+- 影響：`frontend/eslint.config.js`。
+
+## 2026-09-19 T03 web 的健康檢查
+- 情況：正式環境的 `SITE_ADDRESS` 是網域，Caddy 不聽 8080，用網站本身做健康檢查會失敗。
+- 決定：健康檢查打容器內的 Caddy admin 端點 `http://127.0.0.1:2019/config/`（只在容器內，不對外）。
+- 理由：不論 `SITE_ADDRESS` 是什麼都能用。
+- 影響：`compose.yaml` 的 `web.healthcheck`。

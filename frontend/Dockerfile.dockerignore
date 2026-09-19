@@ -1,0 +1,9 @@
+*
+!frontend/
+!infra/caddy/
+frontend/node_modules
+frontend/dist
+frontend/coverage
+frontend/e2e/artifacts
+frontend/test-results
+frontend/playwright-report
