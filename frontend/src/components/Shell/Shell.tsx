@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 
+import { Header } from '../Header/Header'
+import { SoftKeys, type SoftKeysProps } from '../SoftKeys/SoftKeys'
 import styles from './Shell.module.css'
 
-export interface SoftKeyLabels {
-  left?: string
-  center?: string
-  right?: string
-}
+/** Labels of the three soft keys; a missing or empty label leaves that key blank. */
+export type SoftKeyLabels = SoftKeysProps
 
 export interface ShellProps {
   title: string
@@ -14,7 +13,7 @@ export interface ShellProps {
   titleAddon?: ReactNode
   softKeys: SoftKeyLabels
   children?: ReactNode
-  /** Bottom sheet or other overlay drawn above the content (not above the soft keys). */
+  /** Bottom sheet or other overlay drawn above the header and content (not above the soft keys). */
   overlay?: ReactNode
 }
 
@@ -22,23 +21,10 @@ export interface ShellProps {
 export function Shell({ title, titleAddon, softKeys, children, overlay }: ShellProps) {
   return (
     <div className={styles.shell}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{title}</h1>
-        {titleAddon}
-      </header>
+      <Header title={title} addon={titleAddon} />
       <main className={styles.content}>{children}</main>
-      <footer className={styles.softkeys}>
-        <span className={styles.left} data-softkey="left">
-          {softKeys.left ?? ''}
-        </span>
-        <span className={styles.center} data-softkey="center">
-          {softKeys.center ?? ''}
-        </span>
-        <span className={styles.right} data-softkey="right">
-          {softKeys.right ?? ''}
-        </span>
-      </footer>
-      {overlay}
+      <SoftKeys {...softKeys} />
+      {overlay ? <div className={styles.overlay}>{overlay}</div> : null}
     </div>
   )
 }
