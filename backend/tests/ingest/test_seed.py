@@ -50,19 +50,23 @@ def test_every_crop_category_is_one_of_its_countrys() -> None:
 # Malaysia's source reports no grain but wheat flour and nothing for "other" at the wet
 # markets (docs/06 §1.5); those two categories are short on purpose.
 SHORT_CATEGORIES = {"MY": {"cereal": 1, "other": 0}}
+# Malaysia's 蔬菜 grew to ten with brinjal (the cross-country card): the tenth card has no
+# digit key, like any long list (docs/02 §5.3).
+LONG_CATEGORIES = {"MY": {"veg": 10}}
 
 
 def test_every_category_has_two_to_nine_crops_in_each_country() -> None:
     # The home grid shows every category, so none of them should open an empty list; a list
-    # gives its crops the number keys 1–9.
+    # gives its first nine crops the number keys 1–9.
     for seed in load_seed_files():
         short = SHORT_CATEGORIES.get(seed.country.code, {})
+        most = LONG_CATEGORIES.get(seed.country.code, {})
         for cat in seed.country.categories:
             count = sum(c.category == cat.id for c in seed.crops)
             if cat.id in short:
                 assert count == short[cat.id], (seed.country.code, cat.id, count)
             else:
-                assert 2 <= count <= 9, (seed.country.code, cat.id, count)
+                assert 2 <= count <= most.get(cat.id, 9), (seed.country.code, cat.id, count)
 
 
 def test_default_watchlists_match_the_spec() -> None:

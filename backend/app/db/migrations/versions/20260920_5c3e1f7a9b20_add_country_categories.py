@@ -1,7 +1,7 @@
 """add country categories
 
 Revision ID: 5c3e1f7a9b20
-Revises: 23655d2e487a
+Revises: 5c1e7a9d2b40
 Create Date: 2026-09-20 12:00:00.000000
 """
 
@@ -12,7 +12,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 revision: str = '5c3e1f7a9b20'
-down_revision: str | Sequence[str] | None = '23655d2e487a'
+down_revision: str | Sequence[str] | None = '5c1e7a9d2b40'
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
