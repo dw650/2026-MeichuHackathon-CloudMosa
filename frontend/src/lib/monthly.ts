@@ -3,7 +3,7 @@
 // country's today (sent by the API, never read from the browser) gets the warning style.
 
 import { parseLocalDate } from './dates'
-import { isFiniteNumber, MISSING } from './format'
+import { isFiniteNumber, LATIN_DIGITS, MISSING } from './format'
 
 /** A calendar month. */
 export interface Month {
@@ -93,5 +93,5 @@ export function formatDay(value: string | null | undefined, labels: MonthLabels)
 /** A published US dollar price as written, up to two decimals: `471`, `233.8`, `0.38`. */
 export function formatUsd(value: number | null | undefined, locale: string): string {
   if (!isFiniteNumber(value)) return MISSING
-  return new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value)
+  return new Intl.NumberFormat(locale, { ...LATIN_DIGITS, maximumFractionDigits: 2 }).format(value)
 }

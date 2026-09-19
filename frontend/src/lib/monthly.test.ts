@@ -92,6 +92,12 @@ describe('formatDay', () => {
   })
 })
 
+describe('formatUsd with other digits', () => {
+  it('always writes Latin digits', () => {
+    expect(formatUsd(233.8, 'mr-IN')).toBe('233.8')
+  })
+})
+
 describe('formatUsd', () => {
   it('keeps the published decimals, at most two, in the country locale', () => {
     expect(formatUsd(471, 'en-IN')).toBe('471')

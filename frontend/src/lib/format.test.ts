@@ -28,6 +28,13 @@ describe('formatNumber', () => {
     expect(formatNumber(12345.6, 'zh-TW', 1)).toBe('12,345.6')
   })
 
+  it('always writes Latin digits, even where the locale has its own', () => {
+    // Marathi uses Devanagari digits by default; the app shows 0–9 in every language.
+    expect(formatNumber(123456.5, 'mr-IN', 1)).toBe('1,23,456.5')
+    expect(formatNumber(123456.5, 'hi-IN-u-nu-deva', 1)).toBe('1,23,456.5')
+    expect(formatSignedNumber(-95, 'mr-IN', 0)).toBe('−95')
+  })
+
   it('always shows exactly the given number of decimals', () => {
     expect(formatNumber(23, 'zh-TW', 1)).toBe('23.0')
     expect(formatNumber(2349.6, 'en-IN', 0)).toBe('2,350')

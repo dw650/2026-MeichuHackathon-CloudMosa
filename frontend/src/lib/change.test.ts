@@ -38,6 +38,13 @@ describe('DIRECTION_GLYPH', () => {
   })
 })
 
+describe('formatPercent with other digits', () => {
+  it('always writes Latin digits', () => {
+    expect(formatPercent(0.042, 'mr-IN')).toBe('4.2%')
+    expect(formatSignedPercent(-0.12, 'hi-IN-u-nu-deva')).toBe('−12%')
+  })
+})
+
 describe('formatPercent', () => {
   it('shows one decimal under 10%', () => {
     expect(formatPercent(0.042, 'en-IN')).toBe('4.2%')

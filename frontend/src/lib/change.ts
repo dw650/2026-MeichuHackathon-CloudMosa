@@ -1,7 +1,7 @@
 // Rise and fall (docs/06 §3.4). Only the direction is exposed: its colour depends on the
 // country (India green-up, Taiwan red-up) and is chosen by components/rise.ts.
 
-import { MINUS, MISSING, isFiniteNumber, roundedSign } from './format'
+import { isFiniteNumber, LATIN_DIGITS, MINUS, MISSING, roundedSign } from './format'
 import { toUnit, type UnitSpec } from './units'
 
 export type Direction = 'up' | 'down' | 'flat'
@@ -40,6 +40,7 @@ export function formatPercent(ratio: number | null | undefined, locale: string):
   const decimals = size > 0 && size < WHOLE_PERCENT_FROM ? 1 : 0
   // The percent style scales the decimal form by 100, so 0.145 rounds to 15%, not 14%.
   return new Intl.NumberFormat(locale, {
+    ...LATIN_DIGITS,
     style: 'percent',
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
