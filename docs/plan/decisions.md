@@ -65,3 +65,14 @@
   - 用 CHECK 限制價格類型、代表價 > 0、「批發一定有市場、零售一定沒有」。
 - 理由：API 需要的國家設定都能從資料庫讀；零售與批發走同一條管線。
 - 影響：`backend/app/db/models.py`、`backend/app/db/migrations/versions/`。改欄位要新增 migration。
+
+## 2026-09-19 T08 Seed 檔的結構
+- 情況：06 §7.3 說基準價 `p`「seed 時換成每公斤」，但 06 §7.1 又要求 mock 輸出來源格式（印度用 quintal）。另外 mock 的例外情境（地區、市場、作物的資料延遲）文件沒寫要放哪裡。
+- 決定：
+  - mock 參數放在 seed YAML 各項目的 `mock` 區塊，單位跟來源一致（印度 ₹／quintal、台灣元／公斤），由 mock provider 直接讀；換成每公斤是在正規化這一步。資料庫只存目錄（國家、地區、市場、作物、對照表），不存 mock 參數。
+  - 例外情境用 `lag`（比今天晚幾天，`null`＝完全沒有資料）表示，放在地區、市場、作物的 `mock` 區塊。
+  - 對照表放在 `source_maps.<來源>`。mock 產生原始資料時，名稱反查自同一份對照表，所以一定對得上，正規化仍然完整跑對照。
+  - 同步時刪除 seed 裡已經沒有的地區、市場、作物（連帶刪除相關資料），對照表整批替換，所以重跑結果相同。
+  - 新增 `countries.source_label`（關於頁的資料來源名稱），用第二個 migration 補上。
+- 理由：mock 和真實資料走同一條管線；加國家＝加一個 YAML 檔。
+- 影響：`backend/app/seed/`、`backend/app/ingest/seed.py`、`backend/app/repositories/catalog.py`。

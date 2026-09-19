@@ -52,6 +52,8 @@ class Country(Base):
     default_recent_area_ids: Mapped[list[str]] = mapped_column(ARRAY(String(40)))
     area_suffix: Mapped[I18n]
     rep_price_label: Mapped[I18n]
+    # The real-world source named on the About page, e.g. "Agmarknet".
+    source_label: Mapped[I18n]
     # Per price type: {"default": "qtl", "options": [{"id", "per_kg", "decimals", "label"}]}.
     units: Mapped[dict[str, Any]]
 
