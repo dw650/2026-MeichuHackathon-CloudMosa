@@ -44,12 +44,7 @@ const SAMPLE_CATEGORIES: { id: string; name: LocalizedText; icon: string; tone: 
   { id: 'leafy', name: { 'zh-TW': '葉菜類', en: 'Leafy' }, icon: 'cabbage', tone: 'green' },
   { id: 'root', name: { 'zh-TW': '根莖類', en: 'Roots' }, icon: 'sweetpotato', tone: 'amber' },
   { id: 'gourd', name: { 'zh-TW': '瓜類', en: 'Gourds' }, icon: 'loofah', tone: 'olive' },
-  {
-    id: 'fruitveg',
-    name: { 'zh-TW': '花果菜類', en: 'Fruit veg' },
-    icon: 'eggplant',
-    tone: 'yellow',
-  },
+  { id: 'fruitveg', name: { 'zh-TW': '花果菜類', en: 'Veg' }, icon: 'eggplant', tone: 'yellow' },
   { id: 'spice', name: { 'zh-TW': '辛香料', en: 'Spices' }, icon: 'chilli', tone: 'red' },
   { id: 'fruit', name: { 'zh-TW': '水果', en: 'Fruit' }, icon: 'pineapple', tone: 'orange' },
 ]
