@@ -240,7 +240,14 @@ def schedule_news(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[S
             max_instances=1,
             misfire_grace_time=3600,
         )
-    scheduler.add_job(run_news_once, args=[settings], kwargs={"startup": True}, id="news-startup")
+    # No trigger: runs once as soon as the scheduler starts.
+    scheduler.add_job(
+        run_news_once,
+        args=[settings],
+        kwargs={"startup": True},
+        id="news-startup",
+        misfire_grace_time=3600,
+    )
 
 
 async def main(argv: list[str] | None = None) -> None:

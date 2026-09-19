@@ -134,3 +134,38 @@ async def test_oversized_pages_are_abandoned(monkeypatch: pytest.MonkeyPatch) ->
     assert await r.text(PUBLISHER, "zh-TW") is None
     assert r.requests == 1
     await r.aclose()
+
+
+@pytest.mark.parametrize(
+    ("url", "public"),
+    [
+        ("https://news.pts.org.tw/article/1", True),
+        ("http://203.116.30.131:3001/", True),
+        ("ftp://example.com/x", False),
+        ("http://db:5432/", False),
+        ("http://api:8000/api/v1/health", False),
+        ("http://host.docker.internal:11434/v1", False),
+        ("http://localhost/", False),
+        ("http://127.0.0.1/", False),
+        ("http://10.0.0.5/", False),
+        ("http://169.254.169.254/latest/meta-data", False),
+        ("http://[::1]/", False),
+    ],
+)
+def test_only_public_addresses_are_fetched(url: str, public: bool) -> None:
+    assert reader.is_public_url(httpx.URL(url)) is public
+
+
+async def test_private_addresses_and_redirects_to_them_are_not_fetched() -> None:
+    script = Script(
+        {
+            PUBLISHER: [httpx.Response(302, headers={"location": "http://169.254.169.254/x"})],
+            "http://169.254.169.254": [page()],
+        }
+    )
+    r = make(script, FakeTime())
+    assert await r.text("http://127.0.0.1/admin", "en") is None
+    assert await r.text(PUBLISHER, "zh-TW") is None
+    assert script.urls() == [PUBLISHER]  # neither private address was requested
+    assert await r.resolve("http://db:5432/") == "http://db:5432/"  # not a Google link
+    await r.aclose()

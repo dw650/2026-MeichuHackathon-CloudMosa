@@ -2,9 +2,12 @@
 
 Requests are spaced out (Google and publishers separately), limited in size and time, and a
 publisher page gets one retry. When Google starts refusing (429, 403, 5xx) the reader stops
-asking it for the rest of the run. Nothing is stored here; the caller only keeps the URL."""
+asking it for the rest of the run. Only public web addresses are fetched, redirects included,
+so a crafted link cannot reach the services next to the worker. Nothing is stored here; the
+caller only keeps the URL."""
 
 import asyncio
+import ipaddress
 import logging
 import time
 from dataclasses import dataclass
@@ -32,6 +35,28 @@ logger = logging.getLogger("app.ingest.news")
 
 class _PageTooLargeError(Exception):
     pass
+
+
+class BlockedAddressError(Exception):
+    """A request to an address that is not on the public web (a service name, localhost, a
+    private or link-local IP)."""
+
+
+def is_public_url(url: httpx.URL) -> bool:
+    if url.scheme not in ("http", "https") or not url.host:
+        return False
+    host = url.host.lower().rstrip(".")
+    if "." not in host or host.endswith((".localhost", ".internal", ".local")):
+        return False  # compose service names (db, api), host.docker.internal
+    try:
+        return ipaddress.ip_address(host).is_global
+    except ValueError:
+        return True
+
+
+async def _public_only(request: httpx.Request) -> None:
+    if not is_public_url(request.url):
+        raise BlockedAddressError(str(request.url))
 
 
 @dataclass(frozen=True)
@@ -69,6 +94,7 @@ class ArticleReader:
             timeout=TIMEOUT,
             headers={"User-Agent": BROWSER_UA},
             follow_redirects=True,
+            event_hooks={"request": [_public_only]},
         )
 
     async def aclose(self) -> None:
@@ -112,7 +138,7 @@ class ArticleReader:
         self.requests += 1
         try:
             response = await self._client.request(method, url, content=content, headers=headers)
-        except httpx.HTTPError as exc:
+        except (httpx.HTTPError, BlockedAddressError) as exc:
             logger.info("news: Google link request failed: %r", exc)
             return None
         if response.status_code in (403, 429) or response.status_code >= 500:
@@ -138,6 +164,9 @@ class ArticleReader:
                 page = await self._page(url, headers)
             except _PageTooLargeError:
                 logger.info("news: page %s is too large", url)
+                return None
+            except BlockedAddressError as exc:
+                logger.warning("news: not a public address, not fetched: %s", exc)
                 return None
             except httpx.HTTPError as exc:
                 logger.info("news: page %s failed: %r", url, exc)
