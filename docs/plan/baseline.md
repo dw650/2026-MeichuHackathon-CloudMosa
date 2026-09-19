@@ -239,7 +239,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-C：前端基礎
 
-- [ ] **T16 lib**
+- [x] **T16 lib**
   - 參考：[03](../03-ux-ui.md) §7；[06](../06-data.md) §3.4、§5
   - 內容：
     - `units.ts`：由每公斤換算、小數位數。
