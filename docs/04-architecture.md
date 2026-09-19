@@ -18,18 +18,18 @@
  │                          ▼                                 │
  │  db：PostgreSQL 16 ◀──── worker：排程抓取                  │
  │   （volume）              providers → 正規化 → 檢查 → 彙整 │
- │                           mock｜tw_moa｜in_datagov         │
+ │               mock｜tw_moa｜my_pricecatcher｜in_datagov    │
  │                           B5：Pink Sheet＋匯率             │
  └────────────────────────────────────────────────────────────┘
                                  │（加分項）
                                  ▼
-                 data.moa.gov.tw、api.data.gov.in
+     data.moa.gov.tw、storage.data.gov.my、api.data.gov.in
                  worldbank.org、open.er-api.com（B5）
 ```
 
 - **單一網域**：前端與 API 同一個 HTTPS 來源，沒有 CORS、沒有混合內容問題（往屆作品的常見錯誤）。
 - **讀寫分離**：worker 負責寫入（抓取與彙整），api 只讀；抓取失敗不影響 API。
-- **mock 也是 provider**：baseline 用 `mock` provider，加分項只是加上 `tw_moa`、`in_datagov`，管線其他部分不變。
+- **mock 也是 provider**：baseline 用 `mock` provider，真實資料只是加上 `tw_moa`、`my_pricecatcher`、`in_datagov`，管線其他部分不變。
 
 ## 2. Docker Compose 服務【決定】
 
@@ -48,7 +48,7 @@
 | `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `:8080` |
 | `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
-| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2） | `mock` |
+| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2）、`my_pricecatcher`（馬來西亞改用 PriceCatcher 真實零售價，見 [06](06-data.md) §1.5） | `mock` |
 | `INTL_PRICES` | worker 下載國際參考價（B5：世界銀行 Pink Sheet 與匯率，只在到期時下載，見 [06](06-data.md) §8）；`false` 不下載 | `true` |
 | `PINK_SHEET_URL` | 固定使用的 Pink Sheet 月資料檔；空白＝用官方頁上目前連結的檔案（[06](06-data.md) §1.3） | 空 |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
@@ -167,8 +167,9 @@
 
 ```python
 class PriceProvider(Protocol):
-    source: str                       # "mock"、"tw_moa"、"in_datagov"
-    countries: tuple[str, ...]        # 這個來源涵蓋的國家
+    source: str                       # "mock"、"tw_moa"……
+    countries: tuple[str, ...]        # 這次執行涵蓋的國家
+    stats: FetchStats                 # 送出的請求數、下載時略過的資料列、下載過的檔案
 
     async def fetch(self, day: date) -> list[RawRow]:
         """抓某個交易日的原始資料；mock 也輸出來源格式。"""
@@ -177,7 +178,8 @@ class PriceProvider(Protocol):
         """轉成標準報價（每公斤、我們的代號）；對照不到回傳 None。"""
 ```
 
-真實來源可以在一次執行的第一個 `fetch` 就抓完整段期間（`tw_moa` 每個品項一個請求），之後的 `fetch` 從同一批資料取出，管線不必改。
+- 每個來源在同一個檔案宣告 `INFO = SourceInfo(...)`（國家、價格類型、期間、是否連網、排程），列進 `app/ingest/registry.py`。worker 只讀登記表，不認得任何一個來源的名字；介面、抓取原則與新增來源的步驟見 [06](06-data.md) §1.4。
+- 真實來源在一次執行的第一個 `fetch` 就抓完這次排定的日期（`tw_moa` 每個品項一個請求），之後的 `fetch` 從同一批資料取出。排定哪些日期由抓取原則決定（`app/ingest/policy.py`），連網的請求共用 `app/ingest/http.py` 的間隔與重試。
 
 管線：`fetch → normalize → validate → upsert quotes → aggregate(受影響的日期) → 記錄 ingest_run`。每一步都是可單獨測試的函式；真實來源的測試用 `tests/fixtures/` 裡存下來的實際回應，**測試不連外網**。
 
@@ -283,7 +285,7 @@ class PriceProvider(Protocol):
 | `crops` | `(country, id)` PK、`name` jsonb、`category`、`variety` jsonb、`sort`、`default_watch` | 作物 |
 | `source_crop_map` | `source`、`source_name`、`source_variety` → `crop_id` | 作物對照 |
 | `source_market_map` | `source`、`source_market` → `market_id` | 市場對照 |
-| `ingest_runs` | `id`、`source`、`started_at`、`finished_at`、`status`、`rows_in`、`rows_ok`、`rows_dropped`、`error` | 每次抓取的紀錄 |
+| `ingest_runs` | `id`、`source`、`started_at`、`finished_at`、`status`、`rows_in`、`rows_ok`、`rows_dropped`、`error`、`requests`、`files`、`maps_hash` | 每次抓取的紀錄；後三個給連網來源的抓取原則用（[06](06-data.md) §1.4） |
 | `quotes` | `source`、`price_type`、`market_id`（零售為空）、`area_id`、`crop_id`、`variety`、`trade_date`、`rep_price`、`low_price`、`high_price`、`volume_kg`、`run_id`、`fetched_at` | 正規化後的報價；唯一鍵見 [06](06-data.md) §2.1 |
 | `market_daily` | `(market_id, crop_id, trade_date)` PK、`rep_price`、`low_price`、`high_price`、`volume_kg` | 同市場同天多筆取中位數後的結果 |
 | `area_daily` | `(area_id, crop_id, price_type, trade_date)` PK、`price`、`n_markets`、`min_market`、`max_market`、`volume_kg`、`fetched_at` | 地區價（批發為中位數、零售為調查價） |
@@ -367,9 +369,9 @@ class PriceProvider(Protocol):
 │   │   ├── services/            # pricing、stats、compare、freshness、locate、intl（B5）
 │   │   ├── repositories/
 │   │   ├── db/                  # models.py、session.py、migrations/
-│   │   ├── ingest/              # providers/（base、mock、tw_moa、in_datagov）、normalize、validate、aggregate、pipeline
+│   │   ├── ingest/              # providers/（base、mock、tw_moa、my_pricecatcher）、registry、policy、http、normalize、validate、combine、pipeline
 │   │   │                        # intl/（B5：http、pink_sheet、fx、refresh）
-│   │   ├── seed/                # IN.yaml、TW.yaml（地區、市場、作物、對照、mock 參數）、intl/series.yaml（B5）
+│   │   ├── seed/                # IN.yaml、TW.yaml、MY.yaml（地區、市場、作物、對照、mock 參數）、intl/series.yaml（B5）
 │   │   └── worker.py
 │   └── tests/                   # unit/、api/、ingest/、fixtures/
 ├── infra/

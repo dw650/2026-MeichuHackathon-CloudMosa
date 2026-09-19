@@ -30,7 +30,7 @@ from tests.intl_server import IntlServer
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 
 # API tests run against mock data generated for this moment:
-# India 11:40 (UTC+5:30), Taiwan 14:10 (UTC+8), both on Saturday 2026-09-19.
+# India 11:40 (UTC+5:30), Taiwan and Malaysia 14:10 (UTC+8), all on Saturday 2026-09-19.
 NOW = datetime(2026, 9, 19, 6, 10, tzinfo=UTC)
 TODAY = date(2026, 9, 19)
 
@@ -144,7 +144,8 @@ async def _ensure_mock_data(settings: Settings) -> None:
         async with create_sessionmaker(engine)() as s:
             seeds = await sync_seed(s)
             provider = MockProvider(seeds, today_of=lambda _country: TODAY)
-            await run_provider(s, provider, {"IN": TODAY, "TW": TODAY}, now=NOW)
+            today = {seed.country.code: TODAY for seed in seeds}
+            await run_provider(s, provider, today, now=NOW)
     finally:
         await engine.dispose()
 

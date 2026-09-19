@@ -1123,7 +1123,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Country code, e.g. `IN` or `TW` */
+                /** @description Country code, e.g. `IN`, `TW` or `MY` */
                 cc: string;
             };
             cookie?: never;
@@ -1219,7 +1219,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description Country code, e.g. `IN` or `TW` */
+                /** @description Country code, e.g. `IN`, `TW` or `MY` */
                 cc: string;
             };
             cookie?: never;

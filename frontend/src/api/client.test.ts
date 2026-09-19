@@ -13,7 +13,7 @@ afterEach(() => {
 describe('apiGet', () => {
   it('returns the JSON body of a successful response', async () => {
     const body = await apiGet<{ countries: unknown[] }>('/countries')
-    expect(body.countries).toHaveLength(2)
+    expect(body.countries).toHaveLength(3)
   })
 
   it('sends query parameters and skips undefined ones', async () => {

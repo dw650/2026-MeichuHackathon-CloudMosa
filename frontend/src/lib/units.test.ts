@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_UNIT_TABLES, UNITS, resolveUnit, toUnit } from './units'
+import { DEFAULT_UNIT_TABLES, UNITS, defaultUnitTable, resolveUnit, toUnit } from './units'
 
 const ids = (options: readonly { id: string }[]) => options.map((unit) => unit.id)
 
@@ -25,6 +25,29 @@ describe('DEFAULT_UNIT_TABLES', () => {
     for (const choice of [DEFAULT_UNIT_TABLES.TW.wholesale, DEFAULT_UNIT_TABLES.TW.retail]) {
       expect(ids(choice.options)).toEqual(['kg', 'catty'])
       expect(choice.defaultId).toBe('kg')
+    }
+  })
+
+  it('offers kg with sen (default) and kati for both Malaysian price types', () => {
+    for (const choice of [DEFAULT_UNIT_TABLES.MY.wholesale, DEFAULT_UNIT_TABLES.MY.retail]) {
+      expect(choice.options).toEqual([UNITS.kgSen, UNITS.kati])
+      expect(choice.defaultId).toBe('kg')
+    }
+    expect(UNITS.kati).toEqual({ id: 'kati', perKg: 0.605, decimals: 2 })
+  })
+})
+
+describe('defaultUnitTable', () => {
+  it('returns the table of a known country', () => {
+    expect(defaultUnitTable('MY')).toBe(DEFAULT_UNIT_TABLES.MY)
+    expect(defaultUnitTable('IN')).toBe(DEFAULT_UNIT_TABLES.IN)
+  })
+
+  it('gives kg to a country without a table, or when none is chosen', () => {
+    for (const code of ['JP', null, undefined]) {
+      const table = defaultUnitTable(code)
+      expect(table.wholesale.options).toEqual([UNITS.kg])
+      expect(table.retail.defaultId).toBe('kg')
     }
   })
 })

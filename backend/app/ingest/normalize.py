@@ -51,6 +51,13 @@ def _roc(text: Any) -> date:
         raise RowError(f"bad ROC date {text!r}") from exc
 
 
+def _iso(text: Any) -> date:
+    try:
+        return date.fromisoformat(str(text).strip())
+    except ValueError as exc:
+        raise RowError(f"bad ISO date {text!r}") from exc
+
+
 def datagov_mandi(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
     """data.gov.in mandi prices: ₹ per quintal; modal price is the representative price."""
     market = maps.market("IN", raw.get("market", ""))
@@ -139,6 +146,34 @@ def tw_retail(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | N
         variety="",
         trade_date=_roc(raw.get("調查日期")),
         rep_price=number(raw.get("零售價")),
+    )
+
+
+def pricecatcher(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
+    """Malaysia PriceCatcher (KPDN): one price per premise, item and day, in RM per the item's
+    unit; the seed maps only items sold per kg, matched exactly by item code.
+
+    A premise mapped to a market (the wholesale "Borong" premises) gives a wholesale quote; one
+    mapped to an area (a wet market) gives a retail point of that area, and the pipeline keeps
+    the median of an area's points. Any other premise or item is unmapped."""
+    item = str(raw.get("item_code", "")).strip()
+    premise = str(raw.get("premise_code", "")).strip()
+    crop = maps.crop("MY", item, exact=True)
+    market = maps.market("MY", premise)
+    area = maps.market_area.get(market) if market else maps.area("MY", premise)
+    if crop is None or area is None:
+        return None
+    return NormalizedQuote(
+        source=source,
+        country="MY",
+        price_type="wholesale" if market else "retail",
+        area_id=area,
+        market_id=market,
+        crop_id=crop,
+        variety=item,
+        trade_date=_iso(raw.get("date")),
+        rep_price=number(raw.get("price")),
+        point="" if market else premise,
     )
 
 

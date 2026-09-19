@@ -2,8 +2,9 @@
 
 India wholesale looks like data.gov.in mandi rows (₹ per quintal, dd/mm/yyyy); India retail
 like DoCA rows (₹ per kg). Taiwan wholesale looks like MOA FarmTransData rows (NT$ per kg,
-Minguo dates); Taiwan retail like price survey rows. Two metadata keys route each row:
-`_country` and `_type` (wholesale | retail); everything else mimics the source.
+Minguo dates); Taiwan retail like price survey rows. Malaysia looks like PriceCatcher rows
+(RM per kg, one price per premise: a wholesale market or a wet market). Two metadata keys
+route each row: `_country` and `_type` (wholesale | retail); everything else mimics the source.
 """
 
 import hashlib
@@ -14,12 +15,19 @@ from functools import cache
 from typing import Any
 
 from app.ingest import normalize as fmt
-from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
+from app.ingest.providers.base import (
+    WINDOW_DAYS,
+    BuildContext,
+    FetchStats,
+    NormalizedQuote,
+    RawRow,
+    SourceInfo,
+    SourceMaps,
+)
 from app.seed.schema import AreaSeed, CropSeed, MarketSeed, SeedFile
 from app.timeutil import to_roc
 
 SOURCE = "mock"
-WINDOW_DAYS = 60
 WALK_STEP = 0.035  # daily random walk ±3.5%
 MARKET_NOISE = 0.02  # market price ±2%
 RETAIL_NOISE = 0.025  # retail price ±2.5%
@@ -52,6 +60,25 @@ def _trading_days(today: date, closed: tuple[int, ...]) -> tuple[date, ...]:
     return tuple(d for d in days if d.isoweekday() not in closed)
 
 
+def _rounded(value: float | None, digits: int | None = None) -> float | None:
+    return None if value is None else round(value, digits)
+
+
+def _text(value: float | None, spec: str) -> str:
+    """A number as the source prints it; a blank when the mock has no value for it."""
+    return "" if value is None else format(value, spec)
+
+
+def _pricecatcher(day: date, premise: str, item: str, price: float) -> RawRow:
+    """A PriceCatcher row: ISO date, codes as text, the price in RM as the source prints it."""
+    return {
+        "date": day.isoformat(),
+        "premise_code": premise,
+        "item_code": item,
+        "price": repr(round(price, 2)),
+    }
+
+
 def _max_lag(*lags: int | None) -> int | None:
     """Combined lag; None (never any data) wins."""
     if any(lag is None for lag in lags):
@@ -65,6 +92,7 @@ class MockProvider:
     def __init__(self, seeds: list[SeedFile], today_of: Callable[[str], date]) -> None:
         self.seeds = seeds
         self.countries = tuple(s.country.code for s in seeds)
+        self.stats = FetchStats()  # generated locally: no requests, nothing left out
         self._today_of = today_of
         self._series_cache: dict[tuple[str, str, date], dict[date, float]] = {}
         self._volume_cache: dict[tuple[str, str, date], dict[date, float]] = {}
@@ -150,9 +178,11 @@ class MockProvider:
         self._series_cache[key] = series
         return series
 
-    def _volume(self, seed: SeedFile, crop: CropSeed, day: date, today: date) -> float:
+    def _volume(self, seed: SeedFile, crop: CropSeed, day: date, today: date) -> float | None:
         """Latest trading day = arr; the 7 trading days before average exactly arr / arrR;
-        earlier days vary ±10% around that average."""
+        earlier days vary ±10% around that average. None when the crop has no arrivals."""
+        if crop.mock.arr is None or crop.mock.arr_ratio is None:
+            return None
         key = (seed.country.code, crop.id, today)
         volumes = self._volume_cache.get(key)
         if volumes is None:
@@ -205,36 +235,43 @@ class MockProvider:
         source_market: str,
     ) -> RawRow:
         price = self._market_price(seed, day, today, area, market, crop)
-        low = price * crop.mock.lo / crop.mock.p
-        high = price * crop.mock.hi / crop.mock.p
+        code = seed.country.code
+        head: dict[str, Any] = {"_country": code, "_type": "wholesale"}
+        if code == "MY":
+            return head | _pricecatcher(day, source_market, source_crop, price)
+        low = None if crop.mock.lo is None else price * crop.mock.lo / crop.mock.p
+        high = None if crop.mock.hi is None else price * crop.mock.hi / crop.mock.p
+        middle = None if low is None or high is None else (high + low) / 2
         # Each market carries an equal share of the area's arrivals.
-        volume = self._volume(seed, crop, day, today) / len(area.markets)
-        head: dict[str, Any] = {"_country": seed.country.code, "_type": "wholesale"}
-        if seed.country.code == "TW":
+        volume = self._volume(seed, crop, day, today)
+        share = None if volume is None else volume / len(area.markets)
+        if code == "TW":
             return head | {
                 "交易日期": to_roc(day),
                 "作物名稱": f"{source_crop}-{crop.variety['zh-TW']}",
                 "市場名稱": source_market,
-                "上價": round(high, 1),
-                "中價": round((high + low) / 2, 1),
-                "下價": round(low, 1),
+                "上價": _rounded(high, 1),
+                "中價": _rounded(middle, 1),
+                "下價": _rounded(low, 1),
                 "平均價": round(price, 1),
-                "交易量": round(volume),
+                "交易量": _rounded(share),
             }
-        return head | {
-            "state": area.region["en"],
-            "district": area.name["en"],
-            "market": source_market,
-            "commodity": source_crop,
-            "variety": crop.variety["en"],
-            "grade": "FAQ",
-            "arrival_date": day.strftime("%d/%m/%Y"),
-            "min_price": str(round(low)),
-            "max_price": str(round(high)),
-            "modal_price": str(round(price)),
-            # Not in data.gov.in; a mock-only extension so arrivals can be demonstrated.
-            "arrival_qtl": f"{volume:.1f}",
-        }
+        if code == "IN":
+            return head | {
+                "state": area.region["en"],
+                "district": area.name["en"],
+                "market": source_market,
+                "commodity": source_crop,
+                "variety": crop.variety["en"],
+                "grade": "FAQ",
+                "arrival_date": day.strftime("%d/%m/%Y"),
+                "min_price": "" if low is None else str(round(low)),
+                "max_price": "" if high is None else str(round(high)),
+                "modal_price": str(round(price)),
+                # Not in data.gov.in; a mock-only extension so arrivals can be demonstrated.
+                "arrival_qtl": _text(share, ".1f"),
+            }
+        raise ValueError(f"the mock has no wholesale format for {code}")
 
     def _retail(
         self,
@@ -247,22 +284,28 @@ class MockProvider:
         source_area: str,
     ) -> RawRow:
         price = self._retail_price(seed, day, today, area, crop)
-        head: dict[str, Any] = {"_country": seed.country.code, "_type": "retail"}
-        if seed.country.code == "TW":
+        code = seed.country.code
+        head: dict[str, Any] = {"_country": code, "_type": "retail"}
+        if code == "MY":
+            # The area's source name is one of its wet markets: a retail point of the area.
+            return head | _pricecatcher(day, source_area, source_crop, price)
+        if code == "TW":
             return head | {
                 "調查日期": to_roc(day),
                 "縣市": source_area,
                 "品項": source_crop,
                 "零售價": round(price, 1),
             }
-        # India retail is quoted per kg: the base price p is per quintal.
-        return head | {
-            "centre": source_area,
-            "state": area.region["en"],
-            "commodity": source_crop,
-            "date": day.strftime("%d/%m/%Y"),
-            "retail_price": f"{price / 100:.2f}",
-        }
+        if code == "IN":
+            # India retail is quoted per kg: the base price p is per quintal.
+            return head | {
+                "centre": source_area,
+                "state": area.region["en"],
+                "commodity": source_crop,
+                "date": day.strftime("%d/%m/%Y"),
+                "retail_price": f"{price / 100:.2f}",
+            }
+        raise ValueError(f"the mock has no retail format for {code}")
 
     # ---------- normalize ----------
 
@@ -277,4 +320,20 @@ class MockProvider:
             return fmt.moa_farmtrans(raw, maps, SOURCE)
         if kind == ("TW", "retail"):
             return fmt.tw_retail(raw, maps, SOURCE)
+        if kind in {("MY", "wholesale"), ("MY", "retail")}:
+            return fmt.pricecatcher(raw, maps, SOURCE)
         raise fmt.RowError(f"unknown row kind {kind}")
+
+
+def _build(ctx: BuildContext) -> MockProvider:
+    return MockProvider([s for s in ctx.seeds if s.country.code in ctx.countries], ctx.today_of)
+
+
+# The demo covers every country no real source covers, over the whole window on every run.
+INFO = SourceInfo(
+    id=SOURCE,
+    countries=(),
+    price_types=("wholesale", "retail"),
+    build=_build,
+    fallback=True,
+)

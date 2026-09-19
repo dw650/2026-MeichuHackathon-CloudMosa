@@ -6,7 +6,7 @@ import {
   priceDiffDirection,
 } from '@/lib/change'
 import { formatPrice, formatPriceDiff } from '@/lib/format'
-import { DEFAULT_UNIT_TABLES, resolveUnit, type UnitChoice, type UnitSpec } from '@/lib/units'
+import { defaultUnitTable, resolveUnit, type UnitChoice, type UnitSpec } from '@/lib/units'
 import { useSettings } from '@/store/settings'
 
 import { useCountryData } from './useCountryData'
@@ -28,7 +28,12 @@ export interface PriceFormat {
   signedPercent(ratio: number | null | undefined): string
 }
 
-function unitChoice(country: Country | undefined, type: PriceType): UnitChoice {
+/** The country's units from the API; until they arrive, the static table of the chosen country. */
+function unitChoice(
+  country: Country | undefined,
+  code: string | null,
+  type: PriceType,
+): UnitChoice {
   const set = country?.units[type]
   if (set) {
     return {
@@ -36,18 +41,18 @@ function unitChoice(country: Country | undefined, type: PriceType): UnitChoice {
       options: set.options.map((o) => ({ id: o.id, perKg: o.per_kg, decimals: o.decimals })),
     }
   }
-  const code = country?.code === 'TW' ? 'TW' : 'IN'
-  return DEFAULT_UNIT_TABLES[code][type]
+  return defaultUnitTable(country?.code ?? code)[type]
 }
 
 /** Unit, locale and formatters for the chosen (or given) price type (docs/03 §7, docs/06 §5). */
 export function usePriceFormat(type?: PriceType): PriceFormat {
   const chosenType = useSettings((s) => s.priceType)
   const units = useSettings((s) => s.units)
+  const code = useSettings((s) => s.country)
   const { country } = useCountryData()
   const { pick } = useText()
   const priceType = type ?? chosenType
-  const unit = resolveUnit(unitChoice(country, priceType), units[priceType])
+  const unit = resolveUnit(unitChoice(country, code, priceType), units[priceType])
   const option = country?.units[priceType].options.find((o) => o.id === unit.id)
   const locale = country?.locale ?? 'en-IN'
   return {

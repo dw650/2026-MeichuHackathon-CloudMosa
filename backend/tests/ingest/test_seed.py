@@ -1,3 +1,4 @@
+import csv
 from pathlib import Path
 from typing import Any
 
@@ -15,11 +16,13 @@ CATEGORIES = {"cereal", "veg", "fruit", "pulse", "spice", "oil", "other"}
 
 def test_seed_files_have_the_expected_areas_and_crops() -> None:
     seeds = {s.country.code: s for s in load_seed_files()}
-    assert set(seeds) == {"IN", "TW"}
+    assert list(seeds) == ["IN", "TW", "MY"]
     assert len(seeds["IN"].areas) == 11
     assert len(seeds["TW"].areas) == 10
+    assert len(seeds["MY"].areas) == 11
     assert len(seeds["IN"].crops) == 21
     assert len(seeds["TW"].crops) == 21
+    assert len(seeds["MY"].crops) == 20
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
     assert len(nashik.markets) == 10
 
@@ -29,11 +32,21 @@ def test_every_crop_category_is_allowed() -> None:
         assert {c.category for c in seed.crops} <= CATEGORIES
 
 
+# Malaysia's source reports no grain but wheat flour and nothing for "other" at the wet
+# markets (docs/06 §1.5); those two categories are short on purpose.
+SHORT_CATEGORIES = {"MY": {"cereal": 1, "other": 0}}
+
+
 def test_every_category_has_at_least_two_crops_in_each_country() -> None:
-    # The home grid shows all seven categories, so none of them may open an empty list.
+    # The home grid shows all seven categories, so none of them should open an empty list.
     for seed in load_seed_files():
+        short = SHORT_CATEGORIES.get(seed.country.code, {})
         counts = {cat: sum(c.category == cat for c in seed.crops) for cat in CATEGORIES}
-        assert min(counts.values()) >= 2, (seed.country.code, counts)
+        for cat, count in counts.items():
+            if cat in short:
+                assert count == short[cat], (seed.country.code, cat, count)
+            else:
+                assert count >= 2, (seed.country.code, cat, count)
 
 
 def test_default_watchlists_match_the_spec() -> None:
@@ -54,6 +67,15 @@ def test_default_watchlists_match_the_spec() -> None:
         "sweetpotato",
         "scallion",
         "cauliflower",
+    ]
+    assert [c.id for c in seeds["MY"].crops if c.watch] == [
+        "tomato",
+        "cabbage",
+        "chilli",
+        "onion",
+        "cucumber",
+        "bokchoy",
+        "garlic",
     ]
 
 
@@ -107,10 +129,10 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     first = await _counts(session)
     await sync_seed(session)
     assert await _counts(session) == first
-    assert first["countries"] == 2
-    assert first["areas"] == 21
-    assert first["crops"] == 42
-    assert first["markets"] == 45
+    assert first["countries"] == 3
+    assert first["areas"] == 32
+    assert first["crops"] == 62
+    assert first["markets"] == 52
 
 
 async def test_every_market_belongs_to_an_existing_area(session: AsyncSession) -> None:
@@ -146,3 +168,54 @@ async def test_sync_removes_entities_dropped_from_the_seed(
     await sync_seed(session, tmp_path)
     remaining = await session.execute(text("SELECT count(*) FROM markets WHERE id = 'tp2'"))
     assert remaining.scalar_one() == 0
+
+
+def test_a_crop_range_and_arrivals_come_in_pairs(tmp_path: Path) -> None:
+    data = _raw("TW")
+    del data["crops"][0]["mock"]["hi"]
+    with pytest.raises(ValidationError, match="lo and hi"):
+        load_seed_file(_write(tmp_path, data))
+    data = _raw("TW")
+    del data["crops"][0]["mock"]["arrR"]
+    with pytest.raises(ValidationError, match="arr and arrR"):
+        load_seed_file(_write(tmp_path, data))
+
+
+def _lookup(name: str) -> dict[str, dict[str, str]]:
+    path = Path(__file__).resolve().parents[1] / "fixtures" / "my_pricecatcher" / name
+    with path.open(encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    key = "premise_code" if "premise_code" in rows[0] else "item_code"
+    return {r[key]: {k: (v or "").strip() for k, v in r.items()} for r in rows}
+
+
+def test_malaysia_maps_follow_the_pricecatcher_lookups() -> None:
+    """Checked against the real lookups (tests/fixtures/my_pricecatcher): wholesale markets are
+    "Borong" premises, retail points are wet markets of the area's state and district, and every
+    item is sold per kg, so its price needs no conversion."""
+    my = next(s for s in load_seed_files() if s.country.code == "MY")
+    premises = _lookup("lookup_premise.csv")
+    items = _lookup("lookup_item.csv")
+    area_of_market = {m.id: a for a in my.areas for m in a.markets}
+    areas = {a.id: a for a in my.areas}
+    maps = my.source_maps["my_pricecatcher"]
+    for m in maps.markets:
+        premise = premises[m.source_market]
+        assert premise["premise_type"] == "Borong", m
+        assert premise["district"] == area_of_market[m.market].name["en"] or m.market == "klborong"
+    for a in maps.areas:
+        premise = premises[a.source_area]
+        assert premise["premise_type"] == "Pasar Basah", a
+        area = areas[a.area]
+        if a.area == "kualalumpur":  # the whole federal territory
+            assert premise["state"] == "W.P. Kuala Lumpur"
+        else:
+            assert premise["district"] == area.name["en"], a
+    for c in maps.crops:
+        assert items[c.source_name]["unit"] == "1kg", c
+    # The demo uses the same items and markets, and one of those wet markets per area.
+    mock = my.source_maps["mock"]
+    assert mock.crops == maps.crops
+    assert mock.markets == maps.markets
+    assert {a.area for a in mock.areas} == set(areas)
+    assert {a.source_area for a in mock.areas} <= {a.source_area for a in maps.areas}

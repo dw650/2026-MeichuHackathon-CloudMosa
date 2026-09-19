@@ -96,13 +96,15 @@ describe('SettingsScreen', () => {
     app.press('Enter')
     expect(useSettings.getState().demo.stale).toBe(true)
     app.press('ArrowDown')
-    const locations = ['印度 Nashik', '台灣 台北市', '推測不到', '自動'].map((label) => {
+    const labels = ['印度 Nashik', '台灣 台北市', '馬來西亞 Kuala Lumpur', '推測不到', '自動']
+    const locations = labels.map((label) => {
       app.press('Enter')
       return [useSettings.getState().demo.locate, screen.getByText(label).textContent]
     })
     expect(locations).toEqual([
       ['IN:nashik', '印度 Nashik'],
       ['TW:taipei', '台灣 台北市'],
+      ['MY:kualalumpur', '馬來西亞 Kuala Lumpur'],
       ['none', '推測不到'],
       ['auto', '自動'],
     ])

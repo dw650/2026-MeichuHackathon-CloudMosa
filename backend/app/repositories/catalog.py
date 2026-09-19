@@ -114,13 +114,12 @@ async def default_watch(session: AsyncSession) -> dict[str, list[str]]:
     return out
 
 
-async def latest_wholesale_dates(
+async def latest_dates(
     session: AsyncSession, country: str, start: date, end: date, area_id: str | None = None
 ) -> dict[str, date]:
-    """Latest wholesale trade date of each area (any crop) between start and end."""
+    """Latest trade date of each area (any crop, wholesale or retail) between start and end."""
     stmt = select(AreaDaily.area_id, func.max(AreaDaily.trade_date)).where(
         AreaDaily.country == country,
-        AreaDaily.price_type == "wholesale",
         AreaDaily.trade_date.between(start, end),
     )
     if area_id is not None:

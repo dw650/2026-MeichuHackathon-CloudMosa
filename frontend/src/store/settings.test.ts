@@ -288,6 +288,21 @@ describe('settings store', () => {
       expect(useSettings.persist.hasHydrated()).toBe(true)
     })
 
+    it('restores a Malaysian setup with its demo location', async () => {
+      const malaysia: SettingsData = {
+        ...saved,
+        country: 'MY',
+        areaId: 'kualalumpur',
+        recentAreaIds: ['kualalumpur'],
+        watchlist: ['tomato'],
+        units: { wholesale: 'kati', retail: null },
+        demo: { ...saved.demo, locate: 'MY:kualalumpur' },
+      }
+      seed(malaysia)
+      await rehydrate()
+      expect(data()).toEqual(malaysia)
+    })
+
     it('fills settings the saved data lacks with their defaults', async () => {
       // As saved by a build without these fields (JSON drops `undefined`).
       seed({ ...saved, demo: undefined, units: undefined })

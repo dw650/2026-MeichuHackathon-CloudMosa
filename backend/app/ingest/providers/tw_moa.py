@@ -13,20 +13,29 @@ rows, with exact (name, variety) matching."""
 import asyncio
 import json
 import logging
-from collections.abc import Awaitable, Callable, Sequence
+from collections.abc import Callable, Sequence
 from datetime import date, timedelta
 
 import httpx
 
 from app.ingest import normalize as fmt
-from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
+from app.ingest.http import Fetcher, RetryPolicy, Sleep, UpstreamError
+from app.ingest.providers.base import (
+    BuildContext,
+    FetchStats,
+    NormalizedQuote,
+    RawRow,
+    SourceInfo,
+    SourceMaps,
+)
 from app.seed.schema import SeedFile
 from app.timeutil import to_roc
 
 SOURCE = "tw_moa"
 URL = "https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx"
 WINDOW_DAYS = 60  # a full run: every day the validator still accepts
-REFRESH_DAYS = 3  # an hourly refresh: today and the two days before
+REFRESH_DAYS = 3  # scheduled runs always fetch today and the two days before
+REFRESH_HOURS = "6-15"  # hourly while the markets publish the day's prices (Taiwan time)
 PAGE_SIZE = 5000  # one product over 60 days is about 1 500 rows; the API refuses > 10 000
 MAX_PAGES = 20
 ATTEMPTS = 3
@@ -36,11 +45,7 @@ BACKOFF_S = 5.0  # before a retry, doubled each time
 
 logger = logging.getLogger("app.ingest.tw_moa")
 
-Sleep = Callable[[float], Awaitable[None]]
-
-
-class UpstreamError(RuntimeError):
-    """The API failed, refused the query or answered with something that is not a row list."""
+__all__ = ["TwMoaProvider", "UpstreamError", "products_from_seeds"]
 
 
 def products_from_seeds(seeds: Sequence[SeedFile]) -> list[str]:
@@ -55,9 +60,9 @@ def products_from_seeds(seeds: Sequence[SeedFile]) -> list[str]:
     return products
 
 
-def _rows(response: httpx.Response) -> list[RawRow]:
+async def _rows(response: httpx.Response) -> list[RawRow]:
     try:
-        payload = response.json()
+        payload = json.loads(await response.aread())
     except ValueError as exc:
         raise UpstreamError(
             f"FarmTransData answered with something that is not JSON: {exc}"
@@ -80,30 +85,43 @@ class TwMoaProvider:
         today_of: Callable[[str], date],
         *,
         days: int = WINDOW_DAYS,
+        plan: Sequence[date] | None = None,
         transport: httpx.AsyncBaseTransport | None = None,
         sleep: Sleep = asyncio.sleep,
         page_size: int = PAGE_SIZE,
         attempts: int = ATTEMPTS,
     ) -> None:
+        """`days` back from today, or the range spanning the `plan` (the planned trade dates:
+        one request per product covers a date range, so the days in between come along)."""
         self.products = list(products)
         self.days = days
+        self.plan = sorted(plan) if plan is not None else None
         self._today_of = today_of
         self._transport = transport
         self._sleep = sleep
         self._page_size = page_size
-        self._attempts = attempts
-        self._requests = 0
+        self._policy = RetryPolicy(
+            attempts=attempts, pause_s=PAUSE_S, backoff_s=BACKOFF_S, timeout=TIMEOUT
+        )
+        self.stats = FetchStats()
         self._batch: tuple[date, dict[str, list[RawRow]]] | None = None  # (today, by ROC date)
 
     # ---------- fetch ----------
 
+    def _range(self, today: date) -> tuple[date, date] | None:
+        if self.plan is None:
+            return today - timedelta(days=self.days - 1), today
+        if not self.plan:
+            return None
+        return self.plan[0], min(self.plan[-1], today)
+
     async def fetch(self, day: date) -> list[RawRow]:
         today = self._today_of("TW")
-        first = today - timedelta(days=self.days - 1)
-        if not first <= day <= today:
+        span = self._range(today)
+        if span is None or not span[0] <= day <= span[1]:
             return []
         if self._batch is None or self._batch[0] != today:
-            self._batch = (today, await self._download(first, today))
+            self._batch = (today, await self._download(*span))
         return self._batch[1].get(to_roc(day), [])
 
     async def _download(self, first: date, last: date) -> dict[str, list[RawRow]]:
@@ -111,15 +129,26 @@ class TwMoaProvider:
         across answers (the closure notices) are kept once."""
         by_day: dict[str, list[RawRow]] = {}
         seen: set[str] = set()
-        async with httpx.AsyncClient(transport=self._transport, timeout=TIMEOUT) as client:
-            for product in self.products:
-                for row in await self._product(client, product, first, last):
-                    key = json.dumps(row, sort_keys=True, ensure_ascii=False)
-                    if key not in seen:
-                        seen.add(key)
-                        by_day.setdefault(str(row.get("交易日期", "")).strip(), []).append(row)
+        http = Fetcher(
+            "FarmTransData", policy=self._policy, transport=self._transport, sleep=self._sleep
+        )
+        try:
+            async with http:
+                for product in self.products:
+                    for row in await self._product(http, product, first, last):
+                        key = json.dumps(row, sort_keys=True, ensure_ascii=False)
+                        if key not in seen:
+                            seen.add(key)
+                            day = str(row.get("交易日期", "")).strip()
+                            by_day.setdefault(day, []).append(row)
+        finally:
+            self.stats.requests += http.requests
         logger.info(
-            "tw_moa: %d rows for %s to %s, %d requests", len(seen), first, last, self._requests
+            "tw_moa: %d rows for %s to %s, %d requests",
+            len(seen),
+            first,
+            last,
+            self.stats.requests,
         )
         window = {to_roc(first + timedelta(days=i)) for i in range((last - first).days + 1)}
         outside = sum(len(rows) for d, rows in by_day.items() if d not in window)
@@ -127,9 +156,9 @@ class TwMoaProvider:
             logger.warning("tw_moa: %d rows dated outside %s to %s ignored", outside, first, last)
         return by_day
 
-    async def _product(
-        self, client: httpx.AsyncClient, product: str, first: date, last: date
-    ) -> list[RawRow]:
+    async def _product(self, http: Fetcher, product: str, first: date, last: date) -> list[RawRow]:
+        """Every page of one product. Busy answers and network errors are retried by the shared
+        fetcher; any other error fails the run, which keeps the previous data."""
         rows: list[RawRow] = []
         for page in range(MAX_PAGES):
             params = {
@@ -139,38 +168,30 @@ class TwMoaProvider:
                 "$top": str(self._page_size),
                 "$skip": str(page * self._page_size),
             }
-            batch = await self._get(client, params)
+            batch = await http.get(URL, params=params, read=_rows, what=repr(product))
             rows += batch
             if len(batch) < self._page_size:
                 return rows
         raise UpstreamError(f"more than {MAX_PAGES} pages for {product!r}")
 
-    async def _get(self, client: httpx.AsyncClient, params: dict[str, str]) -> list[RawRow]:
-        """One answer. Busy answers (429, 5xx) and network errors are retried after a growing
-        pause; any other error fails the run, which keeps the previous data."""
-        if self._requests:
-            await self._sleep(PAUSE_S)
-        self._requests += 1
-        error = ""
-        for attempt in range(1, self._attempts + 1):
-            if attempt > 1:
-                await self._sleep(BACKOFF_S * 2 ** (attempt - 2))
-            try:
-                response = await client.get(URL, params=params)
-            except httpx.TransportError as exc:
-                error = repr(exc)
-                continue
-            if response.status_code == 429 or response.status_code >= 500:
-                error = f"HTTP {response.status_code}"
-                continue
-            if response.is_error:
-                raise UpstreamError(f"FarmTransData answered HTTP {response.status_code}")
-            return _rows(response)
-        raise UpstreamError(
-            f"FarmTransData failed {self._attempts} attempts for {params['Crop']!r}: {error}"
-        )
-
     # ---------- normalize ----------
 
     def normalize(self, raw: RawRow, maps: SourceMaps) -> NormalizedQuote | None:
         return fmt.moa_farmtrans(raw, maps, SOURCE, exact=True)
+
+
+def _build(ctx: BuildContext) -> TwMoaProvider:
+    return TwMoaProvider(products_from_seeds(ctx.seeds), ctx.today_of, plan=ctx.days)
+
+
+INFO = SourceInfo(
+    id=SOURCE,
+    countries=TwMoaProvider.countries,
+    price_types=("wholesale",),
+    build=_build,
+    network=True,
+    window_days=WINDOW_DAYS,
+    refresh_days=REFRESH_DAYS,
+    refresh_hours=REFRESH_HOURS,
+    fresh_for=timedelta(hours=6),
+)

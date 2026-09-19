@@ -34,7 +34,16 @@ def _clean_range(q: NormalizedQuote) -> NormalizedQuote:
 
 
 def _key(q: NormalizedQuote) -> tuple[object, ...]:
-    return (q.source, q.price_type, q.area_id, q.market_id, q.crop_id, q.variety, q.trade_date)
+    return (
+        q.source,
+        q.price_type,
+        q.area_id,
+        q.market_id,
+        q.point,
+        q.crop_id,
+        q.variety,
+        q.trade_date,
+    )
 
 
 def validate(quotes: list[NormalizedQuote], today: dict[str, date]) -> ValidationResult:

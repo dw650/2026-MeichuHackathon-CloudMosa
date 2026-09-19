@@ -4,6 +4,7 @@ SOURCE_NAMES: dict[str, dict[str, str]] = {
     "mock": {"zh-TW": "示範資料", "en": "Demo data"},
     "tw_moa": {"zh-TW": "農業部 農產品交易行情", "en": "MOA farm product prices"},
     "in_datagov": {"zh-TW": "data.gov.in（Agmarknet）", "en": "data.gov.in (Agmarknet)"},
+    "my_pricecatcher": {"zh-TW": "KPDN PriceCatcher", "en": "KPDN PriceCatcher"},
 }
 
 

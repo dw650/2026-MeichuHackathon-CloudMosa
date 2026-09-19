@@ -82,16 +82,27 @@ class MockLevel(_Model):
 
 
 class MockCrop(_Model):
+    """Mock parameters of a crop. The day range (lo, hi) and the arrivals (arr, arrR) are only
+    printed by the formats that have them; Malaysia's source has neither."""
+
     model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True)
 
     p: float = Field(gt=0)
-    lo: float = Field(gt=0)
-    hi: float = Field(gt=0)
+    lo: float | None = Field(default=None, gt=0)
+    hi: float | None = Field(default=None, gt=0)
     chg: float
-    arr: float = Field(gt=0)
-    arr_ratio: float = Field(alias="arrR", gt=0)
+    arr: float | None = Field(default=None, gt=0)
+    arr_ratio: float | None = Field(default=None, alias="arrR", gt=0)
     rt: float | None = Field(default=None, gt=0)
     lag: int = Field(default=0, ge=0)
+
+    @model_validator(mode="after")
+    def _pairs(self) -> Self:
+        if (self.lo is None) != (self.hi is None):
+            raise ValueError("lo and hi go together")
+        if (self.arr is None) != (self.arr_ratio is None):
+            raise ValueError("arr and arrR go together")
+        return self
 
 
 class MarketSeed(_Model):

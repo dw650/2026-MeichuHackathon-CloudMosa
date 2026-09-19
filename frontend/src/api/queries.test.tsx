@@ -51,7 +51,7 @@ describe('query hooks', () => {
     )
     await waitFor(() => expect(Object.values(result.current).every((q) => q.isSuccess)).toBe(true))
     const r = result.current
-    expect(r.countries.data?.countries.map((c) => c.code)).toEqual(['IN', 'TW'])
+    expect(r.countries.data?.countries.map((c) => c.code)).toEqual(['IN', 'TW', 'MY'])
     expect(r.areas.data?.areas).toHaveLength(11)
     expect(r.crops.data?.crops).toHaveLength(21)
     expect(r.prices.data?.items.map((i) => i.crop_id)).toEqual(['onion'])

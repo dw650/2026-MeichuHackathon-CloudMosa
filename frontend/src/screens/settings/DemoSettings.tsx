@@ -13,12 +13,19 @@ import { type DemoLocate, type DemoSwitches, useSettings } from '@/store/setting
 import styles from './settings.module.css'
 
 /** The order OK steps through the location guesses. */
-const LOCATE_CYCLE: readonly DemoLocate[] = ['auto', 'IN:nashik', 'TW:taipei', 'none']
+const LOCATE_CYCLE: readonly DemoLocate[] = [
+  'auto',
+  'IN:nashik',
+  'TW:taipei',
+  'MY:kualalumpur',
+  'none',
+]
 /** i18n key of each guess (`:` is i18next's namespace separator, so not the id itself). */
 const LOCATE_LABEL = {
   auto: 'auto',
   'IN:nashik': 'nashik',
   'TW:taipei': 'taipei',
+  'MY:kualalumpur': 'kualalumpur',
   none: 'none',
 } as const satisfies Record<DemoLocate, string>
 
@@ -32,7 +39,8 @@ interface Row {
 
 /**
  * Settings → Demo (F18, docs/04 §6.2; demo builds only): OK flips 模擬 API 失敗 and
- * 模擬地區未更新, and steps 模擬推測位置 through auto / India Nashik / Taiwan Taipei / no guess.
+ * 模擬地區未更新, and steps 模擬推測位置 through auto / India Nashik / Taiwan Taipei / Malaysia
+ * Kuala Lumpur / no guess.
  * The api client sends them as request headers; answers fetched with the old switches are
  * marked stale, so every screen fetches again when it shows next.
  */

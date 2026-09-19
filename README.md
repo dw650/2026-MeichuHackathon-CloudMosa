@@ -11,7 +11,7 @@
 - **只用按鍵**：方向鍵、OK、左右軟鍵、`0`–`9`、`*`、`#` 就能走完所有畫面；每個按鍵提示就畫在它控制的東西旁邊。
 - **以地區為單位**：地區批發價＝該地區當天有報價的各市場代表價中位數，並標出市場數；零售價另外切換（`*`）。
 - **誠實**：缺資料就顯示「—」和原因，不是今天的資料一定標出「昨天」「3 天前」；所有日期由後端依國家時區計算。
-- **兩國兩語**：印度（盧比、English）與台灣（新台幣、繁體中文）；हिन्दी 等語言列在選單，暫時以英文顯示。
+- **三國兩語**：印度（盧比）、台灣（新台幣）與馬來西亞（令吉），介面有繁體中文與 English；हिन्दी 等語言列在選單，暫時以英文顯示。
 - **國際參考價**（加分項 B5）：左軟鍵選單最後一項。世界銀行 Pink Sheet 的稻米、小麥、玉米、大豆、原糖、棕櫚油月均價，以最新匯率換算成當地幣別每公斤，標出月份、匯率日期與比上月；詳情頁有近 12 個月走勢與原始美元價。worker 只在到期時下載（每天約 3 個小請求），部署重啟不會重抓。
 
 ## 快速開始
@@ -32,6 +32,7 @@ make up                 # 起 db、api、worker、web；worker 啟動時就寫�
 | 用網路位置推測地區（下載免註冊的 DB-IP Lite，見 [`infra/geoip/`](infra/geoip/README.md)） | `make geoip && docker compose restart api` |
 | 開發模式（Vite HMR、api `--reload`，一樣是 8080） | `make dev` |
 | 重新同步 seed 並重新產生示範資料 | `make seed` |
+| 改用真實資料：台灣農業部批發價、馬來西亞 PriceCatcher 零售價（不需金鑰；沒開的國家仍是示範資料） | `.env` 設 `PROVIDERS=mock,tw_moa,my_pricecatcher`，再 `docker compose up -d worker` |
 | 看 api 與 worker 的日誌／停止 | `make logs`／`make down` |
 
 ## 架構
@@ -49,12 +50,13 @@ flowchart TB
     api --> db
     worker --> db
   end
-  worker -.->|加分項：真實資料| sources["data.moa.gov.tw<br/>api.data.gov.in"]
+  worker -.->|真實資料| sources["data.moa.gov.tw<br/>storage.data.gov.my<br/>api.data.gov.in"]
 ```
 
 - **單一來源**：前端與 API 同一個網域，沒有 CORS 與混合內容問題。
 - **讀寫分離**：worker 負責抓取與彙整，api 只讀；抓取失敗不影響 API，舊資料保留。
-- **mock 也是 provider**：示範資料輸出和真實來源相同的格式（印度 data.gov.in 欄位與 quintal、台灣農業部欄位與民國日期），走同一條「正規化 → 檢查 → 中位數彙整」管線。換成真實資料只要加一個 provider。
+- **mock 也是 provider**：示範資料輸出和真實來源相同的格式（印度 data.gov.in 欄位與 quintal、台灣農業部欄位與民國日期、馬來西亞 PriceCatcher 的回報點代號），走同一條「正規化 → 檢查 → 中位數彙整」管線。換成真實資料只要加一個 provider。
+- **共同的來源介面**：每個來源宣告自己的國家、價格類型與排程（`SourceInfo`），登記在一張表；連網的來源共用抓取原則（重啟不重抓、只抓缺的日期、檔案沒變就用 304），每個來源都要通過同一套契約測試（[docs/06 §1.4](docs/06-data.md)）。
 
 詳見 [docs/04 系統架構](docs/04-architecture.md)。
 
@@ -77,7 +79,7 @@ flowchart TB
 **軟體架構**
 - 前後端分層與依賴方向固定：前端 `screens → components／api／store／keys／focus`，後端 `routers → services → repositories → db`；分層規則用 ESLint 檢查（[`frontend/eslint.config.js`](frontend/eslint.config.js)）。
 - 前後端契約：後端 OpenAPI 產生前端型別（[`scripts/gen-api-types.sh`](scripts/gen-api-types.sh)），CI 的 `contract` job 檢查型別有沒有過期。
-- 可擴充：加國家＝加一個 seed 檔（[`backend/app/seed/`](backend/app/seed/)）；加資料來源＝加一個 provider（[`backend/app/ingest/providers/`](backend/app/ingest/providers/)）；加語言＝加一個字串檔。
+- 可擴充：加國家＝加一個 seed 檔（[`backend/app/seed/`](backend/app/seed/)）；加資料來源＝加一個 provider 與它的 `SourceInfo`，列進登記表並通過契約測試（[`backend/app/ingest/providers/`](backend/app/ingest/providers/)，步驟見 [docs/06 §1.4](docs/06-data.md)）；加語言＝加一個字串檔。
 
 **前端（按鍵機體驗）**
 - 全 App 只有一個 `keydown` 監聽器，依「按鍵範圍堆疊」分派：面板打開時按鍵不會穿透（[`frontend/src/keys/`](frontend/src/keys/)）。
@@ -85,7 +87,7 @@ flowchart TB
 - 240×320 與 128×160 兩套設計 tokens，版面用實際 `innerHeight`；沒有動畫（每次畫面變動都耗使用者流量）。
 
 **後端與資料**
-- 資料管線：抓取 → 正規化（quintal → 公斤、民國日期、名稱對照）→ 檢查（負數、區間顛倒、離群值、日期）→ upsert → 市場與地區中位數彙整 → 記錄每次抓取（[`backend/app/ingest/`](backend/app/ingest/)）。
+- 資料管線：抓取 → 正規化（quintal → 公斤、民國日期、名稱對照）→ 檢查（負數、區間顛倒、離群值、日期）→ upsert → 市場與地區中位數彙整 → 記錄每次抓取與請求數（[`backend/app/ingest/`](backend/app/ingest/)）。馬來西亞的月檔（一個月約 50 MB、180 萬列）邊下載邊篩選，只留下對照得到的列。
 - 指標都在後端以純函式計算：漲跌、比 7 日均價、30 日位置、波動、到貨量、休市日判斷（[`backend/app/services/`](backend/app/services/)）。
 - 容錯：統一錯誤格式與 `X-Request-ID`、Cache-Control、IP 位置推測（檔案不存在時照常運作）、demo 標頭重現每種錯誤狀態（[docs/04 §8](docs/04-architecture.md)）。
 

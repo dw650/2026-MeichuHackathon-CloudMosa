@@ -92,6 +92,13 @@ describe('formatPrice', () => {
     expect(formatPrice(38.5, UNITS.catty, 'zh-TW')).toBe('23.1')
   })
 
+  it('shows ringgit with sen in thousands for Malaysia', () => {
+    expect(formatPrice(5.5, UNITS.kgSen, 'en-MY')).toBe('5.50')
+    expect(formatPrice(1234.5, UNITS.kgSen, 'en-MY')).toBe('1,234.50')
+    expect(formatPrice(10, UNITS.kati, 'en-MY')).toBe('6.05')
+    expect(formatPriceDiff(-0.5, UNITS.kgSen, 'en-MY')).toBe(`${MINUS}0.50`)
+  })
+
   it('shows a missing price as a dash', () => {
     expect(formatPrice(null, UNITS.qtl, 'en-IN')).toBe(MISSING)
     expect(formatPrice(undefined, UNITS.kg, 'zh-TW')).toBe(MISSING)

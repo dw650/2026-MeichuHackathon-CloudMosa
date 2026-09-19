@@ -1,7 +1,7 @@
 /** Opening the app in a known state for UI checks: storage is written before the app loads. */
 import type { Page } from '@playwright/test'
 
-export type Country = 'IN' | 'TW'
+export type Country = 'IN' | 'TW' | 'MY'
 export type Lang = 'zh-TW' | 'en'
 
 const DEFAULTS: Record<Country, { area: string; recent: string[]; watch: string[] }> = {
@@ -15,6 +15,11 @@ const DEFAULTS: Record<Country, { area: string; recent: string[]; watch: string[
     recent: ['taipei', 'newtaipei', 'taichung'],
     watch: ['cabbage', 'bokchoy', 'banana', 'sweetpotato', 'scallion', 'cauliflower'],
   },
+  MY: {
+    area: 'kualalumpur',
+    recent: ['kualalumpur', 'klang', 'seremban'],
+    watch: ['tomato', 'cabbage', 'chilli', 'onion', 'cucumber', 'bokchoy', 'garlic'],
+  },
 }
 
 export interface AppState {
@@ -24,7 +29,7 @@ export interface AppState {
   /** false = a brand-new user (first-run setup). */
   setupDone?: boolean
   /** Demo switch for the location guess (F18); a new user can have it set too. */
-  locate?: 'auto' | 'none' | 'IN:nashik' | 'TW:taipei'
+  locate?: 'auto' | 'none' | 'IN:nashik' | 'TW:taipei' | 'MY:kualalumpur'
   /** Demo switches (F18): price APIs fail / my area's data is 3 days old. */
   fail?: boolean
   stale?: boolean

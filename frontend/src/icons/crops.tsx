@@ -512,6 +512,171 @@ const ART: Readonly<Record<CropIconId, ReactElement>> = {
       </g>
     </>
   ),
+  cucumber: (
+    <>
+      <path
+        d="M4.3 17.3c-1.2-1.2-.8-3.3.9-4.8l7.8-7.1c2.2-2 5-2.4 6.4-1 1.4 1.4 1 4.2-1 6.4l-7.1 7.8c-1.5 1.7-3.6 2.1-4.8.9z"
+        fill="#3F8F3A"
+      />
+      <path
+        d="M6.6 15.6l9.6-9.3"
+        stroke="#7BC862"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <g fill="#CDEBB4">
+        <circle cx="8.6" cy="16" r=".6" />
+        <circle cx="12.4" cy="12.8" r=".6" />
+        <circle cx="15.8" cy="9.3" r=".6" />
+        <circle cx="10.8" cy="10.6" r=".5" />
+        <circle cx="14" cy="7.6" r=".5" />
+      </g>
+      <path d="M19 5l1.7-1.7" stroke="#6B5314" strokeWidth="1.4" strokeLinecap="round" />
+    </>
+  ),
+  carrot: (
+    <>
+      <path
+        d="M16 8.3c1.4 1.5 1.3 3.3-.3 4.9l-9.7 8c-.9.7-2 .1-1.8-1l3.4-11.2c.8-1.9 2.4-2.9 4.2-2.8 1.5 0 3 .8 4.2 2.1z"
+        fill="#F08A24"
+      />
+      <path
+        d="M9.6 12.6l1.8.9M8.1 16.3l1.7.8M11.8 9.9l1.4 1"
+        stroke="#C4611A"
+        strokeWidth=".9"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M15.1 7.4c.3-2.6 1.6-4.6 3.8-5.3.3 2.4-1.2 4.4-3.8 5.3zM16.4 8.9c2.3-.8 4.4-.4 5.6 1.2-2.1 1.2-4.3.8-5.6-1.2z"
+        fill="#4E9A3E"
+      />
+      <path d="M15.6 8.2c.9-1 2-1.6 3.3-1.8" stroke="#62BF4E" strokeWidth="1.2" fill="none" />
+    </>
+  ),
+  longbean: (
+    <>
+      <path
+        d="M4.5 3.5c-1 5 1.2 9.3 5.4 11.8 3.7 2.2 7 3.4 9.8 5.9"
+        stroke="#3E8F35"
+        strokeWidth="2.3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M9.2 2.8c-.6 4.6 1.5 8.1 5.1 10.1 3 1.7 5.2 3.9 6.3 7"
+        stroke="#76C35B"
+        strokeWidth="2.1"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M4.5 3.5l-.7-1.5M9.2 2.8l-.2-1.6"
+        stroke="#2E6B2A"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </>
+  ),
+  frenchbean: (
+    <>
+      <path
+        d="M5.4 5.2c2.6 3.4 3.6 7.6 3 12.8-.1 1.2-1.6 1.4-2 .3-1.5-3.8-2-8.3-1-13.1z"
+        fill="#3E9A3A"
+      />
+      <path
+        d="M10.6 4.2c2.6 3.4 3.6 7.6 3 12.8-.1 1.2-1.6 1.4-2 .3-1.5-3.8-2-8.3-1-13.1z"
+        fill="#62BF4E"
+      />
+      <path
+        d="M15.8 5.2c2.6 3.4 3.6 7.6 3 12.8-.1 1.2-1.6 1.4-2 .3-1.5-3.8-2-8.3-1-13.1z"
+        fill="#3E9A3A"
+      />
+      <path
+        d="M11.7 7.8c.9 2 1.3 4.2 1.2 6.6"
+        stroke="#A9E08E"
+        strokeWidth=".9"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M5.4 5.2l-.9-1.5M10.6 4.2l-.9-1.5M15.8 5.2l-.9-1.5"
+        stroke="#2E6B2A"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+    </>
+  ),
+  ginger: (
+    <>
+      <path
+        d="M3.4 14.7c0-2 1.6-3.1 3.4-2.7.4-1.9 2.2-3 4-2.4.9-2.2 3.4-3 5.2-1.8 1.9-.7 4 .6 4 2.7 0 1.6-1.1 2.8-2.6 3 0 1.9-1.6 3.2-3.4 2.9-1 1.6-3 2-4.4 1-1.5 1-3.6.7-4.5-.9-1-.2-1.7-1-1.7-1.8z"
+        fill="#D9A95B"
+      />
+      <path
+        d="M6.8 13.6c1.2.3 2 1.2 2.3 2.4M11.1 10.1c.9.6 1.4 1.5 1.4 2.6M16 8.8c.5.9.6 1.9.2 2.9M13.6 16.3c.8-.5 1.7-.6 2.6-.4"
+        stroke="#A8752F"
+        strokeWidth=".9"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M16.2 7.9c.1-1.8 1-3.2 2.5-4"
+        stroke="#E07C8A"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+      <path d="M18.7 3.9c.9-.7 2-.9 3-.6-.6 1-1.8 1.4-3 .6z" fill="#4E9A3E" />
+    </>
+  ),
+  lime: (
+    <>
+      <path d="M8.3 8.2C7.7 5 9.4 2.6 12.6 2c.5 3.2-1.3 5.6-4.3 6.2z" fill="#3E8A2E" />
+      <circle cx="12" cy="14" r="8" fill="#4FA33A" />
+      <circle cx="12" cy="14" r="6.7" fill="#E4F5B9" />
+      <path
+        d="M12 7.6v12.8M5.6 14h12.8M7.5 9.5l9 9M16.5 9.5l-9 9"
+        stroke="#A6D46A"
+        strokeWidth="1"
+      />
+      <circle cx="12" cy="14" r="1.3" fill="#F4FBE2" />
+    </>
+  ),
+  calamansi: (
+    <>
+      <path
+        d="M11.6 2.8c-.2 2.2-1.2 4-2.8 5.4M11.6 2.8c1 2 2.4 3.4 4.2 4.2"
+        stroke="#6B5314"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path d="M11.6 3c2-1.6 4.4-1.7 6.2-.4-2 1.7-4.3 1.8-6.2.4z" fill="#3E9A3A" />
+      <circle cx="8.2" cy="12" r="4.1" fill="#F2A23A" />
+      <circle cx="16" cy="11" r="3.7" fill="#8DC63F" />
+      <circle cx="12.3" cy="17.6" r="3.9" fill="#F7B84B" />
+      <g fill="#FFF1D2" opacity=".85">
+        <circle cx="6.9" cy="10.6" r=".9" />
+        <circle cx="11.1" cy="16.2" r=".9" />
+      </g>
+      <circle cx="15" cy="9.9" r=".8" fill="#D6F0A8" opacity=".85" />
+    </>
+  ),
+  coconut: (
+    <>
+      <path d="M3 12.4a9 9 0 0 0 18 0z" fill="#7A4A26" />
+      <path d="M4.7 12.4a7.3 7.3 0 0 0 14.6 0z" fill="#FBF6EC" />
+      <ellipse cx="12" cy="12.4" rx="9" ry="1.9" fill="#8B5A30" />
+      <ellipse cx="12" cy="12.4" rx="7.3" ry="1.2" fill="#F1E6D2" />
+      <path
+        d="M7.6 8.8l1 1.6M11.6 7.2l.2 1.9M15.6 8.4l-.8 1.6M13.9 4.9l-.3 1.4M9.6 5.3l.6 1.3"
+        stroke="#D8C7A6"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+    </>
+  ),
   oil: (
     <>
       <path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="#E8B92F" />

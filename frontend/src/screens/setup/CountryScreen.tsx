@@ -10,12 +10,12 @@ import { useFocusList } from '@/focus/useFocusList'
 import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
 import { useText } from '@/screens/shared/useText'
-import { type CountryCode, useSettings } from '@/store/settings'
+import { COUNTRY_CODES, type CountryCode, useSettings } from '@/store/settings'
 
 import { isCountryCode, RETRY_ID, useSetupFlow } from './flow'
 import { Failed, LoadingRows, StepDots } from './parts'
 
-const TONE: Readonly<Record<CountryCode, Tone>> = { IN: 'orange', TW: 'red' }
+const TONE: Readonly<Record<CountryCode, Tone>> = { IN: 'orange', TW: 'red', MY: 'blue' }
 
 /** A country from the API that the app supports. */
 type Listed = Country & { code: CountryCode }
@@ -77,7 +77,7 @@ export default function CountryScreen() {
             ))}
           </CardList>
         ) : (
-          <LoadingRows rows={2} />
+          <LoadingRows rows={COUNTRY_CODES.length} />
         )}
       </div>
     </Shell>

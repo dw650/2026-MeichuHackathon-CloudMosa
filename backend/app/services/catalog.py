@@ -51,9 +51,9 @@ async def list_areas(
     country = await require_country(session, code)
     today = local_today(country.utc_offset_min, now)
     start = today - timedelta(days=WINDOW_DAYS - 1)
-    latest = await repo.latest_wholesale_dates(session, country.code, start, today)
+    latest = await repo.latest_dates(session, country.code, start, today)
     for area_id in demo.stale_days:
-        shifted = await repo.latest_wholesale_dates(
+        shifted = await repo.latest_dates(
             session, country.code, start, demo.until(area_id, today), area_id=area_id
         )
         latest.pop(area_id, None)

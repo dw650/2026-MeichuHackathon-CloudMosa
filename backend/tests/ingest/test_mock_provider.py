@@ -23,6 +23,8 @@ async def _window(provider: MockProvider) -> list[RawRow]:
 
 
 def _day(row: RawRow) -> date:
+    if row["_country"] == "MY":
+        return date.fromisoformat(row["date"])
     if "arrival_date" in row:
         d, m, y = (int(x) for x in row["arrival_date"].split("/"))
         return date(y, m, d)
@@ -148,3 +150,46 @@ async def test_today_matches_the_base_price_and_the_previous_day_the_change(
     before = median(nashik_onion(await provider.fetch(TODAY - timedelta(days=1))))
     assert today == pytest.approx(2350, rel=0.04)
     assert today / before == pytest.approx(1.042, rel=0.04)
+
+
+# ---------- Malaysia: PriceCatcher rows ----------
+
+
+def _my(rows: list[RawRow], **match: str) -> list[RawRow]:
+    return [r for r in rows if r["_country"] == "MY" and all(r[k] == v for k, v in match.items())]
+
+
+async def test_malaysia_rows_look_like_pricecatcher(provider: MockProvider) -> None:
+    rows = _my(await provider.fetch(TODAY))
+    assert rows
+    assert {tuple(sorted(r)) for r in rows} == {
+        ("_country", "_type", "date", "item_code", "premise_code", "price")
+    }
+    # Wholesale at Pasar Borong KL: p 7.0 × area k 1.08 × market k 1.0, ±2%.
+    (borong,) = _my(rows, _type="wholesale", premise_code="18147", item_code="114")
+    assert borong["date"] == "2026-09-19"
+    assert 7.0 * 1.08 * 0.98 <= float(borong["price"]) <= 7.0 * 1.08 * 1.02
+    # Retail at the area's wet market (Pasar Pudu): rt 1.4 × p × area k, ±2.5%.
+    (pudu,) = _my(rows, _type="retail", premise_code="3181", item_code="114")
+    assert 1.4 * 7.0 * 1.08 * 0.97 <= float(pudu["price"]) <= 1.4 * 7.0 * 1.08 * 1.03
+
+
+async def test_malaysia_areas_without_a_wholesale_market_have_retail_only(
+    provider: MockProvider,
+) -> None:
+    rows = _my(await _window(provider))
+    penang = _my(rows, premise_code="1960")  # Pasar Jelutong, Timur Laut
+    assert penang
+    assert {r["_type"] for r in penang} == {"retail"}
+    assert len({r["premise_code"] for r in rows if r["_type"] == "wholesale"}) == 7
+
+
+async def test_malaysia_trades_every_day_and_keeps_its_exceptions(provider: MockProvider) -> None:
+    rows = _my(await _window(provider))
+    days = {_day(r) for r in rows}
+    assert date(2026, 9, 13) in days  # Sunday
+    assert date(2026, 9, 14) in days  # Monday
+    assert _latest(_my(rows, premise_code="2248")) == date(2026, 9, 18)  # Kuching: yesterday
+    assert _latest(_my(rows, premise_code="17450")) == date(2026, 9, 16)  # Kulim: 3 days
+    assert _latest(_my(rows, item_code="368")) == date(2026, 9, 17)  # peanut: 2 days
+    assert _latest(_my(rows, item_code="917")) == date(2026, 9, 16)  # wheat flour: 3 days

@@ -6,14 +6,14 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ingest.pipeline import retire_sources, run_provider
-from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
+from app.ingest.providers.base import FetchStats, NormalizedQuote, RawRow, SourceMaps
 from app.ingest.providers.mock import MockProvider
 from app.ingest.seed import sync_seed
 from app.seed.loader import load_seed_files
 
 TODAY = date(2026, 9, 19)
 NOW = datetime(2026, 9, 19, 6, 10, tzinfo=UTC)
-DAYS = {"IN": TODAY, "TW": TODAY}
+DAYS = {"IN": TODAY, "TW": TODAY, "MY": TODAY}
 
 
 class FakeProvider:
@@ -25,6 +25,7 @@ class FakeProvider:
     def __init__(self, rows: list[RawRow], fail: bool = False) -> None:
         self.rows = rows
         self.fail = fail
+        self.stats = FetchStats()
 
     async def fetch(self, day: date) -> list[RawRow]:
         if self.fail:
