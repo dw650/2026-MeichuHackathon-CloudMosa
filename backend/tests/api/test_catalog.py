@@ -24,7 +24,7 @@ async def test_countries_lists_every_country_with_its_settings(api: httpx.AsyncC
         "id": "qtl",
         "per_kg": 100,
         "decimals": 0,
-        "label": {"zh-TW": "₹/公擔", "en": "₹/qtl"},
+        "label": {"zh-TW": "₹/100公斤", "en": "₹/qtl"},
     }
     assert taiwan["up_is_pos"] is False
     assert taiwan["units"]["retail"]["default"] == "kg"

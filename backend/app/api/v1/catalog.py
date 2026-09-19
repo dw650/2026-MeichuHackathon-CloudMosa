@@ -37,7 +37,7 @@ COUNTRY_EXAMPLE = {
                     "id": "qtl",
                     "per_kg": 100,
                     "decimals": 0,
-                    "label": {"zh-TW": "₹/公擔", "en": "₹/qtl"},
+                    "label": {"zh-TW": "₹/100公斤", "en": "₹/qtl"},
                 },
                 {
                     "id": "kg",
@@ -60,7 +60,7 @@ COUNTRY_EXAMPLE = {
                     "id": "qtl",
                     "per_kg": 100,
                     "decimals": 0,
-                    "label": {"zh-TW": "₹/公擔", "en": "₹/qtl"},
+                    "label": {"zh-TW": "₹/100公斤", "en": "₹/qtl"},
                 },
             ],
         },

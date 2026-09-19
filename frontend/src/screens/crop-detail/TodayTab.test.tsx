@@ -23,7 +23,7 @@ describe('crop detail · 行情 tab (T27)', () => {
   it('shows the median price, three metrics and opens the markets card on OK', async () => {
     const app = await renderApp('/crop/onion/today', { history: ['/'] })
     expect(await screen.findByText('2,395')).toBeInTheDocument()
-    expect(screen.getByText('7 個市場中位數 · ₹/公擔')).toBeInTheDocument()
+    expect(screen.getByText('7 個市場中位數 · ₹/100公斤')).toBeInTheDocument()
     expect(screen.getByText('+109')).toBeInTheDocument()
     expect(screen.getByText('本地區 10 個市場')).toBeInTheDocument()
     expect(screen.getByText('最高 2,522・最低 2,264')).toBeInTheDocument()
@@ -94,7 +94,7 @@ describe('crop detail · 行情 tab (T27)', () => {
     const app = await renderApp('/crop/onion/today?area=kolar')
     expect(await screen.findByText('Kolar 縣 今天還沒更新')).toBeInTheDocument()
     expect(screen.getByText('這個地區通常 14:00 前更新')).toBeInTheDocument()
-    expect(screen.getByText('最近一筆（3 天前）：2,420 ₹/公擔')).toBeInTheDocument()
+    expect(screen.getByText('最近一筆（3 天前）：2,420 ₹/100公斤')).toBeInTheDocument()
     expect(app.focusedId()).toBe('other-areas')
     expect(app.softKey('center')).toBe('選取')
 

@@ -23,14 +23,14 @@ const rows = () =>
 describe('SettingsScreen', () => {
   it('shows the six settings with their values, plus Demo in demo builds; OK cycles a unit', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
-    await screen.findByText('₹/公擔')
+    await screen.findByText('₹/100公斤')
     expect(screen.getByRole('heading')).toHaveTextContent('設定')
     expect(rows()).toEqual([
       '語言|繁體中文',
       '國家|印度',
       '我的地區|Nashik 縣',
       '顯示幣別|當地',
-      '批發單位|₹/公擔',
+      '批發單位|₹/100公斤',
       '零售單位|₹/公斤',
       'Demo|關',
     ])
@@ -50,7 +50,7 @@ describe('SettingsScreen', () => {
 
   it('opens the country and area pickers', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
-    await screen.findByText('₹/公擔')
+    await screen.findByText('₹/100公斤')
     app.press('2')
     expect(app.path()).toBe('/setup/country')
     await app.back()
@@ -62,7 +62,7 @@ describe('SettingsScreen', () => {
 
   it('chooses a language from the list, then goes back to the settings', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
-    await screen.findByText('₹/公擔')
+    await screen.findByText('₹/100公斤')
     app.press('Enter')
     expect(app.path()).toBe('/settings/language')
     expect(softKeys(app)).toEqual(['', '選取', '返回'])
@@ -88,7 +88,7 @@ describe('SettingsScreen', () => {
 
   it('shows every price in one currency once 顯示幣別 is chosen, and says so once', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
-    await screen.findByText('₹/公擔')
+    await screen.findByText('₹/100公斤')
     app.press('4')
     expect(app.path()).toBe('/settings/currency')
     expect(screen.getByText('當地幣別')).toBeInTheDocument()
@@ -105,12 +105,12 @@ describe('SettingsScreen', () => {
     expect(await screen.findByText('24.95')).toBeInTheDocument()
     expect(screen.getByText('US$/公擔')).toBeInTheDocument()
     expect(screen.getAllByText('以 9/19 匯率換算')).toHaveLength(1)
-    expect(screen.queryByText('₹/公擔')).toBeNull()
+    expect(screen.queryByText('₹/100公斤')).toBeNull()
   })
 
   it('toggles the demo switches from the Demo row', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
-    await screen.findByText('₹/公擔')
+    await screen.findByText('₹/100公斤')
     app.press('7')
     expect(app.path()).toBe('/settings/demo')
     expect(screen.getByRole('heading')).toHaveTextContent('Demo')

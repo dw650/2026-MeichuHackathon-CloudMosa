@@ -36,7 +36,7 @@ describe('MarketScreen', () => {
 
     expect(screen.getByRole('heading')).toHaveTextContent('洋蔥')
     expect(screen.getByText('Lasalgaon')).toBeInTheDocument()
-    expect(screen.getByText('常見價 · ₹/公擔')).toBeInTheDocument()
+    expect(screen.getByText('常見價 · ₹/100公斤')).toBeInTheDocument()
     expect(screen.getByText('3.8%')).toBeInTheDocument()
     expect(screen.getByText('較前一交易日')).toBeInTheDocument()
     expect(screen.getByText('1,872')).toBeInTheDocument()
@@ -81,7 +81,7 @@ describe('MarketScreen', () => {
     })
     await renderApp('/crop/onion/markets/manmad?area=nashik')
     expect(await screen.findByText('無資料')).toBeInTheDocument()
-    expect(screen.queryByText('常見價 · ₹/公擔')).not.toBeInTheDocument()
+    expect(screen.queryByText('常見價 · ₹/100公斤')).not.toBeInTheDocument()
   })
 
   it("in retail, returns to the area's retail price in place of the detail it came from", async () => {
@@ -89,7 +89,7 @@ describe('MarketScreen', () => {
     await act(() => app.router.navigate('/crop/onion/markets?area=pune'))
     await screen.findByText('Pimpalgaon')
     app.press('Enter')
-    await screen.findByText('常見價 · ₹/公擔')
+    await screen.findByText('常見價 · ₹/100公斤')
 
     app.press('*')
     expect(screen.getByText('這個市場沒有零售報價')).toBeInTheDocument()

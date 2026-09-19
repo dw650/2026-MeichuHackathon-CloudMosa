@@ -26,13 +26,13 @@ country:
     wholesale:
       default: qtl
       options:
-        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/公擔, en: ₹/qtl } }
+        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/100公斤, en: ₹/qtl } }
         - { id: kg, per_kg: 1, decimals: 1, label: { zh-TW: ₹/公斤, en: ₹/kg } }
     retail:
       default: kg
       options:
         - { id: kg, per_kg: 1, decimals: 1, label: { zh-TW: ₹/公斤, en: ₹/kg } }
-        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/公擔, en: ₹/qtl } }
+        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/100公斤, en: ₹/qtl } }
 
 areas:
   - id: nashik

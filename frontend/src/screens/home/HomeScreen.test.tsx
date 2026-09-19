@@ -36,7 +36,7 @@ describe('HomeScreen · watchlist', () => {
 
     expect(screen.getByRole('heading', { name: 'Nashik 縣行情' })).toBeInTheDocument()
     expect(screen.getByText('批發')).toBeInTheDocument()
-    expect(screen.getByText('₹/公擔')).toBeInTheDocument()
+    expect(screen.getByText('₹/100公斤')).toBeInTheDocument()
     expect(screen.getByText('9/19 週六')).toBeInTheDocument()
     expect(focusIds()).toEqual([
       'crop:onion',
