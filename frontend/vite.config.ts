@@ -2,10 +2,16 @@
 import { fileURLToPath, URL } from 'node:url'
 
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  // Always replace VITE_DEMO statically so production bundles can drop demo-only code.
+  define: {
+    'import.meta.env.VITE_DEMO': JSON.stringify(
+      process.env.VITE_DEMO ?? loadEnv(mode, process.cwd(), 'VITE_').VITE_DEMO ?? 'false',
+    ),
+  },
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   // The app runs in CloudMosa's up-to-date Chromium (docs/05 §2).
   build: { target: 'es2020' },
@@ -28,4 +34,4 @@ export default defineConfig({
       reporter: ['text-summary'],
     },
   },
-})
+}))

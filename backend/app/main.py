@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.v1 import api_router
+from app.api.v1 import api_router, debug
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_sessionmaker
 from app.errors import install_error_handlers
@@ -37,4 +37,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_error_handlers(app)
     app.add_middleware(RequestIdMiddleware)
     app.include_router(api_router, prefix="/api/v1")
+    if settings.demo_mode:
+        # Diagnostics only exist in demo mode and stay out of the public OpenAPI document.
+        app.include_router(debug.router, prefix="/api/v1", include_in_schema=False)
     return app
