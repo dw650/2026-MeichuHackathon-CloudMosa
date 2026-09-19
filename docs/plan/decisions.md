@@ -249,3 +249,42 @@
   - 不另外排除輸入框（baseline 不需要打字，08 §4【決定】）；長按不節流，等 08 §12 實機確認 repeat 速度再調。
 - 理由：只攔自己處理的鍵，其他交給瀏覽器；OK 只走 keydown 一條路，不會觸發兩次。
 - 影響：`frontend/src/keys/keyScope.ts` 的 `onKeyDown`。
+
+## 2026-09-19 T20 焦點 hook 的介面與接法
+- 情況：04 §4.4 只寫 `useFocusList(ids)`、`useGrid(ids, cols)` 要處理哪些鍵，沒寫 hook 怎麼找到項目與要捲動的容器、怎麼接上 T19「一層只呼叫一次 `useKeys`」、OK 與數字鍵要做什麼、面板打開時畫面的清單怎麼辦。
+- 決定：
+  - `useFocusList(ids, { root, onActivate, digitOffset, active })`；`useGrid(ids, cols, { 同上, onLeftEdge })`。兩者都回傳 `{ focusedId, keys, focus }`。畫面先放 `keys`，再加自己的鍵：`useKeys({ ...list.keys, onHash, onStar, onMenu })`；面板相同，只是改成 `useKeys(..., { layer: 'overlay' })`。
+  - `root` 由畫面用 `useRef` 建立，放在包住項目的元素上；沒有項目的頁面放在內容上。項目要有 `data-focus-id` 與 `tabIndex={-1}`，只在 `root` 裡面找。要捲動的是 `root` 本身，或最近一個 `overflow-y: auto｜scroll` 的祖先（Shell 的內容區）。
+  - hook 不回傳 ref：React Compiler 的 lint（`react-hooks/refs`）看到回傳物件的某個屬性被放進 JSX 的 `ref`，會把整個物件當成 ref，之後讀 `list.keys`、`list.focusedId` 都會報錯。
+  - OK 與數字鍵都呼叫 `onActivate(id)`。數字 N 對應 `ids[N - 1 + digitOffset]`，超出清單就不動作。首頁連線失敗的警示卡沒有數字鍵帽，所以傳 `digitOffset: 1`（草圖的 `v.off`）。數字鍵會先把焦點移到該項再執行，所以返回時焦點在剛打開的項目上。`0` 不處理；畫面要用 `0`（B8 語音）時自己包一層 `onDigit`。
+  - 沒有項目時，`keys` 只有 ↑ ↓，一次捲動 60% 高度；不提供 `onEnter`、`onDigit`，由畫面自己加（例如走勢頁按 OK 換分頁）。
+  - `active: false` 表示上面蓋著面板：不移動 DOM 焦點、不寫 store、不理會歷史變化。變回 true 時，焦點回到原本的項目。畫面依網址的 `?sheet=` 算出（`active: !sheet`）；面板自己的清單用預設值 true。
+  - 每次 commit 後都重新套用焦點（真正的 DOM focus，並捲到可見範圍），項目重新 render 或內容位移時焦點不會掉。
+- 理由：畫面只需要一個 ref、一次 `useKeys`，lint 不會誤報；面板用明確的 `active` 判斷，和網址在同一次 render 生效，不會搶走面板的焦點。
+- 影響：`frontend/src/focus/useFocusList.ts`、`useGrid.ts`、`dom.ts`。之後的畫面照上面的方式接；B7 支援滑鼠點擊時用回傳的 `focus(id)`。
+
+## 2026-09-19 T20 捲動與九宮格邊界的細節
+- 情況：03 §5 寫「移出可見範圍時立即捲動並留 6px 邊距；第一項放得下時捲到最上面」「返回時依 ID 還原焦點與捲動位置」，沒寫怎麼量位置、捲動位置要不要另外存。02 §4 寫「九宮格一次跳一列」，沒寫在最上列、最下列按 ↑ ↓ 時怎麼辦；草圖把目標夾在 0–8 之間，會斜著跳到角落。
+- 決定：
+  - 焦點項目和可見範圍上下緣的距離小於 6px 就捲動，捲到剛好留 6px。判斷和捲動都用 6px（草圖用 4px 判斷、捲到 6px）。位置用 `getBoundingClientRect` 相對於捲動容器計算，中間隔幾層元素都正確。第一項放得下時，優先捲到最上面。
+  - 直接設定 `scrollTop`，不用 `scrollIntoView`，也不用平滑捲動。沒有項目時，一次捲 `round(可見高度 × 0.6)`。
+  - 捲動位置不另外存：返回時依 ID 還原焦點，再用同一條規則捲到可見範圍，和草圖的做法相同。
+  - 九宮格：↑ ↓ 的目標格不存在（在最上列、最下列，或最後一列比較短）時停在原地；◀ ▶ 只在同一列裡移動，最左欄再按 ◀ 呼叫 `onLeftEdge`，最右欄或右邊沒有格子時停在原地。
+- 理由：只用一個數字，最好理解也最好測；夾在範圍內會斜著跳，不符合「一次跳一列」。
+- 影響：`frontend/src/focus/dom.ts`（`SCROLL_MARGIN`、`PAGE_SCROLL`）、`useGrid.ts`。
+
+## 2026-09-19 T20 焦點的記憶與還原時機
+- 情況：04 §4.4 寫「每一筆歷史記住焦點 ID，返回時依 ID 還原，ID 不存在時落在第一項」，沒寫資料還沒載入、清單在畫面上改變、同一個畫面換到另一筆歷史時怎麼辦，也沒寫什麼時候寫進 store。
+- 決定：
+  - 以 `location.key` 為準。同一個畫面元件沒有卸載、但換到另一筆歷史時（同一路由 push、分頁 replace、面板關閉），依那一筆記住的 ID 還原；沒有紀錄就是新畫面，從第一項開始。
+  - 清單在畫面上改變時（資料載入、批發⇄零售）：焦點項目還在，就留在它身上；不見了，就移到原本位置上的項目（清單變短時是最後一項）。清單變空時沒有焦點，等項目回來再依記住的 ID 還原，所以返回時資料還在載入也能還原。
+  - 焦點一改變就寫進 session store：按鍵造成的移動在按鍵當下寫，因為打開項目後可能馬上離開畫面；還原與清單變動造成的改變在 effect 裡寫。`active` 是 false 時不寫。
+  - F13 重開後歷史的 key 是新的，而焦點 hook 只查目前的 key。T21 還原上次的畫面時，要在畫面第一次 render 前用 `rememberFocus(新的 key, selectLastFocusId(...))` 把焦點帶過去，否則會從第一項開始。
+- 理由：store 裡的焦點一直是最新的，不必等離開時才存（08 §7）；依 ID 而不是索引，資料順序改變也不會落在錯的項目。
+- 影響：`frontend/src/focus/restore.ts`（`restoreFocus`、`followList`、`useRestoredFocus`）；T21 的重開流程。
+
+## 2026-09-19 T20 前端覆蓋率門檻
+- 情況：baseline T20 要求 `src/lib`、`src/keys`、`src/focus`、`src/store` 合計 ≥ 90%，沒寫看哪幾項指標。
+- 決定：在 `frontend/vite.config.ts` 的 `coverage.thresholds` 用一個 glob `src/{lib,keys,focus,store}/**`，四個資料夾合計的 statements、branches、functions、lines 都要 ≥ 90%，不逐檔檢查。低於門檻時 `npm run coverage` 失敗；`make test` 與 CI 的前端 job 都跑這個指令。已確認暫時把門檻調到 100% 時確實會失敗。
+- 理由：四項都看，最不容易漏；照計畫寫的「合計」，和後端（services＋ingest 合計）一致。
+- 影響：`frontend/vite.config.ts`。之後有新的核心資料夾就加進 glob。
