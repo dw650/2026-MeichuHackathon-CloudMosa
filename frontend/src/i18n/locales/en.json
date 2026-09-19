@@ -218,7 +218,6 @@
     "average": "Monthly avg",
     "rateDate": "At the {{date}} rate",
     "rateShort": "Rate {{date}}",
-    "rateLine": "At the {{date}} rate: {{rate}}",
     "perKg": "{{currency}}/kg",
     "monthAverage": "{{month}} average",
     "noData": "No data yet",

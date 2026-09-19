@@ -231,7 +231,6 @@
     "average": "月均價",
     "rateDate": "以 {{date}} 匯率換算",
     "rateShort": "{{date}} 匯率",
-    "rateLine": "以 {{date}} 匯率換算：{{rate}}",
     "perKg": "{{currency}}/公斤",
     "monthAverage": "{{month}}均價",
     "noData": "尚無資料",

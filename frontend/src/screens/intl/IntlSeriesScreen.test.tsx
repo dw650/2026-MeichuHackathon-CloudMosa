@@ -51,7 +51,7 @@ describe('IntlSeriesScreen', () => {
     // The published price, the series as named by the World Bank, the rate and the credits.
     expect(screen.getByText('原始報價 471 美元/公噸')).toBeInTheDocument()
     expect(screen.getByText('系列：Rice, Thai 5%')).toBeInTheDocument()
-    expect(screen.getByText('以 9/19 匯率換算：1 美元＝31.83 TWD')).toBeInTheDocument()
+    expect(screen.getByText('1 美元＝31.83 TWD')).toBeInTheDocument()
     expect(screen.getByText('資料：世界銀行 Pink Sheet（9/2 更新）')).toBeInTheDocument()
     expect(screen.getByText('匯率：Rates By Exchange Rate API')).toBeInTheDocument()
 
@@ -72,7 +72,8 @@ describe('IntlSeriesScreen', () => {
     expect(big()).toBe('36.5')
     expect(screen.getByText('Aug 2026 average')).toBeInTheDocument()
     expect(screen.getByText('Published US$0.38/kg')).toBeInTheDocument()
-    expect(screen.getByText('At the 19/9 rate: US$1 = 95.99 INR')).toBeInTheDocument()
+    expect(screen.getByText('US$1 = 95.99 INR')).toBeInTheDocument()
+    expect(screen.getByText('At the 19/9 rate')).toBeInTheDocument()
     expect(screen.getByText('Source: World Bank Pink Sheet (updated 2/9)')).toBeInTheDocument()
     expect(screen.getByText('Rates By Exchange Rate API')).toBeInTheDocument()
   })

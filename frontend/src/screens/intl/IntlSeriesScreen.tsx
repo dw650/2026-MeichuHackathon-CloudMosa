@@ -174,14 +174,8 @@ function Facts({ data, fmt }: PartProps) {
     <div className={cx(styles.box, styles.facts)}>
       <span>{t('intl.published', { price: fmt.usd(data.usd, data.usd_unit) })}</span>
       <span>{t('intl.series', { name: data.source_name })}</span>
-      <span>
-        {data.fx
-          ? t('intl.rateLine', {
-              date: formatDay(data.fx.rate_date, fmt.months),
-              rate: fmt.rate(data.fx.per_usd, data.fx.currency),
-            })
-          : t('intl.noRate')}
-      </span>
+      {/* The rate's date is in the info bar already (docs/03 §1: said once per screen). */}
+      <span>{data.fx ? fmt.rate(data.fx.per_usd, data.fx.currency) : t('intl.noRate')}</span>
       <span>{published ? t('intl.source', { date: published }) : t('intl.sourceUndated')}</span>
       <Credit />
     </div>
