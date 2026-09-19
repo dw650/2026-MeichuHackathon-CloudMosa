@@ -186,7 +186,8 @@
   "markets": {
     "vsMedian": "Compared with median {{price}}",
     "noRetail": "No retail price for this market",
-    "seeAreaRetail": "See {{area}} retail"
+    "seeAreaRetail": "See {{area}} retail",
+    "distance": "{{km}} km"
   },
   "areas": {
     "title": "Choose area",
