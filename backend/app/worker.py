@@ -1,20 +1,23 @@
 """Worker: syncs the seed and runs every enabled provider at start-up, then again each day at
-00:05 local time of every country (docs/06 §8). `python -m app.worker --once` runs one pass."""
+00:05 local time of every country; real sources also refresh the last few days every hour while
+the markets publish (docs/06 §8). `python -m app.worker --once` runs one pass."""
 
 import argparse
 import asyncio
 import logging
-from collections.abc import Callable
-from datetime import UTC, datetime
+from collections.abc import Callable, Sequence
+from datetime import UTC, date, datetime
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_sessionmaker
-from app.ingest.pipeline import RunSummary, run_provider
+from app.ingest.pipeline import RunSummary, retire_sources, run_provider
+from app.ingest.providers import tw_moa
 from app.ingest.providers.base import PriceProvider
 from app.ingest.providers.mock import MockProvider
+from app.ingest.providers.tw_moa import TwMoaProvider, products_from_seeds
 from app.ingest.seed import sync_seed
 from app.middleware import configure_logging
 from app.seed.loader import load_seed_files
@@ -24,33 +27,67 @@ from app.timeutil import country_tz, local_today
 logger = logging.getLogger("app.worker")
 Clock = Callable[[], datetime]
 
+# Real sources: the countries they take over from the mock, and the hours (local time) of
+# their hourly refresh while the markets publish the day's prices (docs/06 §8).
+REAL_SOURCES: dict[str, tuple[str, ...]] = {tw_moa.SOURCE: TwMoaProvider.countries}
+REFRESH_HOURS: dict[str, str] = {tw_moa.SOURCE: "6-15"}
+
 
 def _utc_now() -> datetime:
     return datetime.now(UTC)
 
 
-def build_providers(ids: list[str], seeds: list[SeedFile], clock: Clock) -> list[PriceProvider]:
+def build_providers(
+    ids: list[str], seeds: list[SeedFile], clock: Clock, *, refresh: bool = False
+) -> list[PriceProvider]:
+    """The enabled providers. A real source takes its countries over from the mock, so a country
+    never mixes demo and real prices; `refresh` gives real sources their short window."""
     offsets = {s.country.code: s.country.utc_offset_min for s in seeds}
+
+    def today_of(country: str) -> date:
+        return local_today(offsets[country], clock())
+
+    real = {cc for provider_id in ids for cc in REAL_SOURCES.get(provider_id, ())}
     providers: list[PriceProvider] = []
     for provider_id in ids:
         if provider_id == "mock":
-            providers.append(
-                MockProvider(seeds, today_of=lambda cc: local_today(offsets[cc], clock()))
-            )
+            demo = [s for s in seeds if s.country.code not in real]
+            if demo:
+                providers.append(MockProvider(demo, today_of=today_of))
+        elif provider_id == tw_moa.SOURCE:
+            days = tw_moa.REFRESH_DAYS if refresh else tw_moa.WINDOW_DAYS
+            providers.append(TwMoaProvider(products_from_seeds(seeds), today_of, days=days))
         else:
             logger.warning("provider %r is not available yet; skipped", provider_id)
     return providers
 
 
-async def run_once(settings: Settings, clock: Clock = _utc_now) -> list[RunSummary]:
+def owners(providers: Sequence[PriceProvider], seeds: Sequence[SeedFile]) -> dict[str, set[str]]:
+    """country → the sources allowed to hold its prices."""
+    return {
+        s.country.code: {p.source for p in providers if s.country.code in p.countries}
+        for s in seeds
+    }
+
+
+async def run_once(
+    settings: Settings, clock: Clock = _utc_now, *, refresh: str | None = None
+) -> list[RunSummary]:
+    """Syncs the seed, removes prices of sources no longer enabled for a country, then runs the
+    enabled providers. `refresh` runs only that real source over its short window."""
     engine = create_engine(settings)
     maker = create_sessionmaker(engine)
     try:
         async with maker() as session:
             seeds = await sync_seed(session)
         today = {s.country.code: local_today(s.country.utc_offset_min, clock()) for s in seeds}
+        providers = build_providers(settings.provider_ids, seeds, clock, refresh=bool(refresh))
+        async with maker() as session:
+            await retire_sources(session, owners(providers, seeds))
+        if refresh:
+            providers = [p for p in providers if p.source == refresh]
         summaries = []
-        for provider in build_providers(settings.provider_ids, seeds, clock):
+        for provider in providers:
             async with maker() as session:
                 summaries.append(await run_provider(session, provider, today, clock=clock))
         return summaries
@@ -72,6 +109,27 @@ def schedule_daily(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[
         )
 
 
+def schedule_refresh(
+    scheduler: AsyncIOScheduler, settings: Settings, seeds: list[SeedFile]
+) -> None:
+    """Hourly refreshes of each enabled real source, in its country's local time."""
+    offsets = {s.country.code: s.country.utc_offset_min for s in seeds}
+    for source, hours in REFRESH_HOURS.items():
+        if source not in settings.provider_ids:
+            continue
+        country = REAL_SOURCES[source][0]
+        scheduler.add_job(
+            run_once,
+            CronTrigger(hour=hours, minute=0, timezone=country_tz(offsets[country])),
+            args=[settings],
+            kwargs={"refresh": source},
+            id=f"refresh-{source}",
+            coalesce=True,
+            max_instances=1,
+            misfire_grace_time=600,
+        )
+
+
 async def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--once", action="store_true", help="run one pass and exit")
@@ -83,7 +141,9 @@ async def main(argv: list[str] | None = None) -> None:
     if args.once:
         return
     scheduler = AsyncIOScheduler()
-    schedule_daily(scheduler, settings, load_seed_files())
+    seeds = load_seed_files()
+    schedule_daily(scheduler, settings, seeds)
+    schedule_refresh(scheduler, settings, seeds)
     scheduler.start()
     logger.info("scheduled: %s", [str(j.trigger) for j in scheduler.get_jobs()])
     await asyncio.Event().wait()

@@ -562,3 +562,23 @@
 - 理由：伺服器只需要對外連線；GitHub 上不用存能登入伺服器的金鑰；從標記到開始部署最多約一分鐘。
 - 取捨：GitHub 上看不到部署是否成功，要看網站或伺服器的日誌（`journalctl -u agriprice-deploy`）。
 - 影響：`.github/workflows/deploy.yml`、`scripts/deploy-poll.sh`、`scripts/deploy.sh`、`infra/deploy/`、docs/07 §5.2–5.3、README。
+
+## 2026-09-20 B2 台灣農業部真實批發行情（tw_moa）
+- 情況：06 §1 只寫了端點與「參數、欄位以實際回應為準」。實際呼叫後發現：`Crop` 是部分比對；每次回應都附上所有市場的休市公告；`$top` 上限 10000；同一作物有多個品種與進口貨，價格差很多；作物名稱和 mock 用的不同（甘薯、蕹菜、大蒜-蒜頭、濕香菇）。文件沒寫開啟真實來源後 mock 怎麼處理、要抓多少天、怎麼避免每小時重抓 60 天。
+- 決定：
+  - `PROVIDERS` 加上 `tw_moa` 才開啟，預設仍是 `mock`。開啟後台灣只用 `tw_moa`、印度仍是 mock，一個國家不混用兩種來源：worker 每次執行先刪掉各國「不是目前來源」的報價並重算那些日期，所以切換時舊的示範資料會消失，關掉 `tw_moa` 時台灣回到 mock。只設 `PROVIDERS=tw_moa` 時印度沒有任何資料。
+  - 台灣零售沒有資料（等 B4）；稻米、紅豆、芝麻在果菜批發市場沒有交易，也沒有資料。畫面照原本的規則顯示「—」與原因（`no_data`）。
+  - 對照表 `source_maps.tw_moa` 完全比對（name, variety）：空品種只對到沒有品種的品項。每個作物只收 seed 上 `variety` 的那個品種（例：甘藍只收「甘藍-初秋」，不收改良種與進口；香蕉收「香蕉」即北蕉），毛豆收「毛豆-豆莢」（鮮莢，不收豆仁），落花生收「生」，甘蔗收「帶皮」。mock 的對照（空品種＝任何品種）不變。
+  - 市場只對照 seed 的 14 個市場。東勢、溪湖、永靖、南投、台東等不在我們地區裡的市場記為 `unmapped`；不新增市場，因為會改變 mock 的畫面（例：台中市多一個永遠沒有資料的市場）。
+  - 抓法：每個品項一個請求、用日期區間抓完整段期間（約 18 個請求），不是每天每個品項一個請求；依序送出、間隔 1 秒，逾時 60 秒，429、5xx、網路錯誤最多試 3 次（間隔 5、10 秒）；errMsg、不是 JSON、其他 4xx 讓那次執行失敗，舊資料不動。provider 在第一次 `fetch(day)` 抓完整段期間，之後的 `fetch` 從同一批資料取，所以 provider 介面與 `run_provider` 都不用改。
+  - 期間：啟動時與每天的例行執行抓 60 天（和檢查規則的 60 天一致）；06 §8 的每小時更新（台灣 06:00–15:00）只抓最近 3 天，資料晚一兩天才出現也補得到。
+  - 休市公告（`作物代號` 為 `rest`）記成新的丟棄原因 `market_closed`，不算 `unmapped`；每個回應都會重複附上，同一列只留一次。為此 `RowError` 多了 `reason`。
+  - 06 §3.5「真實資料接上後改成『全國當天都沒有報價』才算休市」這次**沒有做**，台灣仍用週一休市。原因：實際資料裡週一也有幾個市場交易（西螺、花蓮等），照字面做的話幾乎不會有休市日；而且抓取失敗時每一天都會被當成「全國沒有報價」，舊資料就不會被標示出來。之後要做的話，建議改用來源的休市公告。【待確認】
+- 理由：顯示的價格和畫面上的品種一致；對照不到就丟、不猜；一次完整執行約 1 萬列、30 秒，每小時更新只有幾百列；provider 介面、`run_provider` 與 mock 資料都不變。
+- 影響：`backend/app/ingest/providers/tw_moa.py`（新）、`backend/app/ingest/{normalize,pipeline}.py`、`backend/app/ingest/providers/base.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`backend/app/seed/TW.yaml`、`backend/tests/fixtures/tw_moa_farmtrans.json`、`backend/tests/ingest/test_tw_moa.py`；兩個既有測試改了前提（`test_seed` 的 tp2 要從每個來源的對照表拿掉、`test_worker` 的「未實作來源」改用 `in_datagov`）；`.env.example`、docs/06 §1.2、§8、docs/04 §2、§5.2。要加品種或市場時改 `TW.yaml` 的 `source_maps.tw_moa`。
+
+## 2026-09-20 B2 驗收：沒有任何來源的國家不刪資料
+- 情況：驗收 B2 時發現，`PROVIDERS` 設錯（例如只寫 `tw_moa`、忘了 `mock`）時，印度沒有任何來源，`retire_sources` 會刪掉印度的所有價格。
+- 決定：沒有任何啟用中來源的國家，保留原本的價格並記一筆警告；只有在有來源可以取代時，才刪掉其他來源的價格。
+- 理由：設定錯誤頂多讓資料停在舊的，不能讓資料消失。
+- 影響：`backend/app/ingest/pipeline.py`、`backend/tests/ingest/test_pipeline.py`。

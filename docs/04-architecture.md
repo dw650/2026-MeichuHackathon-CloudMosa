@@ -46,7 +46,7 @@
 | `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `:8080` |
 | `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
-| `PROVIDERS` | 啟用的資料來源，逗號分隔 | `mock` |
+| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2） | `mock` |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
 | `GEOIP_DB_PATH` | IP 地理資料庫檔案路徑（DB-IP Lite City，免註冊；檔案不存在時位置推測回傳 `null`） | `/data/geoip/city.mmdb` |
 | `DATAGOV_API_KEY` | 印度 data.gov.in 金鑰（B3） | 空 |
@@ -171,6 +171,8 @@ class PriceProvider(Protocol):
     def normalize(self, raw: RawRow, maps: SourceMaps) -> NormalizedQuote | None:
         """轉成標準報價（每公斤、我們的代號）；對照不到回傳 None。"""
 ```
+
+真實來源可以在一次執行的第一個 `fetch` 就抓完整段期間（`tw_moa` 每個品項一個請求），之後的 `fetch` 從同一批資料取出，管線不必改。
 
 管線：`fetch → normalize → validate → upsert quotes → aggregate(受影響的日期) → 記錄 ingest_run`。每一步都是可單獨測試的函式；真實來源的測試用 `tests/fixtures/` 裡存下來的實際回應，**測試不連外網**。
 

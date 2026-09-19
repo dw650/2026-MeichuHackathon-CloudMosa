@@ -268,7 +268,7 @@ crops:
 
 # Source name → our id. The mock provider speaks the MOA FarmTransData format
 # (作物名稱 "甘藍-初秋", 市場名稱, 民國日期) for wholesale and a 物價查報-like format (縣市)
-# for retail. Empty variety = any.
+# for retail. Empty variety = any (except for tw_moa, see below).
 source_maps:
   mock:
     crops:
@@ -319,3 +319,43 @@ source_maps:
       - { source_area: 屏東縣, area: pingtung }
       - { source_area: 宜蘭縣, area: yilan }
       - { source_area: 花蓮縣, area: hualien }
+  # Real MOA FarmTransData names (bonus B2), taken from the API on 2026-09-20. Matching is
+  # exact: every (name, variety) pair is listed, and an empty variety only matches a product
+  # without one ("香蕉" is the common Pei-chiao banana). Other varieties and imported (進口)
+  # lots are left out on purpose, so the price is the variety in `crops[].variety`. 稻米, 紅豆
+  # and 芝麻 are not traded in the fruit and vegetable markets: those crops have no data.
+  tw_moa:
+    crops:
+      - { source_name: 甘藍, source_variety: 初秋, crop: cabbage }
+      - { source_name: 小白菜, source_variety: 土白菜, crop: bokchoy }
+      - { source_name: 香蕉, crop: banana }
+      - { source_name: 甘薯, source_variety: 臺農57號, crop: sweetpotato }
+      - { source_name: 青蔥, source_variety: 粉蔥, crop: scallion }
+      - { source_name: 番茄, source_variety: 牛番茄, crop: tomato }
+      - { source_name: 芒果, source_variety: 愛文, crop: mango }
+      - { source_name: 鳳梨, source_variety: 金鑽鳳梨, crop: pineapple }
+      - { source_name: 花椰菜, source_variety: 青梗, crop: cauliflower }
+      - { source_name: 蕹菜, source_variety: 小葉, crop: waterspinach }
+      - { source_name: 玉米, source_variety: 甜軟殼, crop: maize }
+      - { source_name: 番石榴, source_variety: 珍珠芭, crop: guava }
+      - { source_name: 毛豆, source_variety: 豆莢, crop: soybean }
+      - { source_name: 大蒜, source_variety: 蒜頭, crop: garlic }
+      - { source_name: 辣椒, source_variety: 朝天椒, crop: chilli }
+      - { source_name: 落花生, source_variety: 生, crop: peanut }
+      - { source_name: 甘蔗, source_variety: 帶皮, crop: sugarcane }
+      - { source_name: 濕香菇, crop: mushroom }
+    markets:
+      - { source_market: 台北一, market: tp1 }
+      - { source_market: 台北二, market: tp2 }
+      - { source_market: 三重區, market: sanchong }
+      - { source_market: 板橋區, market: banqiao }
+      - { source_market: 桃農, market: taoyuanm }
+      - { source_market: 台中市, market: taichungm }
+      - { source_market: 豐原區, market: fengyuan }
+      - { source_market: 西螺鎮, market: xiluo }
+      - { source_market: 嘉義市, market: chiayim }
+      - { source_market: 高雄市, market: kaohsiungm }
+      - { source_market: 鳳山區, market: fengshan }
+      - { source_market: 屏東市, market: pingtungm }
+      - { source_market: 宜蘭市, market: yilanm }
+      - { source_market: 花蓮市, market: hualienm }

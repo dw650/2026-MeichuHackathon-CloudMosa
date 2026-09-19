@@ -108,6 +108,21 @@ async def upsert_quotes(
         )
 
 
+async def delete_quotes_except(
+    session: AsyncSession, country: str, sources: Sequence[str]
+) -> list[date]:
+    """Deletes the country's quotes from every other source; returns the trade dates hit."""
+    result = await session.execute(
+        text(
+            "WITH gone AS (DELETE FROM quotes WHERE country = :country"
+            " AND NOT (source = ANY(CAST(:sources AS varchar[]))) RETURNING trade_date)"
+            " SELECT DISTINCT trade_date FROM gone ORDER BY trade_date"
+        ),
+        {"country": country, "sources": list(sources)},
+    )
+    return list(result.scalars().all())
+
+
 _MARKET_DAILY = text(
     """
     INSERT INTO market_daily (market_id, crop_id, trade_date, country, area_id,

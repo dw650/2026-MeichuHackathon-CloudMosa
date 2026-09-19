@@ -5,7 +5,7 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.ingest.pipeline import run_provider
+from app.ingest.pipeline import retire_sources, run_provider
 from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
 from app.ingest.providers.mock import MockProvider
 from app.ingest.seed import sync_seed
@@ -172,3 +172,37 @@ async def test_the_mock_pipeline_fills_the_aggregates(seeded: AsyncSession) -> N
     nashik = await area_row(seeded, "nashik")
     assert nashik is not None
     assert nashik[1] == 7  # Yeola, Malegaon and Manmad are not fresh
+
+
+async def test_retiring_a_source_removes_its_prices_and_aggregates(seeded: AsyncSession) -> None:
+    rows = [
+        row("lasalgaon", 10),
+        row("niphad", 20),
+        row(None, 37.6, price_type="retail", area_id="nashik"),
+    ]
+    await run_provider(seeded, FakeProvider(rows), DAYS, now=NOW)
+    await retire_sources(seeded, {"IN": {"mock"}, "TW": set()})  # "fake" no longer covers IN
+    for table in ("quotes", "market_daily", "area_daily"):
+        left = await seeded.execute(text(f"SELECT count(*) FROM {table}"))
+        assert left.scalar_one() == 0, table
+
+
+async def test_retiring_keeps_the_sources_still_enabled(seeded: AsyncSession) -> None:
+    await run_provider(
+        seeded, FakeProvider([row("lasalgaon", 10), row("niphad", 20)]), DAYS, now=NOW
+    )
+    await retire_sources(seeded, {"IN": {"fake", "mock"}})
+    price, n, _, _ = await area_row(seeded, "nashik")
+    assert (float(price), n) == (15, 2)
+
+
+async def test_a_country_without_any_enabled_source_keeps_its_prices(
+    seeded: AsyncSession,
+) -> None:
+    # A PROVIDERS typo must not wipe a country: with nothing to replace them, old prices stay.
+    await run_provider(
+        seeded, FakeProvider([row("lasalgaon", 10), row("niphad", 20)]), DAYS, now=NOW
+    )
+    await retire_sources(seeded, {"IN": set()})
+    price, n, _, _ = await area_row(seeded, "nashik")
+    assert (float(price), n) == (15, 2)

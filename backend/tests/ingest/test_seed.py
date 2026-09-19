@@ -139,9 +139,8 @@ async def test_sync_removes_entities_dropped_from_the_seed(
     await sync_seed(session)
     data = _raw("TW")
     data["areas"][0]["markets"].pop()  # taipei loses tp2
-    data["source_maps"]["mock"]["markets"] = [
-        m for m in data["source_maps"]["mock"]["markets"] if m["market"] != "tp2"
-    ]
+    for maps in data["source_maps"].values():
+        maps["markets"] = [m for m in maps["markets"] if m["market"] != "tp2"]
     _write(tmp_path, data)
     _write(tmp_path, _raw("IN"))
     await sync_seed(session, tmp_path)

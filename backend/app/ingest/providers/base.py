@@ -35,9 +35,14 @@ class SourceMaps:
     areas: dict[tuple[str, str], str]  # (country, source_area) → area
     market_area: dict[str, str]  # market → area
 
-    def crop(self, country: str, name: str, variety: str = "") -> str | None:
-        """Exact (name, variety) first, then the name alone (empty variety = any)."""
+    def crop(
+        self, country: str, name: str, variety: str = "", *, exact: bool = False
+    ) -> str | None:
+        """Exact (name, variety) first, then the name alone (empty variety = any). With
+        `exact`, only listed pairs match and an empty variety means "no variety"."""
         key = (country, name.strip(), variety.strip())
+        if exact:
+            return self.crops.get(key)
         return self.crops.get(key) or self.crops.get((country, name.strip(), ""))
 
     def market(self, country: str, name: str) -> str | None:
