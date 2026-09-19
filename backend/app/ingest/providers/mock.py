@@ -1,11 +1,12 @@
 """Mock provider (docs/06 §7): deterministic data in the real sources' formats.
 
-India wholesale looks like data.gov.in mandi rows (₹ per quintal, dd/mm/yyyy); India retail
-like DoCA rows (₹ per kg). Taiwan wholesale looks like MOA FarmTransData rows (NT$ per kg,
-Minguo dates); Taiwan retail like price survey rows. Malaysia looks like PriceCatcher rows
-joined with the premise lookup (RM per kg, one price per premise: a wholesale market, or one
-made-up wet market per district). Two metadata keys route each row: `_country` and `_type`
-(wholesale | retail); everything else mimics the source.
+India wholesale looks like Agmarknet 2.0 rows (₹ per quintal, arrivals in tonnes,
+dd/mm/yyyy); India retail like DoCA rows (₹ per kg). Taiwan wholesale looks like MOA
+FarmTransData rows (NT$ per kg, Minguo dates); Taiwan retail like price survey rows.
+Malaysia looks like PriceCatcher rows joined with the premise lookup (RM per kg, one price
+per premise: a wholesale market, or one made-up wet market per district). Two metadata keys
+route each row: `_country` and `_type` (wholesale | retail); everything else mimics the
+source.
 """
 
 import hashlib
@@ -63,11 +64,6 @@ def _trading_days(today: date, closed: tuple[int, ...]) -> tuple[date, ...]:
 
 def _rounded(value: float | None, digits: int | None = None) -> float | None:
     return None if value is None else round(value, digits)
-
-
-def _text(value: float | None, spec: str) -> str:
-    """A number as the source prints it; a blank when the mock has no value for it."""
-    return "" if value is None else format(value, spec)
 
 
 def _pricecatcher(
@@ -267,19 +263,19 @@ class MockProvider:
                 "交易量": _rounded(share),
             }
         if code == "IN":
+            # Agmarknet 2.0 rows: ₹ per quintal, arrivals in tonnes, the market as
+            # "<state id>|<market name>" in the seed (docs/06 §1.6).
+            state, _, name = source_market.partition("|")
             return head | {
-                "state": area.region["en"],
-                "district": area.name["en"],
-                "market": source_market,
-                "commodity": source_crop,
+                "stateId": state,
+                "commodityId": source_crop,
+                "marketName": name,
+                "arrivalDate": day.strftime("%d/%m/%Y"),
+                "arrivals": _rounded(share, 3),
                 "variety": crop.variety["en"],
-                "grade": "FAQ",
-                "arrival_date": day.strftime("%d/%m/%Y"),
-                "min_price": "" if low is None else str(round(low)),
-                "max_price": "" if high is None else str(round(high)),
-                "modal_price": str(round(price)),
-                # Not in data.gov.in; a mock-only extension so arrivals can be demonstrated.
-                "arrival_qtl": _text(share, ".1f"),
+                "minimumPrice": _rounded(low, 0),
+                "maximumPrice": _rounded(high, 0),
+                "modalPrice": float(round(price)),
             }
         raise ValueError(f"the mock has no wholesale format for {code}")
 
@@ -325,7 +321,7 @@ class MockProvider:
         """Routes each row to the normalizer of the format it imitates."""
         kind = (raw.get("_country"), raw.get("_type"))
         if kind == ("IN", "wholesale"):
-            return fmt.datagov_mandi(raw, maps, SOURCE)
+            return fmt.agmarknet(raw, maps, SOURCE)
         if kind == ("IN", "retail"):
             return fmt.in_retail(raw, maps, SOURCE)
         if kind == ("TW", "wholesale"):

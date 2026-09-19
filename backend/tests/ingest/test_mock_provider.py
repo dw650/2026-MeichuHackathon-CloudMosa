@@ -8,6 +8,19 @@ from app.ingest.providers.mock import MockProvider
 from app.seed.loader import load_seed_files
 
 TODAY = date(2026, 9, 19)  # Saturday; India closes on Sunday, Taiwan on Monday
+INDIA = next(s for s in load_seed_files() if s.country.code == "IN")
+
+
+def india_markets(area: str) -> set[str]:
+    """The Agmarknet market names the demo prints for an Indian district."""
+    ids = {m.id for a in INDIA.areas if a.id == area for m in a.markets}
+    maps = INDIA.source_maps["mock"].markets
+    return {m.source_market.split("|", 1)[1] for m in maps if m.market in ids}
+
+
+def in_area(rows: list[RawRow], area: str, centre: str) -> list[RawRow]:
+    names = india_markets(area)
+    return [r for r in rows if r.get("marketName") in names or r.get("centre") == centre]
 
 
 @pytest.fixture(scope="module")
@@ -25,8 +38,8 @@ async def _window(provider: MockProvider) -> list[RawRow]:
 def _day(row: RawRow) -> date:
     if row["_country"] == "MY":
         return date.fromisoformat(row["date"])
-    if "arrival_date" in row:
-        d, m, y = (int(x) for x in row["arrival_date"].split("/"))
+    if "arrivalDate" in row:
+        d, m, y = (int(x) for x in row["arrivalDate"].split("/"))
         return date(y, m, d)
     if "date" in row:
         d, m, y = (int(x) for x in row["date"].split("/"))
@@ -68,13 +81,14 @@ async def test_nothing_outside_the_sixty_day_window(provider: MockProvider) -> N
 
 async def test_areas_without_any_data(provider: MockProvider) -> None:
     rows = await _window(provider)
-    assert not [r for r in rows if r.get("district") == "Kurnool" or r.get("centre") == "Kurnool"]
+    assert india_markets("dakshinakannada")
+    assert not in_area(rows, "dakshinakannada", "Dakshina Kannada")
     assert not [r for r in rows if r.get("市場名稱") == "花蓮市" or r.get("縣市") == "花蓮縣"]
 
 
 async def test_three_day_old_areas(provider: MockProvider) -> None:
     rows = await _window(provider)
-    kolar = [r for r in rows if r.get("district") == "Kolar"]
+    kolar = in_area(rows, "kolar", "Kolar")
     yilan = [r for r in rows if r.get("市場名稱") == "宜蘭市" or r.get("縣市") == "宜蘭縣"]
     assert _latest(kolar) == TODAY - timedelta(days=3)
     assert _latest(yilan) == TODAY - timedelta(days=3)
@@ -82,19 +96,21 @@ async def test_three_day_old_areas(provider: MockProvider) -> None:
 
 async def test_yesterday_areas_and_crops(provider: MockProvider) -> None:
     rows = await _window(provider)
-    assert _latest([r for r in rows if r.get("district") == "Jalgaon"]) == date(2026, 9, 18)
+    assert _latest(in_area(rows, "jalgaon", "Jalgaon")) == date(2026, 9, 18)
     assert _latest([r for r in rows if r.get("市場名稱") == "嘉義市"]) == date(2026, 9, 18)
-    assert _latest([r for r in rows if r.get("commodity") == "Potato"]) == date(2026, 9, 18)
-    assert _latest([r for r in rows if r.get("commodity") == "Wheat"]) == date(2026, 9, 16)
+    potato = [r for r in rows if "24" in (r.get("commodityId"), r.get("commodity"))]
+    wheat = [r for r in rows if "1" in (r.get("commodityId"), r.get("commodity"))]
+    assert _latest(potato) == date(2026, 9, 18)
+    assert _latest(wheat) == date(2026, 9, 16)
     sweet = [r for r in rows if str(r.get("作物名稱", r.get("品項", ""))).startswith("甘藷")]
     assert _latest(sweet) == date(2026, 9, 18)
 
 
 async def test_market_level_exceptions(provider: MockProvider) -> None:
     rows = await _window(provider)
-    assert _latest([r for r in rows if r.get("market") == "Yeola"]) == date(2026, 9, 16)
-    assert _latest([r for r in rows if r.get("market") == "Malegaon"]) == date(2026, 9, 18)
-    assert _latest([r for r in rows if r.get("market") == "Manmad"]) is None
+    assert _latest([r for r in rows if r.get("marketName") == "APMC Yeola"]) == date(2026, 9, 16)
+    assert _latest([r for r in rows if r.get("marketName") == "APMC Malegaon"]) == date(2026, 9, 18)
+    assert _latest([r for r in rows if r.get("marketName") == "APMC Manmad"]) is None
     assert _latest([r for r in rows if r.get("市場名稱") == "豐原區"]) is None
 
 
@@ -102,27 +118,38 @@ async def test_crops_without_retail(provider: MockProvider) -> None:
     rows = await _window(provider)
     retail = [r for r in rows if r["_type"] == "retail"]
     assert retail
-    assert not [r for r in retail if r.get("commodity") in {"Green Chilli", "Soyabean"}]
+    assert not [r for r in retail if r.get("commodity") in {"73", "4"}]  # chilli, maize
     assert not [r for r in retail if r.get("品項") in {"花椰菜", "空心菜"}]
 
 
 async def test_areas_without_retail(provider: MockProvider) -> None:
     rows = await _window(provider)
     retail_areas = {r.get("centre") or r.get("縣市") for r in rows if r["_type"] == "retail"}
-    assert not retail_areas & {"Ahmednagar", "Kolar", "Kurnool", "雲林縣", "屏東縣"}
+    assert not retail_areas & {"Ahilyanagar", "Kolar", "Dakshina Kannada", "雲林縣", "屏東縣"}
     assert {"Nashik", "台北市"} <= retail_areas
 
 
-async def test_india_rows_use_data_gov_in_fields_and_quintals(provider: MockProvider) -> None:
-    rows = [r for r in await provider.fetch(TODAY) if r.get("market") == "Lasalgaon"]
-    onion = next(r for r in rows if r["commodity"] == "Onion")
-    assert onion["arrival_date"] == "19/09/2026"
-    assert onion["state"] == "Maharashtra"
-    assert onion["district"] == "Nashik"
-    assert onion["variety"] == "Red"
-    modal = float(onion["modal_price"])
-    assert 2350 * 0.97 <= modal <= 2350 * 1.03  # ₹ per quintal
-    assert float(onion["min_price"]) <= modal <= float(onion["max_price"])
+async def test_india_rows_look_like_agmarknet(provider: MockProvider) -> None:
+    rows = [r for r in await provider.fetch(TODAY) if r.get("marketName") == "APMC Lasalgaon"]
+    onion = next(r for r in rows if r["commodityId"] == "23")
+    assert set(onion) == {
+        "_country",
+        "_type",
+        "stateId",
+        "commodityId",
+        "marketName",
+        "arrivalDate",
+        "arrivals",
+        "variety",
+        "minimumPrice",
+        "maximumPrice",
+        "modalPrice",
+    }
+    assert (onion["arrivalDate"], onion["stateId"], onion["variety"]) == ("19/09/2026", "20", "Red")
+    modal = onion["modalPrice"]
+    assert 4000 * 1.017 * 0.98 <= modal <= 4000 * 1.017 * 1.02  # ₹ per quintal
+    assert onion["minimumPrice"] <= modal <= onion["maximumPrice"]
+    assert onion["arrivals"] > 0  # tonnes
 
 
 async def test_taiwan_rows_use_moa_fields_and_roc_dates(provider: MockProvider) -> None:
@@ -139,17 +166,17 @@ async def test_today_matches_the_base_price_and_the_previous_day_the_change(
 ) -> None:
     # Median over Nashik's fresh markets ≈ p (area k = 1), previous trading day ≈ p / (1 + chg).
     def nashik_onion(rows: list[RawRow]) -> list[float]:
-        wholesale = [r for r in rows if r["_type"] == "wholesale"]
+        names = india_markets("nashik")
         return [
-            float(r["modal_price"])
-            for r in wholesale
-            if r.get("district") == "Nashik" and r["commodity"] == "Onion"
+            float(r["modalPrice"])
+            for r in rows
+            if r.get("marketName") in names and r["commodityId"] == "23"
         ]
 
     today = median(nashik_onion(await provider.fetch(TODAY)))
     before = median(nashik_onion(await provider.fetch(TODAY - timedelta(days=1))))
-    assert today == pytest.approx(2350, rel=0.04)
-    assert today / before == pytest.approx(1.042, rel=0.04)
+    assert today == pytest.approx(4000, rel=0.04)
+    assert today / before == pytest.approx(1.021, rel=0.04)
 
 
 # ---------- Malaysia: PriceCatcher rows ----------

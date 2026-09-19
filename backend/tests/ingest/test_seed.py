@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 from typing import Any
 
@@ -8,6 +9,7 @@ from pydantic import ValidationError
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.ingest.normalize import SOURCE_KEY_MAX
 from app.ingest.seed import sync_seed
 from app.seed.loader import SEED_DIR, load_seed_file, load_seed_files
 
@@ -18,14 +20,15 @@ TW_CATEGORIES = ["leafy", "root", "gourd", "fruitveg", "spice", "fruit"]
 def test_seed_files_have_the_expected_areas_and_crops() -> None:
     seeds = {s.country.code: s for s in load_seed_files()}
     assert list(seeds) == ["IN", "TW", "MY"]
-    assert len(seeds["IN"].areas) == 11
+    assert len(seeds["IN"].areas) == 64
     assert len(seeds["TW"].areas) == 13
     assert len(seeds["MY"].areas) == 75
     assert len(seeds["IN"].crops) == 21
     assert len(seeds["TW"].crops) == 30
     assert len(seeds["MY"].crops) == 21
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
-    assert len(nashik.markets) == 10
+    assert len(nashik.markets) == 25
+    assert sum(len(a.markets) for a in seeds["IN"].areas) == 432
 
 
 def test_countries_without_their_own_categories_get_the_default_seven() -> None:
@@ -76,7 +79,7 @@ def test_default_watchlists_match_the_spec() -> None:
         "tomato",
         "potato",
         "chilli",
-        "soybean",
+        "chickpea",
         "maize",
         "wheat",
     ]
@@ -245,9 +248,9 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     await sync_seed(session)
     assert await _counts(session) == first
     assert first["countries"] == 3
-    assert first["areas"] == 99
+    assert first["areas"] == 152  # India 64, Taiwan 13, Malaysia 75
     assert first["crops"] == 72
-    assert first["markets"] == 57
+    assert first["markets"] == 458
 
 
 async def test_every_market_belongs_to_an_existing_area(session: AsyncSession) -> None:
@@ -355,3 +358,48 @@ def test_malaysia_maps_follow_the_pricecatcher_lookups() -> None:
         assert items[c.source_name]["unit"] == "1kg", c
     # The demo prints the same items, markets and districts.
     assert my.source_maps["mock"] == maps
+
+
+# Display names that differ from Agmarknet's district names.
+AGMARKNET_DISTRICT = {
+    "amravati": "Amarawati",
+    "ballari": "Bellary",
+    "bengaluru": "Bengaluru",
+    "sambhajinagar": "Chattrapati Sambhajinagar",
+}
+
+
+def test_india_maps_follow_the_agmarknet_filters() -> None:
+    """Checked against the source's own lists (tests/fixtures/in_agmarknet/filters_excerpt.json):
+    every market is "<state id>|<market name>" of a market in the area's district and state,
+    every crop an Agmarknet commodity id, and the demo uses the same names."""
+    path = (
+        Path(__file__).resolve().parents[1] / "fixtures" / "in_agmarknet" / "filters_excerpt.json"
+    )
+    filters = json.loads(path.read_text(encoding="utf-8"))
+    states = {s["state_id"]: s["state_name"] for s in filters["state_data"]}
+    districts = {d["id"]: d["district_name"] for d in filters["district_data"]}
+    markets = {
+        f"{m['state_id']}|{' '.join(m['mkt_name'].split())}"[:SOURCE_KEY_MAX]: m
+        for m in filters["market_data"]
+    }
+    commodities = {str(c["cmdt_id"]) for c in filters["cmdt_data"]}
+    india = next(s for s in load_seed_files() if s.country.code == "IN")
+    area_of_market = {m.id: a for a in india.areas for m in a.markets}
+    maps = india.source_maps["in_agmarknet"]
+    assert {m.market for m in maps.markets} == set(area_of_market)  # every market is mapped
+    for m in maps.markets:
+        source = markets[m.source_market]
+        area = area_of_market[m.market]
+        district = districts[source["district_id"]]
+        assert district == AGMARKNET_DISTRICT.get(area.id, area.name["en"]), m
+        state = states[source["state_id"]]
+        assert state == area.region["en"] or (state, area.id) == ("NCT of Delhi", "delhi"), m
+    assert {c.source_name for c in maps.crops} <= commodities
+    assert len(maps.crops) == len(india.crops)
+    mock = india.source_maps["mock"]
+    assert mock.crops == maps.crops
+    assert {(m.source_market, m.market) for m in mock.markets} <= {
+        (m.source_market, m.market) for m in maps.markets
+    }
+    assert {area_of_market[m.market].id for m in mock.markets} == {a.id for a in india.areas}
