@@ -208,6 +208,23 @@
       "area": "My area",
       "wholesaleUnit": "Wholesale unit",
       "retailUnit": "Retail unit"
+    },
+    "demo": {
+      "title": "Demo",
+      "fail": "Simulate API failure",
+      "failNote": "Price APIs return 503",
+      "stale": "Simulate area not updated",
+      "staleNote": "{{area}}: latest trade date moved back {{days}} days",
+      "locate": "Simulate location guess",
+      "locateNote": "The IP guess in first-run setup",
+      "on": "On",
+      "off": "Off",
+      "locations": {
+        "auto": "Auto",
+        "nashik": "India · Nashik",
+        "taipei": "Taiwan · Taipei",
+        "none": "No guess"
+      }
     }
   },
   "about": {
@@ -218,6 +235,7 @@
     "gap": "The retail–wholesale gap is not profit; it includes transport, loss and packing.",
     "demo": "All prices shown are demo data.",
     "source": "Data source",
-    "noMoney": "We never ask for money, PINs or codes."
+    "noMoney": "We never ask for money, PINs or codes.",
+    "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)"
   }
 }
