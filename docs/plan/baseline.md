@@ -90,7 +90,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - compose 的 project 名稱沿用資料夾名稱（不要寫死 `name:`），這樣兩個 worktree 可以同時起各自的服務。
   - 完成條件：`docker compose config` 沒有錯誤；`make up` 後 `db` 是 healthy。
 
-- [ ] **T02 後端骨架**
+- [x] **T02 後端骨架**
   - 參考：[04](../04-architecture.md) §5.1、§6.1；[05](../05-tech-stack.md) §3
   - 內容：
     - `uv` 專案、FastAPI、`config.py`（pydantic-settings）。
