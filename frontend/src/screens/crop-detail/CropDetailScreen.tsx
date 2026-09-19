@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { PlaceholderScreen } from '@/screens/placeholder/PlaceholderScreen'
 import { useSession } from '@/store/session'
 
+import { CompareTab } from './CompareTab'
 import { TodayTab } from './TodayTab'
 import { TrendTab } from './TrendTab'
 import { useDetail } from './useDetail'
@@ -23,7 +23,6 @@ export default function CropDetailScreen() {
   }, [cropId, known])
 
   if (detail.tab === 'trend') return <TrendTab detail={detail} />
-  // Placeholder until T29 builds the compare tab.
-  if (detail.tab === 'compare') return <PlaceholderScreen name="crop-detail" />
+  if (detail.tab === 'compare') return <CompareTab detail={detail} />
   return <TodayTab detail={detail} />
 }
