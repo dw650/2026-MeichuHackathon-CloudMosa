@@ -18,7 +18,7 @@
 
 - **baseline（T01–T39）已完成**：前後端、資料管線、全部畫面與狀態、兩種尺寸、兩國兩語，`make lint`、`make test`、`make audit`、`make e2e` 都通過。完成摘要在 [`plan/progress.md`](plan/progress.md) 最後；實作時自行決定的事項在 [`plan/decisions.md`](plan/decisions.md)。
 - 下一步是 **Phase 2**（部署到公開 HTTPS、在官方 Simulator 測試，並回填 [08 §12](08-platform-constraints.md)），由人接手；通過後再做加分項。
-- **CD 已提前完成**（加分項 B1，使用者要求）：dw650/harrykuo1 的 `main` CI 通過後，自動部署到 `http://203.116.30.131:3001`。這台 VM 的 80／443 被擋，還沒有 HTTPS，見 [07 §5.2](07-dev-workflow.md)。
+- **CD 已提前完成**（加分項 B1，使用者要求）：dw650/2026-MeichuHackathon-CloudMosa 的 `main` CI 通過後，自動部署到 `http://203.116.30.131:3001`。這台 VM 的 80／443 被擋，還沒有 HTTPS，見 [07 §5.2](07-dev-workflow.md)。
 
 ## 關鍵決定
 
