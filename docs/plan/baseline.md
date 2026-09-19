@@ -370,7 +370,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-E：狀態與收尾
 
-- [ ] **T35 狀態（F12）**
+- [x] **T35 狀態（F12）**
   - 參考：[02](../02-product-spec.md) §6；[04](../04-architecture.md) §8
   - 內容：
     - 骨架畫面；連線失敗時保留舊資料並標示；地區今天未更新；沒有零售資料；沒有資料。

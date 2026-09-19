@@ -24,6 +24,7 @@ import WatchScreen from '@/screens/watch/WatchScreen'
 import { debugRoutes } from './debugRoutes'
 import { DetailTabGuard } from './DetailTabGuard'
 import { RootLayout } from './RootLayout'
+import { ScreenError } from './ScreenError'
 
 export const SCREEN_NAMES = [
   'home',
@@ -64,31 +65,34 @@ export const SCREENS: ScreenMap = {
 }
 
 export function buildRoutes(screens: ScreenMap): RouteObject[] {
+  const children: RouteObject[] = [
+    { index: true, Component: screens.home },
+    { path: 'cat/:catId', Component: screens['crop-list'] },
+    { path: 'crop/:cropId/markets', Component: screens.markets },
+    { path: 'crop/:cropId/markets/:marketId', Component: screens.market },
+    {
+      path: 'crop/:cropId/:tab',
+      element: createElement(DetailTabGuard, { screen: screens['crop-detail'] }),
+    },
+    { path: 'areas', Component: screens.areas },
+    { path: 'watch', Component: screens.watch },
+    { path: 'settings', Component: screens.settings },
+    { path: 'settings/:item', Component: screens['settings-item'] },
+    { path: 'about', Component: screens.about },
+    { path: 'setup/lang', Component: screens['setup-lang'] },
+    { path: 'setup/langs', Component: screens['setup-langs'] },
+    { path: 'setup/locate', Component: screens['setup-locate'] },
+    { path: 'setup/country', Component: screens['setup-country'] },
+    { path: 'setup/area', Component: screens['setup-area'] },
+    ...debugRoutes,
+    { path: '*', element: createElement(Navigate, { to: '/', replace: true }) },
+  ]
+  // Every screen gets its own error boundary (docs/04 §8).
   return [
     {
       Component: RootLayout,
-      children: [
-        { index: true, Component: screens.home },
-        { path: 'cat/:catId', Component: screens['crop-list'] },
-        { path: 'crop/:cropId/markets', Component: screens.markets },
-        { path: 'crop/:cropId/markets/:marketId', Component: screens.market },
-        {
-          path: 'crop/:cropId/:tab',
-          element: createElement(DetailTabGuard, { screen: screens['crop-detail'] }),
-        },
-        { path: 'areas', Component: screens.areas },
-        { path: 'watch', Component: screens.watch },
-        { path: 'settings', Component: screens.settings },
-        { path: 'settings/:item', Component: screens['settings-item'] },
-        { path: 'about', Component: screens.about },
-        { path: 'setup/lang', Component: screens['setup-lang'] },
-        { path: 'setup/langs', Component: screens['setup-langs'] },
-        { path: 'setup/locate', Component: screens['setup-locate'] },
-        { path: 'setup/country', Component: screens['setup-country'] },
-        { path: 'setup/area', Component: screens['setup-area'] },
-        ...debugRoutes,
-        { path: '*', element: createElement(Navigate, { to: '/', replace: true }) },
-      ],
+      ErrorBoundary: ScreenError,
+      children: children.map((route) => ({ ...route, ErrorBoundary: ScreenError })),
     },
   ]
 }

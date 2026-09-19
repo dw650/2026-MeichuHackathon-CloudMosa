@@ -238,5 +238,12 @@
     "source": "Data source",
     "noMoney": "We never ask for money, PINs or codes.",
     "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)"
+  },
+  "errors": {
+    "screen": {
+      "title": "This screen ran into a problem",
+      "note": "Your settings are kept; go home and try again",
+      "home": "Back to home"
+    }
   }
 }

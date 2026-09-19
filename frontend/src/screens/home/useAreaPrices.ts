@@ -1,4 +1,9 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
+
+import { ApiError } from '@/api/client'
 import { type PriceItem, usePrices, useRefresh } from '@/api/queries'
+import { paths } from '@/app/paths'
 import { useCountryData } from '@/screens/shared/useCountryData'
 import { useSettings } from '@/store/settings'
 
@@ -42,6 +47,13 @@ export function useAreaPrices(crops: readonly string[] | 'all'): AreaPrices {
   )
   const data = query.isPlaceholderData ? undefined : query.data
   const catalogReady = catalog.crops.length > 0
+
+  // My area no longer exists (docs/04 §6.1): pick another one instead of a dead end.
+  const navigate = useNavigate()
+  const areaGone = query.error instanceof ApiError && query.error.code === 'area_not_found'
+  useEffect(() => {
+    if (areaGone) void navigate(paths.areas('home'), { replace: true })
+  }, [areaGone, navigate])
 
   let status: PricesStatus
   if (catalogReady && (data || none)) status = 'ready'

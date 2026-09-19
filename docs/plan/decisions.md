@@ -493,3 +493,12 @@
   - `TrendPoint` 新增 `closed`：只有該國的休市星期（`closed_weekdays`）而且沒有價格的那天，7 日走勢的 X 軸才寫「休」；其他沒有資料的日子照常寫星期、只畫空白帶。
 - 理由：檢查結果要反映使用者真的會看到的畫面；「休」只能用在休市日，不能掩蓋資料延遲。
 - 影響：`frontend/e2e/`、`frontend/src/components/{Skeleton,TrendChart}/`、`frontend/src/screens/crop-detail/TrendTab.tsx`。
+
+## 2026-09-19 T35 狀態處理的補強
+- 情況：各畫面在 T25–T33 已經做了 F12 的狀態，但還沒有 04 §8 的「每個畫面包一層 error boundary」，首頁與作物清單也沒處理「設定裡的地區已經不存在」（404 `area_not_found`）。
+- 決定：
+  - 路由表替每個畫面（與外層）加上 `ErrorBoundary: ScreenError`：畫面出錯時顯示「這個畫面出了問題／你的設定都還在」與「回首頁」出口（OK 以 replace 回首頁），不會變成空白頁。新增 `errors.screen.*` 字串（繁中、English）。
+  - 首頁與作物清單收到 `area_not_found` 時，以 replace 導向完整地區清單（`/areas?for=home`）重新選擇；詳情與市場畫面在 T27、T30 已經改成回首頁。
+  - 端對端用 demo 開關重現每種狀態：API 失敗且沒有舊資料（錯誤框＋重試）、只用按鍵從「設定 › Demo」打開 API 失敗後回首頁（保留舊資料、警示卡、「舊」標籤）、我的地區今天未更新、作物沒有零售、地區沒有資料。128×160 的卡片是單行，警示卡只保留「連線失敗」標題。
+- 理由：每種錯誤都有出口；設定失效時直接帶使用者到能修正的畫面。
+- 影響：`frontend/src/app/{ScreenError.tsx,routes.ts}`、`frontend/src/screens/home/useAreaPrices.ts`、`frontend/e2e/states.spec.ts`、locale 檔。

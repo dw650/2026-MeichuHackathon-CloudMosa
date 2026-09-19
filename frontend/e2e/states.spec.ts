@@ -49,3 +49,36 @@ test('an area without any data shows 「—」 and 無資料, never 0', async ({
   await expect(page.getByText('無資料').first()).toBeVisible()
   await expectCleanScreen(page, errors)
 })
+
+test('turning on API failure in Settings › Demo keeps the old data and marks it', async ({
+  page,
+  errors,
+}, info) => {
+  await seed(page, { country: 'IN' })
+  await page.goto('/')
+  await settled(page)
+  await page.keyboard.press('Escape') // menu
+  await settled(page)
+  await page.keyboard.press('5') // 設定
+  await settled(page)
+  await expect.poll(() => new URL(page.url()).pathname).toBe('/settings')
+  await page.keyboard.press('6') // Demo (demo builds only)
+  await settled(page)
+  await expect.poll(() => new URL(page.url()).pathname).toBe('/settings/demo')
+  await page.keyboard.press('Enter') // 模擬 API 失敗: on
+  await settled(page)
+  await page.goBack()
+  await page.goBack()
+  await settled(page)
+  // 128×160 cards are single-line (docs/03 §6): the notice keeps its title, not the time.
+  const notice =
+    info.project.name === 'qqvga'
+      ? page.getByText('連線失敗')
+      : page.getByText(/先顯示 \d{1,2}:\d{2} 的資料/)
+  await expect(notice.first()).toBeVisible()
+  await expect(page.getByText('舊').first()).toBeVisible()
+  await expectCleanScreen(
+    page,
+    errors.filter((e) => !e.includes('503')),
+  )
+})
