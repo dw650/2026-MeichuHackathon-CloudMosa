@@ -1,6 +1,11 @@
 // Restoring the focus by item id (docs/04 §4.4, docs/03 §5): every history entry remembers
 // its focused item; coming back to it focuses that item again, wherever it now is in the list.
 
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router'
+
+import { selectFocusId, useSession } from '@/store/session'
+
 /** Where a list's focus is. */
 export interface FocusState {
   /** `location.key` of the history entry this focus belongs to. */
@@ -46,4 +51,52 @@ export function followList(
   const place = Math.min(state.index, ids.length - 1)
   const id = ids[place]
   return id === undefined ? { ...state, id: null, index: -1 } : { ...state, id, index: place }
+}
+
+/** The item remembered for history entry `key`, straight from the session store. */
+const rememberedFor = (key: string): string | null => selectFocusId(key)(useSession.getState())
+
+/** A list's focus as `useRestoredFocus` keeps it. */
+export interface ListFocus {
+  /** The focused item's id; `null` while the list is empty. */
+  readonly id: string | null
+  /** Its index in the list; -1 while the list is empty. */
+  readonly index: number
+  /** Focuses a listed item and remembers it for the history entry at once. */
+  focus(id: string): void
+}
+
+/**
+ * The focused item of `ids`, remembered per history entry (`location.key`) in the session store
+ * and restored by id whenever the entry shows again, even while the screen stays mounted (another
+ * entry of the same route, or a panel closing). A new entry starts on the first item.
+ *
+ * While `active` is false (a panel is open above the list), the focus stays with the entry it
+ * belongs to: history changes are ignored and nothing is remembered.
+ */
+export function useRestoredFocus(ids: readonly string[], active: boolean): ListFocus {
+  const { key } = useLocation()
+  const [state, setState] = useState(() => restoreFocus(ids, key, rememberedFor(key)))
+  const next =
+    active && state.key !== key
+      ? restoreFocus(ids, key, rememberedFor(key))
+      : followList(ids, state, () => rememberedFor(state.key))
+  // Adjusting state while rendering: React re-renders at once, before anything is committed.
+  if (next !== state) setState(next)
+
+  useEffect(() => {
+    if (active && next.id !== null) useSession.getState().rememberFocus(next.key, next.id)
+  }, [active, next.key, next.id])
+
+  return {
+    id: next.id,
+    index: next.index,
+    focus: (id) => {
+      const index = ids.indexOf(id)
+      if (index === -1 || id === next.id) return
+      setState({ key: next.key, id, index })
+      // Now, not in the effect: opening the item may leave the screen before effects run.
+      useSession.getState().rememberFocus(next.key, id)
+    },
+  }
 }
