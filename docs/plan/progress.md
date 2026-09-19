@@ -30,3 +30,5 @@
 - 2026-09-19 T23 完成：src/components 的 Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton（另有 Tile、PriceTypeTag、IconGrid），SVG 搬到 src/icons；漲跌色改由 UpIsPosContext 決定；/debug/components 展示頁在兩種尺寸與語言下沒有溢出、字級不低於下限（45cf36f）
 - 2026-09-19 T24 完成：Playwright 設定、只輸出 JSON 摘要的報告器、失敗才截圖、溢出／字級下限／焦點／console 檢查、make e2e（demo 模式完整服務）與 e2e.yml；元件展示頁在兩種尺寸 × 兩種語言通過（00cc165）
 - 2026-09-19 同步點 1 完成：T23、T24 合併進 main，make lint、make test（前端 404、後端 157）、make e2e（70 項）全部通過（00cc165）
+- 2026-09-19 T25 完成：首頁「關注」作物卡片（價格、漲跌、7 日走勢、非今日標示、無資料說明）與「全部作物」九宮格，◀ ▶ 換分頁、`*` 批發／零售、`#` 換地區面板、左軟鍵選單、1–9 直接開啟，含載入、連線失敗（有／無舊資料）與 128×160 縮減（55cb19b）
+- 2026-09-19 T26 完成：作物清單（分類、全部、最近看過）共用首頁的作物卡片與狀態，一次 `/prices` 供所有清單使用，空清單顯示「無資料」，未知分類導回首頁（ecb30b3）
