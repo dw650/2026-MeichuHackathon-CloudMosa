@@ -233,7 +233,7 @@ export interface paths {
         };
         /**
          * Farm price news of a country
-         * @description Up to 9 news items of the last 7 days: those mentioning the area (any of its names) first, then the newest first. `summary` is null when no summary could be made from the article; never invented. Updated once a day at 00:00 local time.
+         * @description Up to 9 news items of the last 7 days, the newest first; `area_ids` says which areas an item mentions (any of their names). `summary` is null when no summary could be made from the article; never invented. Updated once a day at 00:00 local time.
          */
         get: operations["news"];
         put?: never;
@@ -922,7 +922,7 @@ export interface components {
             fetched_at: string | null;
             /**
              * Items
-             * @description At most 9: items mentioning the area first, then the newest first.
+             * @description At most 9, the newest first. `area_ids` says which areas an item mentions.
              */
             items: components["schemas"]["NewsItemOut"][];
             /**
@@ -2308,7 +2308,7 @@ export interface operations {
     news: {
         parameters: {
             query: {
-                /** @description The user's area, listed first */
+                /** @description The user's area */
                 area: string;
                 /** @description Country code */
                 country: string;

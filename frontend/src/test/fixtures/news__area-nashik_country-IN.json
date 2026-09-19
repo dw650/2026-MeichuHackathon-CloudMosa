@@ -5,27 +5,6 @@
  "items": [
   {
    "area_ids": [
-    "nashik"
-   ],
-   "crop_ids": [
-    "onion"
-   ],
-   "days_ago": 1,
-   "id": 7,
-   "lang": "en",
-   "published_at": "2026-09-18T23:40:00+05:30",
-   "published_date": "2026-09-18",
-   "source": {
-    "domain": "demo.example",
-    "name": "Demo data"
-   },
-   "summary": "Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.",
-   "summary_lang": "en",
-   "title": "Onion prices ease at Lasalgaon as arrivals rise",
-   "url": "https://demo.example/in/1"
-  },
-  {
-   "area_ids": [
     "pune"
    ],
    "crop_ids": [
@@ -44,6 +23,27 @@
    "summary_lang": "en",
    "title": "Tomato prices climb in Pune wholesale market after heavy rain",
    "url": "https://demo.example/in/2"
+  },
+  {
+   "area_ids": [
+    "nashik"
+   ],
+   "crop_ids": [
+    "onion"
+   ],
+   "days_ago": 1,
+   "id": 7,
+   "lang": "en",
+   "published_at": "2026-09-18T23:40:00+05:30",
+   "published_date": "2026-09-18",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.",
+   "summary_lang": "en",
+   "title": "Onion prices ease at Lasalgaon as arrivals rise",
+   "url": "https://demo.example/in/1"
   },
   {
    "area_ids": [],

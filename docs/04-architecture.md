@@ -212,7 +212,7 @@ class PriceProvider(Protocol):
 | `GET /crops/{crop}/markets/{market}?country=` | 單一市場 | 代表價、漲跌、當日區間、來源 |
 | `GET /intl?country=` | 國際參考價清單（B5） | 國家幣別與今天、換算用的匯率（`fx`：每美元多少、匯率日期）、Pink Sheet 更新日；每條序列：名稱、規格、原文名稱、最新月份、原始美元價與單位、每公斤當地價、比上月、`reason` |
 | `GET /intl/{series}?country=` | 單一國際序列（B5） | 同上一條序列的欄位，加上 12 個月序列（沒有價格的月份為 `null`）與這 12 個月的高、低、平均、比平均 |
-| `GET /news?country=&area=` | 新聞清單（N1） | 最近 7 天最多 9 則：提到 `area` 的排前面，其餘新到舊；每則有標題、語言、摘要（可能為 `null`）、發布者與網域、發布時間（國家時區）、當地日期、`days_ago`、相關作物、提到的地區；另有 `fetched_at`（最近一次成功抓取） |
+| `GET /news?country=&area=` | 新聞清單（N1） | 最近 7 天最多 9 則，新到舊；每則有標題、語言、摘要（可能為 `null`）、發布者與網域、發布時間（國家時區）、當地日期、`days_ago`、相關作物、提到的地區；另有 `fetched_at`（最近一次成功抓取） |
 | `GET /news/{id}` | 新聞內容 | 同一則的欄位加上 `country`、`today`；不存在或超過 7 天回 404 `news_not_found` |
 
 - 比價頁的四種排序在**前端**做（地區最多幾十個，換排序不必重抓）；名次由後端算，不受排序影響。

@@ -24,15 +24,15 @@ const failNews = http.get('*/api/v1/news', () =>
 const AFTER_RETRY = { timeout: 3000 }
 
 describe('NewsListScreen', () => {
-  it('lists my area first with summaries, dates and sources; digits open an item', async () => {
+  it('lists the newest first with summaries, dates and sources; digits open an item', async () => {
     const app = await renderApp('/news', { country: 'TW', history: ['/'] })
     await screen.findByText('芭樂盛產 屏東產地價格回落', { exact: false })
 
     expect(screen.getByRole('heading', { name: '新聞' })).toBeInTheDocument()
     expect(screen.getByText('台北市')).toBeInTheDocument()
     expect(screen.getByText('9/19 14:10')).toBeInTheDocument()
-    expect(focusIds()).toEqual(['news:1', 'news:2', 'news:3', 'news:4', 'news:5', 'news:6'])
-    // Item 1 mentions 台北 and comes first although item 2 is newer.
+    // Newest first: item 2 comes before item 1, which mentions 台北 (my area).
+    expect(focusIds()).toEqual(['news:2', 'news:1', 'news:3', 'news:4', 'news:5', 'news:6'])
     expect(card('news:1')).toHaveTextContent('颱風前搶收 台北市場甘藍到貨減少')
     expect(card('news:1')).toHaveTextContent('甘藍 · 今天')
     expect(card('news:1')).toHaveTextContent('示範資料')
@@ -40,18 +40,18 @@ describe('NewsListScreen', () => {
     expect(card('news:6')).toHaveTextContent('青蔥 · 9/16 週三')
     // No summary: title, crop, date and source only.
     expect(card('news:3').querySelectorAll('[lang]')).toHaveLength(1)
-    expect(card('news:1').querySelector('kbd')).toHaveTextContent('1')
+    expect(card('news:2').querySelector('kbd')).toHaveTextContent('1')
 
-    expect(app.focusedId()).toBe('news:1')
+    expect(app.focusedId()).toBe('news:2')
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
       '',
       '開啟',
       '返回',
     ])
     app.press('ArrowDown')
-    expect(app.focusedId()).toBe('news:2')
+    expect(app.focusedId()).toBe('news:1')
     app.press('Enter')
-    await waitFor(() => expect(app.path()).toBe('/news/2'))
+    await waitFor(() => expect(app.path()).toBe('/news/1'))
     await app.back()
     expect(app.path()).toBe('/news')
     app.press('4')
@@ -64,7 +64,7 @@ describe('NewsListScreen', () => {
     expect(screen.getByRole('heading', { name: 'News' })).toBeInTheDocument()
     expect(card('news:7')).toHaveTextContent('Onion · Yesterday')
     expect(card('news:8')).toHaveTextContent('Tomato · Today')
-    expect(focusIds()[0]).toBe('news:7') // Lasalgaon is in Nashik
+    expect(focusIds()[0]).toBe('news:8') // the newest, although 7 mentions Nashik (my area)
   })
 
   it('lists Malaysia with its Malay headlines marked as Malay', async () => {
@@ -72,7 +72,7 @@ describe('NewsListScreen', () => {
     await screen.findByText('Chilli prices ease at the Kuala Lumpur wholesale market', {
       exact: false,
     })
-    expect(focusIds()[0]).toBe('news:12') // Kuala Lumpur first
+    expect(focusIds()[0]).toBe('news:13') // the newest, although 12 mentions Kuala Lumpur
     expect(card('news:14')).toHaveTextContent('Cabbage · Yesterday')
     expect(card('news:14').querySelector('[lang="ms"]')).toHaveTextContent(
       'Harga kubis dan sawi turun di Pahang',

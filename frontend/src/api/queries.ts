@@ -210,11 +210,11 @@ export function useIntlSeries(country: string | null | undefined, series: string
 
 export interface NewsParams {
   country: string
-  /** My area: news mentioning it come first. */
+  /** My area: the list is of my country and names the areas its items mention. */
   area: string
 }
 
-/** The 新聞 list (docs/02 §5.9): up to 9 items, my area first. */
+/** The 新聞 list (docs/02 §5.9): up to 9 items, the newest first. */
 export function useNews(p: NewsParams | null) {
   return useQuery({
     queryKey: p ? queryKeys.news(p) : ['news', 'off'],

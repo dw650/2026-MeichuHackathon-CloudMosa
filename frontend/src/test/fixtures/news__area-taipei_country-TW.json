@@ -5,27 +5,6 @@
  "items": [
   {
    "area_ids": [
-    "taipei"
-   ],
-   "crop_ids": [
-    "cabbage"
-   ],
-   "days_ago": 0,
-   "id": 1,
-   "lang": "zh-TW",
-   "published_at": "2026-09-19T02:10:00+08:00",
-   "published_date": "2026-09-19",
-   "source": {
-    "domain": "demo.example",
-    "name": "示範資料"
-   },
-   "summary": "颱風接近，產地提前搶收，台北果菜市場的甘藍到貨量比上週少。盤商預估颱風過後幾天價格仍會偏高。",
-   "summary_lang": "zh-TW",
-   "title": "颱風前搶收 台北市場甘藍到貨減少 批發價走高",
-   "url": "https://demo.example/tw/1"
-  },
-  {
-   "area_ids": [
     "pingtung"
    ],
    "crop_ids": [
@@ -44,6 +23,27 @@
    "summary_lang": "zh-TW",
    "title": "芭樂盛產 屏東產地價格回落",
    "url": "https://demo.example/tw/2"
+  },
+  {
+   "area_ids": [
+    "taipei"
+   ],
+   "crop_ids": [
+    "cabbage"
+   ],
+   "days_ago": 0,
+   "id": 1,
+   "lang": "zh-TW",
+   "published_at": "2026-09-19T02:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "示範資料"
+   },
+   "summary": "颱風接近，產地提前搶收，台北果菜市場的甘藍到貨量比上週少。盤商預估颱風過後幾天價格仍會偏高。",
+   "summary_lang": "zh-TW",
+   "title": "颱風前搶收 台北市場甘藍到貨減少 批發價走高",
+   "url": "https://demo.example/tw/1"
   },
   {
    "area_ids": [
