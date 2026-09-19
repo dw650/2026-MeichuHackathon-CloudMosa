@@ -37,27 +37,26 @@ import {
 function pointsOf(
   quote: Quote,
   days: Days,
-  weekdays: readonly string[],
-  zh: boolean,
+  initials: readonly string[],
   closedWeekdays: readonly number[],
 ) {
   return quote.series.slice(-days).map((point): TrendPoint => {
     const date = parseLocalDate(point.date)
-    const weekday = date ? (weekdays[date.weekday] ?? '') : ''
+    const weekday = date ? (initials[date.weekday] ?? '') : ''
     // Only the country's closed weekdays (ISO, 7 = Sunday) read 休; other gaps are missing data.
     const isoWeekday = date ? (date.weekday === 0 ? 7 : date.weekday) : 0
     return {
       value: point.price_per_kg,
       closed: point.price_per_kg === null && closedWeekdays.includes(isoWeekday),
-      // 7 days: the weekday's initial (六, Sa); 30 days: 9/19 (the chart picks a few).
-      label: !date ? '' : days === 7 ? weekday.slice(0, zh ? 1 : 2) : `${date.month}/${date.day}`,
+      // 7 days: the weekday's initial (六, Sa, शु); 30 days: 9/19 (the chart picks a few).
+      label: !date ? '' : days === 7 ? weekday : `${date.month}/${date.day}`,
     }
   })
 }
 
 /** 走勢 (T28): the 7- or 30-day line with its high, low and swing. */
 export function TrendTab({ detail }: { detail: Detail }) {
-  const { t, lang, dates } = useText()
+  const { t, dates } = useText()
   const { nav, days } = detail
   const fmt = usePriceFormat()
   const setPriceType = useSettings((s) => s.setPriceType)
@@ -66,9 +65,7 @@ export function TrendTab({ detail }: { detail: Detail }) {
   const data = quote.data
   const stage = stageOf(data, quote.error)
   const noRetail = data && isNoRetail(data.reason) ? data.reason : null
-  const points = data
-    ? pointsOf(data, days, dates.weekdays, lang.startsWith('zh'), closedWeekdays)
-    : []
+  const points = data ? pointsOf(data, days, dates.weekdayInitials, closedWeekdays) : []
   const empty = points.every((point) => point.value === null)
   const oldData = stage === 'ready' && quote.error !== null
   const ids = [

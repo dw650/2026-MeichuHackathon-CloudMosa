@@ -28,6 +28,13 @@ describe('dateLabels', () => {
     expect(formatDate('2026-09-13', hi)).toBe('रवि 13/9')
   })
 
+  it('gives whole weekday initials for the chart axis', () => {
+    expect(zh.weekdayInitials).toEqual(['日', '一', '二', '三', '四', '五', '六'])
+    expect(en.weekdayInitials).toEqual(['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'])
+    expect(ms.weekdayInitials).toEqual(['Ah', 'Is', 'Se', 'Ra', 'Kh', 'Ju', 'Sa'])
+    expect(hi.weekdayInitials).toEqual(['र', 'सो', 'मं', 'बु', 'गु', 'शु', 'श'])
+  })
+
   it('writes the day first in the data times of Malay and Hindi', () => {
     expect(formatDateTime('2026-09-19T11:40:00+08:00', ms)).toBe('19/9 11:40')
     expect(formatDateTime('2026-09-19T11:40:00+05:30', hi)).toBe('19/9 11:40')

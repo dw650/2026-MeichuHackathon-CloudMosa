@@ -43,6 +43,18 @@ describe('crop detail · 走勢 tab (T28)', () => {
     expect(app.path()).toBe('/crop/onion/today?days=30')
   })
 
+  // Sunday 9/13 (closed) to Saturday 9/19: never a vowel sign cut off its letter (शनि → शन).
+  it.each<['hi' | 'ms', string, string[]]>([
+    ['hi', '7 दिन का रुझान', ['बंद', 'सो', 'मं', 'बु', 'गु', 'शु', 'श']],
+    ['ms', 'Trend 7 hari', ['X', 'Is', 'Se', 'Ra', 'Kh', 'Ju', 'Sa']],
+  ])('labels the 7-day axis with whole weekday initials in %s', async (lang, title, ticks) => {
+    await renderApp('/crop/onion/trend', { lang })
+    expect(await screen.findByText(title)).toBeInTheDocument()
+    expect(Array.from(document.querySelectorAll('text.tick'), (tick) => tick.textContent)).toEqual(
+      ticks,
+    )
+  })
+
   it('offers wholesale when the crop has no retail price', async () => {
     const app = await renderApp('/crop/chilli/trend')
     await screen.findByText('7 日走勢')
