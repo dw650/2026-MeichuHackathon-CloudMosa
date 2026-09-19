@@ -633,3 +633,48 @@
   - `ingest_runs` 新增 `requests`、`files`、`maps_hash`（migration `74f6aadac0c6`）。`PROVIDERS=mock` 的結果和原本完全相同。
 - 理由：新增來源只要寫 provider 與 `INFO`，不必改 worker；重新部署不會重抓 60 天；每次執行花了多少請求看得到。
 - 影響：`backend/app/ingest/{http,policy,registry,pipeline}.py`、`backend/app/ingest/providers/{base,mock,tw_moa}.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`backend/app/db/models.py` 與 migration；測試 `test_http`、`test_policy`、`test_contract`、`test_worker`（原本的「每小時更新用短期間」改成「依排定的日期抓」，`test_tw_moa` 改用登記表替換來源）；docs/06 §1.2、§1.4、§8，docs/04 §5.2。
+
+## 2026-09-20 馬來西亞的地區、市場與作物
+- 情況：使用者同意加入第三個國家馬來西亞（英文顯示），資料來自官方 PriceCatcher。文件只給了方向（8–11 個縣、涵蓋各州、包含有批發市場與濕巴剎多的縣、每個分類至少 2 種作物），具體選哪些要看資料。
+- 決定：
+  - 11 個地區，每州或直轄區一個縣：Kuala Lumpur（整個直轄區；PriceCatcher 把吉隆坡分成 11 個國會選區，每區的濕巴剎太少）、Klang、Johor Bahru、Timur Laut、Kinta、Kota Bharu、Kuantan、Kuala Terengganu、Seremban、Kulim、Kuching。有 Borong 的縣優先（7 個），再補濕巴剎多、每天都有回報的縣。沒選 Melaka Tengah（只有 2 個濕巴剎）與 Larut, Matang & Selama（有 Borong，但名稱在 128×160 放不下，Perak 改選 Kinta）。
+  - 名稱兩種語言都用英文（和印度相同），州名用 PriceCatcher 的寫法（Penang 例外）。座標是縣的中心（首府），`km` 是市場到縣中心的大約直線距離。
+  - 市場：7 個 Borong 各是所在縣的唯一市場；Timur Laut、Kinta、Kota Bharu、Kuching 沒有市場。
+  - 作物 20 種：只選濕巴剎有報價、以 1 公斤計價、多數縣每天都有的品項；每個作物只對照一個品項（例：甘藍用北京進口的 1458，比中國進口的 104 回報多）。資料做不到的分類：穀物只有麵粉（每週報一次）、水果只有萊姆與金桔、「其他」沒有作物，`test_seed` 把這兩個例外寫明。每週才報一次的花生、椰絲、麵粉平常會顯示「N 天前」。
+  - 國家設定：MYR、`en-MY`、UTC+8、沒有固定休市日、漲為綠色（`up_is_pos: true`，和 Bursa Malaysia 相同）、代表價叫「查報價」、單位 RM／公斤（2 位小數，有「仙」）與 RM／斤（kati＝0.605 公斤）、資料來源名稱附 CC BY 4.0。預設地區 Kuala Lumpur，預設關注番茄、甘藍、辣椒、洋蔥、黃瓜、小白菜、蒜頭。
+  - mock 參數依 2026 年 9 月濕巴剎價格的中位數估計；例外情境：Kuching 昨天、Kulim 3 天前、花生 2 天前、麵粉 3 天前。
+- 理由：地區分散在各州、每個地區都有足夠的回報點；只放真的有資料的作物，開真實資料時每種作物都有價格。
+- 影響：`backend/app/seed/MY.yaml`、`backend/tests/ingest/test_seed.py`、`frontend/src/icons/`（新畫 8 個圖示）、docs/06 §7.2–7.4。
+
+## 2026-09-20 PriceCatcher：零售取濕巴剎的中位數、沒有批發價
+- 情況：PriceCatcher 是每個回報點（premise）一個價格，06 §3.3 規定零售是每個地區每天一個價格。原本以為 Borong（批發市場）可以當市場，實際下載後發現：15 個 Borong 在 2025 年每週回報一次，2026 年起幾乎沒有資料（1 月 6 列，之後沒有）。名稱有「Pasar Borong」但類型是濕巴剎的回報點，價格和一般濕巴剎差不多，是零售價。
+- 決定：
+  - 地區零售價＝地區內各濕巴剎（Pasar Basah）當天報價的中位數。不收迷你市場（多數只在週一回報，混進來週一的價格會跳，例：Kota Bharu 番茄平常 8.0、週一變 9.95）、超市與大賣場（通路與品級不同）、雜貨店與餐廳。
+  - 做法是通用的：`NormalizedQuote` 加一個 `point`（回報點代號），檢查時每個回報點各算一列，檢查完才把同地區、作物、品種、日期的回報點合成一筆中位數（`app/ingest/combine.py`），資料庫仍是每個地區每天一個零售價，彙整的 SQL 不用改。`rows_ok` 是通過檢查的回報點筆數，寫進資料庫的筆數比較少。
+  - 批發：seed 仍把 7 個 Borong 對照成市場（恢復回報就會出現），示範資料也有批發價；開真實資料時，馬來西亞的批發價全部是「—」（`no_data`）。**預設價格類型沒有改**（仍是批發），要不要讓馬來西亞預設零售由團隊決定。【待確認】
+  - 執行時不下載 lookup 檔：seed 直接列出回報點與品項代號（79 個濕巴剎、7 個 Borong、20 個品項），測試用 lookup 樣本檢查類型、縣與單位。新開的濕巴剎要改 seed 才會收。
+- 理由：中位數不怕單一攤商填錯；只收同一種、每天回報的通路，價格才不會因為回報點組成改變而跳動；PriceCatcher 是零售調查，不能把濕巴剎的價格當批發價。
+- 影響：`backend/app/ingest/{combine,normalize,validate,pipeline}.py`、`backend/app/ingest/providers/base.py`、docs/06 §1.5、§3.3。
+
+## 2026-09-20 PriceCatcher 的抓法
+- 情況：每月一個 CSV（一個月約 50 MB、180 萬列），每天 12:00 UTC 更新；60 天的期間跨 3 個月。使用者要求每個檔一次執行最多下載一次、用條件式請求、不要頻繁打擾來源。
+- 決定：
+  - 用 CSV，不用 parquet（小 20 倍，但要多裝約 48 MB 的 pyarrow）；邊下載邊讀，只留下對照得到的列，記憶體只放約 6 萬列。
+  - 只下載排定日期（§1.4 的抓取原則）所在的月份；帶上次成功下載時的 ETag 與 Last-Modified，304 就沒有新列，並把驗證資訊帶到這次執行的紀錄，下一次還能用。
+  - 當月（或更晚）的檔案 404 是「還沒發布」（每月 1 日晚上 8 點前），不算錯；更早的月份 404、欄位名稱不對，都讓那次執行失敗，舊資料不動。格式不對的列記為 `malformed`。
+  - 排程：每天 00:05 與 20:00–23:00 每小時（馬來西亞時間）；啟動時 6 小時內成功過就略過。
+- 理由：一般情況下每次排程只有 1–2 個 304 請求；整個月檔只在它更新後下載一次。
+- 取捨：當天的價格晚上 8 點才出來，白天看到的是昨天的資料（畫面標「昨天」）；國定假日沒有資料，那個月的檔每次排程都會問一次（304，幾乎不花流量）。
+- 影響：`backend/app/ingest/providers/my_pricecatcher.py`、`backend/tests/ingest/test_my_pricecatcher.py`、`backend/tests/fixtures/my_pricecatcher/`。
+
+## 2026-09-20 地區清單的資料新舊看所有價格類型
+- 情況：`GET /countries/{cc}/areas` 的最新交易日原本只看批發。馬來西亞只有零售，全部地區都會顯示「無資料」。04 §6 沒有寫要看哪一種價格。
+- 決定：最新交易日改成批發、零售兩者中較新的那天。印度、台灣的示範資料兩者的新舊相同，`tw_moa` 沒有零售，所以結果和原本一樣。
+- 理由：地區清單要回答「這個地區有沒有資料」；各作物的價格仍依使用者選的價格類型各自標示新舊。
+- 影響：`backend/app/repositories/catalog.py`（`latest_dates`）、`backend/app/services/catalog.py`。
+
+## 2026-09-20 mock 參數的區間與到貨量可以省略
+- 情況：PriceCatcher 每個回報點只有一個價格、沒有到貨量；seed 的 `mock.lo`／`hi`／`arr`／`arrR` 原本必填。
+- 決定：這四個改成可省略（`lo` 與 `hi`、`arr` 與 `arrR` 要一起給或一起省略）；mock 只在來源格式有這些欄位時印出來。印度、台灣的 seed 沒變，輸出完全相同。
+- 理由：不放用不到的參數，示範資料也不會出現真實資料沒有的區間與到貨量。
+- 影響：`backend/app/seed/schema.py`、`backend/app/ingest/providers/mock.py`。
