@@ -1,0 +1,23 @@
+# All services for local runs and production. The project name follows the
+# folder name on purpose, so two worktrees can run their own stacks.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agri}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agri-local-only}
+      POSTGRES_DB: ${POSTGRES_DB:-agri}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      # Local tests only; never exposed beyond this machine.
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  db_data:
