@@ -80,7 +80,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 0：骨架
 
-- [ ] **T01 Repo 骨架**
+- [x] **T01 Repo 骨架**
   - 參考：[04](../04-architecture.md) §2、§10
   - 內容：
     - 建立資料夾結構。
