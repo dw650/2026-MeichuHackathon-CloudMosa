@@ -378,7 +378,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每種狀態都用 `msw` 重現，並檢查畫面上的出口可以用。
   - 完成條件：測試通過；demo 開關可以在完整服務上重現每種狀態。
 
-- [ ] **T36 離開與恢復（F13）與 demo 開關（F18）**
+- [x] **T36 離開與恢復（F13）與 demo 開關（F18）**
   - 參考：[02](../02-product-spec.md) §5.7；[08](../08-platform-constraints.md) §7
   - 內容：
     - 每個動作都存。重新開啟時回到原畫面與焦點，而且按返回會回到首頁。
