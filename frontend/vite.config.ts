@@ -32,6 +32,10 @@ export default defineConfig(({ mode }) => ({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/main.tsx', 'src/api/schema.d.ts'],
       reporter: ['text-summary'],
+      // Gate: the core modules together (not each file) must stay at 90% or more.
+      thresholds: {
+        'src/{lib,keys,focus,store}/**': { statements: 90, branches: 90, functions: 90, lines: 90 },
+      },
     },
   },
 }))
