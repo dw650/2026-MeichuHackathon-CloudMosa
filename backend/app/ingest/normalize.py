@@ -1,7 +1,7 @@
 """Normalizers for each source format (docs/06 §2): our ids, per kg, local trade date.
 
 Each returns None when a name cannot be mapped (the row is counted, never guessed) and raises
-RowError when the row is malformed (for example an unreadable date)."""
+RowError when the row cannot be used (for example an unreadable date)."""
 
 from datetime import date, datetime
 from typing import Any
@@ -13,7 +13,11 @@ KG_PER_QUINTAL = 100
 
 
 class RowError(ValueError):
-    """A row the pipeline cannot read; counted as `malformed`."""
+    """A row the pipeline cannot use; counted under `reason` (`malformed` by default)."""
+
+    def __init__(self, message: str, reason: str = "malformed") -> None:
+        super().__init__(message)
+        self.reason = reason
 
 
 def number(value: Any) -> float | None:
@@ -89,11 +93,18 @@ def in_retail(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | N
     )
 
 
-def moa_farmtrans(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
-    """Taiwan MOA FarmTransData: NT$ per kg; the average price is the representative price."""
+def moa_farmtrans(
+    raw: RawRow, maps: SourceMaps, source: str, *, exact: bool = False
+) -> NormalizedQuote | None:
+    """Taiwan MOA FarmTransData: NT$ per kg; the average price is the representative price.
+
+    `exact` maps only the listed (name, variety) pairs (the real source). The API also sends a
+    closure notice per market and category (作物代號 "rest", prices 0); it is not a price."""
+    if raw.get("作物代號") == "rest":
+        raise RowError(f"closure notice from {raw.get('市場名稱')!r}", reason="market_closed")
     name, _, variety = str(raw.get("作物名稱", "")).partition("-")
     market = maps.market("TW", raw.get("市場名稱", ""))
-    crop = maps.crop("TW", name, variety)
+    crop = maps.crop("TW", name, variety, exact=exact)
     if market is None or crop is None or market not in maps.market_area:
         return None
     return NormalizedQuote(
@@ -140,8 +151,8 @@ def normalize_all(
     for raw in rows:
         try:
             quote = provider.normalize(raw, maps)
-        except RowError:
-            counts["malformed"] = counts.get("malformed", 0) + 1
+        except RowError as exc:
+            counts[exc.reason] = counts.get(exc.reason, 0) + 1
             continue
         if quote is None:
             counts["unmapped"] = counts.get("unmapped", 0) + 1
