@@ -1,0 +1,17 @@
+/* One short explanation under the prices, e.g. that the price on screen is an estimate. Wraps
+   instead of scrolling sideways, so it fits both sizes (docs/03 §6). */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 3px 7px;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+  line-height: 1.35;
+}
+
+.note > svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--brand);
+}

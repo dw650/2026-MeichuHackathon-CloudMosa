@@ -54,6 +54,13 @@
       "retail": "Lihat runcit"
     }
   },
+  "estimate": {
+    "tag": "≈{{label}}",
+    "retail": "Harga runcit dianggar daripada borong; panduan sahaja",
+    "retailRatio": "Runcit dianggar daripada borong (×{{ratio}}); panduan sahaja",
+    "wholesale": "Harga borong dianggar daripada runcit; panduan sahaja",
+    "wholesaleRatio": "Borong dianggar daripada runcit (÷{{ratio}}); panduan sahaja"
+  },
   "states": {
     "loading": "Memuatkan harga {{area}}",
     "loadingNote": "Ralat dipaparkan selepas 10 saat",
@@ -289,6 +296,7 @@
     "nearby": "Tertinggi dan terendah berdekatan = semua kawasan dalam 100 km (garis lurus) yang ada harga pada hari dagangan yang sama.",
     "retail": "Harga runcit ikut kawasan; tiada pecahan ikut pasar.",
     "gap": "Beza runcit–borong bukan untung; ia termasuk pengangkutan, kerugian dan pembungkusan.",
+    "estimate": "Harga bertanda “≈” ialah anggaran: sumber negara ini melaporkan satu jenis harga sahaja, jadi kami menukarnya dengan nisbah tetap. Panduan sahaja, bukan angka rasmi.",
     "demo": "Harga negara ialah data demo buat masa ini; harga antarabangsa ialah data sebenar World Bank.",
     "source": "Sumber data",
     "noMoney": "Kami tidak akan meminta wang, PIN atau kod.",

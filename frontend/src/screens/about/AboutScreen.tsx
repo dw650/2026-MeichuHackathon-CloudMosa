@@ -32,6 +32,7 @@ export default function AboutScreen() {
     t('about.nearby'),
     t('about.retail'),
     t('about.gap'),
+    t('about.estimate'),
     t('about.news'),
     t('about.demo'),
   ]

@@ -8,6 +8,7 @@ import { paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
+import { Note } from '@/components/Note/Note'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
 import { Skeleton } from '@/components/Skeleton/Skeleton'
@@ -20,6 +21,7 @@ import { describeFreshness, formatDate } from '@/lib/dates'
 import { AreaSheet } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -50,6 +52,7 @@ export default function MarketsScreen() {
   const { t, lang, pick, dates } = useText()
   const { country, crop, area } = useCountryData()
   const fmt = usePriceFormat()
+  const estimate = useEstimate()
   const countryCode = useSettings((s) => s.country)
   const myAreaId = useSettings((s) => s.areaId)
   const setPriceType = useSettings((s) => s.setPriceType)
@@ -160,6 +163,7 @@ export default function MarketsScreen() {
             {t('markets.vsMedian', { price: fmt.price(markets.median_per_kg) })}
           </p>
         )}
+        <Note text={estimate.note('wholesale', cropId)} />
         {rows.length > 0 ? (
           <div className={styles.rows}>
             <CardList>{rows.map(marketCard)}</CardList>
@@ -196,7 +200,7 @@ export default function MarketsScreen() {
     >
       <div ref={root}>
         <InfoBar
-          small={<PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />}
+          small={<PriceTypeTag type={fmt.type} label={estimate.typeLabel(fmt.type)} />}
           left={
             <>
               <UiIcon name="pin" />
@@ -207,7 +211,7 @@ export default function MarketsScreen() {
           right={
             <>
               <KeyCap>*</KeyCap>
-              <PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />
+              <PriceTypeTag type={fmt.type} label={estimate.typeLabel(fmt.type)} />
               {fmt.unitLabel}
             </>
           }
