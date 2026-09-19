@@ -31,3 +31,6 @@ frontend/playwright-report/
 .DS_Store
 .idea/
 *.log
+
+# Worktrees created by background agents
+.claude/worktrees/

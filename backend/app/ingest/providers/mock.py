@@ -3,8 +3,9 @@
 India wholesale looks like data.gov.in mandi rows (₹ per quintal, dd/mm/yyyy); India retail
 like DoCA rows (₹ per kg). Taiwan wholesale looks like MOA FarmTransData rows (NT$ per kg,
 Minguo dates); Taiwan retail like price survey rows. Malaysia looks like PriceCatcher rows
-(RM per kg, one price per premise: a wholesale market or a wet market). Two metadata keys
-route each row: `_country` and `_type` (wholesale | retail); everything else mimics the source.
+joined with the premise lookup (RM per kg, one price per premise: a wholesale market, or one
+made-up wet market per district). Two metadata keys route each row: `_country` and `_type`
+(wholesale | retail); everything else mimics the source.
 """
 
 import hashlib
@@ -69,13 +70,21 @@ def _text(value: float | None, spec: str) -> str:
     return "" if value is None else format(value, spec)
 
 
-def _pricecatcher(day: date, premise: str, item: str, price: float) -> RawRow:
-    """A PriceCatcher row: ISO date, codes as text, the price in RM as the source prints it."""
+def _pricecatcher(
+    day: date, premise: str, item: str, price: float, kind: str, district: str
+) -> RawRow:
+    """A PriceCatcher row: ISO date, codes as text, the price in RM as the source prints it,
+    and the premise's type, state and district from the lookup (`district` as the seed names
+    it: "State/District", or a whole federal territory by its state)."""
+    state, _, name = district.partition("/")
     return {
         "date": day.isoformat(),
         "premise_code": premise,
         "item_code": item,
         "price": repr(round(price, 2)),
+        "premise_type": kind,
+        "state": state,
+        "district": name,
     }
 
 
@@ -238,7 +247,8 @@ class MockProvider:
         code = seed.country.code
         head: dict[str, Any] = {"_country": code, "_type": "wholesale"}
         if code == "MY":
-            return head | _pricecatcher(day, source_market, source_crop, price)
+            district = self._names[code].areas.get(area.id, "")
+            return head | _pricecatcher(day, source_market, source_crop, price, "Borong", district)
         low = None if crop.mock.lo is None else price * crop.mock.lo / crop.mock.p
         high = None if crop.mock.hi is None else price * crop.mock.hi / crop.mock.p
         middle = None if low is None or high is None else (high + low) / 2
@@ -287,8 +297,10 @@ class MockProvider:
         code = seed.country.code
         head: dict[str, Any] = {"_country": code, "_type": "retail"}
         if code == "MY":
-            # The area's source name is one of its wet markets: a retail point of the area.
-            return head | _pricecatcher(day, source_area, source_crop, price)
+            # The area's source name is its district; the demo makes up one wet market there.
+            return head | _pricecatcher(
+                day, f"demo-{area.id}", source_crop, price, fmt.PRICECATCHER_WET_MARKET, source_area
+            )
         if code == "TW":
             return head | {
                 "調查日期": to_roc(day),

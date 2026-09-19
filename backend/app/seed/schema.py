@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 LANGS = ("zh-TW", "en")
 Category = Literal["cereal", "veg", "fruit", "pulse", "spice", "oil", "other"]
+PriceType = Literal["wholesale", "retail"]
 I18n = dict[str, str]
 
 
@@ -61,6 +62,9 @@ class CountrySeed(_Model):
     rep_price_label: I18n
     source_label: I18n
     units: Units
+    # The price type a new user of this country starts on (`*` still toggles it); retail for a
+    # country whose source has retail prices only.
+    default_price_type: PriceType = "wholesale"
 
     _i18n = field_validator("name", "coverage", "area_suffix", "rep_price_label", "source_label")(
         _check_i18n

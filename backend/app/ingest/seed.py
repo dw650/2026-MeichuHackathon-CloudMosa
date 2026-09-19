@@ -32,6 +32,7 @@ async def _sync_one(session: AsyncSession, seed: SeedFile) -> None:
             "rep_price_label": c.rep_price_label,
             "source_label": c.source_label,
             "units": c.units.model_dump(),
+            "default_price_type": c.default_price_type,
         },
     )
     await catalog.upsert_areas(

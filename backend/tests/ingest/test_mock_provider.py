@@ -162,23 +162,49 @@ def _my(rows: list[RawRow], **match: str) -> list[RawRow]:
 async def test_malaysia_rows_look_like_pricecatcher(provider: MockProvider) -> None:
     rows = _my(await provider.fetch(TODAY))
     assert rows
+    # The price rows joined with the premise lookup, as my_pricecatcher gives them.
     assert {tuple(sorted(r)) for r in rows} == {
-        ("_country", "_type", "date", "item_code", "premise_code", "price")
+        (
+            "_country",
+            "_type",
+            "date",
+            "district",
+            "item_code",
+            "premise_code",
+            "premise_type",
+            "price",
+            "state",
+        )
     }
     # Wholesale at Pasar Borong KL: p 7.0 × area k 1.08 × market k 1.0, ±2%.
     (borong,) = _my(rows, _type="wholesale", premise_code="18147", item_code="114")
     assert borong["date"] == "2026-09-19"
+    assert (borong["premise_type"], borong["state"]) == ("Borong", "W.P. Kuala Lumpur")
     assert 7.0 * 1.08 * 0.98 <= float(borong["price"]) <= 7.0 * 1.08 * 1.02
-    # Retail at the area's wet market (Pasar Pudu): rt 1.4 × p × area k, ±2.5%.
-    (pudu,) = _my(rows, _type="retail", premise_code="3181", item_code="114")
-    assert 1.4 * 7.0 * 1.08 * 0.97 <= float(pudu["price"]) <= 1.4 * 7.0 * 1.08 * 1.03
+    # Retail at a made-up wet market of the area: rt 1.4 × p × area k, ±2.5%.
+    (kl,) = _my(rows, _type="retail", premise_code="demo-kualalumpur", item_code="114")
+    assert (kl["premise_type"], kl["state"], kl["district"]) == (
+        "Pasar Basah",
+        "W.P. Kuala Lumpur",
+        "",
+    )
+    assert 1.4 * 7.0 * 1.08 * 0.97 <= float(kl["price"]) <= 1.4 * 7.0 * 1.08 * 1.03
+    (klang,) = _my(rows, _type="retail", premise_code="demo-klang", item_code="114")
+    assert (klang["state"], klang["district"]) == ("Selangor", "Klang")
+
+
+async def test_every_malaysian_district_has_demo_retail_prices(provider: MockProvider) -> None:
+    rows = _my(await provider.fetch(TODAY), _type="retail")
+    my = next(s for s in load_seed_files() if s.country.code == "MY")
+    areas = {a.id for a in my.areas if a.mock.lag == 0}
+    assert {r["premise_code"].removeprefix("demo-") for r in rows} == areas
 
 
 async def test_malaysia_areas_without_a_wholesale_market_have_retail_only(
     provider: MockProvider,
 ) -> None:
     rows = _my(await _window(provider))
-    penang = _my(rows, premise_code="1960")  # Pasar Jelutong, Timur Laut
+    penang = _my(rows, premise_code="demo-timurlaut")
     assert penang
     assert {r["_type"] for r in penang} == {"retail"}
     assert len({r["premise_code"] for r in rows if r["_type"] == "wholesale"}) == 7
@@ -189,7 +215,7 @@ async def test_malaysia_trades_every_day_and_keeps_its_exceptions(provider: Mock
     days = {_day(r) for r in rows}
     assert date(2026, 9, 13) in days  # Sunday
     assert date(2026, 9, 14) in days  # Monday
-    assert _latest(_my(rows, premise_code="2248")) == date(2026, 9, 18)  # Kuching: yesterday
+    assert _latest(_my(rows, premise_code="demo-kuching")) == date(2026, 9, 18)  # yesterday
     assert _latest(_my(rows, premise_code="17450")) == date(2026, 9, 16)  # Kulim: 3 days
     assert _latest(_my(rows, item_code="368")) == date(2026, 9, 17)  # peanut: 2 days
     assert _latest(_my(rows, item_code="917")) == date(2026, 9, 16)  # wheat flour: 3 days

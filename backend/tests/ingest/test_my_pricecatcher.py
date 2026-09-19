@@ -6,8 +6,9 @@ items at four premises (wet markets 3181 Pasar Pudu and 8616 Pasar Chow Kit in K
 2026-08-27 to 08-30 and 09-01, 09-02, 09-14, 09-15, 09-17 (08-31 Merdeka Day and 09-16 Malaysia
 Day have no rows in the source); real rows of the wholesale premises 18151 (Johor Bahru) and
 16822 (Kuala Terengganu) from June 2025 (they stopped reporting in early 2026); and the lookup
-rows of every mapped premise and item. FakeStorage answers like storage.data.gov.my: one CSV per
-month, ETag and Last-Modified headers, 304 for an unchanged file, 404 for a missing one."""
+rows of every mapped item and of every wet market and wholesale market (plus the mini market).
+FakeStorage answers like storage.data.gov.my: one CSV per month and the premise lookup, ETag and
+Last-Modified headers, 304 for an unchanged file, 404 for a missing one."""
 
 import hashlib
 from collections.abc import Sequence
@@ -38,10 +39,16 @@ SEEDS = load_seed_files()
 TODAY = date(2026, 9, 17)  # Thursday; the sample ends here
 NOW = datetime(2026, 9, 17, 13, 0, tzinfo=UTC)  # 21:00 in Malaysia, after the day's update
 HEADER = "date,premise_code,item_code,price\n"
+LOOKUP = (FIXTURES / "lookup_premise.csv").read_text(encoding="utf-8")
 
 
 def sample(month: str) -> str:
     return (FIXTURES / f"pricecatcher_{month}.csv").read_text(encoding="utf-8")
+
+
+def months_of(requests: Sequence[httpx.Request]) -> list[str]:
+    names = [r.url.path.rsplit("/", 1)[-1] for r in requests]
+    return [n.removeprefix("pricecatcher_").removesuffix(".csv") for n in names if "_20" in n]
 
 
 class FakeStorage:
@@ -52,9 +59,11 @@ class FakeStorage:
         self,
         files: dict[str, str] | None = None,
         failures: Sequence[int | Exception] = (),
+        lookup: str = LOOKUP,
     ) -> None:
         self.files = files if files is not None else self.default()
         self.failures = list(failures)
+        self.lookup = lookup
         self.requests: list[httpx.Request] = []
 
     @staticmethod
@@ -71,7 +80,7 @@ class FakeStorage:
             return httpx.Response(failure, text="busy")
         name = request.url.path.rsplit("/", 1)[-1]
         month = name.removeprefix("pricecatcher_").removesuffix(".csv")
-        body = self.files.get(month)
+        body = self.lookup if name == "lookup_premise.csv" else self.files.get(month)
         if body is None:
             return httpx.Response(404, text="<Error><Code>NoSuchKey</Code></Error>")
         etag = '"' + hashlib.md5(body.encode()).hexdigest() + '"'
@@ -82,7 +91,11 @@ class FakeStorage:
 
     @property
     def months(self) -> list[str]:
-        return [r.url.path.rsplit("_", 1)[-1].removesuffix(".csv") for r in self.requests]
+        return months_of(self.requests)
+
+    @property
+    def lookups(self) -> list[httpx.Request]:
+        return [r for r in self.requests if r.url.path.endswith("/lookup_premise.csv")]
 
 
 class Sleeps(list[float]):
@@ -96,10 +109,9 @@ def make(
     today: date = TODAY,
     **options: Any,
 ) -> pc.PriceCatcherProvider:
-    premises, items = pc.codes_from_seeds(SEEDS)
+    options.setdefault("lookups", {})
     return pc.PriceCatcherProvider(
-        premises,
-        items,
+        pc.wanted_from_seeds(SEEDS),
         today_of=lambda _c: today,
         plan=plan,
         transport=httpx.MockTransport(server),
@@ -122,17 +134,19 @@ async def fetch_all(provider: pc.PriceCatcherProvider, days: Sequence[date]) -> 
 # ---------- fetch ----------
 
 
-async def test_a_full_run_reads_the_three_months_of_the_window_once() -> None:
+async def test_a_full_run_reads_the_lookup_and_the_three_months_of_the_window_once() -> None:
     server = FakeStorage()
     provider = make(server)
     rows = await fetch_all(provider, window())
     await fetch_all(provider, window())
+    assert len(server.lookups) == 1
+    assert server.requests[0] == server.lookups[0]  # first: it decides which rows to keep
     assert server.months == ["2026-07", "2026-08", "2026-09"]
-    assert provider.stats.requests == 3
+    assert provider.stats.requests == 4
     # Only mapped premises and items stay: the three wet markets, not the mini market 17532,
     # and not the chicken (1), local cabbage (105) or Indian onion (1440) rows.
     assert {r["premise_code"] for r in rows} == {"3181", "8616", "11551"}
-    assert {r["item_code"] for r in rows} <= set(pc.codes_from_seeds(SEEDS)[1])
+    assert {r["item_code"] for r in rows} <= pc.wanted_from_seeds(SEEDS).items
     assert "1" not in {r["item_code"] for r in rows}
     days = {r["date"] for r in rows}
     assert "2026-08-31" not in days  # Merdeka Day
@@ -147,7 +161,62 @@ async def test_fetch_returns_the_rows_of_that_day() -> None:
     rows = await provider.fetch(date(2026, 9, 1))
     assert rows
     assert {r["date"] for r in rows} == {"2026-09-01"}
-    assert set(rows[0]) == {"date", "premise_code", "item_code", "price"}
+    # Each price row is joined with its premise's lookup row.
+    pudu = next(r for r in rows if r["premise_code"] == "3181")
+    assert {k: pudu[k] for k in ("premise_type", "state", "district")} == {
+        "premise_type": "Pasar Basah",
+        "state": "W.P. Kuala Lumpur",
+        "district": "Cheras",
+    }
+    assert set(pudu) == {*pc.COLUMNS, "premise_type", "state", "district"}
+
+
+async def test_wet_markets_come_from_the_lookup() -> None:
+    # A wet market that opened in Klang, one in Tuaran (a district with too few reports to be
+    # an area) and a new mini market in Kuala Lumpur, all reporting tomatoes on the same day.
+    lookup = LOOKUP + (
+        '90001,PASAR BARU KLANG,"JALAN BARU",Pasar Basah ,Selangor,Klang\n'
+        '90002,PASAR BARU TUARAN,"JALAN BARU",Pasar Basah ,Sabah,Tuaran\n'
+        '90003,PASAR MINI BARU,"JALAN BARU",Pasar Mini,W.P. Kuala Lumpur,Kepong\n'
+    )
+    body = HEADER + "".join(f"2026-09-17,{code},114,6.5\n" for code in (90001, 90002, 90003))
+    server = FakeStorage({"2026-09": body}, lookup=lookup)
+    provider = make(server, plan=[TODAY])
+    rows = await provider.fetch(TODAY)
+    assert [(r["premise_code"], r["district"]) for r in rows] == [("90001", "Klang")]
+    assert provider.stats.dropped["unmapped"] == 2
+
+
+async def test_the_lookup_is_kept_between_runs() -> None:
+    server = FakeStorage()
+    lookups: dict[str, pc.Lookup] = {}
+    first = await fetch_all(make(server, plan=[TODAY], lookups=lookups), [TODAY])
+    again = await fetch_all(make(server, plan=[TODAY], lookups=lookups), [TODAY])
+    assert again == first
+    downloaded, asked = server.lookups
+    assert "If-None-Match" not in downloaded.headers
+    assert asked.headers["If-None-Match"] == lookups[pc.LOOKUP_URL].validators["etag"]
+
+    # A changed lookup is read again.
+    server.lookup += '90001,PASAR BARU,"JALAN BARU",Pasar Basah ,Selangor,Klang\n'
+    await fetch_all(make(server, plan=[TODAY], lookups=lookups), [TODAY])
+    assert "90001" in lookups[pc.LOOKUP_URL].premises
+
+
+async def test_an_unreadable_lookup_fails_the_run() -> None:
+    server = FakeStorage(lookup="kod,jenis\n1,Pasar Basah\n")
+    with pytest.raises(UpstreamError, match="lookup"):
+        await make(server, plan=[TODAY]).fetch(TODAY)
+
+    class NotModified(FakeStorage):
+        def __call__(self, request: httpx.Request) -> httpx.Response:
+            if request.url.path.endswith("/lookup_premise.csv"):
+                self.requests.append(request)
+                return httpx.Response(304)
+            return super().__call__(request)
+
+    with pytest.raises(UpstreamError, match="304"):
+        await make(NotModified(), plan=[TODAY]).fetch(TODAY)
 
 
 async def test_a_plan_downloads_only_the_months_it_needs() -> None:
@@ -185,7 +254,8 @@ async def test_unchanged_files_are_not_downloaded_again() -> None:
 
     again = make(server, files=validators)
     assert await fetch_all(again, window()) == []
-    sent = server.requests[3:]
+    sent = [r for r in server.requests[4:] if r not in server.lookups]
+    assert len(sent) == 3
     assert [r.headers["If-None-Match"] for r in sent] == [
         validators[str(r.url)]["etag"] for r in sent
     ]
@@ -243,16 +313,19 @@ async def test_busy_answers_are_retried() -> None:
     server = FakeStorage(failures=[503, httpx.ReadTimeout("slow")])
     provider = make(server, plan=[TODAY])
     assert await provider.fetch(TODAY)
-    assert provider.stats.requests == 3
+    assert provider.stats.requests == 4  # the lookup took three attempts, then one month file
 
 
-def test_codes_come_from_the_seed_maps() -> None:
-    premises, items = pc.codes_from_seeds(SEEDS)
-    assert len(premises) == 79 + 7  # wet markets and wholesale markets
-    assert {"3181", "8616", "11551", "18147"} <= premises
-    assert "17532" not in premises  # a mini market
-    assert len(items) == 20
-    assert {"114", "1458", "917"} <= items
+def test_what_to_keep_comes_from_the_seed_maps() -> None:
+    wanted = pc.wanted_from_seeds(SEEDS)
+    assert len(wanted.markets) == 7  # the wholesale markets, by premise code
+    assert "18147" in wanted.markets
+    assert len(wanted.districts) == 75
+    assert {"W.P. Kuala Lumpur", "Selangor/Klang", "Perak/Larut, Matang & Selama"} <= (
+        wanted.districts
+    )
+    assert len(wanted.items) == 21
+    assert {"114", "1458", "917"} <= wanted.items
 
 
 # ---------- normalize and the pipeline ----------
@@ -263,7 +336,7 @@ async def test_real_rows_become_retail_points_and_area_medians(session: AsyncSes
     provider = make(FakeStorage())
     summary = await run_provider(session, provider, {"IN": TODAY, "TW": TODAY, "MY": TODAY}, NOW)
     assert summary.status == "ok"
-    assert summary.requests == 3
+    assert summary.requests == 4
 
     async def area_price(area: str, crop: str, day: date) -> tuple[float, int] | None:
         result = await session.execute(
@@ -297,7 +370,7 @@ async def test_real_rows_become_retail_points_and_area_medians(session: AsyncSes
     assert rows_in == rows_ok + rows_dropped
     assert reasons["unmapped"] > 0
     assert count < rows_ok  # the points of an area became one row per crop and day
-    assert requests == 3
+    assert requests == 4
     assert set(files) == {pc.month_url(2026, m) for m in (7, 8, 9)}
 
 
@@ -327,7 +400,15 @@ async def test_wholesale_markets_give_market_prices(session: AsyncSession) -> No
 def test_normalize_uses_the_shared_pricecatcher_format() -> None:
     provider = make(FakeStorage())
     maps = maps_from_seeds(SEEDS, pc.SOURCE)
-    row = {"date": "2026-09-17", "premise_code": "8616", "item_code": "114", "price": "5.0"}
+    row = {
+        "date": "2026-09-17",
+        "premise_code": "8616",
+        "item_code": "114",
+        "price": "5.0",
+        "premise_type": "Pasar Basah",
+        "state": "W.P. Kuala Lumpur",
+        "district": "Titiwangsa",
+    }
     quotes, dropped = normalize_all(provider, [row], maps)
     (q,) = quotes
     assert (q.source, q.area_id, q.point, q.rep_price) == (pc.SOURCE, "kualalumpur", "8616", 5.0)
@@ -340,14 +421,15 @@ def test_normalize_uses_the_shared_pricecatcher_format() -> None:
 def offline(monkeypatch: pytest.MonkeyPatch, server: FakeStorage) -> None:
     """Makes the worker build my_pricecatcher over `server` instead of the real storage."""
 
+    lookups: dict[str, pc.Lookup] = {}  # kept between the runs, as in one worker process
+
     def build(ctx: BuildContext) -> pc.PriceCatcherProvider:
-        premises, items = pc.codes_from_seeds(ctx.seeds)
         return pc.PriceCatcherProvider(
-            premises,
-            items,
+            pc.wanted_from_seeds(ctx.seeds),
             ctx.today_of,
             plan=ctx.days,
             files=ctx.files,
+            lookups=lookups,
             transport=httpx.MockTransport(server),
             sleep=Sleeps(),
         )
@@ -390,7 +472,8 @@ async def test_malaysia_switches_between_demo_and_real_prices(
     # days; no file changed, so every answer is "not modified" and nothing is downloaded.
     refreshed = await worker.run_once(real, lambda: NOW + timedelta(hours=1), refresh=pc.SOURCE)
     assert [(s.source, s.status, s.rows_ok) for s in refreshed] == [(pc.SOURCE, "ok", 0)]
-    assert server.months[sent:] == ["2026-07", "2026-08", "2026-09"]
+    assert months_of(server.requests[sent:]) == ["2026-07", "2026-08", "2026-09"]
+    assert len(server.requests[sent:]) == 4  # the lookup is asked about too
     assert all(r.headers.get("If-None-Match") for r in server.requests[sent:])
 
     await worker.run_once(demo, lambda: NOW)

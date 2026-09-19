@@ -817,3 +817,41 @@
   - worker 每個國家改成先算出「API 會回的那份清單」（同一個排序與上限：最近 7 天最新的 9 則，由 `repositories.news.list_items` 提供），只對其中還沒有摘要、且重試次數還沒到上限（2 次）的，由新到舊花額度；排在清單之外的只先存起來，等它排進清單再輪到它。每日額度（`NEWS_DAILY_ARTICLES`、`NEWS_DAILY_MODEL_CALLS`，預設各 30、滾動 24 小時、三國共用）與每次呼叫的間隔不變，所以實際買到的是每國每天最多 9 則摘要。
 - 理由：新聞清單照時間才符合預期；額度只值得花在使用者真的會看到的那幾則。
 - 影響：`backend/app/repositories/news.py`、`services/news.py`、`ingest/news/pipeline.py`、`api/v1/news.py`、`schemas/news.py`、`db/models.py`（新增 `NEWS_LIST_ITEMS`）、`frontend/src/screens/news/`、msw fixtures；docs/02 §5.9、docs/04 §6、docs/06 §1.6。
+## 2026-09-20 馬來西亞擴充到濕巴剎回報足夠的每個縣
+- 情況：使用者要求把馬來西亞的真實資料擴充到回報足夠的每個縣，原本 11 個地區的代號不變；「足夠」由資料決定並記下規則；每個縣要有真的中心座標。
+- 決定：
+  - 「足夠」＝過去 60 天全國有資料的日子裡，**超過一半的日子至少有 2 個濕巴剎回報**這 20 種作物。直轄區（吉隆坡、布城）各算一個縣（PriceCatcher 把吉隆坡分成國會選區）。用 7/23–9/20 的資料（56 天）算出 **75 個縣**（13 個州與 2 個直轄區，285 個濕巴剎）。分界很清楚：合格的縣最少也有 37 天，不合格的最多 8 天（Kuala Pilah），其餘 62 個縣只有 1 個或沒有濕巴剎回報（Labuan 也是）。原本 11 個都合格。
+  - 地區清單寫在 seed，執行時不自動增減；要重算就照同一個規則用最新的月檔再算。
+  - 名稱照 lookup 的縣名（例：Larut, Matang & Selama、Seberang Perai Utara），兩種語言都是英文；128×160 放不下時照原本的規則以省略號截斷，不另取簡稱。代號＝縣名的小寫英文字母（例：`larutmatangselama`）。州名照 PriceCatcher，Penang 照原本的例外。
+  - 座標：追加的 64 個縣用 OpenStreetMap Nominatim 查一次（每秒最多 1 個請求，共 77 個請求），存在 seed：有同名市鎮就用市鎮（35 個），沒有就用 OpenStreetMap 給這個縣的點（28 個），Larut, Matang & Selama 用首府 Taiping。原本 11 個縣的座標不變（首府，和查到的點相差不到 20 公里）。
+  - mock：追加的縣 `retail: true`、`lag: 0`、沒有市場，價格水準 `k` 用 7–9 月的真實資料算（每個作物、每天「縣的中位數 ÷ 各縣中位數的中位數」再取中位數）。Borong 2026 年沒有回報，追加的縣不加市場，原本的 7 個不變。
+  - `coverage` 改成「15 個州與直轄區、75 個縣」。
+  - 新聞（N1）原本假設一州一個地區，州名別名只給一個縣（例：Pahang→Kuantan）。改成州名別名給那個州的每一個縣（`backend/app/ingest/news/sources.yaml`；Sabah、Melaka、Perlis 是新加的州），標題寫 Pahang 的新聞，Bera、Kuantan、Temerloh 的使用者都會排在前面；縣名本身照原本的規則自動比對。
+- 理由：規則只看資料、每個合格的縣都有 2 個以上的濕巴剎可取中位數；地區多了，位置推測與「附近最高／最低」也更準。
+- 取捨：地區清單變長（75 個，照距離排序）；吉隆坡附近多了 Petaling Jaya、Petaling、Gombak 等縣，示範資料在批發模式下「附近」找不到有批發價的地區就不顯示。`PROVIDERS=mock` 每次執行的示範資料從約 7.7 萬列變成約 15.3 萬列（多出來的是馬來西亞 64 個縣的零售），用到 mock 的後端測試跟著變慢。
+- 影響：`backend/app/seed/MY.yaml`、`backend/app/ingest/news/sources.yaml`、`backend/tests/ingest/test_seed.py`、`backend/tests/api/test_catalog.py`、`backend/tests/news/test_pipeline.py`、`frontend/src/test/fixtures/`（`make fixtures`）、docs/06 §1.5、§7.2、§7.4。
+
+## 2026-09-20 PriceCatcher 的濕巴剎改從 lookup 讀
+- 情況：原本 seed 列出 79 個濕巴剎的代號，新開的濕巴剎要改 seed 才會收；擴充後要列 285 個。使用者要求從 lookup 找出每個縣全部的濕巴剎。
+- 決定：
+  - seed 的 `source_maps.my_pricecatcher.areas` 改列縣（`州/縣`，例：`Selangor/Klang`；直轄區只寫州名），不列回報點；正規化先比 `州/縣`、再比州名。Borong 仍用代號對照成市場。
+  - provider 每次執行先讀 `lookup_premise.csv`（約 480 KB），每一列都附上回報點的類型、州、縣（原始格式多三個欄位），只留下對照到的 Borong 與這些縣的濕巴剎。
+  - lookup 留在 worker 程序的記憶體，之後帶 ETag 與 Last-Modified 問，沒變就 304、用留著的那份。它的驗證資訊不存進 `ingest_runs.files`：worker 重啟後手上沒有內容，304 沒有用，所以重啟後第一次需要時會多下載一次 lookup。平常的排程是 1 個 lookup 的 304 加 1–2 個月檔的 304。
+  - mock 的零售列印一個虛構的濕巴剎（代號 `demo-<地區>`），附上 seed 的縣，和真實資料走同一個正規化；mock 與真實來源共用同一份縣的清單（YAML anchor）。
+  - lookup 改了但月檔沒變時，新濕巴剎在已經下載過的日期的資料不會補進來，只從之後下載的日期開始收（`maps_hash` 只看 seed）。
+- 理由：新開或改類型的濕巴剎不必改 seed；seed 只放「哪些縣」這個真正的決定。
+- 取捨：一次執行對照得到約 21 萬列（原本約 6.4 萬），worker 記憶體最高約 250 MB。每次 worker 重啟後多一個約 480 KB 的請求。
+- 影響：`backend/app/ingest/providers/my_pricecatcher.py`、`backend/app/ingest/normalize.py`、`backend/app/ingest/providers/mock.py`、`backend/tests/ingest/test_{my_pricecatcher,normalize,mock_provider,contract}.py`、`backend/tests/fixtures/my_pricecatcher/lookup_premise.csv`（改存全部的濕巴剎與 Borong）、docs/06 §1.5。
+
+## 2026-09-20 國家可以宣告預設的價格類型
+- 情況：馬來西亞的真實資料只有零售，新使用者選了馬來西亞卻先看到批發的「—」。之前記為【待確認】（見「PriceCatcher：零售取濕巴剎的中位數、沒有批發價」），使用者決定馬來西亞預設零售。
+- 決定：
+  - seed 的國家設定加 `default_price_type`（`wholesale` 或 `retail`，不寫就是 `wholesale`），同步到 `countries.default_price_type`（migration `5c1e7a9d2b40`，down_revision `23655d2e487a`（新聞的 migration）），`GET /countries` 回傳。只有 `MY.yaml` 寫 `retail`，印度、台灣不改。
+  - 前端選國家時（首次設定、接受推測的位置、之後在設定更改國家）把價格類型換成那個國家的預設；再選同一個國家不變；之後照樣用 `*` 切換，每次切換都存起來。
+- 理由：新使用者第一眼就看到有資料的價格；已經在用的人不受影響（只有換國家時才套用）。
+- 影響：`backend/app/seed/schema.py`、`backend/app/db/models.py` 與 migration、`backend/app/ingest/seed.py`、`backend/app/services/catalog.py`、`backend/app/schemas/catalog.py`、`frontend/src/store/settings.ts`、`frontend/src/api/schema.d.ts`、docs/02 §1、docs/04 §5、§7。
+
+## 2026-09-20 馬來西亞加上茄子；香蕉與芒果加不了
+- 情況：跨國比同一種作物的功能要求三國的作物清單有交集，還缺香蕉、芒果、茄子（協調者要求）。
+- 決定：只加**茄子**（`eggplant`，PriceCatcher 的 TERUNG BULAT `1923`，以 1 公斤計價，52 個縣有報價，60 天裡 17 天有資料≈每週兩次，中位數 RM 9.00；示範資料 `p: 6.2`、`rt: 1.45`、`lag: 2`，和印度共用圖示）。**香蕉與芒果不加**：香蕉（PISANG BERANGAN 18、PISANG EMAS 19）以公斤計價，但 7/23–9/20 濕巴剎一列都沒有（只有超市、迷你市場、雜貨店報）；`lookup_item.csv` 裡沒有生鮮芒果（只有芒果汁 `1340`）。要有這兩種就得收超市價，和「零售＝濕巴剎的中位數」的決定衝突，交給團隊決定。
+- 影響：`backend/app/seed/MY.yaml`、`backend/tests/fixtures/my_pricecatcher/lookup_item.csv`（多一列 1923）、`backend/tests/ingest/test_{seed,my_pricecatcher}.py`、`frontend/src/test/fixtures/`、docs/06 §7.3。

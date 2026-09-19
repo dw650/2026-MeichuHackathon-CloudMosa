@@ -19,11 +19,20 @@ const IN: CountryDefaults = {
   default_area_id: 'nashik',
   default_recent_area_ids: ['nashik', 'pune', 'ahmednagar'],
   default_watch: ['onion', 'tomato', 'potato'],
+  default_price_type: 'wholesale',
 }
 const TW: CountryDefaults = {
   default_area_id: 'taipei',
   default_recent_area_ids: ['taipei', 'newtaipei', 'taichung'],
   default_watch: ['cabbage', 'bokchoy', 'banana'],
+  default_price_type: 'wholesale',
+}
+// Malaysia's source has retail prices only.
+const MY: CountryDefaults = {
+  default_area_id: 'kualalumpur',
+  default_recent_area_ids: ['kualalumpur', 'klang', 'seremban'],
+  default_watch: ['tomato', 'cabbage', 'chilli'],
+  default_price_type: 'retail',
 }
 
 const settings = () => useSettings.getState()
@@ -132,6 +141,14 @@ describe('settings store', () => {
       })
     })
 
+    it("starts on the country's price type", () => {
+      settings().chooseCountry('MY', MY)
+      expect(data()).toMatchObject({ country: 'MY', areaId: 'kualalumpur', priceType: 'retail' })
+      settings().chooseArea('kualalumpur')
+      settings().togglePriceType()
+      expect(settings().priceType).toBe('wholesale')
+    })
+
     it('ignores an area chosen before any country', () => {
       settings().chooseArea('pune')
       expect(data()).toEqual(DEFAULT_SETTINGS)
@@ -143,6 +160,7 @@ describe('settings store', () => {
         default_area_id: 'nashik',
         default_recent_area_ids: ['nashik', 'nashik', 'pune', 'agra', 'kolar'],
         default_watch: ['onion', 'onion', 'garlic'],
+        default_price_type: 'wholesale',
       })
       expect(data()).toMatchObject({
         recentAreaIds: ['nashik', 'pune', 'agra'],
@@ -152,7 +170,7 @@ describe('settings store', () => {
   })
 
   describe('changing the country', () => {
-    it('resets my area, the recent areas, the watchlist, the units and the recent crops', () => {
+    it('resets my area, the recent areas, the watchlist, the price type, the units and the recent crops', () => {
       setUpIndia()
       settings().chooseArea('pune')
       settings().toggleWatch('garlic')
@@ -169,7 +187,7 @@ describe('settings store', () => {
         areaId: 'taipei',
         recentAreaIds: ['taipei', 'newtaipei', 'taichung'],
         watchlist: ['cabbage', 'bokchoy', 'banana'],
-        priceType: 'retail',
+        priceType: 'wholesale',
         units: { wholesale: null, retail: null },
         setupDone: true,
         demo: { fail: false, stale: true, locate: 'auto' },
@@ -178,10 +196,19 @@ describe('settings store', () => {
       expect(stored()?.state.country).toBe('TW')
     })
 
+    it("switches to the new country's price type", () => {
+      setUpIndia()
+      settings().chooseCountry('MY', MY)
+      expect(settings().priceType).toBe('retail')
+      settings().chooseCountry('TW', TW)
+      expect(settings().priceType).toBe('wholesale')
+    })
+
     it('keeps everything when the same country is chosen again', () => {
       setUpIndia()
       settings().chooseArea('pune')
       settings().toggleWatch('garlic')
+      settings().togglePriceType()
       useSession.getState().viewCrop('onion')
       const before = data()
       settings().chooseCountry('IN', IN)

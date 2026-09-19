@@ -5,6 +5,7 @@ from datetime import date
 from pydantic import BaseModel
 
 from app.schemas.common import I18nText, StalenessOut
+from app.schemas.prices import PriceType
 
 
 class UnitOptionOut(BaseModel):
@@ -41,6 +42,8 @@ class CountryOut(BaseModel):
     rep_price_label: I18nText
     source_label: I18nText
     units: UnitsOut
+    # The price type a new user of this country starts on (docs/02 §4).
+    default_price_type: PriceType
 
 
 class CountriesOut(BaseModel):

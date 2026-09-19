@@ -131,7 +131,7 @@ describe('country screen', () => {
     expect(rowIds()).toEqual(['IN', 'TW', 'MY'])
     expect(screen.getByText('6 個邦、11 個縣')).toBeInTheDocument()
     expect(screen.getByText('馬來西亞')).toBeInTheDocument()
-    expect(screen.getByText('11 個州與直轄區')).toBeInTheDocument()
+    expect(screen.getByText('15 個州與直轄區、75 個縣')).toBeInTheDocument()
     expect(screen.queryByRole('img', { name: /步/ })).toBeNull()
     expect(app.focusedId()).toBe('IN')
     expect(softKeys(app)).toEqual(['', '選取', '返回'])
@@ -141,7 +141,7 @@ describe('country screen', () => {
     expect(useSettings.getState()).toMatchObject({ country: 'TW', areaId: 'taipei' })
   })
 
-  it('sets up Malaysia with 3: Kuala Lumpur first, its watchlist and RM prices', async () => {
+  it('sets up Malaysia with 3: Kuala Lumpur first, its watchlist and RM retail prices', async () => {
     const app = await renderApp('/setup/country?depth=1', {
       country: null,
       lang: 'en',
@@ -158,6 +158,8 @@ describe('country screen', () => {
       country: 'MY',
       areaId: 'kualalumpur',
       watchlist: ['tomato', 'cabbage', 'chilli', 'onion', 'cucumber', 'bokchoy', 'garlic'],
+      // PriceCatcher has retail prices only, so Malaysia starts on retail.
+      priceType: 'retail',
     })
     expect(await screen.findByText('RM/kg')).toBeInTheDocument()
   })

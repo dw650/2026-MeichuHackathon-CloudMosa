@@ -1,5 +1,5 @@
-# Malaysia seed data (docs/06 §1.5, §7). Areas are districts (Kuala Lumpur: the whole federal
-# territory); names stay in English, as in India. Prices come from KPDN PriceCatcher
+# Malaysia seed data (docs/06 §1.5, §7). Areas are districts (Kuala Lumpur and Putrajaya: the
+# whole federal territory); names stay in English, as in India. Prices come from KPDN PriceCatcher
 # (data.gov.my, CC BY 4.0), which reports one price per premise, item and day.
 # The worker syncs everything except the `mock` blocks into the database; the mock provider
 # reads `mock` directly. Mock prices are in the source's unit: RM per kg.
@@ -13,7 +13,7 @@ country:
   code: MY
   sort: 3
   name: { zh-TW: 馬來西亞, en: Malaysia }
-  coverage: { zh-TW: 11 個州與直轄區, en: 11 states & territories }
+  coverage: { zh-TW: 15 個州與直轄區、75 個縣, en: "15 states & FTs, 75 districts" }
   currency: MYR
   locale: en-MY
   utc_offset_min: 480
@@ -21,6 +21,9 @@ country:
   closed_weekdays: [] # prices are reported every day; public holidays simply have no rows
   default_area: kualalumpur
   default_recent_areas: [kualalumpur, klang, seremban]
+  # PriceCatcher has retail prices only (the wholesale markets stopped reporting in 2026), so
+  # new users start on retail; `*` still switches to wholesale.
+  default_price_type: retail
   area_suffix: { zh-TW: "", en: "" }
   rep_price_label: { zh-TW: 查報價, en: Reported price }
   source_label:
@@ -38,8 +41,15 @@ country:
         - { id: kg, per_kg: 1, decimals: 2, label: { zh-TW: RM/公斤, en: RM/kg } }
         - { id: kati, per_kg: 0.605, decimals: 2, label: { zh-TW: RM/斤, en: RM/kati } }
 
-# One area per state or territory. Seven districts have a wholesale market ("Borong" premise);
-# every area has wet markets (see source_maps.my_pricecatcher).
+# Every district where at least two wet markets reported on more than half of the days with
+# data in the last 60 (checked on 2026-09-20 against PriceCatcher, docs/06 §1.5): 75 districts
+# in 13 states and 2 federal territories, each a whole territory. Names are the lookup's
+# district names. The first 11 came first; the others follow by state. Coordinates of the added
+# ones are the district's main town, or the district's point where no town has its name, from
+# OpenStreetMap (Nominatim, © OpenStreetMap contributors, ODbL). Mock k: the district's median
+# price over the national median of the districts, per crop and day, in Jul–Sep 2026. Seven
+# districts have a wholesale market ("Borong" premise); retail points are the wet markets
+# (see source_maps.my_pricecatcher).
 areas:
   - id: kualalumpur
     name: { zh-TW: Kuala Lumpur, en: Kuala Lumpur }
@@ -135,6 +145,518 @@ areas:
     lon: 110.36
     retail: true
     mock: { k: 1.1, lag: 1 }
+    markets: []
+  - id: batupahat
+    name: { zh-TW: Batu Pahat, en: Batu Pahat }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 1.85
+    lon: 102.93
+    retail: true
+    mock: { k: 1.08, lag: 0 }
+    markets: []
+  - id: kluang
+    name: { zh-TW: Kluang, en: Kluang }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 2.03
+    lon: 103.32
+    retail: true
+    mock: { k: 1.06, lag: 0 }
+    markets: []
+  - id: kotatinggi
+    name: { zh-TW: Kota Tinggi, en: Kota Tinggi }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 1.73
+    lon: 103.9
+    retail: true
+    mock: { k: 1.07, lag: 0 }
+    markets: []
+  - id: mersing
+    name: { zh-TW: Mersing, en: Mersing }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 2.43
+    lon: 103.84
+    retail: true
+    mock: { k: 1.1, lag: 0 }
+    markets: []
+  - id: muar
+    name: { zh-TW: Muar, en: Muar }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 2.04
+    lon: 102.57
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: pontian
+    name: { zh-TW: Pontian, en: Pontian }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 1.49
+    lon: 103.39
+    retail: true
+    mock: { k: 1.06, lag: 0 }
+    markets: []
+  - id: segamat
+    name: { zh-TW: Segamat, en: Segamat }
+    region: { zh-TW: Johor, en: Johor }
+    lat: 2.51
+    lon: 102.81
+    retail: true
+    mock: { k: 0.9, lag: 0 }
+    markets: []
+  - id: baling
+    name: { zh-TW: Baling, en: Baling }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 5.67
+    lon: 100.92
+    retail: true
+    mock: { k: 0.88, lag: 0 }
+    markets: []
+  - id: kotasetar
+    name: { zh-TW: Kota Setar, en: Kota Setar }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 6.12
+    lon: 100.37
+    retail: true
+    mock: { k: 0.92, lag: 0 }
+    markets: []
+  - id: kualamuda
+    name: { zh-TW: Kuala Muda, en: Kuala Muda }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 5.71
+    lon: 100.5
+    retail: true
+    mock: { k: 0.87, lag: 0 }
+    markets: []
+  - id: kubangpasu
+    name: { zh-TW: Kubang Pasu, en: Kubang Pasu }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 6.34
+    lon: 100.37
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: langkawi
+    name: { zh-TW: Langkawi, en: Langkawi }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 6.37
+    lon: 99.79
+    retail: true
+    mock: { k: 1.17, lag: 0 }
+    markets: []
+  - id: sik
+    name: { zh-TW: Sik, en: Sik }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 5.92
+    lon: 100.82
+    retail: true
+    mock: { k: 1.07, lag: 0 }
+    markets: []
+  - id: yan
+    name: { zh-TW: Yan, en: Yan }
+    region: { zh-TW: Kedah, en: Kedah }
+    lat: 5.85
+    lon: 100.42
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: bachok
+    name: { zh-TW: Bachok, en: Bachok }
+    region: { zh-TW: Kelantan, en: Kelantan }
+    lat: 6.06
+    lon: 102.4
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets: []
+  - id: kualakrai
+    name: { zh-TW: Kuala Krai, en: Kuala Krai }
+    region: { zh-TW: Kelantan, en: Kelantan }
+    lat: 5.53
+    lon: 102.2
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets: []
+  - id: pasirputeh
+    name: { zh-TW: Pasir Puteh, en: Pasir Puteh }
+    region: { zh-TW: Kelantan, en: Kelantan }
+    lat: 5.84
+    lon: 102.41
+    retail: true
+    mock: { k: 0.92, lag: 0 }
+    markets: []
+  - id: tanahmerah
+    name: { zh-TW: Tanah Merah, en: Tanah Merah }
+    region: { zh-TW: Kelantan, en: Kelantan }
+    lat: 5.81
+    lon: 102.15
+    retail: true
+    mock: { k: 1.02, lag: 0 }
+    markets: []
+  - id: tumpat
+    name: { zh-TW: Tumpat, en: Tumpat }
+    region: { zh-TW: Kelantan, en: Kelantan }
+    lat: 6.2
+    lon: 102.17
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: alorgajah
+    name: { zh-TW: Alor Gajah, en: Alor Gajah }
+    region: { zh-TW: Melaka, en: Melaka }
+    lat: 2.39
+    lon: 102.21
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: jasin
+    name: { zh-TW: Jasin, en: Jasin }
+    region: { zh-TW: Melaka, en: Melaka }
+    lat: 2.31
+    lon: 102.43
+    retail: true
+    mock: { k: 1.14, lag: 0 }
+    markets: []
+  - id: melakatengah
+    name: { zh-TW: Melaka Tengah, en: Melaka Tengah }
+    region: { zh-TW: Melaka, en: Melaka }
+    lat: 2.23
+    lon: 102.25
+    retail: true
+    mock: { k: 0.9, lag: 0 }
+    markets: []
+  - id: bahau
+    name: { zh-TW: Bahau, en: Bahau }
+    region: { zh-TW: Negeri Sembilan, en: Negeri Sembilan }
+    lat: 2.81
+    lon: 102.4
+    retail: true
+    mock: { k: 0.86, lag: 0 }
+    markets: []
+  - id: portdickson
+    name: { zh-TW: Port Dickson, en: Port Dickson }
+    region: { zh-TW: Negeri Sembilan, en: Negeri Sembilan }
+    lat: 2.53
+    lon: 101.81
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: bera
+    name: { zh-TW: Bera, en: Bera }
+    region: { zh-TW: Pahang, en: Pahang }
+    lat: 3.24
+    lon: 102.54
+    retail: true
+    mock: { k: 0.94, lag: 0 }
+    markets: []
+  - id: temerloh
+    name: { zh-TW: Temerloh, en: Temerloh }
+    region: { zh-TW: Pahang, en: Pahang }
+    lat: 3.45
+    lon: 102.42
+    retail: true
+    mock: { k: 0.89, lag: 0 }
+    markets: []
+  - id: batangpadang
+    name: { zh-TW: Batang Padang, en: Batang Padang }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 4.08
+    lon: 101.33
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: hilirperak
+    name: { zh-TW: Hilir Perak, en: Hilir Perak }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 4.0
+    lon: 101.0
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: huluperak
+    name: { zh-TW: Hulu Perak, en: Hulu Perak }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 5.45
+    lon: 101.3
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: kerian
+    name: { zh-TW: Kerian, en: Kerian }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 5.03
+    lon: 100.5
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets: []
+  - id: kualakangsar
+    name: { zh-TW: Kuala Kangsar, en: Kuala Kangsar }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 4.77
+    lon: 100.94
+    retail: true
+    mock: { k: 0.88, lag: 0 }
+    markets: []
+  - id: larutmatangselama
+    name: { zh-TW: "Larut, Matang & Selama", en: "Larut, Matang & Selama" }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 4.86
+    lon: 100.74
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: manjung
+    name: { zh-TW: Manjung, en: Manjung }
+    region: { zh-TW: Perak, en: Perak }
+    lat: 4.33
+    lon: 100.63
+    retail: true
+    mock: { k: 0.96, lag: 0 }
+    markets: []
+  - id: arau
+    name: { zh-TW: Arau, en: Arau }
+    region: { zh-TW: Perlis, en: Perlis }
+    lat: 6.43
+    lon: 100.27
+    retail: true
+    mock: { k: 1.11, lag: 0 }
+    markets: []
+  - id: kangar
+    name: { zh-TW: Kangar, en: Kangar }
+    region: { zh-TW: Perlis, en: Perlis }
+    lat: 6.44
+    lon: 100.19
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: padangbesar
+    name: { zh-TW: Padang Besar, en: Padang Besar }
+    region: { zh-TW: Perlis, en: Perlis }
+    lat: 6.66
+    lon: 100.32
+    retail: true
+    mock: { k: 1.06, lag: 0 }
+    markets: []
+  - id: baratdaya
+    name: { zh-TW: Barat Daya, en: Barat Daya }
+    region: { zh-TW: Pulau Pinang, en: Penang }
+    lat: 5.34
+    lon: 100.24
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: seberangperaiselatan
+    name: { zh-TW: Seberang Perai Selatan, en: Seberang Perai Selatan }
+    region: { zh-TW: Pulau Pinang, en: Penang }
+    lat: 5.22
+    lon: 100.48
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: seberangperaitengah
+    name: { zh-TW: Seberang Perai Tengah, en: Seberang Perai Tengah }
+    region: { zh-TW: Pulau Pinang, en: Penang }
+    lat: 5.36
+    lon: 100.46
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets: []
+  - id: seberangperaiutara
+    name: { zh-TW: Seberang Perai Utara, en: Seberang Perai Utara }
+    region: { zh-TW: Pulau Pinang, en: Penang }
+    lat: 5.5
+    lon: 100.45
+    retail: true
+    mock: { k: 0.89, lag: 0 }
+    markets: []
+  - id: beaufort
+    name: { zh-TW: Beaufort, en: Beaufort }
+    region: { zh-TW: Sabah, en: Sabah }
+    lat: 5.35
+    lon: 115.74
+    retail: true
+    mock: { k: 1.25, lag: 0 }
+    markets: []
+  - id: kotakinabalu
+    name: { zh-TW: Kota Kinabalu, en: Kota Kinabalu }
+    region: { zh-TW: Sabah, en: Sabah }
+    lat: 5.98
+    lon: 116.07
+    retail: true
+    mock: { k: 1.19, lag: 0 }
+    markets: []
+  - id: sandakan
+    name: { zh-TW: Sandakan, en: Sandakan }
+    region: { zh-TW: Sabah, en: Sabah }
+    lat: 5.84
+    lon: 118.12
+    retail: true
+    mock: { k: 1.18, lag: 0 }
+    markets: []
+  - id: tawau
+    name: { zh-TW: Tawau, en: Tawau }
+    region: { zh-TW: Sabah, en: Sabah }
+    lat: 4.24
+    lon: 117.89
+    retail: true
+    mock: { k: 1.08, lag: 0 }
+    markets: []
+  - id: kapit
+    name: { zh-TW: Kapit, en: Kapit }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 2.01
+    lon: 112.94
+    retail: true
+    mock: { k: 1.19, lag: 0 }
+    markets: []
+  - id: limbang
+    name: { zh-TW: Limbang, en: Limbang }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 4.75
+    lon: 115.01
+    retail: true
+    mock: { k: 1.4, lag: 0 }
+    markets: []
+  - id: miri
+    name: { zh-TW: Miri, en: Miri }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 4.39
+    lon: 113.99
+    retail: true
+    mock: { k: 1.2, lag: 0 }
+    markets: []
+  - id: sarikei
+    name: { zh-TW: Sarikei, en: Sarikei }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 2.13
+    lon: 111.52
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: sibu
+    name: { zh-TW: Sibu, en: Sibu }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 2.29
+    lon: 111.83
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: song
+    name: { zh-TW: Song, en: Song }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 2.01
+    lon: 112.55
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: sriaman
+    name: { zh-TW: Sri Aman, en: Sri Aman }
+    region: { zh-TW: Sarawak, en: Sarawak }
+    lat: 1.21
+    lon: 111.41
+    retail: true
+    mock: { k: 1.17, lag: 0 }
+    markets: []
+  - id: gombak
+    name: { zh-TW: Gombak, en: Gombak }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.23
+    lon: 101.71
+    retail: true
+    mock: { k: 0.94, lag: 0 }
+    markets: []
+  - id: hululangat
+    name: { zh-TW: Hulu Langat, en: Hulu Langat }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.08
+    lon: 101.83
+    retail: true
+    mock: { k: 1.2, lag: 0 }
+    markets: []
+  - id: huluselangor
+    name: { zh-TW: Hulu Selangor, en: Hulu Selangor }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.54
+    lon: 101.59
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: kualaselangor
+    name: { zh-TW: Kuala Selangor, en: Kuala Selangor }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.33
+    lon: 101.25
+    retail: true
+    mock: { k: 1.14, lag: 0 }
+    markets: []
+  - id: petaling
+    name: { zh-TW: Petaling, en: Petaling }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.08
+    lon: 101.58
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets: []
+  - id: petalingjaya
+    name: { zh-TW: Petaling Jaya, en: Petaling Jaya }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 3.1
+    lon: 101.65
+    retail: true
+    mock: { k: 0.85, lag: 0 }
+    markets: []
+  - id: sepang
+    name: { zh-TW: Sepang, en: Sepang }
+    region: { zh-TW: Selangor, en: Selangor }
+    lat: 2.8
+    lon: 101.71
+    retail: true
+    mock: { k: 0.93, lag: 0 }
+    markets: []
+  - id: besut
+    name: { zh-TW: Besut, en: Besut }
+    region: { zh-TW: Terengganu, en: Terengganu }
+    lat: 5.58
+    lon: 102.5
+    retail: true
+    mock: { k: 1.05, lag: 0 }
+    markets: []
+  - id: dungun
+    name: { zh-TW: Dungun, en: Dungun }
+    region: { zh-TW: Terengganu, en: Terengganu }
+    lat: 4.76
+    lon: 103.42
+    retail: true
+    mock: { k: 1.2, lag: 0 }
+    markets: []
+  - id: huluterengganu
+    name: { zh-TW: Hulu Terengganu, en: Hulu Terengganu }
+    region: { zh-TW: Terengganu, en: Terengganu }
+    lat: 4.91
+    lon: 102.77
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: kualanerus
+    name: { zh-TW: Kuala Nerus, en: Kuala Nerus }
+    region: { zh-TW: Terengganu, en: Terengganu }
+    lat: 5.4
+    lon: 103.06
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: marang
+    name: { zh-TW: Marang, en: Marang }
+    region: { zh-TW: Terengganu, en: Terengganu }
+    lat: 5.17
+    lon: 103.17
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets: []
+  - id: putrajaya
+    name: { zh-TW: Putrajaya, en: Putrajaya }
+    region: { zh-TW: W.P. Putrajaya, en: W.P. Putrajaya }
+    lat: 2.92
+    lon: 101.68
+    retail: true
+    mock: { k: 1.12, lag: 0 }
     markets: []
 
 # Categories: cereal, veg, fruit, pulse, spice, oil, other. `watch` = default watchlist.
@@ -262,6 +784,13 @@ crops:
     variety: { zh-TW: 椰絲, en: Grated }
     retail: true
     mock: { p: 8.2, chg: 0.02, rt: 1.45 }
+  - id: eggplant
+    name: { zh-TW: 茄子, en: Brinjal }
+    category: veg
+    variety: { zh-TW: 圓茄, en: Round }
+    retail: true
+    # The wet markets report it about twice a week, so the demo keeps it two days behind.
+    mock: { p: 6.2, chg: 0.03, rt: 1.45, lag: 2 }
   - id: wheat
     name: { zh-TW: 麵粉, en: Wheat flour }
     category: cereal
@@ -295,6 +824,7 @@ source_maps:
       - { source_name: "1928", crop: calamansi } # LIMAU KASTURI
       - { source_name: "368", crop: peanut } # KACANG TANAH (IMPORT)
       - { source_name: "102", crop: coconut } # KELAPA PARUT (BIASA)
+      - { source_name: "1923", crop: eggplant } # TERUNG BULAT
       - { source_name: "917", crop: wheat } # TEPUNG GANDUM NGP (BERBUNGKUS, CAP SAUH)
     markets: &borong_premises
       - { source_market: "18147", market: klborong } # Pasar Borong Kuala Lumpur
@@ -304,99 +834,87 @@ source_maps:
       - { source_market: "16822", market: ktborong } # Pasar Borong Gong Pauh
       - { source_market: "17003", market: serembanborong } # Pasar Besar Seremban, Negeri Sembilan
       - { source_market: "17450", market: kulimborong } # Pasar Borong Kota Kenari
-    # The demo prints one wet market per area.
-    areas:
-      - { source_area: "3181", area: kualalumpur } # Pasar Pudu
-      - { source_area: "5532", area: klang } # Pasar Besar Pelabuhan Klang
-      - { source_area: "1053", area: johorbahru } # Pasar Awam Masai
-      - { source_area: "1960", area: timurlaut } # Pasar Jelutong
-      - { source_area: "2", area: kinta } # Pasar Besar Ipoh
-      - { source_area: "11551", area: kotabharu } # Pasar  Besar Siti Khadijah
-      - { source_area: "4296", area: kuantan } # Pasar Basah Balok
-      - { source_area: "2510", area: kualaterengganu } # Pasar Payang
-      - { source_area: "11737", area: seremban } # Pasar Besar Seremban
-      - { source_area: "2948", area: kulim } # Pasar Awam Padang Serai
-      - { source_area: "2248", area: kuching } # Medan Niaga Satok
+    # Retail points: every wet market ("Pasar Basah") that lookup_premise.csv places in the
+    # district ("State/District", or a whole federal territory by its state), read from the
+    # lookup on every run, so a new wet market needs no seed change. The demo prints one
+    # made-up wet market per district.
+    areas: &pricecatcher_districts
+      - { source_area: "W.P. Kuala Lumpur", area: kualalumpur }
+      - { source_area: "Selangor/Klang", area: klang }
+      - { source_area: "Johor/Johor Bahru", area: johorbahru }
+      - { source_area: "Pulau Pinang/Timur Laut", area: timurlaut }
+      - { source_area: "Perak/Kinta", area: kinta }
+      - { source_area: "Kelantan/Kota Bharu", area: kotabharu }
+      - { source_area: "Pahang/Kuantan", area: kuantan }
+      - { source_area: "Terengganu/Kuala Terengganu", area: kualaterengganu }
+      - { source_area: "Negeri Sembilan/Seremban", area: seremban }
+      - { source_area: "Kedah/Kulim", area: kulim }
+      - { source_area: "Sarawak/Kuching", area: kuching }
+      - { source_area: "Johor/Batu Pahat", area: batupahat }
+      - { source_area: "Johor/Kluang", area: kluang }
+      - { source_area: "Johor/Kota Tinggi", area: kotatinggi }
+      - { source_area: "Johor/Mersing", area: mersing }
+      - { source_area: "Johor/Muar", area: muar }
+      - { source_area: "Johor/Pontian", area: pontian }
+      - { source_area: "Johor/Segamat", area: segamat }
+      - { source_area: "Kedah/Baling", area: baling }
+      - { source_area: "Kedah/Kota Setar", area: kotasetar }
+      - { source_area: "Kedah/Kuala Muda", area: kualamuda }
+      - { source_area: "Kedah/Kubang Pasu", area: kubangpasu }
+      - { source_area: "Kedah/Langkawi", area: langkawi }
+      - { source_area: "Kedah/Sik", area: sik }
+      - { source_area: "Kedah/Yan", area: yan }
+      - { source_area: "Kelantan/Bachok", area: bachok }
+      - { source_area: "Kelantan/Kuala Krai", area: kualakrai }
+      - { source_area: "Kelantan/Pasir Puteh", area: pasirputeh }
+      - { source_area: "Kelantan/Tanah Merah", area: tanahmerah }
+      - { source_area: "Kelantan/Tumpat", area: tumpat }
+      - { source_area: "Melaka/Alor Gajah", area: alorgajah }
+      - { source_area: "Melaka/Jasin", area: jasin }
+      - { source_area: "Melaka/Melaka Tengah", area: melakatengah }
+      - { source_area: "Negeri Sembilan/Bahau", area: bahau }
+      - { source_area: "Negeri Sembilan/Port Dickson", area: portdickson }
+      - { source_area: "Pahang/Bera", area: bera }
+      - { source_area: "Pahang/Temerloh", area: temerloh }
+      - { source_area: "Perak/Batang Padang", area: batangpadang }
+      - { source_area: "Perak/Hilir Perak", area: hilirperak }
+      - { source_area: "Perak/Hulu Perak", area: huluperak }
+      - { source_area: "Perak/Kerian", area: kerian }
+      - { source_area: "Perak/Kuala Kangsar", area: kualakangsar }
+      - { source_area: "Perak/Larut, Matang & Selama", area: larutmatangselama }
+      - { source_area: "Perak/Manjung", area: manjung }
+      - { source_area: "Perlis/Arau", area: arau }
+      - { source_area: "Perlis/Kangar", area: kangar }
+      - { source_area: "Perlis/Padang Besar", area: padangbesar }
+      - { source_area: "Pulau Pinang/Barat Daya", area: baratdaya }
+      - { source_area: "Pulau Pinang/Seberang Perai Selatan", area: seberangperaiselatan }
+      - { source_area: "Pulau Pinang/Seberang Perai Tengah", area: seberangperaitengah }
+      - { source_area: "Pulau Pinang/Seberang Perai Utara", area: seberangperaiutara }
+      - { source_area: "Sabah/Beaufort", area: beaufort }
+      - { source_area: "Sabah/Kota Kinabalu", area: kotakinabalu }
+      - { source_area: "Sabah/Sandakan", area: sandakan }
+      - { source_area: "Sabah/Tawau", area: tawau }
+      - { source_area: "Sarawak/Kapit", area: kapit }
+      - { source_area: "Sarawak/Limbang", area: limbang }
+      - { source_area: "Sarawak/Miri", area: miri }
+      - { source_area: "Sarawak/Sarikei", area: sarikei }
+      - { source_area: "Sarawak/Sibu", area: sibu }
+      - { source_area: "Sarawak/Song", area: song }
+      - { source_area: "Sarawak/Sri Aman", area: sriaman }
+      - { source_area: "Selangor/Gombak", area: gombak }
+      - { source_area: "Selangor/Hulu Langat", area: hululangat }
+      - { source_area: "Selangor/Hulu Selangor", area: huluselangor }
+      - { source_area: "Selangor/Kuala Selangor", area: kualaselangor }
+      - { source_area: "Selangor/Petaling", area: petaling }
+      - { source_area: "Selangor/Petaling Jaya", area: petalingjaya }
+      - { source_area: "Selangor/Sepang", area: sepang }
+      - { source_area: "Terengganu/Besut", area: besut }
+      - { source_area: "Terengganu/Dungun", area: dungun }
+      - { source_area: "Terengganu/Hulu Terengganu", area: huluterengganu }
+      - { source_area: "Terengganu/Kuala Nerus", area: kualanerus }
+      - { source_area: "Terengganu/Marang", area: marang }
+      - { source_area: "W.P. Putrajaya", area: putrajaya }
   my_pricecatcher:
     crops: *pricecatcher_items
     markets: *borong_premises
-    areas:
-      - { source_area: "424", area: kualalumpur } # Pasar Jalan Klang Lama
-      - { source_area: "2530", area: kualalumpur } # Pasar Sentul
-      - { source_area: "3181", area: kualalumpur } # Pasar Pudu
-      - { source_area: "3195", area: kualalumpur } # Pasar Batu 5
-      - { source_area: "3211", area: kualalumpur } # Pasar Harian Selayang ( Kl )
-      - { source_area: "3305", area: kualalumpur } # Pasar Besar Taman Tun Dr Ismail ( Ttdi )
-      - { source_area: "3438", area: kualalumpur } # Pasar Air Panas
-      - { source_area: "4097", area: kualalumpur } # Pasar Keramat
-      - { source_area: "5302", area: kualalumpur } # Pasar Jalan Genting Klang
-      - { source_area: "8616", area: kualalumpur } # Pasar Chow Kit
-      - { source_area: "11572", area: kualalumpur } # Pasar Besar Cheras
-      - { source_area: "11580", area: kualalumpur } # Pasar Taman Cheras
-      - { source_area: "11581", area: kualalumpur } # Pasar Bandar Baru Sentul
-      - { source_area: "11618", area: kualalumpur } # Pasar Sungai Besi
-      - { source_area: "11655", area: kualalumpur } # Pasar Pagi Awam Jalan Telawi
-      - { source_area: "21600", area: kualalumpur } # Pasar Sementara Jalan Lengkuas
-      - { source_area: "21613", area: kualalumpur } # Pasar Icc Pudu
-      - { source_area: "5532", area: klang } # Pasar Besar Pelabuhan Klang
-      - { source_area: "7472", area: klang } # Pasar Meru Klang
-      - { source_area: "7473", area: klang } # Pasar Basah Kapar
-      - { source_area: "1053", area: johorbahru } # Pasar Awam Masai
-      - { source_area: "2048", area: johorbahru } # Pasar Awam Larkin
-      - { source_area: "12740", area: johorbahru } # Pasar Awam Ulu Tiram
-      - { source_area: "12745", area: johorbahru } # Pasar Awam Taman Universiti
-      - { source_area: "15524", area: johorbahru } # Pasar Awam Kulai
-      - { source_area: "17096", area: johorbahru } # Pasar Awam Perling
-      - { source_area: "1960", area: timurlaut } # Pasar Jelutong
-      - { source_area: "1961", area: timurlaut } # Pasar Fettes Park
-      - { source_area: "2161", area: timurlaut } # Pasar Chowrasta
-      - { source_area: "2190", area: timurlaut } # Pasar Pulau Tikus
-      - { source_area: "2213", area: timurlaut } # Pasar Teluk Bahang
-      - { source_area: "2222", area: timurlaut } # Pasar Jalan Patani
-      - { source_area: "4083", area: timurlaut } # Pasar Kampung Baru
-      - { source_area: "7995", area: timurlaut } # Pasar Taman Tun Sardon
-      - { source_area: "11703", area: timurlaut } # Pasar Tanjung Bungah
-      - { source_area: "11883", area: timurlaut } # Pasar Basah Mppp
-      - { source_area: "11956", area: timurlaut } # Pasar Padang Tembak
-      - { source_area: "12024", area: timurlaut } # Kompleks Pasar Farlim
-      - { source_area: "12027", area: timurlaut } # Pasar Kampung Melayu
-      - { source_area: "12028", area: timurlaut } # Pasar Ayer Itam
-      - { source_area: "14657", area: timurlaut } # Pasar Jalan Kuantan
-      - { source_area: "14883", area: timurlaut } # Pasar Jalan Anson
-      - { source_area: "21364", area: timurlaut } # Pasar Jalan Permai
-      - { source_area: "2", area: kinta } # Pasar Besar Ipoh
-      - { source_area: "431", area: kinta } # Pasar Tanjung Rambutan
-      - { source_area: "433", area: kinta } # Pasar Gopeng
-      - { source_area: "434", area: kinta } # Pasar Batu Gajah
-      - { source_area: "2775", area: kinta } # Pasar Gunung Rapat
-      - { source_area: "20702", area: kinta } # Pasar Kampung Tawas
-      - { source_area: "1517", area: kotabharu } # Pasar Basah Ketereh
-      - { source_area: "1652", area: kotabharu } # Pasar Basah Pengkalan Chepa
-      - { source_area: "5816", area: kotabharu } # Pasar Basah Melor
-      - { source_area: "11551", area: kotabharu } # Pasar  Besar Siti Khadijah
-      - { source_area: "11677", area: kotabharu } # Pasar Kubang Pasu
-      - { source_area: "11893", area: kotabharu } # Pasar Berek 12
-      - { source_area: "15563", area: kotabharu } # Pasar Borong Wakaf Che Yeh
-      - { source_area: "17428", area: kotabharu } # Myfarm Outlet, Rtc Tunjong
-      - { source_area: "21762", area: kotabharu } # Pasar Kedai Mulong
-      - { source_area: "4296", area: kuantan } # Pasar Basah Balok
-      - { source_area: "11586", area: kuantan } # Pasar Basah Besar Kuantan
-      - { source_area: "20755", area: kuantan } # Pasar Basah Kampung Peramu
-      - { source_area: "20805", area: kuantan } # Pasar Basah Taman Tas
-      - { source_area: "20806", area: kuantan } # Pasar Basah Besar Jaya Gading
-      - { source_area: "2510", area: kualaterengganu } # Pasar Payang
-      - { source_area: "2864", area: kualaterengganu } # Pasar Basah Manir
-      - { source_area: "3251", area: kualaterengganu } # Pasar Bukit Besar
-      - { source_area: "3770", area: kualaterengganu } # Pasar Chabang 3
-      - { source_area: "20828", area: kualaterengganu } # My Farm Outlet Chendering
-      - { source_area: "11660", area: seremban } # Pasar Awam Rasah
-      - { source_area: "11728", area: seremban } # Pasar Ampangan
-      - { source_area: "11737", area: seremban } # Pasar Besar Seremban
-      - { source_area: "17454", area: seremban } # Pasar Awam Nilai
-      - { source_area: "2948", area: kulim } # Pasar Awam Padang Serai
-      - { source_area: "2955", area: kulim } # Pasar Awam Kulim
-      - { source_area: "3051", area: kulim } # Pasar Awam Serdang
-      - { source_area: "21102", area: kulim } # Pasar Awam Lembah Impiana
-      - { source_area: "2248", area: kuching } # Medan Niaga Satok
-      - { source_area: "2629", area: kuching } # Pasar Komuniti Stutong
-      - { source_area: "4303", area: kuching } # Pasar Basah Kota Sentosa
+    areas: *pricecatcher_districts

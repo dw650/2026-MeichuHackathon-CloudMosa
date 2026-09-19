@@ -54,13 +54,12 @@ def _tw_moa(ctx: BuildContext) -> PriceProvider:
 
 
 def _my_pricecatcher(ctx: BuildContext) -> PriceProvider:
-    premises, items = my_pricecatcher.codes_from_seeds(ctx.seeds)
     return my_pricecatcher.PriceCatcherProvider(
-        premises,
-        items,
+        my_pricecatcher.wanted_from_seeds(ctx.seeds),
         ctx.today_of,
         plan=ctx.days,
         files=ctx.files,
+        lookups={},
         transport=httpx.MockTransport(FakeStorage()),
         sleep=Sleeps(),
     )

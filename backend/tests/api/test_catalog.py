@@ -34,14 +34,18 @@ async def test_countries_lists_every_country_with_its_settings(api: httpx.AsyncC
     assert malaysia["default_area_id"] == "kualalumpur"
     assert [o["id"] for o in malaysia["units"]["wholesale"]["options"]] == ["kg", "kati"]
     assert "CC BY 4.0" in malaysia["source_label"]["en"]
+    # Malaysia's source has retail prices only, so new users start on retail there.
+    assert [c["default_price_type"] for c in countries] == ["wholesale", "wholesale", "retail"]
 
 
 async def test_malaysia_areas_and_retail_from_the_demo(api: httpx.AsyncClient) -> None:
     areas = (await api.get("/api/v1/countries/MY/areas")).json()["areas"]
-    assert len(areas) == 11
+    assert len(areas) == 75  # every district with enough wet-market reports
     by_id = {a["id"]: a for a in areas}
     assert by_id["kualalumpur"]["staleness"] == {"days": 0, "state": "today"}
     assert by_id["kuching"]["staleness"] == {"days": 1, "state": "stale"}
+    assert by_id["larutmatangselama"]["name"]["en"] == "Larut, Matang & Selama"
+    assert by_id["larutmatangselama"]["staleness"] == {"days": 0, "state": "today"}
     quote = (
         await api.get(
             "/api/v1/crops/tomato/quote",

@@ -481,6 +481,31 @@
   },
   {
    "change": {
+    "diff_per_kg": 0.15,
+    "direction": "up",
+    "pct": 0.01556,
+    "prev_trade_date": "2026-09-16"
+   },
+   "crop_id": "eggplant",
+   "price_per_kg": 9.79,
+   "reason": null,
+   "spark": [
+    9.45,
+    9.44,
+    9.58,
+    9.64,
+    9.79,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 2,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-17"
+  },
+  {
+   "change": {
     "diff_per_kg": 0.01,
     "direction": "up",
     "pct": 0.002611,
