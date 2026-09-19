@@ -1,0 +1,70 @@
+/* Setup screens (F01, mockup .steps / .rankline / .dot); the cards bring their own styles. */
+
+/* Step dots: the current step is the long one. */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 0 4px;
+}
+
+.steps > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--line);
+}
+
+.steps > .on {
+  width: 16px;
+  background: var(--brand);
+}
+
+/* ◀ 第 1／2 頁 ▶ above the other languages. */
+.pager {
+  overflow: hidden;
+  padding: 3px var(--gut) 0;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Freshness of an area: a dot, plus a label unless the data is today's. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pos);
+}
+
+.dot[data-state='warn'] {
+  background: var(--warn);
+}
+
+.dot[data-state='none'] {
+  background: var(--line);
+}
+
+.warn {
+  color: var(--warn);
+}
+
+/* 128×160: tighter dots; no page arrows or area status (docs/03 §6). */
+@media (max-width: 176px) {
+  .steps {
+    padding: 2px 0 1px;
+  }
+
+  .arrow,
+  .status {
+    display: none;
+  }
+}
