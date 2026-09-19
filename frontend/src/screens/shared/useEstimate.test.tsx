@@ -56,6 +56,7 @@ describe('useEstimate', () => {
       default_area_id: 'taipei',
       default_recent_area_ids: ['taipei'],
       default_watch: ['cabbage'],
+      default_price_type: 'wholesale',
     })
     useSettings.getState().chooseArea('taipei')
   })
