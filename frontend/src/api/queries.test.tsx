@@ -56,12 +56,12 @@ describe('query hooks', () => {
     await waitFor(() => expect(Object.values(result.current).every((q) => q.isSuccess)).toBe(true))
     const r = result.current
     expect(r.countries.data?.countries.map((c) => c.code)).toEqual(['IN', 'TW', 'MY'])
-    expect(r.areas.data?.areas).toHaveLength(11)
-    expect(r.crops.data?.crops).toHaveLength(30)
+    expect(r.areas.data?.areas).toHaveLength(64)  // India
+    expect(r.crops.data?.crops).toHaveLength(30)  // Taiwan
     expect(r.prices.data?.items.map((i) => i.crop_id)).toEqual(['onion'])
     expect(r.quote.data?.series).toHaveLength(30)
-    expect(r.compare.data?.rows).toHaveLength(11)
-    expect(r.markets.data?.rows).toHaveLength(10)
+    expect(r.compare.data?.rows).toHaveLength(64)
+    expect(r.markets.data?.rows).toHaveLength(25)
     expect(r.market.data?.market_id).toBe('lasalgaon')
     expect(r.news.data?.area_id).toBe('taichung')
     expect(r.news.data?.items).toHaveLength(6)

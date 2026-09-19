@@ -6,7 +6,7 @@ import { renderApp } from '@/test/renderApp'
 describe('AboutScreen', () => {
   it('shows the notes, the data source and the credits, with nothing to select', async () => {
     const app = await renderApp('/about', { history: ['/'] })
-    expect(await screen.findByText('Agmarknet・消費者事務部（印度政府）')).toBeInTheDocument()
+    expect(await screen.findByText('Agmarknet（印度農業部，data.gov.in，GODL-India）')).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveTextContent('關於與資料說明')
     for (const text of [
       '地區價＝該地區各市場代表價的中位數，並標出市場數。',

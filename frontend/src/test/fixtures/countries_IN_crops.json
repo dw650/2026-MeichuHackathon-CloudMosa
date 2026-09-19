@@ -4,7 +4,6 @@
   {
    "category": "veg",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "onion",
    "name": {
@@ -19,7 +18,6 @@
   {
    "category": "veg",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "tomato",
    "name": {
@@ -34,7 +32,6 @@
   {
    "category": "veg",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "potato",
    "name": {
@@ -49,7 +46,6 @@
   {
    "category": "spice",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": false,
    "id": "chilli",
    "name": {
@@ -64,22 +60,20 @@
   {
    "category": "pulse",
    "default_watch": true,
-   "estimate_ratio": null,
-   "has_retail": false,
-   "id": "soybean",
+   "has_retail": true,
+   "id": "chickpea",
    "name": {
-    "en": "Soybean",
-    "zh-TW": "大豆"
+    "en": "Chickpea",
+    "zh-TW": "鷹嘴豆"
    },
    "variety": {
-    "en": "Yellow",
-    "zh-TW": "黃豆"
+    "en": "Desi chana",
+    "zh-TW": "小粒種"
    }
   },
   {
    "category": "cereal",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": false,
    "id": "maize",
    "name": {
@@ -94,7 +88,6 @@
   {
    "category": "cereal",
    "default_watch": true,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "wheat",
    "name": {
@@ -107,69 +100,8 @@
    }
   },
   {
-   "category": "fruit",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": false,
-   "id": "grapes",
-   "name": {
-    "en": "Grapes",
-    "zh-TW": "葡萄"
-   },
-   "variety": {
-    "en": "Green",
-    "zh-TW": "綠葡萄"
-   }
-  },
-  {
-   "category": "fruit",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": true,
-   "id": "banana",
-   "name": {
-    "en": "Banana",
-    "zh-TW": "香蕉"
-   },
-   "variety": {
-    "en": "Local",
-    "zh-TW": "本地種"
-   }
-  },
-  {
-   "category": "spice",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": true,
-   "id": "garlic",
-   "name": {
-    "en": "Garlic",
-    "zh-TW": "大蒜"
-   },
-   "variety": {
-    "en": "Local",
-    "zh-TW": "本地種"
-   }
-  },
-  {
-   "category": "cereal",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": true,
-   "id": "rice",
-   "name": {
-    "en": "Rice",
-    "zh-TW": "稻米"
-   },
-   "variety": {
-    "en": "Common",
-    "zh-TW": "普通"
-   }
-  },
-  {
    "category": "veg",
    "default_watch": false,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "cabbage",
    "name": {
@@ -184,7 +116,6 @@
   {
    "category": "veg",
    "default_watch": false,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "eggplant",
    "name": {
@@ -199,22 +130,6 @@
   {
    "category": "fruit",
    "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": true,
-   "id": "mango",
-   "name": {
-    "en": "Mango",
-    "zh-TW": "芒果"
-   },
-   "variety": {
-    "en": "Totapuri",
-    "zh-TW": "托塔普里"
-   }
-  },
-  {
-   "category": "fruit",
-   "default_watch": false,
-   "estimate_ratio": null,
    "has_retail": true,
    "id": "pomegranate",
    "name": {
@@ -227,39 +142,8 @@
    }
   },
   {
-   "category": "pulse",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": true,
-   "id": "chickpea",
-   "name": {
-    "en": "Chickpea",
-    "zh-TW": "鷹嘴豆"
-   },
-   "variety": {
-    "en": "Desi chana",
-    "zh-TW": "小粒種"
-   }
-  },
-  {
-   "category": "spice",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": false,
-   "id": "turmeric",
-   "name": {
-    "en": "Turmeric",
-    "zh-TW": "薑黃"
-   },
-   "variety": {
-    "en": "Finger",
-    "zh-TW": "指狀"
-   }
-  },
-  {
    "category": "oil",
    "default_watch": false,
-   "estimate_ratio": null,
    "has_retail": false,
    "id": "peanut",
    "name": {
@@ -272,24 +156,8 @@
    }
   },
   {
-   "category": "oil",
-   "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": false,
-   "id": "mustard",
-   "name": {
-    "en": "Mustard",
-    "zh-TW": "芥菜籽"
-   },
-   "variety": {
-    "en": "Black",
-    "zh-TW": "黑芥"
-   }
-  },
-  {
    "category": "other",
    "default_watch": false,
-   "estimate_ratio": null,
    "has_retail": false,
    "id": "cotton",
    "name": {
@@ -302,18 +170,129 @@
    }
   },
   {
-   "category": "other",
+   "category": "cereal",
    "default_watch": false,
-   "estimate_ratio": null,
-   "has_retail": false,
-   "id": "sugarcane",
+   "has_retail": true,
+   "id": "jowar",
    "name": {
-    "en": "Sugarcane",
-    "zh-TW": "甘蔗"
+    "en": "Jowar",
+    "zh-TW": "高粱"
    },
    "variety": {
     "en": "Local",
     "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "cucumber",
+   "name": {
+    "en": "Cucumber",
+    "zh-TW": "黃瓜"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "cauliflower",
+   "name": {
+    "en": "Cauliflower",
+    "zh-TW": "花椰菜"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "carrot",
+   "name": {
+    "en": "Carrot",
+    "zh-TW": "胡蘿蔔"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "pulse",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "mungbean",
+   "name": {
+    "en": "Green gram",
+    "zh-TW": "綠豆"
+   },
+   "variety": {
+    "en": "Whole",
+    "zh-TW": "整粒"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "ginger",
+   "name": {
+    "en": "Ginger",
+    "zh-TW": "薑"
+   },
+   "variety": {
+    "en": "Green",
+    "zh-TW": "鮮薑"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "apple",
+   "name": {
+    "en": "Apple",
+    "zh-TW": "蘋果"
+   },
+   "variety": {
+    "en": "Mixed",
+    "zh-TW": "各品種"
+   }
+  },
+  {
+   "category": "oil",
+   "default_watch": false,
+   "has_retail": false,
+   "id": "sesame",
+   "name": {
+    "en": "Sesame",
+    "zh-TW": "芝麻"
+   },
+   "variety": {
+    "en": "White",
+    "zh-TW": "白芝麻"
+   }
+  },
+  {
+   "category": "other",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "jaggery",
+   "name": {
+    "en": "Jaggery",
+    "zh-TW": "粗糖"
+   },
+   "variety": {
+    "en": "Block",
+    "zh-TW": "塊狀"
    }
   }
  ]

@@ -1,23 +1,23 @@
 {
  "area_id": "nashik",
  "change": {
-  "diff_per_kg": 0.84,
+  "diff_per_kg": 0.66,
   "direction": "up",
-  "pct": 0.037634,
+  "pct": 0.016739,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "onion",
  "currency": "INR",
  "fetched_at": "2026-09-19T11:40:00+05:30",
- "high_per_kg": 25.72,
- "km_from_center": 32,
- "low_per_kg": 18.72,
+ "high_per_kg": 48.41,
+ "km_from_center": null,
+ "low_per_kg": 20.04,
  "market_id": "lasalgaon",
  "name": {
   "en": "Lasalgaon",
   "zh-TW": "Lasalgaon"
  },
- "price_per_kg": 23.16,
+ "price_per_kg": 40.09,
  "reason": null,
  "source": {
   "id": "mock",

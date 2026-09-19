@@ -129,7 +129,7 @@ describe('country screen', () => {
     const app = await renderApp('/setup/country', { history: ['/areas?for=home'] })
     expect(await screen.findByText('台灣')).toBeInTheDocument()
     expect(rowIds()).toEqual(['IN', 'TW', 'MY'])
-    expect(screen.getByText('6 個邦、11 個縣')).toBeInTheDocument()
+    expect(screen.getByText('2 個邦與德里、64 個縣')).toBeInTheDocument()
     expect(screen.getByText('馬來西亞')).toBeInTheDocument()
     expect(screen.getByText('15 個州與直轄區、75 個縣')).toBeInTheDocument()
     expect(screen.queryByRole('img', { name: /步/ })).toBeNull()
@@ -198,7 +198,7 @@ describe('first-run setup', () => {
       country: 'IN',
       areaId: 'nashik',
       setupDone: true,
-      watchlist: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat'],
+      watchlist: ['onion', 'tomato', 'potato', 'chilli', 'chickpea', 'maize', 'wheat'],
     })
     await app.back()
     expect(app.path()).toBe('/')

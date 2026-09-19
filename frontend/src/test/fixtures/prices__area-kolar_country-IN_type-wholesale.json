@@ -6,19 +6,19 @@
  "items": [
   {
    "change": {
-    "diff_per_kg": 0.045,
+    "diff_per_kg": 0.95,
     "direction": "up",
-    "pct": 0.001863,
+    "pct": 0.029476,
     "prev_trade_date": "2026-09-15"
    },
    "crop_id": "onion",
-   "price_per_kg": 24.195,
+   "price_per_kg": 33.18,
    "reason": null,
    "spark": [
     null,
-    23.82,
-    24.15,
-    24.195,
+    32.25,
+    32.23,
+    33.18,
     null,
     null,
     null
@@ -31,19 +31,19 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.1,
-    "direction": "down",
-    "pct": -0.006831,
+    "diff_per_kg": 0.11,
+    "direction": "up",
+    "pct": 0.011134,
     "prev_trade_date": "2026-09-15"
    },
    "crop_id": "tomato",
-   "price_per_kg": 14.54,
+   "price_per_kg": 9.99,
    "reason": null,
    "spark": [
     null,
-    14.75,
-    14.64,
-    14.54,
+    10.05,
+    9.88,
+    9.99,
     null,
     null,
     null
@@ -56,19 +56,169 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.195,
+    "diff_per_kg": -0.04,
+    "direction": "down",
+    "pct": -0.003728,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "potato",
+   "price_per_kg": 10.69,
+   "reason": null,
+   "spark": [
+    null,
+    11.05,
+    10.73,
+    10.69,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.34,
+    "direction": "down",
+    "pct": -0.014015,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "chilli",
+   "price_per_kg": 23.92,
+   "reason": null,
+   "spark": [
+    null,
+    23.3,
+    24.26,
+    23.92,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.66,
+    "direction": "down",
+    "pct": -0.012934,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "chickpea",
+   "price_per_kg": 50.37,
+   "reason": null,
+   "spark": [
+    null,
+    53.37,
+    51.03,
+    50.37,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.44,
+    "direction": "down",
+    "pct": -0.019147,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "maize",
+   "price_per_kg": 22.54,
+   "reason": null,
+   "spark": [
+    null,
+    22.79,
+    22.98,
+    22.54,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.03,
+    "direction": "up",
+    "pct": 0.001332,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "wheat",
+   "price_per_kg": 22.55,
+   "reason": null,
+   "spark": [
+    null,
+    21.88,
+    22.52,
+    22.55,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.02,
+    "direction": "down",
+    "pct": -0.00246,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "cabbage",
+   "price_per_kg": 8.11,
+   "reason": null,
+   "spark": [
+    null,
+    8.02,
+    8.13,
+    8.11,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.19,
     "direction": "down",
     "pct": -0.012516,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "potato",
-   "price_per_kg": 15.385,
+   "crop_id": "eggplant",
+   "price_per_kg": 14.99,
    "reason": null,
    "spark": [
     null,
-    15.955,
-    15.58,
-    15.385,
+    15.42,
+    15.18,
+    14.99,
     null,
     null,
     null
@@ -81,19 +231,44 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.42,
+    "diff_per_kg": 0.48,
+    "direction": "up",
+    "pct": 0.007903,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "pomegranate",
+   "price_per_kg": 61.22,
+   "reason": null,
+   "spark": [
+    null,
+    59.76,
+    60.74,
+    61.22,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -2.17,
     "direction": "down",
-    "pct": -0.010815,
+    "pct": -0.033848,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "chilli",
-   "price_per_kg": 38.415,
+   "crop_id": "peanut",
+   "price_per_kg": 61.94,
    "reason": null,
    "spark": [
     null,
-    37.505,
-    38.835,
-    38.415,
+    63.85,
+    64.11,
+    61.94,
     null,
     null,
     null
@@ -106,144 +281,19 @@
   },
   {
    "change": {
-    "diff_per_kg": 1.305,
+    "diff_per_kg": 3.15,
     "direction": "up",
-    "pct": 0.026684,
+    "pct": 0.039528,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "soybean",
-   "price_per_kg": 50.21,
+   "crop_id": "cotton",
+   "price_per_kg": 82.84,
    "reason": null,
    "spark": [
     null,
-    47.415,
-    48.905,
-    50.21,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": -0.2,
-    "direction": "down",
-    "pct": -0.008247,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "maize",
-   "price_per_kg": 24.05,
-   "reason": null,
-   "spark": [
-    null,
-    23.89,
-    24.25,
-    24.05,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 0.29,
-    "direction": "up",
-    "pct": 0.011154,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "wheat",
-   "price_per_kg": 26.29,
-   "reason": null,
-   "spark": [
-    null,
-    25.67,
-    26.0,
-    26.29,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": -0.415,
-    "direction": "down",
-    "pct": -0.007719,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "grapes",
-   "price_per_kg": 53.35,
-   "reason": null,
-   "spark": [
-    null,
-    55.615,
-    53.765,
-    53.35,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 0.51,
-    "direction": "up",
-    "pct": 0.029746,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "banana",
-   "price_per_kg": 17.655,
-   "reason": null,
-   "spark": [
-    null,
-    17.69,
-    17.145,
-    17.655,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 1.625,
-    "direction": "up",
-    "pct": 0.016161,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "garlic",
-   "price_per_kg": 102.175,
-   "reason": null,
-   "spark": [
-    null,
-    101.495,
-    100.55,
-    102.175,
+    78.85,
+    79.69,
+    82.84,
     null,
     null,
     null
@@ -258,17 +308,17 @@
    "change": {
     "diff_per_kg": 0.24,
     "direction": "up",
-    "pct": 0.006161,
+    "pct": 0.010067,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "rice",
-   "price_per_kg": 39.195,
+   "crop_id": "jowar",
+   "price_per_kg": 24.08,
    "reason": null,
    "spark": [
     null,
-    39.03,
-    38.955,
-    39.195,
+    23.91,
+    23.84,
+    24.08,
     null,
     null,
     null
@@ -281,19 +331,19 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.15,
+    "diff_per_kg": -0.13,
     "direction": "down",
-    "pct": -0.010795,
+    "pct": -0.008502,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "cabbage",
-   "price_per_kg": 13.745,
+   "crop_id": "cucumber",
+   "price_per_kg": 15.16,
    "reason": null,
    "spark": [
     null,
-    13.75,
-    13.895,
-    13.745,
+    15.27,
+    15.29,
+    15.16,
     null,
     null,
     null
@@ -306,19 +356,144 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.465,
+    "diff_per_kg": 0.06,
+    "direction": "up",
+    "pct": 0.004501,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "cauliflower",
+   "price_per_kg": 13.39,
+   "reason": null,
+   "spark": [
+    null,
+    13.03,
+    13.33,
+    13.39,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.97,
+    "direction": "up",
+    "pct": 0.049039,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "carrot",
+   "price_per_kg": 20.75,
+   "reason": null,
+   "spark": [
+    null,
+    20.73,
+    19.78,
+    20.75,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.13,
+    "direction": "up",
+    "pct": 0.00172,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "mungbean",
+   "price_per_kg": 75.72,
+   "reason": null,
+   "spark": [
+    null,
+    76.03,
+    75.59,
+    75.72,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 2.64,
+    "direction": "up",
+    "pct": 0.039474,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "ginger",
+   "price_per_kg": 69.52,
+   "reason": null,
+   "spark": [
+    null,
+    64.99,
+    66.88,
+    69.52,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 2.16,
+    "direction": "up",
+    "pct": 0.022115,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "apple",
+   "price_per_kg": 99.83,
+   "reason": null,
+   "spark": [
+    null,
+    94.57,
+    97.67,
+    99.83,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.51,
     "direction": "down",
-    "pct": -0.020667,
+    "pct": -0.004914,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "eggplant",
-   "price_per_kg": 22.035,
+   "crop_id": "sesame",
+   "price_per_kg": 103.28,
    "reason": null,
    "spark": [
     null,
-    23.15,
-    22.5,
-    22.035,
+    104.89,
+    103.79,
+    103.28,
     null,
     null,
     null
@@ -331,194 +506,19 @@
   },
   {
    "change": {
-    "diff_per_kg": 1.01,
-    "direction": "up",
-    "pct": 0.026371,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "mango",
-   "price_per_kg": 39.31,
-   "reason": null,
-   "spark": [
-    null,
-    39.075,
-    38.3,
-    39.31,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 1.33,
-    "direction": "up",
-    "pct": 0.013509,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "pomegranate",
-   "price_per_kg": 99.785,
-   "reason": null,
-   "spark": [
-    null,
-    96.32,
-    98.455,
-    99.785,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": -1.61,
+    "diff_per_kg": -1.27,
     "direction": "down",
-    "pct": -0.02538,
+    "pct": -0.031902,
     "prev_trade_date": "2026-09-15"
    },
-   "crop_id": "chickpea",
-   "price_per_kg": 61.825,
+   "crop_id": "jaggery",
+   "price_per_kg": 38.54,
    "reason": null,
    "spark": [
     null,
-    66.31,
-    63.435,
-    61.825,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 2.365,
-    "direction": "up",
-    "pct": 0.015594,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "turmeric",
-   "price_per_kg": 154.025,
-   "reason": null,
-   "spark": [
-    null,
-    148.14,
-    151.66,
-    154.025,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": -1.21,
-    "direction": "down",
-    "pct": -0.017695,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "peanut",
-   "price_per_kg": 67.17,
-   "reason": null,
-   "spark": [
-    null,
-    69.86,
-    68.38,
-    67.17,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 0.745,
-    "direction": "up",
-    "pct": 0.01069,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "mustard",
-   "price_per_kg": 70.435,
-   "reason": null,
-   "spark": [
-    null,
-    70.19,
-    69.69,
-    70.435,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 2.815,
-    "direction": "up",
-    "pct": 0.035002,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "cotton",
-   "price_per_kg": 83.24,
-   "reason": null,
-   "spark": [
-    null,
-    78.49,
-    80.425,
-    83.24,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
-  },
-  {
-   "change": {
-    "diff_per_kg": 0.05,
-    "direction": "up",
-    "pct": 0.013459,
-    "prev_trade_date": "2026-09-15"
-   },
-   "crop_id": "sugarcane",
-   "price_per_kg": 3.765,
-   "reason": null,
-   "spark": [
-    null,
-    3.6,
-    3.715,
-    3.765,
+    38.5,
+    39.81,
+    38.54,
     null,
     null,
     null

@@ -31,8 +31,11 @@ describe('CropListScreen', () => {
       'crop:potato',
       'crop:cabbage',
       'crop:eggplant',
+      'crop:cucumber',
+      'crop:cauliflower',
+      'crop:carrot',
     ])
-    expect(card('crop:onion')).toHaveTextContent('2,395')
+    expect(card('crop:onion')).toHaveTextContent('3,969')
     expect(card('crop:potato')).toHaveTextContent('本地種 · 昨天')
     expect(app.focusedId()).toBe('crop:onion')
     expect(softKeys(app)).toEqual(['選單', '開啟', '返回'])
@@ -73,12 +76,12 @@ describe('CropListScreen', () => {
   it('lists the recently viewed crops, newest first', async () => {
     const app = await renderApp('/cat/recent')
     act(() => {
-      useSession.getState().viewCrop('garlic')
+      useSession.getState().viewCrop('pomegranate')
       useSession.getState().viewCrop('onion')
     })
-    await screen.findByText('大蒜')
+    await screen.findByText('石榴')
     expect(screen.getByRole('heading', { name: '最近' })).toBeInTheDocument()
-    expect(focusIds()).toEqual(['crop:onion', 'crop:garlic'])
+    expect(focusIds()).toEqual(['crop:onion', 'crop:pomegranate'])
     expect(app.focusedId()).toBe('crop:onion')
   })
 
@@ -96,7 +99,7 @@ describe('CropListScreen', () => {
     app.press('*')
     expect(useSettings.getState().priceType).toBe('retail')
     await waitFor(() => expect(card('crop:chilli')).toHaveTextContent('尚無零售資料'))
-    expect(card('crop:garlic')).toHaveTextContent('131.7')
+    expect(card('crop:ginger')).toHaveTextContent('135.7')
     expect(screen.getByText('₹/公斤')).toBeInTheDocument()
 
     app.press('#')

@@ -43,13 +43,13 @@ describe('HomeScreen · watchlist', () => {
       'crop:tomato',
       'crop:potato',
       'crop:chilli',
-      'crop:soybean',
+      'crop:chickpea',
       'crop:maize',
       'crop:wheat',
     ])
-    expect(card('crop:onion')).toHaveTextContent('2,395')
-    expect(card('crop:onion')).toHaveTextContent('▲4.8%')
-    expect(card('crop:tomato')).toHaveTextContent('▼12%')
+    expect(card('crop:onion')).toHaveTextContent('3,969')
+    expect(card('crop:onion')).toHaveTextContent('▲2.8%')
+    expect(card('crop:tomato')).toHaveTextContent('▲3.4%')
 
     expect(app.focusedId()).toBe('crop:onion')
     expect(softKeys(app)).toEqual(['選單', '開啟', '離開'])
@@ -71,7 +71,7 @@ describe('HomeScreen · watchlist', () => {
 
     app.press('*')
     expect(useSettings.getState().priceType).toBe('retail')
-    await waitFor(() => expect(card('crop:onion')).toHaveTextContent('38.1'))
+    await waitFor(() => expect(card('crop:onion')).toHaveTextContent('64.9'))
     expect(screen.getByText('零售')).toBeInTheDocument()
     expect(screen.getByText('₹/公斤')).toBeInTheDocument()
     const chilli = card('crop:chilli')
@@ -210,7 +210,7 @@ describe('HomeScreen · states (F12)', () => {
 
     expect(focusIds().slice(0, 2)).toEqual(['action:retry', 'crop:onion'])
     expect(card('action:retry')).toHaveTextContent('連線失敗')
-    expect(card('crop:onion')).toHaveTextContent('2,395')
+    expect(card('crop:onion')).toHaveTextContent('3,969')
     expect(card('crop:onion')).toHaveTextContent('舊')
     expect(card('crop:onion').textContent).not.toMatch(/[▲▼＝]/)
     expect(card('crop:potato')).not.toHaveTextContent('昨天')

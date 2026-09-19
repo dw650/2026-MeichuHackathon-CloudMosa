@@ -2,17 +2,17 @@
  "area_id": "nashik",
  "crop_id": "onion",
  "currency": "INR",
- "median_per_kg": 23.95,
+ "median_per_kg": 39.69,
  "rows": [
   {
-   "diff_per_kg": 1.27,
-   "km_from_center": 22,
+   "diff_per_kg": 4.3,
+   "km_from_center": null,
    "market_id": "pimpalgaon",
    "name": {
-    "en": "Pimpalgaon",
-    "zh-TW": "Pimpalgaon"
+    "en": "Pimpalgaon Baswant",
+    "zh-TW": "Pimpalgaon Baswant"
    },
-   "price_per_kg": 25.22,
+   "price_per_kg": 43.99,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -20,14 +20,14 @@
    "trade_date": "2026-09-19"
   },
   {
-   "diff_per_kg": 0.73,
-   "km_from_center": 88,
-   "market_id": "satana",
+   "diff_per_kg": 0.4,
+   "km_from_center": null,
+   "market_id": "lasalgaon",
    "name": {
-    "en": "Satana",
-    "zh-TW": "Satana"
+    "en": "Lasalgaon",
+    "zh-TW": "Lasalgaon"
    },
-   "price_per_kg": 24.68,
+   "price_per_kg": 40.09,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -35,14 +35,14 @@
    "trade_date": "2026-09-19"
   },
   {
-   "diff_per_kg": 0.31,
-   "km_from_center": 0,
+   "diff_per_kg": 0.22,
+   "km_from_center": null,
    "market_id": "nashikm",
    "name": {
-    "en": "Nashik",
-    "zh-TW": "Nashik"
+    "en": "Nasik",
+    "zh-TW": "Nasik"
    },
-   "price_per_kg": 24.26,
+   "price_per_kg": 39.91,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -51,13 +51,28 @@
   },
   {
    "diff_per_kg": 0.0,
-   "km_from_center": 55,
+   "km_from_center": null,
+   "market_id": "niphad",
+   "name": {
+    "en": "Lasalgaon(Niphad)",
+    "zh-TW": "Lasalgaon(Niphad)"
+   },
+   "price_per_kg": 39.69,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": -0.39,
+   "km_from_center": null,
    "market_id": "chandvad",
    "name": {
-    "en": "Chandvad",
-    "zh-TW": "Chandvad"
+    "en": "Chandwad",
+    "zh-TW": "Chandwad"
    },
-   "price_per_kg": 23.95,
+   "price_per_kg": 39.3,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -65,14 +80,14 @@
    "trade_date": "2026-09-19"
   },
   {
-   "diff_per_kg": -0.79,
-   "km_from_center": 32,
-   "market_id": "lasalgaon",
+   "diff_per_kg": -0.64,
+   "km_from_center": null,
+   "market_id": "sinnar",
    "name": {
-    "en": "Lasalgaon",
-    "zh-TW": "Lasalgaon"
+    "en": "Sinner",
+    "zh-TW": "Sinner"
    },
-   "price_per_kg": 23.16,
+   "price_per_kg": 39.05,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -80,14 +95,29 @@
    "trade_date": "2026-09-19"
   },
   {
-   "diff_per_kg": -0.79,
-   "km_from_center": 95,
+   "diff_per_kg": -1.18,
+   "km_from_center": null,
+   "market_id": "satana",
+   "name": {
+    "en": "Satana",
+    "zh-TW": "Satana"
+   },
+   "price_per_kg": 38.51,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": -2.38,
+   "km_from_center": null,
    "market_id": "malegaon",
    "name": {
     "en": "Malegaon",
     "zh-TW": "Malegaon"
    },
-   "price_per_kg": 23.16,
+   "price_per_kg": 37.31,
    "staleness": {
     "days": 1,
     "state": "stale"
@@ -95,14 +125,14 @@
    "trade_date": "2026-09-18"
   },
   {
-   "diff_per_kg": -0.87,
-   "km_from_center": 60,
+   "diff_per_kg": -2.9,
+   "km_from_center": null,
    "market_id": "yeola",
    "name": {
     "en": "Yeola",
     "zh-TW": "Yeola"
    },
-   "price_per_kg": 23.08,
+   "price_per_kg": 36.79,
    "staleness": {
     "days": 3,
     "state": "stale"
@@ -110,42 +140,237 @@
    "trade_date": "2026-09-16"
   },
   {
-   "diff_per_kg": -0.91,
-   "km_from_center": 28,
-   "market_id": "niphad",
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "devala",
    "name": {
-    "en": "Niphad",
-    "zh-TW": "Niphad"
+    "en": "Devala",
+    "zh-TW": "Devala"
    },
-   "price_per_kg": 23.04,
+   "price_per_kg": null,
    "staleness": {
-    "days": 0,
-    "state": "today"
+    "days": null,
+    "state": "none"
    },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "diff_per_kg": -1.31,
-   "km_from_center": 28,
-   "market_id": "sinnar",
-   "name": {
-    "en": "Sinnar",
-    "zh-TW": "Sinnar"
-   },
-   "price_per_kg": 22.64,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
+   "trade_date": null
   },
   {
    "diff_per_kg": null,
-   "km_from_center": 70,
+   "km_from_center": null,
+   "market_id": "dindori",
+   "name": {
+    "en": "Dindori",
+    "zh-TW": "Dindori"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "dindorivani",
+   "name": {
+    "en": "Dindori(Vani)",
+    "zh-TW": "Dindori(Vani)"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "ghoti",
+   "name": {
+    "en": "Ghoti",
+    "zh-TW": "Ghoti"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "kalvan",
+   "name": {
+    "en": "Kalvan",
+    "zh-TW": "Kalvan"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "lasalgaonvinchur",
+   "name": {
+    "en": "Lasalgaon(Vinchur)",
+    "zh-TW": "Lasalgaon(Vinchur)"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "malharshreekhajgikrushiu",
+   "name": {
+    "en": "Malharshree Khajgi Krushi Utpann Bajar",
+    "zh-TW": "Malharshree Khajgi Krushi Utpann Bajar"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
    "market_id": "manmad",
    "name": {
     "en": "Manmad",
     "zh-TW": "Manmad"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "nampur",
+   "name": {
+    "en": "Nampur",
+    "zh-TW": "Nampur"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "nandgaon",
+   "name": {
+    "en": "Nandgaon",
+    "zh-TW": "Nandgaon"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "perfectkrishimarketyard",
+   "name": {
+    "en": "Perfect Krishi Market Yard",
+    "zh-TW": "Perfect Krishi Market Yard"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "pimpalgaonbaswantsaykhed",
+   "name": {
+    "en": "Pimpalgaon Baswant(Saykheda)",
+    "zh-TW": "Pimpalgaon Baswant(Saykheda)"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "premiumkrushiutpannabaza",
+   "name": {
+    "en": "Premium Krushi Utpanna Bazar",
+    "zh-TW": "Premium Krushi Utpanna Bazar"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "shivsiddhagovindproducer",
+   "name": {
+    "en": "Shivsiddha Govind (Abhona)",
+    "zh-TW": "Shivsiddha Govind (Abhona)"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "shrirameshwarkrushimarke",
+   "name": {
+    "en": "Shri Rameshwar Krushi Market",
+    "zh-TW": "Shri Rameshwar Krushi Market"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": null,
+   "market_id": "umrane",
+   "name": {
+    "en": "Umrane",
+    "zh-TW": "Umrane"
    },
    "price_per_kg": null,
    "staleness": {

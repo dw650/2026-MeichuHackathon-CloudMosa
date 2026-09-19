@@ -39,7 +39,7 @@ describe('screen kit', () => {
     const { result } = renderHook(() => useCountryData(), { wrapper })
     await waitFor(() => expect(result.current.isLoading).toBe(false))
     expect(result.current.country?.currency).toBe('INR')
-    expect(result.current.areas).toHaveLength(11)
+    expect(result.current.areas).toHaveLength(64)
     expect(result.current.myArea?.id).toBe('nashik')
     expect(result.current.crop('onion')?.category).toBe('veg')
   })

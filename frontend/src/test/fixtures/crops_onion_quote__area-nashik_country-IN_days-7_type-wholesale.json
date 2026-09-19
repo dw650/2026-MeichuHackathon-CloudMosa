@@ -1,9 +1,9 @@
 {
  "area_id": "nashik",
  "change": {
-  "diff_per_kg": 1.09,
+  "diff_per_kg": 1.07,
   "direction": "up",
-  "pct": 0.047682,
+  "pct": 0.027706,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "onion",
@@ -11,12 +11,27 @@
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": {
   "count": 7,
-  "max_per_kg": 25.22,
-  "min_per_kg": 22.64,
-  "total": 10
+  "max_per_kg": 43.99,
+  "min_per_kg": 38.51,
+  "total": 25
  },
- "nearby": null,
- "price_per_kg": 23.95,
+ "nearby": {
+  "highest": {
+   "area_id": "palghar",
+   "diff_per_kg": 10.56,
+   "distance_km": 118,
+   "is_base": false,
+   "price_per_kg": 50.25
+  },
+  "lowest": {
+   "area_id": "sambhajinagar",
+   "diff_per_kg": -2.68,
+   "distance_km": 112,
+   "is_base": false,
+   "price_per_kg": 37.01
+  }
+ },
+ "price_per_kg": 39.69,
  "reason": null,
  "series": [
   {
@@ -25,27 +40,27 @@
   },
   {
    "date": "2026-09-14",
-   "price_per_kg": 22.03
+   "price_per_kg": 37.04
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 22.72
+   "price_per_kg": 38.15
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 22.4
+   "price_per_kg": 37.67
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 22.225
+   "price_per_kg": 37.415
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 22.86
+   "price_per_kg": 38.62
   },
   {
    "date": "2026-09-19",
-   "price_per_kg": 23.95
+   "price_per_kg": 39.69
   }
  ],
  "source": {
@@ -61,17 +76,17 @@
  },
  "stats": {
   "arrivals": "high",
-  "arrivals_ratio": 1.180005,
-  "change30_pct": 0.106236,
-  "change7_pct": 0.087154,
-  "high30_per_kg": 23.95,
-  "high7_per_kg": 23.95,
-  "low30_per_kg": 21.65,
-  "low7_per_kg": 22.03,
+  "arrivals_ratio": 1.179979,
+  "change30_pct": 0.091884,
+  "change7_pct": 0.071544,
+  "high30_per_kg": 39.69,
+  "high7_per_kg": 39.69,
+  "low30_per_kg": 36.35,
+  "low7_per_kg": 37.04,
   "pos30": 1.0,
   "volatility": "mid",
-  "volatility_pct": 0.025894,
-  "vs_avg7_pct": 0.055182
+  "volatility_pct": 0.021846,
+  "vs_avg7_pct": 0.041801
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

@@ -29,7 +29,7 @@ from tests.conftest import (
 from tests.conftest import alembic_config as _alembic_config
 
 AREAS = {
-    "IN": ["nashik", "pune", "kolar", "kurnool"],
+    "IN": ["nashik", "pune", "kolar", "dakshinakannada"],
     "TW": ["taipei", "newtaipei", "yilan", "hualien"],
     "MY": ["kualalumpur", "timurlaut"],
 }
@@ -39,9 +39,9 @@ QUOTES = [
     ("IN", "chilli", "nashik", "retail"),
     ("IN", "onion", "ahmednagar", "retail"),
     ("IN", "onion", "kolar", "wholesale"),
-    ("IN", "onion", "kurnool", "wholesale"),
+    ("IN", "onion", "dakshinakannada", "wholesale"),
+    ("IN", "onion", "bengaluru", "wholesale"),  # nearby districts of Karnataka
     ("IN", "onion", "delhi", "wholesale"),  # no other area within 100 km
-    ("IN", "onion", "bengaluru", "wholesale"),  # its only neighbour (Kolar) is 3 days old
     ("TW", "cabbage", "newtaipei", "wholesale"),  # nearby areas on both sides
     ("TW", "cabbage", "newtaipei", "retail"),
     ("TW", "cabbage", "taipei", "wholesale"),

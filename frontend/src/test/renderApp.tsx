@@ -29,7 +29,7 @@ const DEFAULTS: Record<CountryCode, Defaults> = {
   IN: {
     area: 'nashik',
     recent: ['nashik', 'pune', 'ahmednagar'],
-    watch: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat'],
+    watch: ['onion', 'tomato', 'potato', 'chilli', 'chickpea', 'maize', 'wheat'],
     priceType: 'wholesale',
   },
   TW: {

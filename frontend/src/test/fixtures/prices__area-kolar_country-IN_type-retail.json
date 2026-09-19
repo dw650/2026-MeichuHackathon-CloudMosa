@@ -86,9 +86,9 @@
   },
   {
    "change": null,
-   "crop_id": "soybean",
+   "crop_id": "chickpea",
    "price_per_kg": null,
-   "reason": "no_retail_crop",
+   "reason": "no_retail_area",
    "spark": [
     null,
     null,
@@ -127,86 +127,6 @@
   {
    "change": null,
    "crop_id": "wheat",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "grapes",
-   "price_per_kg": null,
-   "reason": "no_retail_crop",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "banana",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "garlic",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "rice",
    "price_per_kg": null,
    "reason": "no_retail_area",
    "spark": [
@@ -266,26 +186,6 @@
   },
   {
    "change": null,
-   "crop_id": "mango",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
    "crop_id": "pomegranate",
    "price_per_kg": null,
    "reason": "no_retail_area",
@@ -306,67 +206,7 @@
   },
   {
    "change": null,
-   "crop_id": "chickpea",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "turmeric",
-   "price_per_kg": null,
-   "reason": "no_retail_crop",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
    "crop_id": "peanut",
-   "price_per_kg": null,
-   "reason": "no_retail_crop",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "mustard",
    "price_per_kg": null,
    "reason": "no_retail_crop",
    "spark": [
@@ -406,9 +246,169 @@
   },
   {
    "change": null,
-   "crop_id": "sugarcane",
+   "crop_id": "jowar",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cucumber",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cauliflower",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "carrot",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mungbean",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "ginger",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "apple",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "sesame",
    "price_per_kg": null,
    "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "jaggery",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
    "spark": [
     null,
     null,

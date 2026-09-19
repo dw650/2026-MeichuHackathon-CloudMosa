@@ -91,7 +91,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 21.15
     lon: 77.64
-    retail: false
+    retail: true
     mock: { k: 0.98, lag: 0 }
     markets:
       - { id: achalpur, name: { zh-TW: Achalpur, en: Achalpur }, mock: { k: 0.942 } }
@@ -177,7 +177,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 20.02
     lon: 75.15
-    retail: false
+    retail: true
     mock: { k: 0.92, lag: 0 }
     markets:
       - { id: chattrapatisambhajinagar, name: { zh-TW: Chattrapati Sambhajinagar, en: Chattrapati Sambhajinagar }, mock: { k: 1.0 } }
@@ -274,7 +274,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 16.46
     lon: 74.09
-    retail: false
+    retail: true
     mock: { k: 0.97, lag: 0 }
     markets:
       - { id: kolhapur, name: { zh-TW: Kolhapur, en: Kolhapur }, mock: { k: 1.0 } }
@@ -302,7 +302,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 18.97
     lon: 72.83
-    retail: false
+    retail: true
     mock: { k: 1.16, lag: 0 }
     markets:
       - { id: mumbai, name: { zh-TW: Mumbai, en: Mumbai }, mock: { k: 1.0 } }
@@ -313,7 +313,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 21.15
     lon: 79.01
-    retail: false
+    retail: true
     mock: { k: 1.01, lag: 0 }
     markets:
       - { id: bhiwapur, name: { zh-TW: Bhiwapur, en: Bhiwapur }, mock: { k: 1.0 } }
@@ -522,7 +522,7 @@ areas:
     region: { zh-TW: Maharashtra, en: Maharashtra }
     lat: 19.37
     lon: 73.37
-    retail: false
+    retail: true
     mock: { k: 1.12, lag: 0 }
     markets:
       - { id: kalyan, name: { zh-TW: Kalyan, en: Kalyan }, mock: { k: 1.0 } }
@@ -614,7 +614,7 @@ areas:
     region: { zh-TW: Karnataka, en: Karnataka }
     lat: 16.16
     lon: 74.89
-    retail: false
+    retail: true
     mock: { k: 1.09, lag: 0 }
     markets:
       - { id: athani, name: { zh-TW: Athani, en: Athani }, mock: { k: 0.9 } }
@@ -806,7 +806,7 @@ areas:
     region: { zh-TW: Karnataka, en: Karnataka }
     lat: 17.24
     lon: 76.77
-    retail: false
+    retail: true
     mock: { k: 0.88, lag: 0 }
     markets:
       - { id: afzalpur, name: { zh-TW: Afzalpur, en: Afzalpur }, mock: { k: 1.0 } }
@@ -871,7 +871,7 @@ areas:
     region: { zh-TW: Karnataka, en: Karnataka }
     lat: 12.2
     lon: 76.61
-    retail: false
+    retail: true
     mock: { k: 1.19, lag: 0 }
     markets:
       - { id: hunsur, name: { zh-TW: Hunsur, en: Hunsur }, mock: { k: 0.939 } }

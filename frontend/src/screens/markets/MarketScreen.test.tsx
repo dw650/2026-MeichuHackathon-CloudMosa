@@ -32,16 +32,18 @@ describe('MarketScreen', () => {
 
   it('shows the representative price, change, day range and source', async () => {
     const app = await renderApp(MARKET)
-    expect(await screen.findByText('2,316')).toBeInTheDocument()
+    expect(await screen.findByText('4,009')).toBeInTheDocument()
 
     expect(screen.getByRole('heading')).toHaveTextContent('洋蔥')
     expect(screen.getByText('Lasalgaon')).toBeInTheDocument()
     expect(screen.getByText('常見價 · ₹/100公斤')).toBeInTheDocument()
-    expect(screen.getByText('3.8%')).toBeInTheDocument()
+    expect(screen.getByText('1.7%')).toBeInTheDocument()
     expect(screen.getByText('較前一交易日')).toBeInTheDocument()
-    expect(screen.getByText('1,872')).toBeInTheDocument()
-    expect(screen.getByText('2,572')).toBeInTheDocument()
-    expect(screen.getByText('Agmarknet・消費者事務部（印度政府） · 示範資料')).toBeInTheDocument()
+    expect(screen.getByText('2,004')).toBeInTheDocument()
+    expect(screen.getByText('4,841')).toBeInTheDocument()
+    expect(
+      screen.getByText('Agmarknet（印度農業部，data.gov.in，GODL-India） · 示範資料'),
+    ).toBeInTheDocument()
     // No menu and nothing to select.
     expect(softKeys(app)).toEqual(['', '', '返回'])
     app.press('Escape')
@@ -51,8 +53,8 @@ describe('MarketScreen', () => {
   it('names the source once when the price comes from the country source itself', async () => {
     // Real data (tw_moa, …): the quote's source and the country's label are the same words.
     const label = {
-      en: 'Agmarknet · Dept of Consumer Affairs',
-      'zh-TW': 'Agmarknet・消費者事務部（印度政府）',
+      en: 'Agmarknet (Govt of India, data.gov.in, GODL-India)',
+      'zh-TW': 'Agmarknet（印度農業部，data.gov.in，GODL-India）',
     }
     server.use(
       http.get(ENDPOINT, () =>
@@ -60,8 +62,8 @@ describe('MarketScreen', () => {
       ),
     )
     await renderApp(MARKET)
-    const line = await screen.findByText(/Agmarknet・消費者事務部/)
-    expect(line.textContent).toBe('Agmarknet・消費者事務部（印度政府）')
+    const line = await screen.findByText(/Agmarknet（印度農業部/)
+    expect(line.textContent).toBe('Agmarknet（印度農業部，data.gov.in，GODL-India）')
   })
 
   it('marks data that is not from today and shows 「—」 without a price', async () => {
@@ -87,7 +89,7 @@ describe('MarketScreen', () => {
   it("in retail, returns to the area's retail price in place of the detail it came from", async () => {
     const app = await renderApp('/crop/onion/today?area=pune', { history: ['/'] })
     await act(() => app.router.navigate('/crop/onion/markets?area=pune'))
-    await screen.findByText('Pimpalgaon')
+    await screen.findByText('Pimpalgaon Baswant')
     app.press('Enter')
     await screen.findByText('常見價 · ₹/100公斤')
 
@@ -129,14 +131,14 @@ describe('MarketScreen', () => {
 
     server.resetHandlers()
     app.press('Enter')
-    expect(await screen.findByText('2,316')).toBeInTheDocument()
+    expect(await screen.findByText('4,009')).toBeInTheDocument()
     expect(screen.queryByText('連線失敗')).not.toBeInTheDocument()
   })
 
   it('keeps the old price when a later refresh fails', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     const app = await renderApp(MARKET, { history: ['/'] })
-    await screen.findByText('2,316')
+    await screen.findByText('4,009')
     await app.back()
 
     failWith(503, 'upstream_unavailable')
@@ -145,7 +147,7 @@ describe('MarketScreen', () => {
 
     expect(await screen.findByText('連線失敗', {}, { timeout: 3000 })).toBeInTheDocument()
     expect(screen.getByText('先顯示 11:40 的資料')).toBeInTheDocument()
-    expect(screen.getByText('2,316')).toBeInTheDocument()
+    expect(screen.getByText('4,009')).toBeInTheDocument()
     expect(app.focusedId()).toBe('retry')
     expect(app.softKey('center')).toBe('重試')
   })
