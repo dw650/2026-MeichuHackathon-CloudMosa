@@ -56,8 +56,8 @@ describe('query hooks', () => {
     await waitFor(() => expect(Object.values(result.current).every((q) => q.isSuccess)).toBe(true))
     const r = result.current
     expect(r.countries.data?.countries.map((c) => c.code)).toEqual(['IN', 'TW', 'MY'])
-    expect(r.areas.data?.areas).toHaveLength(64)  // India
-    expect(r.crops.data?.crops).toHaveLength(30)  // Taiwan
+    expect(r.areas.data?.areas).toHaveLength(64) // India
+    expect(r.crops.data?.crops).toHaveLength(30) // Taiwan
     expect(r.prices.data?.items.map((i) => i.crop_id)).toEqual(['onion'])
     expect(r.quote.data?.series).toHaveLength(30)
     expect(r.compare.data?.rows).toHaveLength(64)
