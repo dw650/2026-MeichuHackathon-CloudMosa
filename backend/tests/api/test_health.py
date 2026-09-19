@@ -25,9 +25,9 @@ async def test_health_returns_503_when_database_is_down() -> None:
     assert res.json()["error"]["code"] == "db_unavailable"
 
 
-async def test_health_reports_the_running_version() -> None:
+async def test_health_reports_the_running_version(settings: Settings) -> None:
     # The deploy passes the commit (APP_VERSION); the About page shows it (docs/07 §5.2).
-    app = create_app(Settings(app_version="f40c282"))
+    app = create_app(settings.model_copy(update={"app_version": "f40c282"}))
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:
         res = await c.get("/api/v1/health")
