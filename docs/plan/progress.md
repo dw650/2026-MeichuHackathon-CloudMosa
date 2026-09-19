@@ -12,3 +12,4 @@
 - 2026-09-19 T06 完成：/debug/keys（key、code、repeat、時間差、popstate／back、Enter click 次數）、/debug/viewport（尺寸、字級、Intl 樣本），只在 dev 或 VITE_DEMO 建置；/api/v1/debug/headers 只在 DEMO_MODE（8359ab2）
 - 2026-09-19 T16 完成：src/lib 純函式——units（06 §5 單位表、由每公斤換算、單位設定失效時退回）、format（Intl 依國家 locale、lakh 分組、進位後才決定 +／−／±、缺值顯示「—」）、change（0.05% 持平、百分比位數規則、▲▼＝）、dates（UTC 安全的日期與星期、資料時間照字串原本的時刻、昨天／N 天前、滿 3 天警示、休市顯示日期），文字由 DateLabels 傳入；src/lib 覆蓋率 100%（9421605）
 - 2026-09-19 T17 完成：src/i18n——STR 搬進 zh-TW／en 字串檔（依畫面分組、key 有型別、{{變數}}、英文單複數、新增資料時間），語言清單（手機語言排第一並標示、हिन्दी 與 More 退回英文、More 每頁 4 個）、setLanguage 同步 <html lang>（zh-Hant）、pickText 取多語文字、dateLabels 接上 T16 的 DateLabels；測試兩份字串檔 key 與變數完全相同、兩種語言插值（016201b）
+- 2026-09-19 T18 完成：src/store——settings（語言 id、國家、我的地區、最近 3 個地區、關注、批發／零售、各類型單位、首次設定完成、demo 開關；國家預設值由 GET /countries 傳入，換國家時重設地區、關注、單位與最近看過的作物）、session（上次畫面與其 location.key、每筆歷史的焦點留最新 50 筆、最近看過 5 個作物）、migrate（版本號＋逐步遷移、讀取時檢查欄位；壞 JSON、格式不對、沒有遷移路徑都重設回首次設定）；語言變更同步 i18next；src/store 覆蓋率 100%（d1e2498）

@@ -257,7 +257,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：兩份字串檔的 key 完全相同；插值正常。
   - 完成條件：測試通過。
 
-- [ ] **T18 Store**
+- [x] **T18 Store**
   - 參考：[04](../04-architecture.md) §4.5
   - 內容：`settings`、`session`，用 persist、版本號與遷移函式；壞掉的 JSON 會重設。
   - 測試：每次變更立刻寫入；版本不符時遷移；壞掉的資料被重設；國家改變時連帶重設地區與關注。
