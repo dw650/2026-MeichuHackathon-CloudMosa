@@ -1,0 +1,44 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  height: var(--ctx);
+  overflow: hidden;
+  padding: 0 var(--gut);
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink2);
+  font-size: var(--fs-2);
+  white-space: nowrap;
+}
+
+.cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.right {
+  flex: none;
+}
+
+.cell b {
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+}
+
+.cell > svg {
+  flex: none;
+  color: var(--brand);
+}
+
+@media (max-width: 176px) {
+  .right,
+  .bar kbd {
+    display: none;
+  }
+}

@@ -1,0 +1,43 @@
+.box {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 3px var(--gut) 2px;
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--ink3);
+}
+
+.icon > svg {
+  width: 62%;
+  height: 62%;
+}
+
+.title {
+  font-size: var(--fs-1);
+  font-weight: 900;
+}
+
+.line {
+  color: var(--ink3);
+  font-size: var(--fs-2);
+}
+
+@media (max-width: 176px) {
+  .box {
+    padding: 3px;
+  }
+
+  .icon,
+  .detail {
+    display: none;
+  }
+}
