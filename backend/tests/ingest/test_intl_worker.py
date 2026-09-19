@@ -13,7 +13,7 @@ from app.ingest.intl.pink_sheet import KNOWN_MONTHLY_URL
 from app.seed.loader import load_seed_files
 from app.seed.schema import SeedFile
 from app.timeutil import country_tz
-from app.worker import intl_config, run_intl, schedule_intl
+from app.worker import intl_config, run_intl, schedule_intl, sync_intl
 from tests.intl_server import FILE_URL, PAGE_URL, SAMPLE, IntlServer
 
 T0 = datetime(2026, 9, 19, 6, 10, tzinfo=UTC)
@@ -67,6 +67,16 @@ async def test_switched_off_the_series_still_follow_the_seed_but_nothing_is_aske
     assert await run_intl(off, lambda: T0, transport=httpx.MockTransport(refuse)) == []
     count = await session.execute(text("SELECT count(*) FROM intl_series"))
     assert count.scalar_one() == 6
+
+
+async def test_the_series_are_listed_before_any_download(
+    settings: Settings, session: AsyncSession
+) -> None:
+    await sync_intl(settings)
+    names = await session.execute(text("SELECT id, source_column FROM intl_series ORDER BY sort"))
+    assert names.tuples().all()[:2] == [("rice", "Rice, Thai 5%"), ("wheat", "Wheat, US HRW")]
+    prices = await session.execute(text("SELECT count(*) FROM intl_prices"))
+    assert prices.scalar_one() == 0
 
 
 async def test_a_start_up_downloads_only_what_is_missing_or_old(

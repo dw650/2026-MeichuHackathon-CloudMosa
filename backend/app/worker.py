@@ -144,6 +144,17 @@ def intl_config(settings: Settings) -> IntlConfig:
     )
 
 
+async def sync_intl(settings: Settings) -> None:
+    """The international price series (bonus B5) follow app/seed/intl/series.yaml. Local and
+    quick, so the worker does it first: the page lists its series before any download."""
+    engine = create_engine(settings)
+    try:
+        async with create_sessionmaker(engine)() as session:
+            await sync_series(session, load_intl_series().series)
+    finally:
+        await engine.dispose()
+
+
 async def run_intl(
     settings: Settings,
     clock: Clock = _utc_now,
@@ -152,14 +163,13 @@ async def run_intl(
 ) -> list[RunSummary]:
     """International reference prices (bonus B5): the series always follow the seed; the
     sources are only asked when due (docs/06 §8), so a restart downloads nothing new."""
-    seeds = load_intl_series().series
+    if not settings.intl_prices:
+        await sync_intl(settings)
+        return []
     engine = create_engine(settings)
-    maker = create_sessionmaker(engine)
     try:
-        if not settings.intl_prices:
-            async with maker() as session:
-                await sync_series(session, seeds)
-            return []
+        maker = create_sessionmaker(engine)
+        seeds = load_intl_series().series
         return await refresh_intl(maker, seeds, intl_config(settings), clock, transport=transport)
     finally:
         await engine.dispose()
@@ -188,6 +198,7 @@ async def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     settings = get_settings()
     configure_logging(settings.log_level)
+    await sync_intl(settings)
     summaries = await run_once(settings)
     logger.info("start-up run: %s", [(s.source, s.status, s.rows_ok) for s in summaries])
     try:
