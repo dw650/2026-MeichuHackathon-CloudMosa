@@ -1,0 +1,286 @@
+# India seed data (docs/06 §7.2–§7.3). Values follow docs/ui-mockup/src/data.js.
+# The worker syncs everything except the `mock` blocks into the database; the mock provider
+# reads `mock` directly. Mock prices are in the source's unit: ₹ per quintal (100 kg).
+#   k:   price level factor (area or market)
+#   lag: days behind today for the latest data (0 = today, null = no data at all)
+#   p / lo / hi: today's base price and range; chg: change vs previous trading day
+#   arr: today's arrivals (quintals); arrR: today ÷ average of the previous 7 trading days
+#   rt: retail factor (null = no retail data for this crop)
+
+country:
+  code: IN
+  sort: 1
+  name: { zh-TW: 印度, en: India }
+  coverage: { zh-TW: 6 個邦、11 個縣, en: "6 states, 11 districts" }
+  currency: INR
+  locale: en-IN
+  utc_offset_min: 330
+  up_is_pos: true
+  closed_weekdays: [7] # Sunday (ISO weekday)
+  default_area: nashik
+  default_recent_areas: [nashik, pune, ahmednagar]
+  area_suffix: { zh-TW: " 縣", en: " district" }
+  rep_price_label: { zh-TW: 常見價, en: Modal price }
+  source_label: { zh-TW: Agmarknet・消費者事務部（印度政府）, en: Agmarknet · Dept of Consumer Affairs }
+  units:
+    wholesale:
+      default: qtl
+      options:
+        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/公擔, en: ₹/qtl } }
+        - { id: kg, per_kg: 1, decimals: 1, label: { zh-TW: ₹/公斤, en: ₹/kg } }
+    retail:
+      default: kg
+      options:
+        - { id: kg, per_kg: 1, decimals: 1, label: { zh-TW: ₹/公斤, en: ₹/kg } }
+        - { id: qtl, per_kg: 100, decimals: 0, label: { zh-TW: ₹/公擔, en: ₹/qtl } }
+
+areas:
+  - id: nashik
+    name: { zh-TW: Nashik, en: Nashik }
+    region: { zh-TW: Maharashtra, en: Maharashtra }
+    lat: 20.0
+    lon: 73.79
+    retail: true
+    mock: { k: 1.0, lag: 0 }
+    markets:
+      - { id: lasalgaon, name: { zh-TW: Lasalgaon, en: Lasalgaon }, km: 32, mock: { k: 1.0 } }
+      - { id: niphad, name: { zh-TW: Niphad, en: Niphad }, km: 28, mock: { k: 0.99 } }
+      - { id: pimpalgaon, name: { zh-TW: Pimpalgaon, en: Pimpalgaon }, km: 22, mock: { k: 1.055 } }
+      - { id: yeola, name: { zh-TW: Yeola, en: Yeola }, km: 60, mock: { k: 1.043, lag: 3 } }
+      - { id: chandvad, name: { zh-TW: Chandvad, en: Chandvad }, km: 55, mock: { k: 1.0 } }
+      - { id: manmad, name: { zh-TW: Manmad, en: Manmad }, km: 70, mock: { k: 1.0, lag: null } }
+      - { id: nashikm, name: { zh-TW: Nashik, en: Nashik }, km: 0, mock: { k: 1.017 } }
+      - { id: sinnar, name: { zh-TW: Sinnar, en: Sinnar }, km: 28, mock: { k: 0.98 } }
+      - { id: malegaon, name: { zh-TW: Malegaon, en: Malegaon }, km: 95, mock: { k: 1.03, lag: 1 } }
+      - { id: satana, name: { zh-TW: Satana, en: Satana }, km: 88, mock: { k: 1.06 } }
+  - id: pune
+    name: { zh-TW: Pune, en: Pune }
+    region: { zh-TW: Maharashtra, en: Maharashtra }
+    lat: 18.52
+    lon: 73.86
+    retail: true
+    mock: { k: 1.08, lag: 0 }
+    markets:
+      - { id: pune1, name: { zh-TW: Pune (Gultekdi), en: Pune (Gultekdi) }, km: 0, mock: { k: 1.02 } }
+      - { id: khed, name: { zh-TW: Khed, en: Khed }, km: 40, mock: { k: 0.97 } }
+      - { id: manchar, name: { zh-TW: Manchar, en: Manchar }, km: 60, mock: { k: 0.99 } }
+  - id: ahmednagar
+    name: { zh-TW: Ahmednagar, en: Ahmednagar }
+    region: { zh-TW: Maharashtra, en: Maharashtra }
+    lat: 19.09
+    lon: 74.74
+    retail: false
+    mock: { k: 0.97, lag: 0 }
+    markets:
+      - { id: ahm, name: { zh-TW: Ahmednagar, en: Ahmednagar }, km: 0, mock: { k: 1.0 } }
+      - { id: rahuri, name: { zh-TW: Rahuri, en: Rahuri }, km: 35, mock: { k: 0.98 } }
+      - { id: sangamner, name: { zh-TW: Sangamner, en: Sangamner }, km: 70, mock: { k: 1.01 } }
+  - id: jalgaon
+    name: { zh-TW: Jalgaon, en: Jalgaon }
+    region: { zh-TW: Maharashtra, en: Maharashtra }
+    lat: 21.0
+    lon: 75.56
+    retail: true
+    mock: { k: 1.02, lag: 1 }
+    markets:
+      - { id: jal, name: { zh-TW: Jalgaon, en: Jalgaon }, km: 0, mock: { k: 1.0 } }
+      - { id: chalisgaon, name: { zh-TW: Chalisgaon, en: Chalisgaon }, km: 55, mock: { k: 0.98 } }
+  - id: solapur
+    name: { zh-TW: Solapur, en: Solapur }
+    region: { zh-TW: Maharashtra, en: Maharashtra }
+    lat: 17.66
+    lon: 75.91
+    retail: true
+    mock: { k: 0.95, lag: 0 }
+    markets:
+      - { id: sol, name: { zh-TW: Solapur, en: Solapur }, km: 0, mock: { k: 1.0 } }
+      - { id: pandharpur, name: { zh-TW: Pandharpur, en: Pandharpur }, km: 65, mock: { k: 0.97 } }
+  - id: indore
+    name: { zh-TW: Indore, en: Indore }
+    region: { zh-TW: Madhya Pradesh, en: Madhya Pradesh }
+    lat: 22.72
+    lon: 75.86
+    retail: true
+    mock: { k: 1.05, lag: 0 }
+    markets:
+      - { id: ind, name: { zh-TW: Indore, en: Indore }, km: 0, mock: { k: 1.0 } }
+      - { id: mhow, name: { zh-TW: Mhow, en: Mhow }, km: 23, mock: { k: 0.98 } }
+  - id: bengaluru
+    name: { zh-TW: Bengaluru Urban, en: Bengaluru Urban }
+    region: { zh-TW: Karnataka, en: Karnataka }
+    lat: 12.97
+    lon: 77.59
+    retail: true
+    mock: { k: 1.18, lag: 0 }
+    markets:
+      - { id: ypr, name: { zh-TW: Yeshwanthpur, en: Yeshwanthpur }, km: 0, mock: { k: 1.01 } }
+      - { id: binny, name: { zh-TW: Binny Mill, en: Binny Mill }, km: 5, mock: { k: 0.99 } }
+  - id: kolar
+    name: { zh-TW: Kolar, en: Kolar }
+    region: { zh-TW: Karnataka, en: Karnataka }
+    lat: 13.14
+    lon: 78.13
+    retail: false
+    mock: { k: 1.1, lag: 3 }
+    markets:
+      - { id: kol, name: { zh-TW: Kolar, en: Kolar }, km: 0, mock: { k: 1.0 } }
+      - { id: chintamani, name: { zh-TW: Chintamani, en: Chintamani }, km: 45, mock: { k: 0.98 } }
+  - id: delhi
+    name: { zh-TW: North Delhi, en: North Delhi }
+    region: { zh-TW: Delhi, en: Delhi }
+    lat: 28.7
+    lon: 77.1
+    retail: true
+    mock: { k: 1.25, lag: 0 }
+    markets:
+      - { id: azadpur, name: { zh-TW: Azadpur, en: Azadpur }, km: 0, mock: { k: 1.01 } }
+      - { id: narela, name: { zh-TW: Narela, en: Narela }, km: 18, mock: { k: 0.98 } }
+  - id: kurnool
+    name: { zh-TW: Kurnool, en: Kurnool }
+    region: { zh-TW: Andhra Pradesh, en: Andhra Pradesh }
+    lat: 15.83
+    lon: 78.04
+    retail: false
+    mock: { k: 0.92, lag: null }
+    markets:
+      - { id: kur, name: { zh-TW: Kurnool, en: Kurnool }, km: 0, mock: { k: 1.0, lag: null } }
+  - id: agra
+    name: { zh-TW: Agra, en: Agra }
+    region: { zh-TW: Uttar Pradesh, en: Uttar Pradesh }
+    lat: 27.18
+    lon: 78.01
+    retail: true
+    mock: { k: 1.12, lag: 0 }
+    markets:
+      - { id: agr, name: { zh-TW: Agra, en: Agra }, km: 0, mock: { k: 1.0 } }
+      - { id: achhnera, name: { zh-TW: Achhnera, en: Achhnera }, km: 25, mock: { k: 0.97 } }
+
+# Categories: cereal, veg, fruit, pulse, spice, oil, other. `watch` = default watchlist.
+crops:
+  - id: onion
+    name: { zh-TW: 洋蔥, en: Onion }
+    category: veg
+    variety: { zh-TW: 紅洋蔥, en: Red }
+    watch: true
+    retail: true
+    mock: { p: 2350, lo: 1900, hi: 2610, chg: 0.042, arr: 12400, arrR: 1.18, rt: 1.6 }
+  - id: tomato
+    name: { zh-TW: 番茄, en: Tomato }
+    category: veg
+    variety: { zh-TW: 雜交種, en: Hybrid }
+    watch: true
+    retail: true
+    mock: { p: 1180, lo: 900, hi: 1400, chg: -0.12, arr: 3100, arrR: 1.34, rt: 1.9 }
+  - id: potato
+    name: { zh-TW: 馬鈴薯, en: Potato }
+    category: veg
+    variety: { zh-TW: 本地種, en: Local }
+    watch: true
+    retail: true
+    mock: { p: 1420, lo: 1250, hi: 1600, chg: 0, arr: 2200, arrR: 0.97, rt: 1.55, lag: 1 }
+  - id: chilli
+    name: { zh-TW: 青辣椒, en: Chilli }
+    category: spice
+    variety: { zh-TW: 本地種, en: Local }
+    watch: true
+    retail: false
+    mock: { p: 3800, lo: 3200, hi: 4300, chg: 0.065, arr: 640, arrR: 0.82, rt: null }
+  - id: soybean
+    name: { zh-TW: 大豆, en: Soybean }
+    category: pulse
+    variety: { zh-TW: 黃豆, en: Yellow }
+    watch: true
+    retail: false
+    mock: { p: 4650, lo: 4400, hi: 4800, chg: 0.011, arr: 5300, arrR: 1.02, rt: null }
+  - id: maize
+    name: { zh-TW: 玉米, en: Maize }
+    category: cereal
+    variety: { zh-TW: 雜交種, en: Hybrid }
+    watch: true
+    retail: false
+    mock: { p: 2050, lo: 1900, hi: 2150, chg: -0.018, arr: 4100, arrR: 1.1, rt: null }
+  - id: wheat
+    name: { zh-TW: 小麥, en: Wheat }
+    category: cereal
+    variety: { zh-TW: 本地種, en: Local }
+    watch: true
+    retail: true
+    mock: { p: 2480, lo: 2350, hi: 2600, chg: 0.006, arr: 900, arrR: 0.9, rt: 1.35, lag: 3 }
+  - id: grapes
+    name: { zh-TW: 葡萄, en: Grapes }
+    category: fruit
+    variety: { zh-TW: 綠葡萄, en: Green }
+    retail: false
+    mock: { p: 5200, lo: 4000, hi: 6100, chg: 0.09, arr: 380, arrR: 0.76, rt: null }
+  - id: banana
+    name: { zh-TW: 香蕉, en: Banana }
+    category: fruit
+    variety: { zh-TW: 本地種, en: Local }
+    retail: true
+    mock: { p: 1600, lo: 1300, hi: 1850, chg: -0.031, arr: 720, arrR: 1.05, rt: 1.5 }
+  - id: garlic
+    name: { zh-TW: 大蒜, en: Garlic }
+    category: spice
+    variety: { zh-TW: 本地種, en: Local }
+    retail: true
+    mock: { p: 9500, lo: 8200, hi: 10800, chg: 0.024, arr: 150, arrR: 0.88, rt: 1.4 }
+
+# Source name → our id. The mock provider speaks the data.gov.in format (commodity, variety,
+# market) for wholesale and a DoCA-like format (centre) for retail. Empty variety = any.
+source_maps:
+  mock:
+    crops:
+      - { source_name: Onion, crop: onion }
+      - { source_name: Tomato, crop: tomato }
+      - { source_name: Potato, crop: potato }
+      - { source_name: Green Chilli, crop: chilli }
+      - { source_name: Soyabean, crop: soybean }
+      - { source_name: Maize, crop: maize }
+      - { source_name: Wheat, crop: wheat }
+      - { source_name: Grapes, crop: grapes }
+      - { source_name: Banana, crop: banana }
+      - { source_name: Garlic, crop: garlic }
+    markets:
+      - { source_market: Lasalgaon, market: lasalgaon }
+      - { source_market: Niphad, market: niphad }
+      - { source_market: Pimpalgaon, market: pimpalgaon }
+      - { source_market: Yeola, market: yeola }
+      - { source_market: Chandvad, market: chandvad }
+      - { source_market: Manmad, market: manmad }
+      - { source_market: Nashik, market: nashikm }
+      - { source_market: Sinnar, market: sinnar }
+      - { source_market: Malegaon, market: malegaon }
+      - { source_market: Satana, market: satana }
+      - { source_market: Pune(Gultekdi), market: pune1 }
+      - { source_market: Khed(Chakan), market: khed }
+      - { source_market: Manchar, market: manchar }
+      - { source_market: Ahmednagar, market: ahm }
+      - { source_market: Rahuri, market: rahuri }
+      - { source_market: Sangamner, market: sangamner }
+      - { source_market: Jalgaon, market: jal }
+      - { source_market: Chalisgaon, market: chalisgaon }
+      - { source_market: Solapur, market: sol }
+      - { source_market: Pandharpur, market: pandharpur }
+      - { source_market: Indore, market: ind }
+      - { source_market: Mhow, market: mhow }
+      - { source_market: Bangalore, market: ypr }
+      - { source_market: Binny Mill (F&V), market: binny }
+      - { source_market: Kolar, market: kol }
+      - { source_market: Chintamani, market: chintamani }
+      - { source_market: Azadpur, market: azadpur }
+      - { source_market: Narela, market: narela }
+      - { source_market: Kurnool, market: kur }
+      - { source_market: Agra, market: agr }
+      - { source_market: Achnera, market: achhnera }
+    areas:
+      - { source_area: Nashik, area: nashik }
+      - { source_area: Pune, area: pune }
+      - { source_area: Ahmednagar, area: ahmednagar }
+      - { source_area: Jalgaon, area: jalgaon }
+      - { source_area: Solapur, area: solapur }
+      - { source_area: Indore, area: indore }
+      - { source_area: Bengaluru, area: bengaluru }
+      - { source_area: Kolar, area: kolar }
+      - { source_area: Delhi, area: delhi }
+      - { source_area: Kurnool, area: kurnool }
+      - { source_area: Agra, area: agra }

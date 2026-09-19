@@ -23,6 +23,7 @@ async def add_minimal_catalog(session: AsyncSession) -> None:
             default_recent_area_ids=["a1"],
             area_suffix=EN_ZH,
             rep_price_label=EN_ZH,
+            source_label=EN_ZH,
             units={},
         )
     )
