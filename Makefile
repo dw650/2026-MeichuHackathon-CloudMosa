@@ -2,11 +2,16 @@
 -include .env
 WEB_PORT ?= 8080
 DB_PORT ?= 5432
-export WEB_PORT DB_PORT
+POSTGRES_USER ?= agri
+POSTGRES_PASSWORD ?= agri-local-only
+export WEB_PORT DB_PORT POSTGRES_USER POSTGRES_PASSWORD
 
 COMPOSE ?= docker compose
+# Backend tests use their own database on the compose `db` (CI points this at its service).
+TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(DB_PORT)/agri_test
+export TEST_DATABASE_URL
 
-.PHONY: up down logs
+.PHONY: up down logs db-up test test-backend lint lint-backend
 
 ## Start all services (production build) and wait until they are healthy.
 up: .env
@@ -20,6 +25,22 @@ down:
 ## Follow service logs.
 logs:
 	$(COMPOSE) logs -f --tail=200
+
+## Start only the database (used by the backend tests).
+db-up: .env
+	$(COMPOSE) up -d --wait db
+
+## Run all tests.
+test: db-up test-backend
+
+test-backend:
+	cd backend && uv run pytest -q
+
+## Run all linters and type checks.
+lint: lint-backend
+
+lint-backend:
+	cd backend && uv run ruff check . && uv run ruff format --check . && uv run mypy
 
 .env:
 	cp .env.example .env
