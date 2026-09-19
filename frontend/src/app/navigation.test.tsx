@@ -105,4 +105,18 @@ describe('useNav', () => {
     await act(() => router.navigate(-1))
     expect(where()).toBe('/start')
   })
+
+  it('goes back several entries and replaces the one it lands on', async () => {
+    const routes = [{ path: '*', Component: Probe }]
+    const router = createMemoryRouter(routes, {
+      initialEntries: ['/setup/lang', '/setup/country', '/setup/area'],
+      initialIndex: 2,
+    })
+    render(<RouterProvider router={router} />)
+    await act(() => nav.backAndReplace('/', 2))
+    expect(where()).toBe('/')
+    expect(router.state.historyAction).toBe('REPLACE')
+    await act(() => nav.backAndReplace('/about', 0))
+    expect(where()).toBe('/about')
+  })
 })
