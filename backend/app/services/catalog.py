@@ -60,8 +60,13 @@ async def countries_payload(session: AsyncSession, now: datetime) -> dict[str, A
     return {
         "countries": countries,
         "fx": [
-            {"currency": r.currency, "per_usd": float(r.per_usd), "rate_date": r.rate_date}
-            for r in rates
+            {
+                "currency": code,
+                "per_usd": float(rates[code].per_usd),
+                "rate_date": rates[code].rate_date,
+            }
+            for code in wanted
+            if code in rates
         ],
     }
 
