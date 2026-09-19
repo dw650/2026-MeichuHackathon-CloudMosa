@@ -3,8 +3,8 @@
 # and wait until the app answers through the web server. If that fails, it goes back to the last
 # commit that deployed fine and exits non-zero.
 #   scripts/deploy.sh [ref]   ref: a branch or tag of the remote, or a commit (default: main)
-# The CD workflow reaches this script through an SSH key that can run nothing else; the ref it
-# sends arrives as the first argument (see docs/07 §5.3).
+# CD runs it through scripts/deploy-poll.sh when the Deploy workflow moves the `deploy` branch
+# (docs/07 §5.3); run it by hand to deploy or roll back a given ref.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

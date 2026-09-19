@@ -131,16 +131,17 @@
 - 主辦單位的 VM `203.116.30.131`（Ubuntu 24.04，Docker 已裝）。repo 在 `~/harrykuo1`，是 dw650/harrykuo1 的 clone。同一台 VM 上還有組員的其他專案，部署只動這個目錄。
 - 伺服器用唯讀的 deploy key（`~/.ssh/github_deploy_harrykuo1`）拉程式，只設定在這個 repo 的 `core.sshCommand`。dw650 組織預設停用 deploy key，要先在組織設定裡允許，repo 的 Settings → Deploy keys 才能新增。
 - `.env` 手動建立、不進 Git：`WEB_PORT=3001`、`SITE_ADDRESS=:8080`、`DEMO_MODE=false`、`VITE_DEMO=false`，`POSTGRES_PASSWORD` 已換掉。
-- 對外只開 22、3000、3001，80／443 被擋，所以網址是 `http://203.116.30.131:3001`（沒有 HTTPS）。Cloud Phone 需要 HTTPS 時，請主辦單位開 80／443，在 `.env` 加上 `SITE_ADDRESS=<網域>`（沒有網域可以用 `203-116-30-131.sslip.io`）與 `COMPOSE_FILE=compose.yaml:compose.prod.yaml`，Caddy 會自己取得憑證；或改用 Cloudflare Tunnel。
+- 對外只開 22（只開給部分網路）、3000、3001，80／443 被擋，所以網址是 `http://203.116.30.131:3001`（沒有 HTTPS）。Cloud Phone 需要 HTTPS 時，請主辦單位開 80／443，在 `.env` 加上 `SITE_ADDRESS=<網域>`（沒有網域可以用 `203-116-30-131.sslip.io`）與 `COMPOSE_FILE=compose.yaml:compose.prod.yaml`，Caddy 會自己取得憑證；或改用 Cloudflare Tunnel。
 - 手動部署：`ssh -i ~/.ssh/cloudphone -o IdentitiesOnly=yes ubuntu@203.116.30.131 '~/harrykuo1/scripts/deploy.sh main'`。
 - 還沒有伺服器，或想即時分享開發中的畫面時，用 tunnel（Cloudflare Tunnel 或 ngrok）把本機的 Caddy 暴露成公開 HTTPS 網址。
 
 ### 5.3 CD：`.github/workflows/deploy.yml`（加分項 B1）
 
-- dw650/harrykuo1 的 `main` CI 通過後（`workflow_run`），GitHub Actions 用 secret `DEPLOY_SSH_KEY` 連到伺服器，把這個 commit 交給 `scripts/deploy.sh`。也可以在 Actions 頁面手動執行 Deploy 並指定 ref，用來回復。
-- 這把金鑰在伺服器的 `authorized_keys` 設了 `command=` 與 `restrict`：只能執行 `deploy.sh`，送過去的字串只會被當成 ref，格式不對就拒絕。
-- 沒有設定 `DEPLOY_SSH_KEY` 的 repo（例如 origin）會跳過部署，不會失敗。
-- 主機、使用者、主機金鑰與網址都有預設值，可以用 repository variables 覆寫：`DEPLOY_HOST`、`DEPLOY_USER`、`DEPLOY_HOST_KEY`、`DEPLOY_URL`。
+- dw650/harrykuo1 的 `main` CI 通過後（`workflow_run`），Deploy workflow 用 `GITHUB_TOKEN`（`contents: write`）把 `deploy` 分支移到這個 commit。也可以在 Actions 頁面手動執行 Deploy 並指定 ref，用來回復。
+- GitHub 的機器連不進伺服器：22 port 只開給部分網路【查核 2026-09-20】，Actions 用 SSH 連線會逾時。所以改由伺服器主動拉：systemd 計時器 `agriprice-deploy.timer` 每分鐘執行 `scripts/deploy-poll.sh`，`deploy` 分支有新的 commit 就用 deploy key fetch，再執行 `deploy.sh`。單元檔在 `infra/deploy/`，安裝指令寫在檔案開頭。
+- 部署失敗時，`deploy.sh` 會自動回到上一個成功的 commit。同一個失敗的 commit 不會每分鐘重試，要等更新的 commit，或手動執行 `deploy.sh`。
+- GitHub 上的 Deploy 只代表「已標記」；有沒有部署成功，要看網站或伺服器的 `journalctl -u agriprice-deploy`。
+- 不要手動 commit 到 `deploy` 分支。
 
 ## 6. 常用指令
 

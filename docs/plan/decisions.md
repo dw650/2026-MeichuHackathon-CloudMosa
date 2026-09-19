@@ -552,3 +552,13 @@
   - 子程序不帶 `FORCE_COLOR`，`uv export` 加 `--color never`，避免 requirements 檔被寫進顏色控制碼。
 - 理由：沒有執行的檢查不等於找到漏洞；依賴只在 lockfile 改變時才會變，下一次執行就會補檢查。
 - 影響：`scripts/audit.py`、`Makefile`、docs/07 §5.1。
+
+## 2026-09-20 CD 改成伺服器自己拉
+- 情況：Deploy workflow 從 GitHub 的機器 SSH 到 VM 時逾時。VM 的 22 port 只開給部分網路（從使用者的電腦連得上），GitHub Actions 的機器連不進來。
+- 決定：
+  - GitHub 不連伺服器。CI 通過後，Deploy workflow 把 `deploy` 分支移到該 commit（`GITHUB_TOKEN` 需要 `contents: write`）。
+  - 伺服器上的 systemd 計時器每分鐘執行 `scripts/deploy-poll.sh`，有新 commit 就用 deploy key fetch，再執行 `deploy.sh`。失敗的 commit 不重試，等下一個。
+  - 原本給 GitHub Actions 用的 SSH 金鑰已經從伺服器移除，secret `DEPLOY_SSH_KEY` 不再使用。
+- 理由：伺服器只需要對外連線；GitHub 上不用存能登入伺服器的金鑰；從標記到開始部署最多約一分鐘。
+- 取捨：GitHub 上看不到部署是否成功，要看網站或伺服器的日誌（`journalctl -u agriprice-deploy`）。
+- 影響：`.github/workflows/deploy.yml`、`scripts/deploy-poll.sh`、`scripts/deploy.sh`、`infra/deploy/`、docs/07 §5.2–5.3、README。

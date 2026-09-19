@@ -1,6 +1,6 @@
-# CD (docs/07 §5.3): when CI passes on main, deploys that commit to the server over SSH.
-# The key in the secret DEPLOY_SSH_KEY can only run scripts/deploy.sh there, with the commit as
-# its argument. Without the secret (for example in a fork) the job is skipped.
+# CD (docs/07 §5.3): when CI passes on main, marks that commit as ready by moving the `deploy`
+# branch to it. GitHub cannot reach the server (its firewall only lets some networks in), so the
+# server checks the branch every minute and deploys new commits itself (scripts/deploy-poll.sh).
 name: Deploy
 
 on:
@@ -15,34 +15,31 @@ on:
         default: main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: deploy
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  mark:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 5
     env:
-      SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
-      HOST: ${{ vars.DEPLOY_HOST || '203.116.30.131' }}
-      HOST_KEY: ${{ vars.DEPLOY_HOST_KEY || 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK/0PspDmeGDyEsOkcYnXfBHyvbzgmCZ6LTsNWWjo8GX' }}
-      SSH_USER: ${{ vars.DEPLOY_USER || 'ubuntu' }}
-      APP_URL: ${{ vars.DEPLOY_URL || 'http://203.116.30.131:3001' }}
+      GH_TOKEN: ${{ github.token }}
       REF: ${{ github.event.workflow_run.head_sha || inputs.ref }}
+      APP_URL: ${{ vars.DEPLOY_URL || 'http://203.116.30.131:3001' }}
     steps:
-      - name: Skip without the deploy key
-        if: env.SSH_KEY == ''
-        run: echo "::notice::DEPLOY_SSH_KEY is not set in this repository; nothing to deploy."
-      - name: Deploy over SSH
-        if: env.SSH_KEY != ''
+      - name: Move the deploy branch
         run: |
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          printf '%s %s\n' "$HOST" "$HOST_KEY" > ~/.ssh/known_hosts
-          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o ConnectTimeout=20 "$SSH_USER@$HOST" "$REF"
-          echo "Deployed \`$REF\` to $APP_URL" >> "$GITHUB_STEP_SUMMARY"
+          sha="$(gh api "repos/$GITHUB_REPOSITORY/commits/$REF" --jq .sha)"
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/deploy" >/dev/null 2>&1; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/git/refs/heads/deploy" \
+              -f sha="$sha" -F force=true >/dev/null
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" \
+              -f ref=refs/heads/deploy -f sha="$sha" >/dev/null
+          fi
+          echo "Marked \`${sha:0:7}\` for deployment. The server picks it up within a minute and" \
+            "needs a few more to build: $APP_URL" >> "$GITHUB_STEP_SUMMARY"
