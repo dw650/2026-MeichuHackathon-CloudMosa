@@ -127,7 +127,7 @@
 目前的伺服器【查核 2026-09-20】：
 
 - 主辦單位的 VM `203.116.30.131`（Ubuntu 24.04，Docker 已裝）。repo 在 `~/harrykuo1`，是 dw650/harrykuo1 的 clone。同一台 VM 上還有組員的其他專案，部署只動這個目錄。
-- 伺服器用唯讀的 deploy key（`~/.ssh/github_deploy_harrykuo1`）拉程式，只設定在這個 repo 的 `core.sshCommand`。
+- 伺服器用唯讀的 deploy key（`~/.ssh/github_deploy_harrykuo1`）拉程式，只設定在這個 repo 的 `core.sshCommand`。dw650 組織預設停用 deploy key，要先在組織設定裡允許，repo 的 Settings → Deploy keys 才能新增。
 - `.env` 手動建立、不進 Git：`WEB_PORT=3001`、`SITE_ADDRESS=:8080`、`DEMO_MODE=false`、`VITE_DEMO=false`，`POSTGRES_PASSWORD` 已換掉。
 - 對外只開 22、3000、3001，80／443 被擋，所以網址是 `http://203.116.30.131:3001`（沒有 HTTPS）。Cloud Phone 需要 HTTPS 時，請主辦單位開 80／443，在 `.env` 加上 `SITE_ADDRESS=<網域>`（沒有網域可以用 `203-116-30-131.sslip.io`）與 `COMPOSE_FILE=compose.yaml:compose.prod.yaml`，Caddy 會自己取得憑證；或改用 Cloudflare Tunnel。
 - 手動部署：`ssh -i ~/.ssh/cloudphone -o IdentitiesOnly=yes ubuntu@203.116.30.131 '~/harrykuo1/scripts/deploy.sh main'`。
