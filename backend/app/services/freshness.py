@@ -26,3 +26,8 @@ def staleness(latest: date | None, today: date, closed_weekdays: Collection[int]
     if all(d.isoweekday() in closed_weekdays for d in since):
         return Staleness(days=days, state="closed")
     return Staleness(days=days, state="stale")
+
+
+def is_fresh(s: Staleness) -> bool:
+    """Not old data: today's, or the latest before only closed days (no warning on screen)."""
+    return s.state in ("today", "closed")

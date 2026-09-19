@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 
-from app.services.freshness import Staleness, staleness
+from app.services.freshness import Staleness, is_fresh, staleness
 
 SAT = date(2026, 9, 19)
 SUN = date(2026, 9, 20)
@@ -34,3 +34,10 @@ def test_no_data_or_older_than_thirty_days_is_none() -> None:
 
 def test_a_future_date_counts_as_today() -> None:
     assert staleness(SUN, SAT, INDIA_CLOSED) == Staleness(days=0, state="today")
+
+
+def test_fresh_means_today_or_only_closed_days_since() -> None:
+    assert is_fresh(Staleness(0, "today"))
+    assert is_fresh(Staleness(1, "closed"))
+    assert not is_fresh(Staleness(1, "stale"))
+    assert not is_fresh(Staleness(None, "none"))
