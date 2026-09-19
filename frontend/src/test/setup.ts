@@ -8,6 +8,9 @@ beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' })
 })
 
+// Initialise i18next so components using useTranslation() render real strings.
+import '@/i18n'
+
 afterEach(() => {
   cleanup()
   server.resetHandlers()
