@@ -123,7 +123,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 內容：`compose.dev.yaml`、`Caddyfile.dev`、`frontend-dev`（Vite HMR）、api `--reload`、bind mount；Makefile 加 `dev`。
   - 完成條件：`make dev` 後在 8080 看得到 Vite 的頁面，改前端檔案後頁面會更新；`/api` 仍然轉發到 api。
 
-- [ ] **T05 CI**
+- [x] **T05 CI**
   - 參考：[07](../07-dev-workflow.md) §5.1
   - 內容：
     - `.github/workflows/ci.yml`，包含 frontend、backend（PostgreSQL service）、images 三個 job。`contract` job 在 T13 補上。
