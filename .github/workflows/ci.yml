@@ -1,0 +1,78 @@
+# CI: runs on every push (the team merges locally, so there are no pull requests).
+# Every step calls the same Makefile target a developer runs locally.
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install (npm ci)
+        run: make frontend/node_modules/.package-lock.json
+      - name: ESLint, Prettier and tsc
+        run: make lint-frontend
+      - name: Vitest with coverage
+        run: make test-frontend
+      - name: npm audit (runtime dependencies)
+        run: make audit-frontend
+      - name: Vite build
+        run: make build-frontend
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: agri
+          POSTGRES_PASSWORD: agri-ci
+          POSTGRES_DB: agri
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U agri -d agri"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://agri:agri-ci@127.0.0.1:5432/agri_test
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - name: Install (uv sync)
+        run: cd backend && uv sync --frozen
+      - name: Ruff and mypy
+        run: make lint-backend
+      - name: Pytest with coverage
+        run: make test-backend
+      - name: pip-audit (runtime dependencies)
+        run: make audit-backend
+
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build all images
+        run: docker compose build
