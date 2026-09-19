@@ -161,7 +161,9 @@ export default function MarketsScreen() {
           </p>
         )}
         {rows.length > 0 ? (
-          <CardList>{rows.map(marketCard)}</CardList>
+          <div className={styles.rows}>
+            <CardList>{rows.map(marketCard)}</CardList>
+          </div>
         ) : (
           <StatusBox icon="store" title={t('freshness.none')} />
         )}

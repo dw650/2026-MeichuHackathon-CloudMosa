@@ -17,6 +17,7 @@
 
 .stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--gap);
   padding: var(--gap) var(--gut);
 }
@@ -117,15 +118,15 @@
   color: var(--brand);
 }
 
+/* Wraps rather than cutting off the source name (e.g. 示範資料). */
 .source > span {
-  overflow: hidden;
   min-width: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* 128×160 (docs/03 §6): no median line, crop tile, "vs last trading day" or source line. */
 @media (max-width: 176px) {
+  /* Market rows keep rank, name and price (mockup): the difference pill gives the name room. */
+  .rows [data-focus-id] > :last-child > :not(:first-child),
   .note,
   .heroTile,
   .vsPrev,
