@@ -20,7 +20,7 @@ class NormalizedQuote:
     crop_id: str
     variety: str
     trade_date: date
-    rep_price: float
+    rep_price: float | None  # None when the source left it empty; the validator drops it
     low_price: float | None = None
     high_price: float | None = None
     volume_kg: float | None = None
