@@ -23,7 +23,7 @@ import {
   useOpenCrop,
 } from '@/screens/home/cropList'
 import { useAreaPrices } from '@/screens/home/useAreaPrices'
-import { AreaSheet } from '@/screens/shared/AreaSheet'
+import { AreaSheet, sheetSoftKeys } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
@@ -96,11 +96,15 @@ function CropList({ category }: { category: CategoryId }) {
   return (
     <Shell
       title={t(`categories.${category}`)}
-      softKeys={{
-        left: t('softkeys.menu'),
-        center: action ? t(`softkeys.${action}`) : '',
-        right: t('softkeys.back'),
-      }}
+      softKeys={
+        nav.sheet
+          ? sheetSoftKeys(t)
+          : {
+              left: t('softkeys.menu'),
+              center: action ? t(`softkeys.${action}`) : '',
+              right: t('softkeys.back'),
+            }
+      }
       overlay={overlay}
     >
       <InfoBar

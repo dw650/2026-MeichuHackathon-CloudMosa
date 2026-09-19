@@ -18,7 +18,7 @@ import { useGrid } from '@/focus/useGrid'
 import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
 import { formatDate } from '@/lib/dates'
-import { AreaSheet } from '@/screens/shared/AreaSheet'
+import { AreaSheet, sheetSoftKeys } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
@@ -97,11 +97,15 @@ export default function HomeScreen() {
     <Shell
       title={t('home.title', { area: areaName })}
       titleAddon={<KeyCap>#</KeyCap>}
-      softKeys={{
-        left: t('softkeys.menu'),
-        center: action ? t(`softkeys.${action}`) : '',
-        right: t('softkeys.exit'),
-      }}
+      softKeys={
+        nav.sheet
+          ? sheetSoftKeys(t)
+          : {
+              left: t('softkeys.menu'),
+              center: action ? t(`softkeys.${action}`) : '',
+              right: t('softkeys.exit'),
+            }
+      }
       overlay={overlay}
     >
       <InfoBar
