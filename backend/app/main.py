@@ -11,6 +11,7 @@ from app.config import Settings, get_settings
 from app.db.session import create_engine, create_sessionmaker
 from app.errors import install_error_handlers
 from app.middleware import RequestIdMiddleware, configure_logging
+from app.services.locate import open_lookup
 
 
 def _utc_now() -> datetime:
@@ -52,6 +53,7 @@ def create_app(
     app.state.clock = clock or _utc_now
     app.state.engine = engine
     app.state.sessionmaker = create_sessionmaker(engine)
+    app.state.geo = open_lookup(settings.geoip_db_path)
     install_error_handlers(app)
     app.add_middleware(RequestIdMiddleware)
     app.include_router(api_router, prefix="/api/v1")

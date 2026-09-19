@@ -3,8 +3,8 @@
 Every view is built from the aggregate tables; the arithmetic lives in `stats`, `freshness`
 and `compare`. Missing prices stay None with a reason; nothing is filled in."""
 
-from collections.abc import Mapping, Sequence
-from dataclasses import dataclass, field
+from collections.abc import Sequence
+from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from typing import Any
 
@@ -17,6 +17,7 @@ from app.repositories import prices as repo
 from app.services import stats
 from app.services.catalog import require_country
 from app.services.compare import competition_ranks, diff, haversine_km, market_rows
+from app.services.demo import NO_DEMO, Demo
 from app.services.freshness import WINDOW_DAYS, Staleness, staleness
 from app.services.sources import source_info
 from app.services.stats import Point
@@ -24,19 +25,6 @@ from app.timeutil import country_tz, local_today
 
 HISTORY_DAYS = 60  # enough history to find the trading day before the latest one
 SPARK_DAYS = 7
-
-
-@dataclass(frozen=True)
-class Demo:
-    """Demo switches (F18). `stale_days` pushes an area's latest trade date back N days."""
-
-    stale_days: Mapping[str, int] = field(default_factory=dict)
-
-    def until(self, area_id: str, today: date) -> date:
-        return today - timedelta(days=self.stale_days.get(area_id, 0))
-
-
-NO_DEMO = Demo()
 
 
 # ---------- helpers ----------

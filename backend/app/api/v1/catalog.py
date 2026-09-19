@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, Path
 
-from app.deps import NowDep, SessionDep, public_cache
+from app.deps import DemoDep, NowDep, SessionDep, public_cache
 from app.schemas.catalog import AreasOut, CountriesOut, CropsOut
 from app.schemas.common import error_responses
 from app.services import catalog as service
@@ -137,8 +137,8 @@ async def countries(session: SessionDep, now: NowDep) -> CountriesOut:
     response_model=AreasOut,
     responses=_example(AREAS_EXAMPLE) | NOT_FOUND,
 )
-async def areas(session: SessionDep, now: NowDep, cc: str = CountryCode) -> AreasOut:
-    return AreasOut.model_validate(await service.list_areas(session, cc, now))
+async def areas(session: SessionDep, now: NowDep, demo: DemoDep, cc: str = CountryCode) -> AreasOut:
+    return AreasOut.model_validate(await service.list_areas(session, cc, now, demo))
 
 
 @router.get(

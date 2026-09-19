@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Country
 from app.errors import ApiError
 from app.repositories import catalog as repo
+from app.services.demo import NO_DEMO, Demo
 from app.services.freshness import WINDOW_DAYS, staleness
 from app.timeutil import local_today
 
@@ -44,12 +45,19 @@ async def list_countries(session: AsyncSession, now: datetime) -> list[dict[str,
     ]
 
 
-async def list_areas(session: AsyncSession, code: str, now: datetime) -> dict[str, Any]:
+async def list_areas(
+    session: AsyncSession, code: str, now: datetime, demo: Demo = NO_DEMO
+) -> dict[str, Any]:
     country = await require_country(session, code)
     today = local_today(country.utc_offset_min, now)
-    latest = await repo.latest_wholesale_dates(
-        session, country.code, today - timedelta(days=WINDOW_DAYS - 1), today
-    )
+    start = today - timedelta(days=WINDOW_DAYS - 1)
+    latest = await repo.latest_wholesale_dates(session, country.code, start, today)
+    for area_id in demo.stale_days:
+        shifted = await repo.latest_wholesale_dates(
+            session, country.code, start, demo.until(area_id, today), area_id=area_id
+        )
+        latest.pop(area_id, None)
+        latest.update(shifted)
     areas = []
     for a in await repo.get_areas(session, country.code):
         fresh = staleness(latest.get(a.id), today, country.closed_weekdays)
