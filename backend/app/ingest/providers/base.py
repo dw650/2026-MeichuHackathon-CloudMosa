@@ -37,6 +37,9 @@ class NormalizedQuote:
     low_price: float | None = None
     high_price: float | None = None
     volume_kg: float | None = None
+    # Retail only: the source's reporting point inside the area (a shop or market code) when
+    # the source reports several per area; the pipeline stores their median (docs/06 §3.3).
+    point: str = ""
 
 
 @dataclass(frozen=True)

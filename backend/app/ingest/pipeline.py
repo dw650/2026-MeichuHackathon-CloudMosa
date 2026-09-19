@@ -8,6 +8,7 @@ from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.ingest.combine import combine_points
 from app.ingest.normalize import normalize_all
 from app.ingest.policy import FetchPlan, LastRun, plan_fetch
 from app.ingest.providers.base import PriceProvider, SourceInfo
@@ -112,9 +113,11 @@ async def run_provider(
         reasons = Counter(stats.dropped) + Counter(dropped) + Counter(result.dropped)
         if result.duplicates:
             reasons["duplicate"] += result.duplicates
-        await repo.upsert_quotes(session, result.kept, run_id, fetched_at)
+        # Retail prices of several shops in an area become the area's median (docs/06 §3.3).
+        stored = combine_points(result.kept)
+        await repo.upsert_quotes(session, stored, run_id, fetched_at)
         affected: dict[str, set[date]] = {}
-        for q in result.kept:
+        for q in stored:
             affected.setdefault(q.country, set()).add(q.trade_date)
         for country, dates in affected.items():
             await repo.aggregate(session, country, sorted(dates))
