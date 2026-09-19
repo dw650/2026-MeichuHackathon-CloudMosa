@@ -66,11 +66,31 @@ async def test_the_card_lists_every_other_country_that_has_the_crop(
     assert card["fx_date"] is not None
 
 
-async def test_a_crop_of_one_country_only_has_no_card(api: httpx.AsyncClient) -> None:
+async def test_a_crop_of_one_country_only_lists_no_row(api: httpx.AsyncClient) -> None:
+    """No other country has it, so the screen says so instead of showing an empty box."""
     alone = sorted(c for c, codes in (await _catalog(api)).items() if codes == {"IN"})
     assert alone, "the mock catalog should have a crop only India grows"
-    data = await _compare(api, alone[0], "IN", "nashik")
-    assert data["other_countries"] is None
+    card = (await _compare(api, alone[0], "IN", "nashik"))["other_countries"]
+    assert card["rows"] == []
+    assert card["currency"] == "INR"
+
+
+async def test_a_crop_with_a_world_bank_series_gets_the_world_price(
+    api: httpx.AsyncClient,
+) -> None:
+    """A Pink Sheet crop (wheat) carries the world price too, converted the same way."""
+    card = (await _compare(api, "wheat", "IN", "nashik"))["other_countries"]
+    world = card["world"]
+    assert world is not None
+    assert world["series_id"] == "wheat"
+    assert world["month"] is not None
+    assert world["usd"] is not None and world["usd_unit"] in ("mt", "kg")
+    assert world["price_per_kg"] is not None and world["reason"] is None
+
+
+async def test_a_crop_without_a_series_has_no_world_price(api: httpx.AsyncClient) -> None:
+    crop = await _shared_crop(api)
+    assert (await _compare(api, crop, "TW", "taipei"))["other_countries"]["world"] is None
 
 
 async def test_the_national_price_is_the_median_of_the_countrys_latest_day(

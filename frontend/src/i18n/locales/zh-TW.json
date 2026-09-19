@@ -206,7 +206,16 @@
       "rank": "{{area}} 價格排第 {{rank}}／{{total}}",
       "rankNone": "{{area}} 無資料，未列排名",
       "marketCount_one": "{{count}} 市場",
-      "marketCount_other": "{{count}} 市場"
+      "marketCount_other": "{{count}} 市場",
+      "others": {
+        "title": "各國參考價",
+        "none": "其他國家沒有這項作物的報價",
+        "areaCount_one": "{{count}} 個地區中位數",
+        "areaCount_other": "{{count}} 個地區中位數",
+        "world": "世界銀行",
+        "worldMeta": "{{month}}世界價格",
+        "note": "批發與零售不能直接比，品種與品質也不同，匯率僅供參考"
+      }
     }
   },
   "markets": {

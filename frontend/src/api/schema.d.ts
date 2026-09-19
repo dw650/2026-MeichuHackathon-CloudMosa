@@ -73,7 +73,7 @@ export interface paths {
         };
         /**
          * Compare one crop across the areas of a country
-         * @description Each area's latest price, market count, straight-line distance from the area being viewed, difference and rank (highest price first, ties share a rank, no data is not ranked). Sorting for display is left to the client. `other_countries` adds the same crop's national price in every other country that has it (median of that country's area prices on its own latest trading day), converted to this country's currency with the stored US-dollar rates.
+         * @description Each area's latest price, market count, straight-line distance from the area being viewed, difference and rank (highest price first, ties share a rank, no data is not ranked). Sorting for display is left to the client. `other_countries` adds the same crop's national price in every other country that has it (median of that country's area prices on its own latest trading day), converted to this country's currency with the stored US-dollar rates, plus the World Bank's world price when it publishes a series for the crop. The list is empty when no other country has it.
          */
         get: operations["compare"];
         put?: never;
@@ -341,8 +341,7 @@ export interface components {
             crop_id: string;
             /** Currency */
             currency: string;
-            /** @description Null when no other country's catalog has this crop. */
-            other_countries?: components["schemas"]["OtherCountriesOut"] | null;
+            other_countries: components["schemas"]["OtherCountriesOut"];
             rank: components["schemas"]["RankOut"];
             /** Rows */
             rows: components["schemas"]["CompareRowOut"][];
@@ -968,8 +967,13 @@ export interface components {
              * @description Oldest rate date behind a converted row; null when nothing was converted.
              */
             fx_date: string | null;
-            /** Rows */
+            /**
+             * Rows
+             * @description Empty when no other country's catalog has this crop.
+             */
             rows: components["schemas"]["OtherCountryRowOut"][];
+            /** @description Null when the Pink Sheet publishes no series for this crop. */
+            world: components["schemas"]["WorldPriceOut"] | null;
         };
         /** OtherCountryRowOut */
         OtherCountryRowOut: {
@@ -1199,6 +1203,34 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /**
+         * WorldPriceOut
+         * @description The World Bank Pink Sheet's world price of the crop (bonus B5's series): a reference,
+         *     not a country. Only crops with a published series have one.
+         */
+        WorldPriceOut: {
+            /** Month */
+            month: string | null;
+            /**
+             * Price Per Kg
+             * @description Converted to the viewer's currency.
+             */
+            price_per_kg: number | null;
+            /** Reason */
+            reason: ("no_data" | "no_fx") | null;
+            /** Series Id */
+            series_id: string;
+            /**
+             * Usd
+             * @description The published price, US dollars per `usd_unit`.
+             */
+            usd: number | null;
+            /**
+             * Usd Unit
+             * @enum {string}
+             */
+            usd_unit: "mt" | "kg";
+        };
     };
     responses: never;
     parameters: never;
@@ -1253,6 +1285,7 @@ export type SchemaUnitOptionOut = components['schemas']['UnitOptionOut'];
 export type SchemaUnitSetOut = components['schemas']['UnitSetOut'];
 export type SchemaUnitsOut = components['schemas']['UnitsOut'];
 export type SchemaValidationError = components['schemas']['ValidationError'];
+export type SchemaWorldPriceOut = components['schemas']['WorldPriceOut'];
 export type $defs = Record<string, never>;
 export interface operations {
     countries: {

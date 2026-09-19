@@ -193,7 +193,16 @@
       "rank": "{{area}}: kedudukan harga {{rank}}/{{total}}",
       "rankNone": "{{area}}: tiada data, tiada kedudukan",
       "marketCount_one": "{{count}} pasar",
-      "marketCount_other": "{{count}} pasar"
+      "marketCount_other": "{{count}} pasar",
+      "others": {
+        "title": "Negara lain",
+        "none": "Tiada negara lain melaporkan tanaman ini",
+        "areaCount_one": "median {{count}} daerah",
+        "areaCount_other": "median {{count}} daerah",
+        "world": "Bank Dunia",
+        "worldMeta": "harga dunia {{month}}",
+        "note": "Borong dan peruncit tidak boleh dibandingkan, jenis dan kualiti berbeza, kadar tukaran hanya rujukan"
+      }
     }
   },
   "markets": {

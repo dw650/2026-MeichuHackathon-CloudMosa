@@ -143,6 +143,18 @@ class OtherCountryRowOut(BaseModel):
     reason: Literal["no_data", "no_fx"] | None
 
 
+class WorldPriceOut(BaseModel):
+    """The World Bank Pink Sheet's world price of the crop (bonus B5's series): a reference,
+    not a country. Only crops with a published series have one."""
+
+    series_id: str
+    month: date | None
+    usd: float | None = Field(description="The published price, US dollars per `usd_unit`.")
+    usd_unit: Literal["mt", "kg"]
+    price_per_kg: float | None = Field(description="Converted to the viewer's currency.")
+    reason: Literal["no_data", "no_fx"] | None
+
+
 class OtherCountriesOut(BaseModel):
     """各國參考價 (docs/02 §5.4): the same crop in the other countries that have it. A country's
     national price is the median of its area prices on its own latest trading day. Wholesale and
@@ -152,7 +164,12 @@ class OtherCountriesOut(BaseModel):
     fx_date: date | None = Field(
         description="Oldest rate date behind a converted row; null when nothing was converted."
     )
-    rows: list[OtherCountryRowOut]
+    rows: list[OtherCountryRowOut] = Field(
+        description="Empty when no other country's catalog has this crop."
+    )
+    world: WorldPriceOut | None = Field(
+        description="Null when the Pink Sheet publishes no series for this crop."
+    )
 
 
 class CompareOut(BaseModel):
@@ -163,10 +180,7 @@ class CompareOut(BaseModel):
     today: date
     rank: RankOut
     rows: list[CompareRowOut]
-    other_countries: OtherCountriesOut | None = Field(
-        default=None,
-        description="Null when no other country's catalog has this crop.",
-    )
+    other_countries: OtherCountriesOut
 
 
 class MarketRowOut(BaseModel):

@@ -14,6 +14,7 @@ from datetime import date
 from statistics import median
 
 from app.services.compare import PRICE_DECIMALS
+from app.services.intl import KG_PER_UNIT
 
 PRICE_TYPES = ("wholesale", "retail")
 
@@ -48,11 +49,34 @@ class Row:
     reason: str | None  # "no_data" or "no_fx"
 
 
+# A crop whose world price the Pink Sheet publishes (bonus B5's series), for the last row.
+WORLD_SERIES = {
+    "rice": "rice",
+    "wheat": "wheat",
+    "maize": "maize",
+    "soybean": "soybeans",
+    "sugarcane": "sugar",
+}
+
+
+@dataclass(frozen=True)
+class World:
+    """The World Bank's monthly world price of the crop: a reference, not a country."""
+
+    series_id: str
+    month: date | None
+    usd: float | None
+    usd_unit: str
+    price_per_kg: float | None
+    reason: str | None
+
+
 @dataclass(frozen=True)
 class Card:
     currency: str  # the viewer's
     fx_date: date | None  # oldest rate behind a converted row; None when nothing was converted
     rows: list[Row]
+    world: World | None
 
 
 def national(points: Sequence[Point], price_type: str) -> tuple[date, float, int] | None:
@@ -114,15 +138,38 @@ def _used_rate_dates(row: Row, rates: Mapping[str, Rate], base: str) -> list[dat
     return [rates[c].rate_date for c in (row.currency, base)]
 
 
+def world_row(
+    crop_id: str, month: date | None, usd: float | None, unit: str, to: Rate | None
+) -> World | None:
+    """The crop's world price per kg in the viewer's currency, when the Pink Sheet has it."""
+    series_id = WORLD_SERIES.get(crop_id)
+    if series_id is None:
+        return None
+    if month is None or usd is None:
+        return World(series_id, None, None, unit, None, "no_data")
+    per_kg = usd / KG_PER_UNIT[unit]
+    price = None if to is None else round(per_kg * to.per_usd, PRICE_DECIMALS)
+    return World(
+        series_id=series_id,
+        month=month,
+        usd=usd,
+        usd_unit=unit,
+        price_per_kg=price,
+        reason=None if price is not None else "no_fx",
+    )
+
+
 def card(
     currency: str,
     price_type: str,
     others: Sequence[CountryPoints],
     rates: Mapping[str, Rate],
-) -> Card | None:
-    """The 各國參考價 card, or None when no other country has the crop."""
-    if not others:
-        return None
+    world: World | None = None,
+) -> Card:
+    """The 各國參考價 card. With no other country it still carries the empty list, so the screen
+    can say that nobody else reports this crop instead of showing an empty box."""
     rows = [_row(o, price_type, rates, currency) for o in others]
     dates = [d for row in rows for d in _used_rate_dates(row, rates, currency)]
-    return Card(currency=currency, fx_date=min(dates) if dates else None, rows=rows)
+    if world is not None and world.price_per_kg is not None and currency in rates:
+        dates.append(rates[currency].rate_date)
+    return Card(currency=currency, fx_date=min(dates) if dates else None, rows=rows, world=world)

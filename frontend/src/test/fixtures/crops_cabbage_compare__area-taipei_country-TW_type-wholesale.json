@@ -2,6 +2,33 @@
  "area_id": "taipei",
  "crop_id": "cabbage",
  "currency": "TWD",
+ "other_countries": {
+  "currency": "TWD",
+  "fx_date": "2026-09-19",
+  "rows": [
+   {
+    "country": "IN",
+    "currency": "INR",
+    "local_per_kg": 13.0175,
+    "n_areas": 8,
+    "price_per_kg": 4.3171,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   },
+   {
+    "country": "MY",
+    "currency": "MYR",
+    "local_per_kg": 3.41,
+    "n_areas": 6,
+    "price_per_kg": 26.5994,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   }
+  ],
+  "world": null
+ },
  "rank": {
   "position": 1,
   "total": 9

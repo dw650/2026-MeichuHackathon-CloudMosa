@@ -2,6 +2,23 @@
  "area_id": "nashik",
  "crop_id": "onion",
  "currency": "INR",
+ "other_countries": {
+  "currency": "INR",
+  "fx_date": "2026-09-19",
+  "rows": [
+   {
+    "country": "MY",
+    "currency": "MYR",
+    "local_per_kg": 3.6,
+    "n_areas": 6,
+    "price_per_kg": 84.674,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   }
+  ],
+  "world": null
+ },
  "rank": {
   "position": 7,
   "total": 10

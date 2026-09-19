@@ -193,7 +193,16 @@
       "rank": "{{area}}: price rank {{rank}}/{{total}}",
       "rankNone": "{{area}}: no data, not ranked",
       "marketCount_one": "{{count}} mkt",
-      "marketCount_other": "{{count}} mkts"
+      "marketCount_other": "{{count}} mkts",
+      "others": {
+        "title": "Other countries",
+        "none": "No other country reports this crop",
+        "areaCount_one": "median of {{count}} area",
+        "areaCount_other": "median of {{count}} areas",
+        "world": "World Bank",
+        "worldMeta": "{{month}} world price",
+        "note": "Wholesale and retail are not comparable, varieties and quality differ, and the rate is a reference"
+      }
     }
   },
   "markets": {

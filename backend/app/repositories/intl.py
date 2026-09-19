@@ -68,6 +68,17 @@ async def latest_month(session: AsyncSession) -> date | None:
     return month
 
 
+async def latest_price(session: AsyncSession, series_id: str) -> IntlPrice | None:
+    """Newest month of one series (the cross-country card's world reference row)."""
+    result = await session.execute(
+        select(IntlPrice)
+        .where(IntlPrice.series_id == series_id)
+        .order_by(IntlPrice.month.desc())
+        .limit(1)
+    )
+    return result.scalars().first()
+
+
 async def prices_since(
     session: AsyncSession, since: date, series_id: str | None = None
 ) -> list[IntlPrice]:

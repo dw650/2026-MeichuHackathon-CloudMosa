@@ -395,6 +395,24 @@ async def compare(
     }
 
 
+async def _world_price(
+    session: AsyncSession, crop: Crop, rate: crosscountry.Rate | None
+) -> crosscountry.World | None:
+    """The World Bank's world price of the crop, when bonus B5 stores a series for it."""
+    series_id = crosscountry.WORLD_SERIES.get(crop.id)
+    if series_id is None:
+        return None
+    series = await intl_repo.get_one_series(session, series_id)
+    latest = await intl_repo.latest_price(session, series_id) if series is not None else None
+    return crosscountry.world_row(
+        crop.id,
+        latest.month if latest else None,
+        float(latest.usd) if latest else None,
+        series.unit if series is not None else "mt",
+        rate,
+    )
+
+
 async def _other_countries(
     session: AsyncSession,
     country: Country,
@@ -402,24 +420,28 @@ async def _other_countries(
     price_type: str,
     now: datetime,
     demo: Demo,
-) -> dict[str, Any] | None:
+) -> dict[str, Any]:
     """各國參考價 (docs/02 §5.4): the same crop's national price in the other countries that
-    have it, in the viewer's currency. None when no other country's catalog has this crop."""
+    have it, in the viewer's currency, plus the world price when there is
+    one. The list is empty when no other country's catalog has this crop; the screen then says
+    so rather than showing an empty box."""
     codes = set(await catalog_repo.crop_countries(session, crop.id))
     others = [
         c
         for c in await catalog_repo.get_countries(session)
         if c.code in codes and c.code != country.code
     ]
-    if not others:
-        return None
     todays = {c.code: local_today(c.utc_offset_min, now) for c in others}
-    rows = await repo.country_daily_rows(
-        session,
-        countries=[c.code for c in others],
-        crop_id=crop.id,
-        start=min(todays.values()) - timedelta(days=WINDOW_DAYS - 1),
-        end=max(todays.values()),
+    rows = (
+        await repo.country_daily_rows(
+            session,
+            countries=[c.code for c in others],
+            crop_id=crop.id,
+            start=min(todays.values()) - timedelta(days=WINDOW_DAYS - 1),
+            end=max(todays.values()),
+        )
+        if others
+        else []
     )
     points: dict[str, list[crosscountry.Point]] = {c.code: [] for c in others}
     for row in rows:
@@ -438,12 +460,21 @@ async def _other_countries(
         price_type=price_type,
         others=[crosscountry.CountryPoints(c.code, c.currency, points[c.code]) for c in others],
         rates=rates,
+        world=await _world_price(session, crop, rates.get(country.currency)),
     )
-    if card is None:
-        return None
     return {
         "currency": card.currency,
         "fx_date": card.fx_date,
+        "world": None
+        if card.world is None
+        else {
+            "series_id": card.world.series_id,
+            "month": card.world.month,
+            "usd": card.world.usd,
+            "usd_unit": card.world.usd_unit,
+            "price_per_kg": card.world.price_per_kg,
+            "reason": card.world.reason,
+        },
         "rows": [
             {
                 "country": r.country,

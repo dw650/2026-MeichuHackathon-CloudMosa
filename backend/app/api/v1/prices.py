@@ -130,6 +130,7 @@ COMPARE_EXAMPLE = {
     "other_countries": {
         "currency": "INR",
         "fx_date": "2026-09-19",
+        "world": None,
         "rows": [
             {
                 "country": "TW",
@@ -251,7 +252,8 @@ async def quote(
         " not ranked). Sorting for display is left to the client. `other_countries` adds the"
         " same crop's national price in every other country that has it (median of that"
         " country's area prices on its own latest trading day), converted to this country's"
-        " currency with the stored US-dollar rates."
+        " currency with the stored US-dollar rates, plus the World Bank's world price when it"
+        " publishes a series for the crop. The list is empty when no other country has it."
     ),
     response_model=CompareOut,
     responses=_example(COMPARE_EXAMPLE) | ERRORS,

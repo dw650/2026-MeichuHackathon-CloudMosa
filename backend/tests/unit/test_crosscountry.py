@@ -4,7 +4,15 @@ from datetime import date
 
 import pytest
 
-from app.services.crosscountry import CountryPoints, Rate, card, convert, national, pick_type
+from app.services.crosscountry import (
+    CountryPoints,
+    Rate,
+    card,
+    convert,
+    national,
+    pick_type,
+    world_row,
+)
 
 D18, D19 = date(2026, 9, 18), date(2026, 9, 19)
 TWD = Rate(per_usd=31.83, rate_date=D19)
@@ -102,8 +110,10 @@ def test_card_lists_the_other_countries_in_the_viewers_currency() -> None:
     assert out.fx_date == D18
 
 
-def test_card_is_none_without_another_country() -> None:
-    assert card(currency="TWD", price_type="wholesale", others=[], rates={"TWD": TWD}) is None
+def test_card_without_another_country_carries_an_empty_list() -> None:
+    out = card(currency="TWD", price_type="wholesale", others=[], rates={"TWD": TWD})
+    assert out.rows == []
+    assert (out.currency, out.fx_date, out.world) == ("TWD", None, None)
 
 
 def test_a_country_without_a_price_says_so_and_stays_empty() -> None:
@@ -147,3 +157,34 @@ def test_the_same_currency_needs_no_rate_at_all() -> None:
     assert row.price_per_kg == pytest.approx(40.0)
     assert row.reason is None
     assert out.fx_date is None
+
+
+# ---------- the World Bank reference row ----------
+
+
+def test_only_a_crop_with_a_published_series_gets_a_world_row() -> None:
+    assert world_row("tomato", date(2026, 8, 1), 471.0, "mt", TWD) is None
+    row = world_row("wheat", date(2026, 8, 1), 240.0, "mt", TWD)
+    assert row is not None
+    assert row.series_id == "wheat"
+    assert row.price_per_kg == pytest.approx(240.0 / 1000 * 31.83)
+    assert (row.usd, row.usd_unit, row.reason) == (240.0, "mt", None)
+
+
+def test_a_world_row_without_a_month_or_a_rate_says_why() -> None:
+    empty = world_row("rice", None, None, "mt", TWD)
+    assert empty is not None and (empty.price_per_kg, empty.reason) == (None, "no_data")
+    unrated = world_row("sugarcane", date(2026, 8, 1), 0.5, "kg", None)
+    assert unrated is not None and (unrated.price_per_kg, unrated.reason) == (None, "no_fx")
+
+
+def test_the_world_row_rate_counts_towards_the_note_date() -> None:
+    old = Rate(per_usd=31.83, rate_date=D18)
+    out = card(
+        currency="TWD",
+        price_type="wholesale",
+        others=[],
+        rates={"TWD": old},
+        world=world_row("wheat", D19, 240.0, "mt", old),
+    )
+    assert out.fx_date == D18
