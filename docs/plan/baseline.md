@@ -180,7 +180,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每一條檢查規則至少一個測試；對照不到的資料列會被記數；價格單位正確。
   - 完成條件：測試通過。
 
-- [ ] **T11 彙整、管線與 worker**
+- [x] **T11 彙整、管線與 worker**
   - 參考：[06](../06-data.md) §3.2–§3.3、§8；[04](../04-architecture.md) §2、§5.2
   - 內容：
     - upsert `quotes` → `market_daily`（同市場同天多筆取中位數）→ `area_daily`（中位數、市場數、最高、最低；零售直接寫入）。
