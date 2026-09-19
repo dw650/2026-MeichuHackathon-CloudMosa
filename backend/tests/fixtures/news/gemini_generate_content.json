@@ -1,0 +1,24 @@
+{
+  "_note": "Shape of a generateContent answer as documented at https://ai.google.dev/api/generate-content (checked 2026-09-20); no API key was used to record it.",
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "{\"summary\": \"西螺果菜市場蔬菜到貨量減至約720公噸，平均每公斤約50元，比半個月前漲約3成。市場預估還要約10天，復耕的葉菜上市後價格才會回穩。\", \"crops\": [\"bokchoy\", \"cabbage\"]}"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 1650,
+    "candidatesTokenCount": 92,
+    "totalTokenCount": 1742
+  },
+  "modelVersion": "gemini-3.5-flash-lite",
+  "responseId": "c2VlLXRoZS1kb2NzLW9ubHk"
+}

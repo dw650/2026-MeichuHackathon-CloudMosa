@@ -1,0 +1,52 @@
+{
+  "_note": "Shape of a grounded generateContent answer (tools: googleSearch) as documented at https://ai.google.dev/api/generate-content#GroundingMetadata (checked 2026-09-20); no API key was used to record it.",
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "```json\n{\"summary\": \"西螺果菜市場蔬菜到貨量減至約720公噸，平均每公斤約50元，比半個月前漲約3成。市場預估還要約10天，復耕的葉菜上市後價格才會回穩。\", \"crops\": [\"cabbage\"]}\n```"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0,
+      "groundingMetadata": {
+        "webSearchQueries": [
+          "連續降雨全台農損逾2.3億 西螺果菜市場菜價漲3成"
+        ],
+        "searchEntryPoint": {
+          "renderedContent": "<!-- search chips -->"
+        },
+        "groundingChunks": [
+          {
+            "web": {
+              "uri": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AbC123",
+              "title": "pts.org.tw"
+            }
+          }
+        ],
+        "groundingSupports": [
+          {
+            "segment": {
+              "startIndex": 0,
+              "endIndex": 40,
+              "text": "西螺果菜市場蔬菜到貨量減至約720公噸"
+            },
+            "groundingChunkIndices": [
+              0
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 180,
+    "candidatesTokenCount": 95,
+    "totalTokenCount": 275
+  },
+  "modelVersion": "gemini-2.5-flash",
+  "responseId": "c2VlLXRoZS1kb2NzLW9ubHktMg"
+}
