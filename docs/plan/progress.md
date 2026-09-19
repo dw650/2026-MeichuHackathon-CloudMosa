@@ -26,3 +26,4 @@
 - 2026-09-19 T20 完成：src/focus——useFocusList（↑↓ 到兩端停住、OK 與 1–9 直接開啟並可略過沒有鍵帽的警示卡、真正的 DOM focus、捲到可見範圍留 6px、第一項放得下時捲到最上面、沒有項目時捲 60%）、useGrid（↑↓ 跳一列、◀▶ 同一列、最左欄呼叫 onLeftEdge）、restore（依 location.key 記進 session store、依 ID 還原、清單變動時留在原項目或原位置、面板打開時不搶焦點）；開啟前端覆蓋率門檻（lib＋keys＋focus＋store 合計 ≥ 90%，目前 99%）（67e55ed）
 - 2026-09-19 T21 完成：一次登記全部路由（佔位畫面）、useNav（面板 push／關閉 back、分頁 replace、面板項目 replace）、啟動時先換成首頁再 push 上次畫面並帶回焦點、未完成設定導向首次設定、未知路徑回首頁（836367a）
 - 2026-09-19 同步點 1（第一段）完成：track/frontend（T16–T21）合併進 main，make lint、make test 通過；T23、T24 完成後再合併並跑 make e2e（5478422）
+- 2026-09-19 T22 完成：fetch 包裝（10 秒逾時、錯誤碼轉換、demo 標頭）、TanStack Query 預設值與每個端點的 hook、由 API 實際回應存下的 msw fixtures 與 handlers、QueryClientProvider 與漲跌顏色（892b191）
