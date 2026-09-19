@@ -43,7 +43,8 @@
 
 | 變數 | 用途 | 預設 |
 |---|---|---|
-| `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `http://localhost:8080` |
+| `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `:8080` |
+| `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
 | `PROVIDERS` | 啟用的資料來源，逗號分隔 | `mock` |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |

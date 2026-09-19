@@ -1,6 +1,6 @@
 # Baseline 執行計畫
 
-> 給 coding agent 從頭跑到 baseline 完成用的任務清單。**依序做，一次一個任務**。
+> 給 coding agent 從頭跑到 baseline 完成用的任務清單。可以用一個 session 依序做完，也可以照「平行開發」一節，由兩個 session 平行做。每個 session 一次只做一個任務。
 > 做完一個任務：勾選框打勾，並在 [`progress.md`](progress.md) 加一行紀錄。
 > 對話被壓縮或重新開始時，從第一個沒打勾的任務繼續。
 > 範圍是 [07](../07-dev-workflow.md) 的 Phase 0 與 Phase 1。**T39 完成就停**，Phase 2（Simulator）要人來做。
@@ -26,6 +26,58 @@
   - 需要刪除或覆蓋不是自己在這次執行中建立的東西。
 - 停下來之前，先在 `progress.md` 寫清楚卡在哪裡、試過什麼。
 
+## 平行開發（主 session 自動安排）
+
+一個主 session 負責全部流程：後端與整合自己做，前端基礎與部分畫面交給**背景子 agent** 在另一個 worktree 做，同步點自己合併並驗證。人只需要下一次 prompt，除非遇到「自己決定還是停下來」列出的情況。
+
+| 步驟 | 主 session 自己做 | 同時交給子 agent（在 worktree） |
+|---|---|---|
+| 1 | T01–T06 | — |
+| 2 | 建立 worktree（見下方）；後端線 T07–T15 | 前端線：T16、T17、T18、T19、T20、T21、T23、T24 |
+| 3 | 同步點 1：兩條線都完成後，合併 `track/frontend`，驗證，做 T22 | — |
+| 4 | T25、T26、T31、T32、T33 | 先在 worktree `git merge main`，再做 T27、T28、T29、T30 |
+| 5 | 同步點 2，然後 T34–T39 | — |
+| 6 | 移除 worktree（`git worktree remove`，保留分支），寫完成摘要，**停止** | — |
+
+### 建立 worktree（步驟 2 開始時做一次）
+
+```bash
+git worktree add ../<repo 資料夾名>-fe -b track/frontend main
+```
+
+進入 worktree：
+1. `cp .env.example .env`，把 `WEB_PORT` 改成 `8081`、`DB_PORT` 改成 `5433`，避免和主 session 的服務衝突。
+2. `cd frontend && npm ci`。
+
+### 派子 agent 的方式
+
+- **一次派一個子 agent，只做一個任務**，在背景執行。主 session 同時繼續做自己的任務。
+- 收到完成通知後，主 session 先檢查：
+  1. `git log` 有該任務的 commit。
+  2. 在 worktree 跑前端的 lint 與測試，確認通過。
+- 檢查通過就派下一個任務；沒通過就把問題交給新的子 agent 修。同一個任務失敗 2 次，改由主 session 在該條線的最後自己做。
+- 派給子 agent 的指示要包含以下內容：
+  - worktree 的絕對路徑、分支 `track/frontend`、任務編號。
+  - 先讀 `CLAUDE.md` 與 `docs/plan/baseline.md` 裡該任務和它的「參考」段落。
+  - 照 TDD 做。直接 commit 在 `track/frontend`，commit 訊息的範圍寫任務編號，例如 `feat(t19): add key scope stack`。
+  - 完成後在 worktree 打勾並在 `progress.md` 加一行。
+  - 只改 `frontend/` 與 `docs/plan/`；共用檔案（`Makefile`、`compose*.yaml`、`.github/`）改動越小越好，並在 commit 訊息註明。
+  - **不切換到 `main`、不合併、不 push**。
+  - 回報：完成或卡住、commit 清單、測試結果、自己做了哪些決定。
+
+### 同步點的做法
+
+1. 確認沒有正在執行的子 agent。
+2. 在主 repo：`git merge --no-ff track/frontend`，解決衝突。
+3. 跑 `make lint`、`make test`、`make e2e`，全部通過才算完成。
+4. 在 `progress.md` 記一行「同步點 N 完成」。
+
+`.gitattributes` 已經設定好：`progress.md`、`decisions.md` 在合併時會自動保留兩邊新增的內容。
+
+### 不平行時
+
+如果子 agent 一直失敗，或環境不允許開背景子 agent，就改成單一 session，從第一個沒打勾的任務依序做到 T39，並在 `progress.md` 記下原因。
+
 ## Phase 0：骨架
 
 - [ ] **T01 Repo 骨架**
@@ -33,8 +85,9 @@
   - 內容：
     - 建立資料夾結構。
     - 補齊 `.gitignore`：`node_modules`、`.venv`、`.env`、`*.mmdb`、`frontend/e2e/artifacts`、`dist`。
-    - 建立 `.env.example` 與 `Makefile`（先放 `up`、`down`、`logs`）。
-    - `compose.yaml` 先只有 `db`。
+    - 建立 `.env.example` 與 `Makefile`（先放 `up`、`down`、`logs`）。`.env.example` 要有 `WEB_PORT=8080`、`DB_PORT=5432`；`Makefile` 從 `.env` 讀這兩個值。
+    - `compose.yaml` 先只有 `db`；`db` 只綁在 `127.0.0.1:${DB_PORT}`，給本機測試用。
+    - compose 的 project 名稱沿用資料夾名稱（不要寫死 `name:`），這樣兩個 worktree 可以同時起各自的服務。
   - 完成條件：`docker compose config` 沒有錯誤；`make up` 後 `db` 是 healthy。
 
 - [ ] **T02 後端骨架**
@@ -44,7 +97,7 @@
     - 錯誤格式與 `X-Request-ID` middleware；`GET /api/v1/health`（檢查資料庫連線）。
     - Alembic 初始化；`backend/Dockerfile`；compose 加上 `api`。
     - Makefile 加 `test`、`lint`（後端部分）。
-  - 測試：`/health` 回傳 ok；不存在的路徑回傳統一錯誤格式；回應帶 `X-Request-ID`。
+  - 測試：`/health` 回傳 ok；不存在的路徑回傳統一錯誤格式；回應帶 `X-Request-ID`。資料庫測試用 `127.0.0.1:${DB_PORT}` 連 compose 的 `db`，並使用獨立的測試資料庫。
   - 完成條件：`make test`、`make lint` 通過；`make up` 後 api 容器 healthy。
 
 - [ ] **T03 前端骨架與 web 服務**
@@ -55,7 +108,7 @@
     - `Shell` 元件：header、內容、軟鍵列三列 grid，高度用 `innerHeight`。
     - `frontend/Dockerfile`（Node 建置 → `caddy:2`）與 `infra/caddy/Caddyfile`：靜態檔、`/api/*` 轉發、`X-Client-Forwarded-For`、SPA fallback。
     - compose 加上 `web`。
-    - 網址用環境變數 `SITE_ADDRESS`：本機預設 `http://localhost:8080`（只用 HTTP）；正式環境填網域，由 Caddy 自動申請 HTTPS。正式環境要開放的 80、443 埠寫在 `compose.prod.yaml`。
+    - 網址用環境變數 `SITE_ADDRESS`：本機預設 `:8080`（只用 HTTP，接受任何 Host，tunnel 也能用）；正式環境填網域，由 Caddy 自動申請 HTTPS。本機的主機埠是 `${WEB_PORT}:8080`；正式環境要開放的 80、443 埠寫在 `compose.prod.yaml`。
     - Makefile 的 `test`、`lint` 加上前端。
     - 正式用的 `Caddyfile` 加安全標頭：
       - `Content-Security-Policy`：`default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'`。**只加在 `/api/*` 以外的路徑**，因為 `/api/docs` 的 Swagger UI 會從 CDN 載入資源。
@@ -229,7 +282,7 @@
 
 - [ ] **T21 路由與歷史**
   - 參考：[04](../04-architecture.md) §4.3
-  - 內容：路由表；面板用 `?sheet=`，打開時 push、關閉時 back；分頁用 replace；啟動時還原上次的畫面（先換成首頁再 push）；未知路徑導回首頁。
+  - 內容：路由表，**一次登記全部路由**，還沒做的畫面先放佔位元件，之後各畫面任務只改自己的檔案，平行開發時比較不會衝突；面板用 `?sheet=`，打開時 push、關閉時 back；分頁用 replace；啟動時還原上次的畫面（先換成首頁再 push）；未知路徑導回首頁。
   - 測試：用 memory router 測 push 與 replace 的次數、還原後按返回會回到首頁。
   - 完成條件：測試通過。
 

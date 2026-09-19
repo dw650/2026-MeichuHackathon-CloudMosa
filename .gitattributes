@@ -1,0 +1,3 @@
+# Append-only logs: keep lines added on both sides when merging parallel tracks
+docs/plan/progress.md merge=union
+docs/plan/decisions.md merge=union
