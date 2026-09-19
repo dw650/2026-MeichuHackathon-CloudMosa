@@ -25,13 +25,20 @@ export interface AppState {
   setupDone?: boolean
   /** Demo switch for the location guess (F18); a new user can have it set too. */
   locate?: 'auto' | 'none' | 'IN:nashik' | 'TW:taipei'
+  /** Demo switches (F18): price APIs fail / my area's data is 3 days old. */
+  fail?: boolean
+  stale?: boolean
 }
 
 /** Seeds the stores (same format as src/store) so the next navigation starts in that state. */
 export async function seed(page: Page, state: AppState = {}): Promise<void> {
   const country = state.country ?? 'IN'
   const d = DEFAULTS[country]
-  const demo = { fail: false, stale: false, locate: state.locate ?? 'auto' }
+  const demo = {
+    fail: state.fail ?? false,
+    stale: state.stale ?? false,
+    locate: state.locate ?? 'auto',
+  }
   const fresh = {
     state: {
       language: null,
