@@ -4,7 +4,7 @@ News items and news runs for the 新聞 page (docs/04 §7). Self-contained: it o
 drops its own two tables, so it can be re-chained after other migrations.
 
 Revision ID: 23655d2e487a
-Revises: 80ac1f2d0366
+Revises: 74f6aadac0c6
 Create Date: 2026-09-20 03:58:40.805118
 """
 
@@ -15,7 +15,7 @@ from alembic import op
 
 
 revision: str = '23655d2e487a'
-down_revision: str | Sequence[str] | None = '80ac1f2d0366'
+down_revision: str | Sequence[str] | None = '74f6aadac0c6'
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
