@@ -1,5 +1,7 @@
 """Estimated prices (docs/06 §3.6): the seed's ratios and which countries estimate what."""
 
+from statistics import median
+
 import pytest
 
 from app.ingest import derive, registry
@@ -104,6 +106,20 @@ def test_a_market_factor_stays_inside_the_spread_and_never_changes() -> None:
 def test_markets_of_one_area_do_not_all_get_the_same_factor() -> None:
     rules = plan_for(MOCK, MY_REAL)["MY"]
     assert len({rules.market_factor(f"m{i}") for i in range(20)}) > 1
+
+
+def test_the_median_of_an_areas_factors_is_one_so_the_area_price_is_exact() -> None:
+    rules = plan_for(MOCK, MY_REAL)["MY"]
+    factors = rules.market_factors([f"m{i}" for i in range(5)])
+    assert median(factors.values()) == pytest.approx(1.0)
+    assert len(set(factors.values())) > 1
+    assert rules.market_factors([]) == {}
+
+
+def test_one_market_alone_keeps_the_whole_area_price() -> None:
+    """Most Malaysian areas have a single market: it must carry exactly the divided price."""
+    rules = plan_for(MOCK, MY_REAL)["MY"]
+    assert rules.market_factors(["klborong"]) == {"klborong": 1.0}
 
 
 def test_without_a_spread_every_market_keeps_the_area_price() -> None:

@@ -23,7 +23,7 @@ SPREAD_STEPS = 20
 
 @dataclass(frozen=True)
 class Derivation:
-    """One country's estimate: `to_type` is worked out from `to_type`'s real counterpart."""
+    """One country's estimate: `to_type` is worked out from the reported `from_type`."""
 
     country: str
     rules: CountryDerive

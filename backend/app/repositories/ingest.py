@@ -268,7 +268,7 @@ _ESTIMATED_AREA_RETAIL = text(
     JOIN crops c ON c.country = a.country AND c.id = a.crop_id
     JOIN unnest(CAST(:crop_ids AS varchar[]), CAST(:ratios AS float8[]))
          AS r(crop_id, ratio) ON r.crop_id = a.crop_id
-    WHERE a.country = :country AND a.trade_date = ANY(:dates) AND a.price_type = 'wholesale'
+    WHERE a.country = :country AND a.trade_date = ANY(:dates) AND a.price_type = :from_type
       AND ar.has_retail AND c.has_retail
       AND NOT EXISTS (
           SELECT 1 FROM area_daily d
@@ -332,9 +332,9 @@ async def aggregate(
     )
     await session.execute(_MARKET_DAILY, params)
     await session.execute(_AREA_RETAIL, params)
-    ratios = await _estimate_params(session, country, estimate) if estimate else {}
+    estimated = await _estimate_params(session, country, estimate) if estimate else {}
     if estimate and estimate.to_type == "wholesale":
-        await session.execute(_ESTIMATED_MARKETS, params | ratios)
+        await session.execute(_ESTIMATED_MARKETS, params | estimated)
     await session.execute(_AREA_WHOLESALE, params)
     if estimate and estimate.to_type == "retail":
-        await session.execute(_ESTIMATED_AREA_RETAIL, params | ratios)
+        await session.execute(_ESTIMATED_AREA_RETAIL, params | estimated)
