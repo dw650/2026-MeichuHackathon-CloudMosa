@@ -22,7 +22,6 @@ from app.ingest.news.pipeline import new_rows, run_country
 from app.ingest.news.reader import Article
 from app.ingest.news.rss import SEARCH_URL, parse_rss, to_raw
 from app.ingest.news.summarize import (
-    GEMINI_GROUNDED_MODEL,
     GEMINI_TEXT_MODEL,
     GEMINI_URL,
     Summaries,
@@ -30,6 +29,8 @@ from app.ingest.news.summarize import (
     SummaryRequest,
 )
 from tests.news.helpers import FakeTime, Script, fixture_bytes, fixture_text
+
+GROUNDED = "gemini-3.6-flash"  # grounding is off unless a model is named
 
 NOW = datetime(2026, 9, 19, 16, 30, tzinfo=UTC)  # 00:30 on 9/20 in Taiwan
 CONFIG = load_news_config()
@@ -360,7 +361,7 @@ def google_script() -> Script:
                 httpx.Response(200, content=fixture_bytes("publisher_pts.html"), headers=html)
             ],
             GEMINI_URL.format(model=GEMINI_TEXT_MODEL): [gemini_answer],
-            GEMINI_URL.format(model=GEMINI_GROUNDED_MODEL): [
+            GEMINI_URL.format(model=GROUNDED): [
                 httpx.Response(200, json=json.loads(fixture_text("gemini_grounded.json")))
             ],
         }
@@ -504,7 +505,7 @@ async def test_budgets_are_shared_by_the_day(maker: async_sessionmaker[AsyncSess
     time = FakeTime()
     [run] = await run_news(
         maker,
-        NewsOptions(source="google", gemini_api_key="key"),
+        NewsOptions(source="google", gemini_api_key="key", gemini_grounded_model=GROUNDED),
         countries=["TW"],
         clock=clock,
         transport=script.transport(),
@@ -513,7 +514,7 @@ async def test_budgets_are_shared_by_the_day(maker: async_sessionmaker[AsyncSess
     )
     # No page reads left today; two model calls left, used on headlines with grounding.
     assert (run.articles, run.model_calls, run.summaries) == (0, 2, 2)
-    grounded = GEMINI_URL.format(model=GEMINI_GROUNDED_MODEL)
+    grounded = GEMINI_URL.format(model=GROUNDED)
     assert len([u for u in script.urls() if u == grounded]) == 2
 
 

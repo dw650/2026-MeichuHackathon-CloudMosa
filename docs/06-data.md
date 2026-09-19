@@ -129,12 +129,14 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
 2. 抓發布者的網頁（一般瀏覽器的 User-Agent、逾時 20 秒、網路錯誤與 5xx 重試一次、最多 3 MB），用輕量的規則取出正文：先用網頁 JSON-LD 的 `articleBody`，沒有就取 `<p>` 段落（有 `<article>` 時優先，去掉導覽、頁首頁尾、以連結為主的段落），再沒有就用 `og:description`；最多 3,000 字。正文只送給模型，不存。只抓公開網址（轉址也檢查），服務名稱、localhost、內網與 link-local 位址一律不抓，避免被構造的連結打到 worker 旁邊的服務。
 3. 交給模型：兩句、用國家的介面語言（台灣繁中、印度與馬來西亞英文）、只根據原文、不加任何原文沒有的事實；相關作物只能從該國的作物清單挑，不確定就不挑。回答不是 JSON、是空的、語言不對、太長，或（有搜尋時）沒有引用任何網頁，都丟掉。
    - 有原文：自架模型（`SUMMARY_API_BASE` 有設定時先用，OpenAI 相容的 `/v1/chat/completions`）→ Gemini `GEMINI_MODEL`（預設 `gemini-3.5-flash-lite`，免費額度、穩定版，不開搜尋，用 JSON Schema 限定作物代號）。
-   - 沒有原文（連結解不開、網頁抓不到或讀不出正文）：Gemini `gemini-2.5-flash` 加 Google 搜尋（grounding）用標題找原文。只有 Gemini 有這一步；自架模型不能上網，沒有原文就不做摘要。
+   - 沒有原文（連結解不開、網頁抓不到或讀不出正文）：**預設不做摘要**。原本的備援是 Gemini 加 Google 搜尋（grounding），但【查核 2026-09-20】用真實金鑰實測 `gemini-3.6-flash` 與 `gemini-3.5-flash` 都回 HTTP 429「超過額度」，`gemini-2.5-flash` 則回 404「不再開放給新使用者」，代表免費方案沒有 grounding 額度。要用就在 `GEMINI_GROUNDED_MODEL` 指定模型（付費方案才有意義）。
    - 都沒有設定、模型失敗或額度用完：**不做摘要**，畫面只顯示標題、發布者與日期。絕不顯示編造的摘要。
-4. **Gemini 免費額度**【查核 2026-09-20，[pricing](https://ai.google.dev/gemini-api/docs/pricing)、[rate limits](https://ai.google.dev/gemini-api/docs/rate-limits)】：只要 Google 帳號與 AI Studio 金鑰，不用綁卡。`gemini-3.5-flash-lite` 是穩定版、免費層輸入輸出不收費，但免費層沒有 Google 搜尋 grounding；`gemini-2.5-flash` 的免費 grounding 每天 500 次（和 2.5 Flash-Lite 共用）。每分鐘與每天的請求上限只顯示在 AI Studio（文件頁不列數字），所以我們每 7 秒最多一次（每分鐘少於 10 次），每天最多 30 次。免費層的輸入可能被 Google 用來改進產品（送出的是公開新聞）。
+4. **Gemini 免費額度**【查核 2026-09-20，[pricing](https://ai.google.dev/gemini-api/docs/pricing)、[rate limits](https://ai.google.dev/gemini-api/docs/rate-limits)】：只要 Google 帳號與 AI Studio 金鑰，不用綁卡。`gemini-3.5-flash-lite` 是穩定版、免費層輸入輸出不收費，但免費層沒有 Google 搜尋 grounding；文件雖然寫 `gemini-2.5-flash` 的免費 grounding 每天 500 次，實測卻拿不到（見上）。每分鐘與每天的請求上限只顯示在 AI Studio（文件頁不列數字），所以我們每 7 秒最多一次（每分鐘少於 10 次），每天最多 30 次。免費層的輸入可能被 Google 用來改進產品（送出的是公開新聞）。
 5. **自架模型**（先保留在程式裡，目前不用）：worker 只連 `SUMMARY_API_BASE` 這個網址。worker 在 Docker 裡，`compose.yaml` 已加上 `host.docker.internal:host-gateway`，模型可以用 SSH 反向通道或 Cloudflare Tunnel 之類的服務接到伺服器上；逾時 300 秒。
 
 **額度與排程**
+
+額度可以用環境變數調整：`NEWS_DAILY_ARTICLES`、`NEWS_DAILY_MODEL_CALLS`（預設都是 30）。
 
 | 項目 | 上限（最近 24 小時、所有國家合計） |
 |---|---|

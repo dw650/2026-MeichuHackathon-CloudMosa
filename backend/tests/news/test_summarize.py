@@ -9,7 +9,6 @@ import pytest
 
 from app.ingest.news.base import Pacer
 from app.ingest.news.summarize import (
-    GEMINI_GROUNDED_MODEL,
     GEMINI_TEXT_MODEL,
     GEMINI_URL,
     CropChoice,
@@ -24,6 +23,8 @@ from app.ingest.news.summarize import (
     parse_reply,
 )
 from tests.news.helpers import FakeTime, Script, fixture_text
+
+GROUNDED = "gemini-3.6-flash"  # grounding is off unless a model is named
 
 TW_CROPS = (
     CropChoice("cabbage", ("甘藍", "Cabbage", "高麗菜")),
@@ -53,7 +54,7 @@ IN_REQUEST = SummaryRequest(
 )
 LAB = "http://lab.test:11434/v1"
 TEXT_URL = GEMINI_URL.format(model=GEMINI_TEXT_MODEL)
-GROUNDED_URL = GEMINI_URL.format(model=GEMINI_GROUNDED_MODEL)
+GROUNDED_URL = GEMINI_URL.format(model=GROUNDED)
 
 
 def ok(name: str) -> httpx.Response:
@@ -68,7 +69,7 @@ def body_of(request: httpx.Request) -> dict[str, Any]:
 
 def gemini(script: Script, *, grounded: bool, time: FakeTime | None = None) -> GeminiModel:
     time = time or FakeTime()
-    model = GEMINI_GROUNDED_MODEL if grounded else GEMINI_TEXT_MODEL
+    model = GROUNDED if grounded else GEMINI_TEXT_MODEL
     return GeminiModel(
         "key",
         model,
@@ -368,8 +369,20 @@ def test_build_summaries_from_the_settings() -> None:
     )
     assert gemini_only is not None
     assert [m.name for m in gemini_only.text_models] == [GEMINI_TEXT_MODEL]
-    assert gemini_only.headline_model is not None
-    assert gemini_only.headline_model.name == GEMINI_GROUNDED_MODEL
+    # Grounding is off by default: the free tier has no quota for it.
+    assert gemini_only.headline_model is None
+    grounded = build_summaries(
+        gemini_api_key="k",
+        gemini_model="",
+        summary_api_base="",
+        summary_model="",
+        summary_api_key="",
+        calls=30,
+        gemini_grounded_model=GROUNDED,
+    )
+    assert grounded is not None
+    assert grounded.headline_model is not None
+    assert grounded.headline_model.name == GROUNDED
     both = build_summaries(
         gemini_api_key="k",
         gemini_model="gemini-2.5-flash-lite",

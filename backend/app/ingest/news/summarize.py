@@ -30,7 +30,7 @@ from app.ingest.news.base import Monotonic, Pacer, Sleep
 
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 GEMINI_TEXT_MODEL = "gemini-3.5-flash-lite"  # free tier, stable (checked 2026-09-20)
-GEMINI_GROUNDED_MODEL = "gemini-2.5-flash"  # free tier with Google Search grounding
+GEMINI_GROUNDED_MODEL = ""  # grounding costs money; name a model to switch it on
 GEMINI_PACE_S = 7.0  # fewer than 10 calls a minute, below the free tier's per-minute limits
 GEMINI_TIMEOUT = httpx.Timeout(90.0, connect=10.0)
 LAB_TIMEOUT = httpx.Timeout(300.0, connect=10.0)  # a small self-hosted model may be slow
@@ -370,6 +370,7 @@ def build_summaries(
     summary_model: str,
     summary_api_key: str,
     calls: int,
+    gemini_grounded_model: str = GEMINI_GROUNDED_MODEL,
     transport: httpx.AsyncBaseTransport | None = None,
     sleep: Sleep = asyncio.sleep,
     clock: Monotonic = time.monotonic,
@@ -392,9 +393,14 @@ def build_summaries(
                 transport=transport,
             )
         )
-        headline_model = GeminiModel(
-            gemini_api_key, GEMINI_GROUNDED_MODEL, grounded=True, pacer=pacer, transport=transport
-        )
+        if gemini_grounded_model:
+            headline_model = GeminiModel(
+                gemini_api_key,
+                gemini_grounded_model,
+                grounded=True,
+                pacer=pacer,
+                transport=transport,
+            )
     if not text_models:
         return None
     return Summaries(text_models, headline_model, calls=calls)
