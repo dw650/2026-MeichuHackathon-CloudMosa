@@ -54,7 +54,11 @@ export default function LanguageScreen() {
               key={language.id}
               focusId={language.id}
               compact
-              lead={<Tile tone={language.tone}>{language.glyph}</Tile>}
+              lead={
+                <Tile tone={language.tone}>
+                  <span lang={language.id}>{language.glyph}</span>
+                </Tile>
+              }
               name={<span lang={language.id}>{language.name}</span>}
               meta={note(language)}
             />

@@ -83,7 +83,7 @@
     "retailNote": "खुदरा भाव क्षेत्र के हिसाब से हैं, मंडी के नहीं"
   },
   "common": {
-    "distance": "{{km}} km (सीधी)",
+    "distance": "{{km}} km सीधी",
     "page": "पेज {{page}}/{{total}}",
     "demoData": "डेमो डेटा"
   },
@@ -157,10 +157,10 @@
       "median": "{{count}} मंडियों का मध्य भाव",
       "oneMarket": "सिर्फ़ 1 मंडी",
       "retailSurvey": "खुदरा सर्वे भाव",
-      "vsPrev": "पिछले कारोबारी दिन से",
-      "markets_one": "इस क्षेत्र में {{count}} मंडी",
-      "markets_other": "इस क्षेत्र में {{count}} मंडियाँ",
-      "marketsRange": "अधिकतम {{high}} · न्यूनतम {{low}}",
+      "vsPrev": "पिछले दिन से",
+      "markets_one": "{{count}} स्थानीय मंडी",
+      "markets_other": "{{count}} स्थानीय मंडियाँ",
+      "marketsRange": "ऊँचा {{high}} · नीचा {{low}}",
       "nearby": {
         "highest": "पास में सबसे ज़्यादा",
         "lowest": "पास में सबसे कम",
@@ -169,7 +169,7 @@
       }
     },
     "stats": {
-      "vsAvg7": "7 दिन के औसत से",
+      "vsAvg7": "7 दिन औसत से",
       "arrivals": {
         "label": "आवक",
         "low": "कम",
@@ -189,8 +189,8 @@
         "high": "तेज़"
       },
       "average": "औसत",
-      "high": "अधिकतम",
-      "low": "न्यूनतम"
+      "high": "ऊँचा",
+      "low": "नीचा"
     },
     "compare": {
       "sortTitle": "क्रम",
@@ -204,7 +204,7 @@
       "rank": "{{area}}: भाव में {{rank}}/{{total}} स्थान",
       "rankNone": "{{area}}: डेटा नहीं, रैंक नहीं",
       "marketCount_one": "{{count}} मंडी",
-      "marketCount_other": "{{count}} मंडियाँ"
+      "marketCount_other": "{{count}} मंडी"
     }
   },
   "markets": {
@@ -239,8 +239,8 @@
     "showingOld": "पहले के भाव दिख रहे हैं",
     "vsPrevMonth": "पिछले महीने से",
     "trend": "पिछले 12 महीने",
-    "high": "12 माह अधिकतम",
-    "low": "12 माह न्यूनतम",
+    "high": "12 माह ऊँचा",
+    "low": "12 माह नीचा",
     "vsAverage": "12 माह औसत से",
     "published": "मूल भाव {{price}}",
     "usd": "US${{price}}/{{unit}}",

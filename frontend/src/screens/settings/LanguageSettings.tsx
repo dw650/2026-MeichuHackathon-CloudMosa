@@ -54,7 +54,7 @@ export function LanguageSettings() {
               focusId={language.id}
               lead={
                 <Tile tone={language.tone} keyCap={i + 1}>
-                  {language.glyph}
+                  <span lang={language.id}>{language.glyph}</span>
                 </Tile>
               }
               name={<span lang={language.id}>{language.name}</span>}

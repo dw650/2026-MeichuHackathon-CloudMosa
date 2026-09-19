@@ -156,13 +156,14 @@ describe('interpolation', () => {
   })
 
   it('follows the plural rules of Malay and Hindi', () => {
-    // Malay has no singular form; Hindi uses it for 0 and 1.
-    expect(msT('detail.today.markets', { count: 1 })).toBe('1 pasar di kawasan ini')
+    // Malay has no singular form; Hindi uses it for 0 and 1 (the terse compare count is
+    // always मंडी, like the English "mkts").
+    expect(msT('detail.today.markets', { count: 1 })).toBe('1 pasar tempatan')
     expect(msT('detail.compare.marketCount', { count: 3 })).toBe('3 pasar')
-    expect(hiT('detail.today.markets', { count: 1 })).toBe('इस क्षेत्र में 1 मंडी')
-    expect(hiT('detail.today.markets', { count: 7 })).toBe('इस क्षेत्र में 7 मंडियाँ')
+    expect(hiT('detail.today.markets', { count: 1 })).toBe('1 स्थानीय मंडी')
+    expect(hiT('detail.today.markets', { count: 7 })).toBe('7 स्थानीय मंडियाँ')
     expect(hiT('detail.compare.marketCount', { count: 0 })).toBe('0 मंडी')
-    expect(hiT('detail.compare.marketCount', { count: 3 })).toBe('3 मंडियाँ')
+    expect(hiT('detail.compare.marketCount', { count: 3 })).toBe('3 मंडी')
   })
 
   it('leaves escaping to React', () => {

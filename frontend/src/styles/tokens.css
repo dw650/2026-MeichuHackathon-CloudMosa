@@ -159,6 +159,12 @@
     --fs-2: 11px;
     --fs-3: 11px;
   }
+
+  /* Chinese or Hindi inside another UI language (language names and tile letters). */
+  [lang|='zh'],
+  [lang|='hi'] {
+    font-size: max(1em, 11px);
+  }
 }
 
 @media (max-width: 176px) and (max-height: 150px) {

@@ -5,7 +5,7 @@
   "softkeys": {
     "menu": "Menu",
     "open": "Buka",
-    "back": "Kembali",
+    "back": "Balik",
     "exit": "Keluar",
     "select": "Pilih",
     "close": "Tutup",
@@ -70,31 +70,31 @@
     "retailNote": "Harga runcit ikut kawasan, bukan ikut pasar"
   },
   "common": {
-    "distance": "{{km}} km (lurus)",
+    "distance": "{{km}} km lurus",
     "page": "Halaman {{page}}/{{total}}",
     "demoData": "Data demo"
   },
   "menu": {
     "title": "Menu",
     "changeArea": "Tukar kawasan",
-    "watchlist": "Senarai saya",
+    "watchlist": "Kegemaran",
     "refresh": "Muat semula",
     "about": "Perihal & data",
     "settings": "Tetapan",
-    "addWatch": "Tambah ke senarai",
-    "removeWatch": "Buang dari senarai",
+    "addWatch": "Tambah ke kegemaran",
+    "removeWatch": "Buang dari kegemaran",
     "intl": "Harga antarabangsa"
   },
   "categories": {
     "cereal": "Bijirin",
     "veg": "Sayur",
     "fruit": "Buah",
-    "pulse": "Kekacang",
+    "pulse": "Kacang",
     "spice": "Rempah",
-    "oil": "Bijian minyak",
-    "other": "Lain-lain",
+    "oil": "Biji minyak",
+    "other": "Lain",
     "all": "Semua",
-    "recent": "Baru dilihat"
+    "recent": "Terkini"
   },
   "setup": {
     "welcome": "Harga tanaman hari ini, ikut kawasan",
@@ -124,8 +124,8 @@
   "home": {
     "title": "Harga {{area}}",
     "tabs": {
-      "watch": "Senarai saya",
-      "all": "Semua tanaman"
+      "watch": "Kegemaran",
+      "all": "Tanaman"
     },
     "browse": "Lihat tanaman"
   },
@@ -144,10 +144,10 @@
       "median": "Median {{count}} pasar",
       "oneMarket": "Hanya 1 pasar",
       "retailSurvey": "Harga tinjauan runcit",
-      "vsPrev": "vs hari dagangan lepas",
-      "markets_one": "{{count}} pasar di kawasan ini",
-      "markets_other": "{{count}} pasar di kawasan ini",
-      "marketsRange": "Tinggi {{high}} · Rendah {{low}}",
+      "vsPrev": "vs hari lalu",
+      "markets_one": "{{count}} pasar tempatan",
+      "markets_other": "{{count}} pasar tempatan",
+      "marketsRange": "Maks {{high}} · Min {{low}}",
       "nearby": {
         "highest": "Tertinggi berdekatan",
         "lowest": "Terendah berdekatan",
@@ -156,7 +156,7 @@
       }
     },
     "stats": {
-      "vsAvg7": "vs purata 7 hari",
+      "vsAvg7": "vs 7 hari",
       "arrivals": {
         "label": "Bekalan",
         "low": "Sedikit",
@@ -203,14 +203,14 @@
   "areas": {
     "title": "Pilih kawasan",
     "change": "Tukar kawasan",
-    "recent": "Baru digunakan",
+    "recent": "Terkini",
     "all": "Semua kawasan",
     "updated": "Dikemas kini",
     "other": "Kawasan lain…",
     "changeCountry": "Tukar negara…"
   },
   "watch": {
-    "title": "Senarai saya"
+    "title": "Kegemaran"
   },
   "intl": {
     "title": "Harga antarabangsa",
@@ -246,7 +246,7 @@
     "rows": {
       "language": "Bahasa",
       "country": "Negara",
-      "area": "Kawasan saya",
+      "area": "Kawasan",
       "wholesaleUnit": "Unit borong",
       "retailUnit": "Unit runcit"
     },
