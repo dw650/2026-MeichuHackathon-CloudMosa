@@ -1,9 +1,9 @@
 {
  "area_id": "newtaipei",
  "change": {
-  "diff_per_kg": 11.55,
+  "diff_per_kg": 9.75,
   "direction": "up",
-  "pct": 0.444231,
+  "pct": 0.443182,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "cabbage",
@@ -11,40 +11,40 @@
  "fetched_at": "2026-09-19T14:10:00+08:00",
  "markets": {
   "count": 2,
-  "max_per_kg": 38.1,
-  "min_per_kg": 37.0,
+  "max_per_kg": 32.2,
+  "min_per_kg": 31.3,
   "total": 2
  },
  "nearby": {
   "highest": {
    "area_id": "taipei",
-   "diff_per_kg": 0.7,
+   "diff_per_kg": 0.65,
    "distance_km": 11,
    "is_base": false,
-   "price_per_kg": 38.25
+   "price_per_kg": 32.4
   },
   "lowest": {
    "area_id": "taoyuan",
-   "diff_per_kg": -0.65,
+   "diff_per_kg": -0.45,
    "distance_km": 16,
    "is_base": false,
-   "price_per_kg": 36.9
+   "price_per_kg": 31.3
   }
  },
- "price_per_kg": 37.55,
+ "price_per_kg": 31.75,
  "reason": null,
  "series": [
   {
    "date": "2026-08-21",
-   "price_per_kg": 25.95
+   "price_per_kg": 21.95
   },
   {
    "date": "2026-08-22",
-   "price_per_kg": 25.15
+   "price_per_kg": 21.3
   },
   {
    "date": "2026-08-23",
-   "price_per_kg": 25.45
+   "price_per_kg": 21.55
   },
   {
    "date": "2026-08-24",
@@ -52,27 +52,27 @@
   },
   {
    "date": "2026-08-25",
-   "price_per_kg": 24.9
+   "price_per_kg": 21.05
   },
   {
    "date": "2026-08-26",
-   "price_per_kg": 25.65
+   "price_per_kg": 21.7
   },
   {
    "date": "2026-08-27",
-   "price_per_kg": 25.45
+   "price_per_kg": 21.55
   },
   {
    "date": "2026-08-28",
-   "price_per_kg": 24.6
+   "price_per_kg": 20.85
   },
   {
    "date": "2026-08-29",
-   "price_per_kg": 23.8
+   "price_per_kg": 20.15
   },
   {
    "date": "2026-08-30",
-   "price_per_kg": 24.4
+   "price_per_kg": 20.65
   },
   {
    "date": "2026-08-31",
@@ -80,27 +80,27 @@
   },
   {
    "date": "2026-09-01",
-   "price_per_kg": 23.85
+   "price_per_kg": 20.25
   },
   {
    "date": "2026-09-02",
-   "price_per_kg": 23.95
+   "price_per_kg": 20.25
   },
   {
    "date": "2026-09-03",
-   "price_per_kg": 23.2
+   "price_per_kg": 19.6
   },
   {
    "date": "2026-09-04",
-   "price_per_kg": 22.35
+   "price_per_kg": 18.9
   },
   {
    "date": "2026-09-05",
-   "price_per_kg": 22.75
+   "price_per_kg": 19.25
   },
   {
    "date": "2026-09-06",
-   "price_per_kg": 22.95
+   "price_per_kg": 19.45
   },
   {
    "date": "2026-09-07",
@@ -108,27 +108,27 @@
   },
   {
    "date": "2026-09-08",
-   "price_per_kg": 23.05
+   "price_per_kg": 19.5
   },
   {
    "date": "2026-09-09",
-   "price_per_kg": 23.45
+   "price_per_kg": 19.8
   },
   {
    "date": "2026-09-10",
-   "price_per_kg": 23.05
+   "price_per_kg": 19.5
   },
   {
    "date": "2026-09-11",
-   "price_per_kg": 23.35
+   "price_per_kg": 19.8
   },
   {
    "date": "2026-09-12",
-   "price_per_kg": 24.2
+   "price_per_kg": 20.5
   },
   {
    "date": "2026-09-13",
-   "price_per_kg": 24.35
+   "price_per_kg": 20.6
   },
   {
    "date": "2026-09-14",
@@ -136,23 +136,23 @@
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 25.4
+   "price_per_kg": 21.5
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 25.6
+   "price_per_kg": 21.7
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 25.9
+   "price_per_kg": 21.95
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 26.0
+   "price_per_kg": 22.0
   },
   {
    "date": "2026-09-19",
-   "price_per_kg": 37.55
+   "price_per_kg": 31.75
   }
  ],
  "source": {
@@ -168,17 +168,17 @@
  },
  "stats": {
   "arrivals": "low",
-  "arrivals_ratio": 0.619997,
-  "change30_pct": 0.447013,
-  "change7_pct": 0.542094,
-  "high30_per_kg": 37.55,
-  "high7_per_kg": 37.55,
-  "low30_per_kg": 22.35,
-  "low7_per_kg": 24.35,
+  "arrivals_ratio": 0.620013,
+  "change30_pct": 0.446469,
+  "change7_pct": 0.541262,
+  "high30_per_kg": 31.75,
+  "high7_per_kg": 31.75,
+  "low30_per_kg": 18.9,
+  "low7_per_kg": 20.6,
   "pos30": 1.0,
   "volatility": "high",
-  "volatility_pct": 0.102161,
-  "vs_avg7_pct": 0.367112
+  "volatility_pct": 0.101994,
+  "vs_avg7_pct": 0.365591
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

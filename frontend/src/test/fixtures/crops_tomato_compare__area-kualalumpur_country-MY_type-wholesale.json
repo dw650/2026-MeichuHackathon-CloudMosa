@@ -19,9 +19,9 @@
    {
     "country": "TW",
     "currency": "TWD",
-    "local_per_kg": 38.35,
-    "n_areas": 7,
-    "price_per_kg": 4.9164,
+    "local_per_kg": 57.225,
+    "n_areas": 10,
+    "price_per_kg": 7.3362,
     "reason": null,
     "trade_date": "2026-09-19",
     "type": "wholesale"

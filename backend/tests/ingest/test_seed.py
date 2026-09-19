@@ -11,42 +11,62 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.ingest.seed import sync_seed
 from app.seed.loader import SEED_DIR, load_seed_file, load_seed_files
 
-CATEGORIES = {"cereal", "veg", "fruit", "pulse", "spice", "oil", "other"}
+DEFAULT_CATEGORIES = ["cereal", "veg", "fruit", "pulse", "spice", "oil", "other"]
+TW_CATEGORIES = ["leafy", "root", "gourd", "fruitveg", "spice", "fruit"]
 
 
 def test_seed_files_have_the_expected_areas_and_crops() -> None:
     seeds = {s.country.code: s for s in load_seed_files()}
     assert list(seeds) == ["IN", "TW", "MY"]
     assert len(seeds["IN"].areas) == 11
-    assert len(seeds["TW"].areas) == 10
+    assert len(seeds["TW"].areas) == 13
     assert len(seeds["MY"].areas) == 75
     assert len(seeds["IN"].crops) == 21
-    assert len(seeds["TW"].crops) == 21
+    assert len(seeds["TW"].crops) == 30
     assert len(seeds["MY"].crops) == 21
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
     assert len(nashik.markets) == 10
 
 
-def test_every_crop_category_is_allowed() -> None:
+def test_countries_without_their_own_categories_get_the_default_seven() -> None:
+    seeds = {s.country.code: s for s in load_seed_files()}
+    for code in ("IN", "MY"):
+        assert [c.id for c in seeds[code].country.categories] == DEFAULT_CATEGORIES
+    veg = seeds["IN"].country.categories[1]
+    assert (veg.name, veg.icon, veg.tone) == ({"zh-TW": "蔬菜", "en": "Veg"}, "cabbage", "green")
+
+
+def test_taiwan_has_categories_for_fruit_and_vegetable_markets() -> None:
+    tw = next(s for s in load_seed_files() if s.country.code == "TW")
+    assert [c.id for c in tw.country.categories] == TW_CATEGORIES
+    assert tw.country.categories[0].name == {"zh-TW": "葉菜類", "en": "Leafy"}
+
+
+def test_every_crop_category_is_one_of_its_countrys() -> None:
     for seed in load_seed_files():
-        assert {c.category for c in seed.crops} <= CATEGORIES
+        assert {c.category for c in seed.crops} <= {c.id for c in seed.country.categories}
 
 
 # Malaysia's source reports no grain but wheat flour and nothing for "other" at the wet
 # markets (docs/06 §1.5); those two categories are short on purpose.
 SHORT_CATEGORIES = {"MY": {"cereal": 1, "other": 0}}
+# Malaysia's 蔬菜 grew to ten with brinjal (the cross-country card): the tenth card has no
+# digit key, like any long list (docs/02 §5.3).
+LONG_CATEGORIES = {"MY": {"veg": 10}}
 
 
-def test_every_category_has_at_least_two_crops_in_each_country() -> None:
-    # The home grid shows all seven categories, so none of them should open an empty list.
+def test_every_category_has_two_to_nine_crops_in_each_country() -> None:
+    # The home grid shows every category, so none of them should open an empty list; a list
+    # gives its first nine crops the number keys 1–9.
     for seed in load_seed_files():
         short = SHORT_CATEGORIES.get(seed.country.code, {})
-        counts = {cat: sum(c.category == cat for c in seed.crops) for cat in CATEGORIES}
-        for cat, count in counts.items():
-            if cat in short:
-                assert count == short[cat], (seed.country.code, cat, count)
+        most = LONG_CATEGORIES.get(seed.country.code, {})
+        for cat in seed.country.categories:
+            count = sum(c.category == cat.id for c in seed.crops)
+            if cat.id in short:
+                assert count == short[cat.id], (seed.country.code, cat.id, count)
             else:
-                assert count >= 2, (seed.country.code, cat, count)
+                assert 2 <= count <= most.get(cat.id, 9), (seed.country.code, cat.id, count)
 
 
 def test_default_watchlists_match_the_spec() -> None:
@@ -110,6 +130,88 @@ def test_a_country_starts_on_wholesale_unless_it_says_otherwise(tmp_path: Path) 
         load_seed_file(_write(tmp_path, data))
 
 
+def test_a_crop_may_only_use_a_category_of_its_country(tmp_path: Path) -> None:
+    data = _raw("TW")
+    data["crops"][0]["category"] = "cereal"  # one of the default seven, but not Taiwan's
+    with pytest.raises(ValidationError, match="category"):
+        load_seed_file(_write(tmp_path, data))
+
+
+def _category(cat_id: str) -> dict[str, Any]:
+    return {"id": cat_id, "name": {"zh-TW": "類", "en": "Kind"}, "icon": "box", "tone": "slate"}
+
+
+@pytest.mark.parametrize(
+    ("categories", "message"),
+    [
+        ([_category("leafy"), _category("leafy")], "duplicate"),
+        ([_category("recent")], "reserved"),
+        ([_category("all")], "reserved"),
+        ([_category("intl")], "reserved"),
+        ([_category(f"c{i}") for i in range(8)], "at most 7"),
+        ([{**_category("x"), "tone": "pink"}], "tone"),
+        ([{**_category("x"), "name": {"en": "Kind"}}], "missing translations"),
+    ],
+)
+def test_bad_category_lists_are_rejected(
+    tmp_path: Path, categories: list[dict[str, Any]], message: str
+) -> None:
+    data = _raw("TW")
+    data["country"]["categories"] = categories
+    with pytest.raises(ValidationError, match=message):
+        load_seed_file(_write(tmp_path, data))
+
+
+def test_a_market_distance_comes_from_its_coordinates(tmp_path: Path) -> None:
+    tw = next(s for s in load_seed_files() if s.country.code == "TW")
+    taipei = next(a for a in tw.areas if a.id == "taipei")
+    # Taipei 2 (民族東路 336) is about 4 km from the city's centre.
+    assert [m.distance_km(taipei) for m in taipei.markets] == [7, 4]
+    data = _raw("TW")
+    market = data["areas"][0]["markets"][0]
+    market["km"] = 3  # a distance and coordinates at the same time
+    with pytest.raises(ValidationError, match="km or lat/lon"):
+        load_seed_file(_write(tmp_path, data))
+    data = _raw("TW")
+    del data["areas"][0]["markets"][0]["lon"]
+    with pytest.raises(ValidationError, match="lat and lon"):
+        load_seed_file(_write(tmp_path, data))
+
+
+def test_taiwan_lists_every_fruit_and_vegetable_market_of_farmtransdata() -> None:
+    """The 19 markets of FarmTransData that trade fruit and vegetables (2026-07 to 09), each in
+    its county; counties without a market are not areas (docs/06 §7.2)."""
+    tw = next(s for s in load_seed_files() if s.country.code == "TW")
+    maps = tw.source_maps["tw_moa"]
+    area_of = {m.id: a.id for a in tw.areas for m in a.markets}
+    assert {m.source_market: area_of[m.market] for m in maps.markets} == {
+        "台北一": "taipei",
+        "台北二": "taipei",
+        "三重區": "newtaipei",
+        "板橋區": "newtaipei",
+        "桃農": "taoyuan",
+        "台中市": "taichung",
+        "豐原區": "taichung",
+        "東勢鎮": "taichung",
+        "溪湖鎮": "changhua",
+        "永靖鄉": "changhua",
+        "南投市": "nantou",
+        "西螺鎮": "yunlin",
+        "嘉義市": "chiayi",
+        "高雄市": "kaohsiung",
+        "鳳山區": "kaohsiung",
+        "屏東市": "pingtung",
+        "宜蘭市": "yilan",
+        "花蓮市": "hualien",
+        "台東市": "taitung",
+    }
+    assert all(a.markets for a in tw.areas)
+    assert all(m.lat is not None and m.km is None for a in tw.areas for m in a.markets)
+    # The demo prints the same market names, and every crop has a real product.
+    assert tw.source_maps["mock"].markets == maps.markets
+    assert {m.crop for m in maps.crops} == {c.id for c in tw.crops}
+
+
 def test_references_to_unknown_ids_are_rejected(tmp_path: Path) -> None:
     data = _raw("TW")
     data["source_maps"]["mock"]["markets"].append({"source_market": "X", "market": "nowhere"})
@@ -143,9 +245,9 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     await sync_seed(session)
     assert await _counts(session) == first
     assert first["countries"] == 3
-    assert first["areas"] == 96
-    assert first["crops"] == 63
-    assert first["markets"] == 52
+    assert first["areas"] == 99
+    assert first["crops"] == 72
+    assert first["markets"] == 57
 
 
 async def test_every_market_belongs_to_an_existing_area(session: AsyncSession) -> None:
@@ -171,6 +273,17 @@ async def test_sync_stores_country_settings(session: AsyncSession) -> None:
         text("SELECT default_price_type FROM countries WHERE code = 'MY'")
     )
     assert retail.scalar_one() == "retail"
+
+
+async def test_sync_stores_categories_and_market_distances(session: AsyncSession) -> None:
+    await sync_seed(session)
+    rows = await session.execute(text("SELECT code, categories FROM countries ORDER BY sort"))
+    categories = {code: [c["id"] for c in cats] for code, cats in rows.tuples().all()}
+    assert categories == {"IN": DEFAULT_CATEGORIES, "TW": TW_CATEGORIES, "MY": DEFAULT_CATEGORIES}
+    km = await session.execute(
+        text("SELECT id, km_from_center FROM markets WHERE id IN ('tp2', 'lasalgaon')")
+    )
+    assert dict(km.tuples().all()) == {"tp2": 4, "lasalgaon": 32}
 
 
 async def test_sync_removes_entities_dropped_from_the_seed(

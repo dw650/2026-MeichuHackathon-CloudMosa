@@ -5,7 +5,7 @@ import type { Crop } from '@/api/queries'
 import { useNav } from '@/app/navigation'
 import { type HomeTab, paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
-import { CATEGORY_ICON, CATEGORY_IDS, CATEGORY_TONE } from '@/components/categories'
+import { INTL_TILE, RECENT_CATEGORY } from '@/components/categories'
 import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { FxNote } from '@/screens/shared/FxNote'
@@ -33,20 +33,21 @@ import { cropListIds, cropOf, leadingItems, okAction, RETRY_ID, useOpenCrop } fr
 import { useAreaPrices } from './useAreaPrices'
 
 const CATEGORY_PREFIX = 'cat:'
-const GRID_IDS = CATEGORY_IDS.map((id) => CATEGORY_PREFIX + id)
 /** The only item of an empty watchlist: switches to 全部作物. */
 const BROWSE_ID = 'action:browse'
 
 /**
  * Home (F02, docs/02 §5.2): my area's prices in two tabs, 關注 (the watchlist's crop cards)
- * and 全部作物 (the 3×3 category grid laid out like keys 1–9). ◀ ▶ switch tabs in place,
+ * and 全部作物 (the country's categories, 國際參考價 and 「最近」 in a 3×3 grid laid out like
+ * keys 1–9, category names from the API); ▶ on the last column goes on to the 新聞 tab
+ * (`/news`). ◀ ▶ switch tabs in place,
  * `*` switches wholesale ⇄ retail, `#` opens the change-area panel.
  */
 export default function HomeScreen() {
   const nav = useNav()
   const [params] = useSearchParams()
   const tab: HomeTab = params.get('tab') === 'all' ? 'all' : 'watch'
-  const { t, lang, dates } = useText()
+  const { t, lang, pick, dates } = useText()
   const data = useCountryData()
   const format = usePriceFormat()
   const estimate = useEstimate()
@@ -61,7 +62,25 @@ export default function HomeScreen() {
   const crops = watchlist.map((id) => data.crop(id)).filter((crop): crop is Crop => !!crop)
   const empty = prices.status === 'ready' && crops.length === 0
   const watchIds = empty ? [BROWSE_ID] : cropListIds(crops, prices)
+  // The country's categories, then 國際參考價 and 「最近」; nothing until the categories are
+  // known, so the focus starts on the first category.
+  const gridItems = (
+    data.country
+      ? [
+          ...data.categories.map((cat) => ({
+            id: cat.id,
+            label: pick(cat.name),
+            icon: cat.icon,
+            tone: cat.tone,
+            to: paths.category(cat.id),
+          })),
+          { ...INTL_TILE, label: t('categories.intl'), to: paths.intl() },
+          { ...RECENT_CATEGORY, label: t('categories.recent'), to: paths.category('recent') },
+        ]
+      : []
+  ).map((item, i) => ({ ...item, focusId: CATEGORY_PREFIX + item.id, keyCap: i + 1 }))
   const toWatch = () => nav.switchTab(paths.home('watch'))
+  const toNews = () => nav.switchTab(paths.news())
   const toAll = () => nav.switchTab(paths.home('all'))
 
   const list = useFocusList(tab === 'watch' ? watchIds : [], {
@@ -75,11 +94,15 @@ export default function HomeScreen() {
       else if (id === BROWSE_ID) toAll()
     },
   })
-  const grid = useGrid(tab === 'all' ? GRID_IDS : [], 3, {
+  const grid = useGrid(tab === 'all' ? gridItems.map((item) => item.focusId) : [], 3, {
     root: gridRoot,
     active: tab === 'all' && !nav.sheet,
-    onActivate: (id) => nav.open(paths.category(id.slice(CATEGORY_PREFIX.length))),
+    onActivate: (id) => {
+      const item = gridItems.find((cell) => cell.focusId === id)
+      if (item) nav.open(item.to)
+    },
     onLeftEdge: toWatch,
+    onRightEdge: toNews,
   })
   useKeys({
     ...(tab === 'all' ? grid.keys : { ...list.keys, onRight: toAll }),
@@ -134,20 +157,13 @@ export default function HomeScreen() {
         tabs={[
           { id: 'watch', label: t('home.tabs.watch') },
           { id: 'all', label: t('home.tabs.all') },
+          { id: 'news', label: t('news.title') },
         ]}
         activeId={tab}
       />
       {tab === 'all' ? (
         <div ref={gridRoot}>
-          <IconGrid
-            items={CATEGORY_IDS.map((id, i) => ({
-              focusId: CATEGORY_PREFIX + id,
-              label: t(`categories.${id}`),
-              icon: CATEGORY_ICON[id],
-              tone: CATEGORY_TONE[id],
-              keyCap: i + 1,
-            }))}
-          />
+          <IconGrid items={gridItems} />
         </div>
       ) : (
         <div ref={listRoot}>

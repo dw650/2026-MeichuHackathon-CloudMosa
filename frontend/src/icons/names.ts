@@ -1,8 +1,9 @@
 // Icon names (docs/03 §8). The artwork is in crops.tsx and ui.tsx; the names live here so
 // screens and the debug page can list them without importing any JSX.
 
-/** Crop illustrations. `box`, `gridc` and `clockc` stand for the categories other, all and
- *  recent; the other categories reuse a representative crop (see components/categories.ts). */
+/** Crop illustrations. `box`, `globec` and `clockc` stand for the category 其他 and the home
+ *  grid's 國際參考價 and 「最近」 tiles (`gridc` was 全部, no longer shown); the other categories
+ *  reuse a representative crop (API `categories[].icon`). */
 export const CROP_ICON_IDS = [
   'onion',
   'tomato',
@@ -43,9 +44,18 @@ export const CROP_ICON_IDS = [
   'lime',
   'calamansi',
   'coconut',
+  'napacabbage',
+  'taro',
+  'loofah',
+  'bittergourd',
+  'greenpepper',
+  'dragonfruit',
+  'passionfruit',
+  'papaya',
   'oil',
   'box',
   'gridc',
+  'globec',
   'clockc',
 ] as const
 

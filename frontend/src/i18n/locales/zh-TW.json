@@ -103,19 +103,10 @@
     "about": "關於與資料說明",
     "settings": "設定",
     "addWatch": "加入關注",
-    "removeWatch": "取消關注",
-    "intl": "國際參考價",
-    "news": "新聞"
+    "removeWatch": "取消關注"
   },
   "categories": {
-    "cereal": "穀物",
-    "veg": "蔬菜",
-    "fruit": "水果",
-    "pulse": "豆類",
-    "spice": "香料",
-    "oil": "油籽",
-    "other": "其他",
-    "all": "全部",
+    "intl": "國際價",
     "recent": "最近"
   },
   "setup": {

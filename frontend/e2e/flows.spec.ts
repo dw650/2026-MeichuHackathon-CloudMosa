@@ -193,16 +193,16 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   await expect.poll(() => focusedId(page)).toBe('nearby-low')
 })
 
-test('international prices by key only: menu → list → a series → back', async ({
+test('international prices by key only: grid tile → list → a series → back', async ({
   page,
   errors,
 }) => {
   await seed(page, { country: 'TW', lang: 'zh-TW' })
   await page.goto('/')
   await step(page, errors, /^\/$/)
-  await press(page, 'Escape')
-  await step(page, errors, /sheet=menu/)
-  await press(page, '6') // 國際參考價, after the baseline rows
+  await press(page, 'ArrowRight') // 全部作物
+  await step(page, errors, /tab=all/)
+  await press(page, '7') // 國際價, after Taiwan's six categories
   await step(page, errors, /^\/intl$/)
   await press(page, 'Enter') // the first series
   await step(page, errors, /^\/intl\/rice$/)
@@ -215,18 +215,21 @@ test('international prices by key only: menu → list → a series → back', as
   await step(page, errors, /^\/intl\/sugar$/)
   await page.goBack()
   await step(page, errors, /^\/intl$/)
+  // Back to the grid: switching tabs replaced the home entry, so 關注 is not in the history.
   await page.goBack()
-  await step(page, errors, /^\/$/)
+  await step(page, errors, /tab=all/)
 })
 
-test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async ({ page, errors }) => {
+test('news by key: home tab → an item → 1 (its crop) → back', async ({ page, errors }) => {
   await seed(page, { country: 'TW', lang: 'zh-TW' })
   await waitForNews(page, 'TW', 'taipei')
   await page.goto('/')
   await step(page, errors, /^\/$/)
-  await press(page, 'Escape')
-  await step(page, errors, /sheet=menu/)
-  await press(page, '7') // 新聞, after 國際參考價
+  await press(page, 'ArrowRight') // 全部作物
+  await step(page, errors, /tab=all/)
+  await press(page, 'ArrowRight') // 新聞 (the grid's last column)
+  await press(page, 'ArrowRight')
+  await press(page, 'ArrowRight')
   await step(page, errors, /^\/news$/)
   // The newest item is about guava; the list is chronological, not my area first.
   await press(page, 'Enter')
@@ -243,6 +246,8 @@ test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async
   await step(page, errors, /^\/news\/\d+$/)
   expect(where(page)).not.toBe(item)
   await page.goBack()
-  await page.goBack()
-  await step(page, errors, /^\/$/)
+  await step(page, errors, /^\/news$/)
+  // ◀ goes back to 全部作物 in place, like the other tabs.
+  await press(page, 'ArrowLeft')
+  await step(page, errors, /tab=all/)
 })

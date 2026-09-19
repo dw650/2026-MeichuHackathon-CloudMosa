@@ -26,10 +26,12 @@ countries:
       sweetpotato: [地瓜, 番薯]
       scallion: [三星蔥]
       waterspinach: [蕹菜]
-      rice: [白米, 稻穀, 公糧]
+      napacabbage: [大白菜, 結球白菜]
+      cucumber: [花胡瓜]
+      greenpepper: [青椒]
+      dragonfruit: [火龍果]
       guava: [番石榴]
       garlic: [大蒜]
-      peanut: [花生]
     area_aliases:
       # Wholesale markets and companies named in headlines.
       taipei: [北農]

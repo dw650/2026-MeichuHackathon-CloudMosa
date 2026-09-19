@@ -10,6 +10,7 @@ import { StatusBox } from '@/components/StatusBox/StatusBox'
 import { Tile } from '@/components/Tile/Tile'
 import { UiIcon } from '@/icons/ui'
 import { describeFreshness, type Freshness, formatTime } from '@/lib/dates'
+import { useCountryData } from '@/screens/shared/useCountryData'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { useText } from '@/screens/shared/useText'
 
@@ -66,6 +67,7 @@ interface CropCardsProps {
 function CropCards({ crops, prices }: CropCardsProps) {
   const format = usePriceFormat()
   const { t, pick, dates } = useText()
+  const { toneOf } = useCountryData()
 
   const metaOf = (crop: Crop, item: PriceItem | undefined): ReactNode => {
     if (item?.price_per_kg == null) {
@@ -93,7 +95,7 @@ function CropCards({ crops, prices }: CropCardsProps) {
         lead={
           <CropIcon
             crop={crop.id}
-            category={crop.category}
+            tone={toneOf(crop.category)}
             keyCap={index < DIGIT_KEYS ? index + 1 : undefined}
           />
         }
@@ -132,6 +134,7 @@ function LoadingStatus({ areaName }: { areaName: string }) {
 /** Static, not selectable placeholders (no blinking, docs/03 §4). */
 function SkeletonCards({ crops }: { crops: readonly Crop[] }) {
   const { pick } = useText()
+  const { toneOf } = useCountryData()
   if (crops.length === 0) {
     return Array.from({ length: SKELETON_CARDS - 1 }, (_, i) => (
       <Card key={i} name={<Skeleton width={64} />} loading />
@@ -142,7 +145,7 @@ function SkeletonCards({ crops }: { crops: readonly Crop[] }) {
     .map((crop) => (
       <Card
         key={crop.id}
-        lead={<CropIcon crop={crop.id} category={crop.category} />}
+        lead={<CropIcon crop={crop.id} tone={toneOf(crop.category)} />}
         name={pick(crop.name)}
         loading
       />

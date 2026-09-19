@@ -60,6 +60,7 @@ async def list_countries(session: AsyncSession, now: datetime) -> list[dict[str,
             "estimated_price_types": c.estimated_price_types,
             "units": c.units,
             "default_price_type": c.default_price_type,
+            "categories": c.categories,
         }
         for c in await repo.get_countries(session)
     ]

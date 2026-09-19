@@ -13,7 +13,7 @@ export interface paths {
         };
         /**
          * Countries and their settings
-         * @description Currency, locale, local today, closed weekdays (ISO, 7 = Sunday), rise colour (`up_is_pos`: rising prices shown green), default area, recent areas and watchlist, and the unit table (per-kg factor and decimals) for wholesale and retail. `fx` carries the exchange rate of every currency the app can show prices in (`price / per_usd_from * per_usd_to`); a currency without a rate is left out.
+         * @description Currency, locale, local today, closed weekdays (ISO, 7 = Sunday), rise colour (`up_is_pos`: rising prices shown green), default area, recent areas and watchlist, the unit table (per-kg factor and decimals) for wholesale and retail, and the crop categories of the home grid in order (at most 8; crops carry their `id`).
          */
         get: operations["countries"];
         put?: never;
@@ -317,6 +317,22 @@ export interface components {
             today: string;
         };
         /**
+         * CategoryOut
+         * @description A tile of the home grid (docs/02 §5.2): crops carry its `id` as their `category`.
+         */
+        CategoryOut: {
+            /** Icon */
+            icon: string;
+            /** Id */
+            id: string;
+            name: components["schemas"]["I18nText"];
+            /**
+             * Tone
+             * @enum {string}
+             */
+            tone: "green" | "orange" | "amber" | "red" | "olive" | "yellow" | "slate" | "blue" | "purple";
+        };
+        /**
          * ChangeOut
          * @description Latest vs the previous trading day with data; |pct| < 0.05% is flat.
          */
@@ -389,12 +405,12 @@ export interface components {
         CountriesOut: {
             /** Countries */
             countries: components["schemas"]["CountryOut"][];
-            /** Fx */
-            fx: components["schemas"]["FxRateOut"][];
         };
         /** CountryOut */
         CountryOut: {
             area_suffix: components["schemas"]["I18nText"];
+            /** Categories */
+            categories: components["schemas"]["CategoryOut"][];
             /** Closed Weekdays */
             closed_weekdays: number[];
             /** Code */
@@ -413,11 +429,6 @@ export interface components {
             default_recent_area_ids: string[];
             /** Default Watch */
             default_watch: string[];
-            /**
-             * Estimated Price Types
-             * @description Price types no source of this country reports, estimated from the other one (docs/06 §3.6). Every screen showing such a price must say it is an estimate.
-             */
-            estimated_price_types: string[];
             /** Locale */
             locale: string;
             name: components["schemas"]["I18nText"];
@@ -440,11 +451,6 @@ export interface components {
             category: string;
             /** Default Watch */
             default_watch: boolean;
-            /**
-             * Estimate Ratio
-             * @description What the estimated price type of this country is multiplied by for this crop (null when nothing is estimated), so a screen can name the ratio it shows.
-             */
-            estimate_ratio: number | null;
             /** Has Retail */
             has_retail: boolean;
             /** Id */
@@ -485,21 +491,6 @@ export interface components {
              * Rate Date
              * Format: date
              * @description The rate's day as published by the provider (UTC).
-             */
-            rate_date: string;
-        };
-        /**
-         * FxRateOut
-         * @description Units of the currency for one US dollar, on the provider's day (bonus B5).
-         */
-        FxRateOut: {
-            /** Currency */
-            currency: string;
-            /** Per Usd */
-            per_usd: number;
-            /**
-             * Rate Date
-             * Format: date
              */
             rate_date: string;
         };
@@ -1267,6 +1258,7 @@ export interface components {
 }
 export type SchemaAreaOut = components['schemas']['AreaOut'];
 export type SchemaAreasOut = components['schemas']['AreasOut'];
+export type SchemaCategoryOut = components['schemas']['CategoryOut'];
 export type SchemaChangeOut = components['schemas']['ChangeOut'];
 export type SchemaCompareOut = components['schemas']['CompareOut'];
 export type SchemaCompareRowOut = components['schemas']['CompareRowOut'];
@@ -1277,7 +1269,6 @@ export type SchemaCropsOut = components['schemas']['CropsOut'];
 export type SchemaErrorBody = components['schemas']['ErrorBody'];
 export type SchemaErrorOut = components['schemas']['ErrorOut'];
 export type SchemaFxOut = components['schemas']['FxOut'];
-export type SchemaFxRateOut = components['schemas']['FxRateOut'];
 export type SchemaHealthOut = components['schemas']['HealthOut'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaI18nText = components['schemas']['I18nText'];
@@ -1339,6 +1330,26 @@ export interface operations {
                      *             "en": " district",
                      *             "zh-TW": " 縣"
                      *           },
+                     *           "categories": [
+                     *             {
+                     *               "icon": "wheat",
+                     *               "id": "cereal",
+                     *               "name": {
+                     *                 "en": "Cereals",
+                     *                 "zh-TW": "穀物"
+                     *               },
+                     *               "tone": "amber"
+                     *             },
+                     *             {
+                     *               "icon": "cabbage",
+                     *               "id": "veg",
+                     *               "name": {
+                     *                 "en": "Veg",
+                     *                 "zh-TW": "蔬菜"
+                     *               },
+                     *               "tone": "green"
+                     *             }
+                     *           ],
                      *           "closed_weekdays": [
                      *             7
                      *           ],
@@ -1423,18 +1434,6 @@ export interface operations {
                      *           },
                      *           "up_is_pos": true,
                      *           "utc_offset_min": 330
-                     *         }
-                     *       ],
-                     *       "fx": [
-                     *         {
-                     *           "currency": "INR",
-                     *           "per_usd": 95.989567,
-                     *           "rate_date": "2026-09-19"
-                     *         },
-                     *         {
-                     *           "currency": "USD",
-                     *           "per_usd": 1,
-                     *           "rate_date": "2026-09-19"
                      *         }
                      *       ]
                      *     }

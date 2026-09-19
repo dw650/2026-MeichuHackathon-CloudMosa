@@ -77,6 +77,44 @@
    }
   },
   {
+   "has_retail": true,
+   "id": "changhua",
+   "lat": 24.08,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.54,
+   "name": {
+    "en": "Changhua",
+    "zh-TW": "彰化縣"
+   },
+   "region": {
+    "en": "Central",
+    "zh-TW": "中部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "nantou",
+   "lat": 23.91,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.68,
+   "name": {
+    "en": "Nantou",
+    "zh-TW": "南投縣"
+   },
+   "region": {
+    "en": "Central",
+    "zh-TW": "中部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
    "has_retail": false,
    "id": "yunlin",
    "lat": 23.8,
@@ -188,6 +226,25 @@
    "staleness": {
     "days": null,
     "state": "none"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "taitung",
+   "lat": 22.76,
+   "latest_trade_date": "2026-09-19",
+   "lon": 121.14,
+   "name": {
+    "en": "Taitung",
+    "zh-TW": "台東縣"
+   },
+   "region": {
+    "en": "East",
+    "zh-TW": "東部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
    }
   }
  ],

@@ -7,6 +7,16 @@
   "fx_date": "2026-09-19",
   "rows": [
    {
+    "country": "TW",
+    "currency": "TWD",
+    "local_per_kg": 21.7,
+    "n_areas": 10,
+    "price_per_kg": 65.4321,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   },
+   {
     "country": "MY",
     "currency": "MYR",
     "local_per_kg": 3.6,

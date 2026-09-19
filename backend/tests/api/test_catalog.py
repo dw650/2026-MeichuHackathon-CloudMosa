@@ -28,6 +28,31 @@ async def test_countries_lists_every_country_with_its_settings(api: httpx.AsyncC
     }
     assert taiwan["up_is_pos"] is False
     assert taiwan["units"]["retail"]["default"] == "kg"
+    # The home grid's categories: Taiwan's own, the default seven elsewhere.
+    assert [c["id"] for c in taiwan["categories"]] == [
+        "leafy",
+        "root",
+        "gourd",
+        "fruitveg",
+        "spice",
+        "fruit",
+    ]
+    assert taiwan["categories"][0] == {
+        "id": "leafy",
+        "name": {"zh-TW": "葉菜類", "en": "Leafy"},
+        "icon": "cabbage",
+        "tone": "green",
+    }
+    assert [c["id"] for c in india["categories"]] == [
+        "cereal",
+        "veg",
+        "fruit",
+        "pulse",
+        "spice",
+        "oil",
+        "other",
+    ]
+    assert india["categories"] == malaysia["categories"]
     assert malaysia["name"] == {"zh-TW": "馬來西亞", "en": "Malaysia"}
     assert (malaysia["currency"], malaysia["locale"], malaysia["up_is_pos"]) == (
         "MYR",
@@ -91,10 +116,10 @@ async def test_crops_list_names_categories_and_retail(api: httpx.AsyncClient) ->
     res = await api.get("/api/v1/countries/TW/crops")
     assert res.status_code == 200
     crops = {c["id"]: c for c in res.json()["crops"]}
-    assert len(crops) == 21
+    assert len(crops) == 30
     assert crops["cabbage"]["name"] == {"zh-TW": "甘藍", "en": "Cabbage"}
     assert crops["cabbage"]["variety"] == {"zh-TW": "初秋", "en": "Early autumn"}
-    assert (crops["cabbage"]["category"], crops["cabbage"]["default_watch"]) == ("veg", True)
+    assert (crops["cabbage"]["category"], crops["cabbage"]["default_watch"]) == ("leafy", True)
     assert crops["cauliflower"]["has_retail"] is False
 
 

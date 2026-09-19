@@ -33,6 +33,7 @@ async def _sync_one(session: AsyncSession, seed: SeedFile) -> None:
             "source_label": c.source_label,
             "units": c.units.model_dump(),
             "default_price_type": c.default_price_type,
+            "categories": [cat.model_dump() for cat in c.categories],
         },
     )
     await catalog.upsert_areas(
@@ -54,7 +55,13 @@ async def _sync_one(session: AsyncSession, seed: SeedFile) -> None:
     await catalog.upsert_markets(
         session,
         [
-            {"id": m.id, "area_id": a.id, "name": m.name, "km_from_center": m.km, "sort": i}
+            {
+                "id": m.id,
+                "area_id": a.id,
+                "name": m.name,
+                "km_from_center": m.distance_km(a),
+                "sort": i,
+            }
             for a in seed.areas
             for i, m in enumerate(a.markets, start=1)
         ],

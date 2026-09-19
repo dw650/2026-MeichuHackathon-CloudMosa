@@ -5,6 +5,71 @@
     "en": " district",
     "zh-TW": " 縣"
    },
+   "categories": [
+    {
+     "icon": "wheat",
+     "id": "cereal",
+     "name": {
+      "en": "Cereals",
+      "zh-TW": "穀物"
+     },
+     "tone": "amber"
+    },
+    {
+     "icon": "cabbage",
+     "id": "veg",
+     "name": {
+      "en": "Veg",
+      "zh-TW": "蔬菜"
+     },
+     "tone": "green"
+    },
+    {
+     "icon": "mango",
+     "id": "fruit",
+     "name": {
+      "en": "Fruit",
+      "zh-TW": "水果"
+     },
+     "tone": "orange"
+    },
+    {
+     "icon": "soybean",
+     "id": "pulse",
+     "name": {
+      "en": "Pulses",
+      "zh-TW": "豆類"
+     },
+     "tone": "olive"
+    },
+    {
+     "icon": "chilli",
+     "id": "spice",
+     "name": {
+      "en": "Spices",
+      "zh-TW": "香料"
+     },
+     "tone": "red"
+    },
+    {
+     "icon": "oil",
+     "id": "oil",
+     "name": {
+      "en": "Oilseed",
+      "zh-TW": "油籽"
+     },
+     "tone": "yellow"
+    },
+    {
+     "icon": "box",
+     "id": "other",
+     "name": {
+      "en": "Other",
+      "zh-TW": "其他"
+     },
+     "tone": "slate"
+    }
+   ],
    "closed_weekdays": [
     7
    ],
@@ -101,13 +166,69 @@
     "en": "",
     "zh-TW": ""
    },
+   "categories": [
+    {
+     "icon": "cabbage",
+     "id": "leafy",
+     "name": {
+      "en": "Leafy",
+      "zh-TW": "葉菜類"
+     },
+     "tone": "green"
+    },
+    {
+     "icon": "sweetpotato",
+     "id": "root",
+     "name": {
+      "en": "Roots",
+      "zh-TW": "根莖類"
+     },
+     "tone": "amber"
+    },
+    {
+     "icon": "loofah",
+     "id": "gourd",
+     "name": {
+      "en": "Gourds",
+      "zh-TW": "瓜類"
+     },
+     "tone": "olive"
+    },
+    {
+     "icon": "eggplant",
+     "id": "fruitveg",
+     "name": {
+      "en": "Veg",
+      "zh-TW": "花果菜類"
+     },
+     "tone": "yellow"
+    },
+    {
+     "icon": "chilli",
+     "id": "spice",
+     "name": {
+      "en": "Spices",
+      "zh-TW": "辛香料"
+     },
+     "tone": "red"
+    },
+    {
+     "icon": "pineapple",
+     "id": "fruit",
+     "name": {
+      "en": "Fruit",
+      "zh-TW": "水果"
+     },
+     "tone": "orange"
+    }
+   ],
    "closed_weekdays": [
     1
    ],
    "code": "TW",
    "coverage": {
-    "en": "10 cities/counties",
-    "zh-TW": "10 個縣市"
+    "en": "13 cities/counties",
+    "zh-TW": "13 個縣市"
    },
    "currency": "TWD",
    "default_area_id": "taipei",
@@ -196,6 +317,71 @@
     "en": "",
     "zh-TW": ""
    },
+   "categories": [
+    {
+     "icon": "wheat",
+     "id": "cereal",
+     "name": {
+      "en": "Cereals",
+      "zh-TW": "穀物"
+     },
+     "tone": "amber"
+    },
+    {
+     "icon": "cabbage",
+     "id": "veg",
+     "name": {
+      "en": "Veg",
+      "zh-TW": "蔬菜"
+     },
+     "tone": "green"
+    },
+    {
+     "icon": "mango",
+     "id": "fruit",
+     "name": {
+      "en": "Fruit",
+      "zh-TW": "水果"
+     },
+     "tone": "orange"
+    },
+    {
+     "icon": "soybean",
+     "id": "pulse",
+     "name": {
+      "en": "Pulses",
+      "zh-TW": "豆類"
+     },
+     "tone": "olive"
+    },
+    {
+     "icon": "chilli",
+     "id": "spice",
+     "name": {
+      "en": "Spices",
+      "zh-TW": "香料"
+     },
+     "tone": "red"
+    },
+    {
+     "icon": "oil",
+     "id": "oil",
+     "name": {
+      "en": "Oilseed",
+      "zh-TW": "油籽"
+     },
+     "tone": "yellow"
+    },
+    {
+     "icon": "box",
+     "id": "other",
+     "name": {
+      "en": "Other",
+      "zh-TW": "其他"
+     },
+     "tone": "slate"
+    }
+   ],
    "closed_weekdays": [],
    "code": "MY",
    "coverage": {

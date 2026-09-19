@@ -6,19 +6,19 @@ import { CropIcon } from './CropIcon'
 const tile = (container: HTMLElement) => container.firstElementChild
 
 describe('CropIcon', () => {
-  it('colours the tile by the crop category', () => {
-    const { container } = render(<CropIcon crop="onion" category="veg" />)
+  it("colours the tile by the crop category's tone", () => {
+    const { container } = render(<CropIcon crop="onion" tone="green" />)
     expect(tile(container)).toHaveAttribute('data-tone', 'green')
     expect(container.querySelector('svg')).toBeInTheDocument()
   })
 
-  it('uses the "other" colour when the category is unknown', () => {
-    const { container } = render(<CropIcon crop="durian" category="exotic" />)
+  it('uses the "other" colour without a tone', () => {
+    const { container } = render(<CropIcon crop="durian" />)
     expect(tile(container)).toHaveAttribute('data-tone', 'slate')
   })
 
   it('draws the number key cap on the tile', () => {
-    render(<CropIcon crop="onion" category="veg" keyCap={1} />)
+    render(<CropIcon crop="onion" tone="green" keyCap={1} />)
     expect(screen.getByText('1').tagName).toBe('KBD')
   })
 })

@@ -1,18 +1,11 @@
 """Comparison helpers (docs/06 §4): straight-line distance, price ranks and differences."""
 
 from dataclasses import dataclass
-from math import asin, cos, radians, sin, sqrt
 
-EARTH_RADIUS_KM = 6371
+# Re-exported: the services have always taken the distance from here.
+from app.geo import haversine_km as haversine_km
+
 PRICE_DECIMALS = 4  # prices are stored as numeric(12,4)
-
-
-def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> int:
-    """Great-circle distance between two centres, rounded to whole kilometres."""
-    d_lat = radians(lat2 - lat1)
-    d_lon = radians(lon2 - lon1)
-    h = sin(d_lat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(d_lon / 2) ** 2
-    return round(2 * EARTH_RADIUS_KM * asin(sqrt(h)))
 
 
 def competition_ranks(prices: dict[str, float | None]) -> dict[str, int | None]:

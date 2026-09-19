@@ -5,15 +5,19 @@ import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
 import { Card, CardList } from '@/components/Card/Card'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { NewsCard } from '@/components/NewsCard/NewsCard'
 import { Shell } from '@/components/Shell/Shell'
 import { Skeleton } from '@/components/Skeleton/Skeleton'
 import { StatusBox } from '@/components/StatusBox/StatusBox'
+import { Tabs } from '@/components/Tabs/Tabs'
 import { Tile } from '@/components/Tile/Tile'
 import { useFocusList } from '@/focus/useFocusList'
 import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
 import { formatDateTime, formatTime } from '@/lib/dates'
+import { AreaSheet, sheetSoftKeys } from '@/screens/shared/AreaSheet'
+import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -24,9 +28,10 @@ import { dayLabel, newsFocusId, newsIdOf, RETRY_ID } from './newsItems'
 const DIGIT_KEYS = 9
 
 /**
- * 新聞 (docs/02 §5.9): farm price news of my country, the newest first. OK or 1–9 opens an
- * item; the right soft key goes back. The info bar shows my area and when the news was
- * fetched; each card shows its date.
+ * 新聞 (docs/02 §5.9), the home screen's third tab: farm price news of my country, the newest
+ * first. ◀ goes back to 全部作物 in place (tabs replace the history entry), OK or 1–9 opens an
+ * item, `#` changes my area and the left soft key opens the menu. The info bar shows my area
+ * and when the news was fetched; each card shows its date.
  */
 export default function NewsListScreen() {
   const nav = useNav()
@@ -50,13 +55,19 @@ export default function NewsListScreen() {
   const focus = useFocusList(ids, {
     root,
     digitOffset: old ? 1 : 0,
+    active: !nav.sheet,
     onActivate: (id) => {
       const newsId = newsIdOf(id)
       if (newsId !== null) nav.open(paths.newsItem(newsId))
       else void news.refetch()
     },
   })
-  useKeys(focus.keys)
+  useKeys({
+    ...focus.keys,
+    onLeft: () => nav.switchTab(paths.home('all')),
+    onHash: () => nav.openSheet('area'),
+    onMenu: () => nav.openSheet('menu'),
+  })
 
   const areaName = areaLabel(data.myArea, data.country, lang) || (areaId ?? '')
   const metaOf = (item: NewsItem) => {
@@ -131,13 +142,29 @@ export default function NewsListScreen() {
     )
   }
 
+  const overlay =
+    nav.sheet === 'menu' ? (
+      <MenuSheet areaFor="home" />
+    ) : nav.sheet === 'area' ? (
+      <AreaSheet areaFor="home" currentAreaId={areaId ?? ''} />
+    ) : null
+
   return (
-    <Shell title={t('news.title')} softKeys={{ left: '', center, right: t('softkeys.back') }}>
+    <Shell
+      title={t('news.title')}
+      softKeys={
+        nav.sheet
+          ? sheetSoftKeys(t)
+          : { left: t('softkeys.menu'), center, right: t('softkeys.exit') }
+      }
+      overlay={overlay}
+    >
       <InfoBar
         left={
           <>
             <UiIcon name="pin" />
             <b>{areaName}</b>
+            <KeyCap>#</KeyCap>
           </>
         }
         right={
@@ -148,6 +175,14 @@ export default function NewsListScreen() {
             </>
           ) : undefined
         }
+      />
+      <Tabs
+        tabs={[
+          { id: 'watch', label: t('home.tabs.watch') },
+          { id: 'all', label: t('home.tabs.all') },
+          { id: 'news', label: t('news.title') },
+        ]}
+        activeId="news"
       />
       <div ref={root}>{content}</div>
     </Shell>

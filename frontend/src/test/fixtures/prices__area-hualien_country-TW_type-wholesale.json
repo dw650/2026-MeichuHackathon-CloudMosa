@@ -126,26 +126,6 @@
   },
   {
    "change": null,
-   "crop_id": "mango",
-   "price_per_kg": null,
-   "reason": "no_data",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
    "crop_id": "pineapple",
    "price_per_kg": null,
    "reason": "no_data",
@@ -226,67 +206,7 @@
   },
   {
    "change": null,
-   "crop_id": "rice",
-   "price_per_kg": null,
-   "reason": "no_data",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
    "crop_id": "guava",
-   "price_per_kg": null,
-   "reason": "no_data",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "soybean",
-   "price_per_kg": null,
-   "reason": "no_data",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "adzuki",
    "price_per_kg": null,
    "reason": "no_data",
    "spark": [
@@ -346,7 +266,7 @@
   },
   {
    "change": null,
-   "crop_id": "peanut",
+   "crop_id": "napacabbage",
    "price_per_kg": null,
    "reason": "no_data",
    "spark": [
@@ -366,7 +286,7 @@
   },
   {
    "change": null,
-   "crop_id": "sesame",
+   "crop_id": "carrot",
    "price_per_kg": null,
    "reason": "no_data",
    "spark": [
@@ -386,7 +306,7 @@
   },
   {
    "change": null,
-   "crop_id": "sugarcane",
+   "crop_id": "taro",
    "price_per_kg": null,
    "reason": "no_data",
    "spark": [
@@ -406,7 +326,267 @@
   },
   {
    "change": null,
-   "crop_id": "mushroom",
+   "crop_id": "potato",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "onion",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "loofah",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cucumber",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "bittergourd",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "eggplant",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "greenpepper",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "longbean",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "frenchbean",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "ginger",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "dragonfruit",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "passionfruit",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mango",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "papaya",
    "price_per_kg": null,
    "reason": "no_data",
    "spark": [

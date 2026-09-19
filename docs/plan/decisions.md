@@ -894,3 +894,38 @@
   - 另一個做法是把倍率也存進資料庫的作物表，或讓 api 也讀 `PROVIDERS`：前者多一個欄位要同步，後者兩個服務的環境變數可能不一致，所以都不採用。
 - 理由：畫面有參考值比整片「—」有用，但推估值必須永遠看得出是推估、而且不能被當成機關的報價；倍率是資料，接上真實零售來源（B4）就整段換掉。
 - 影響：`backend/app/seed/derive.yaml`、`app/seed/{schema,loader}.py`、`app/ingest/derive.py`、`app/repositories/{ingest,catalog}.py`、`app/services/catalog.py`、`app/schemas/catalog.py`、`app/worker.py`、`app/db/models.py` 與一支 migration；`frontend/src/components/Note/`、`screens/shared/useEstimate.ts`、首頁／作物清單／作物詳情／市場畫面／關於頁、四個語言檔；docs/06 §3.6、docs/02 §2、docs/03 §4、docs/00。
+## 2026-09-20 台灣補齊所有果菜市場、依真實資料重選作物
+- 情況：台灣原本 10 個縣市、14 個市場、21 種作物（沿用草圖加上追加的），接真實資料（B2）後東勢、溪湖、永靖、南投、台東的交易都對照不到，稻米、紅豆、芝麻沒有資料，評審無法用農業部的資料逐一核對。使用者決定：地區＝FarmTransData 裡有果菜批發市場的縣市，市場＝資料裡全部的果菜市場，作物依最近 60 天的實際覆蓋重選（約 24–30 種、每類最多 9 種）。
+- 決定：
+  - 抓一次最近 60 天的全部蔬果交易（2026-09-20，20 個請求、間隔 1 秒、15 萬列）。果菜市場共 19 個（台北市場、台南市場是花卉市場，只有休市公告），分屬 13 個縣市：新增彰化縣（溪湖、永靖）、南投縣（南投）、台東縣（台東），台中市多東勢。原本的代號都保留，預設地區仍是台北市。
+  - 作物 29 種：每個品項算「各縣市有交易的天數 ÷ 該縣市交易日數」的平均，挑高的、最近兩週仍有交易的國產品種。只收一個品種的規則不變（辣椒改成紅小，覆蓋較高）。去掉稻米、紅豆、芝麻、毛豆、落花生、甘蔗、香菇、芒果；清單見 06 §7.3。
+  - 菇類不單獨成類：只在 5–6 個縣市有交易（37–45%），比選進來的都低。
+  - mock 的 `p`／`lo`／`hi` 取 60 天所有市場平均價／下價／上價的中位數，`arr` 取一個市場一天交易量的中位數；故意放的例外（嘉義昨天、宜蘭 3 天前、花蓮無資料、豐原無資料、雲林與屏東沒有零售、甘藷昨天、空心菜 3 天前、花椰菜與空心菜沒有零售）都留著。前 13 種作物照原本的順序，預設關注不變。
+  - 市場距離：每個市場在 seed 給大約座標（依公開地址在 OpenStreetMap 查，查不到門牌的用同一條路），seed 同步時由座標算到地區中心的直線距離；seed 的市場只能給 `km`（示範的固定值）或座標其中一種。新縣市的中心是縣市政府所在地。
+- 理由：評審打開農業部的網站，看到的市場與品項在 App 裡都找得到；每種作物在多數縣市都有價格，少出現「—」。
+- 影響：`backend/app/seed/TW.yaml`、`backend/app/seed/schema.py`（市場座標）、`backend/app/geo.py`（直線距離移到這裡，`services/compare.py` 轉用）、`backend/app/ingest/seed.py`、測試（`test_seed.py`、`test_tw_moa.py`、兩個寫死甘藍價格的測試）、`frontend/src/icons/`（新畫 8 個圖示）、msw fixtures、e2e、docs/06 §1.2、§4、§7.2–7.4。
+
+## 2026-09-20 每個國家自己的作物分類
+- 情況：分類原本寫死七個（穀物、蔬菜、水果、豆類、香料、油籽、其他），九宮格還有「全部」。台灣的真實資料是果菜市場，沒有穀物、油籽，照七類分會有空格。使用者決定：每個國家可以在 seed 定義自己的分類（最多 8 個），沒定義的用現在的七個；九宮格是該國分類依序加「最近看過」，拿掉「全部」；分類名稱來自 API。
+- 決定：
+  - seed 的 `country.categories`：`id`、`name`（zh-TW、en）、`icon`（作物圖示代號）、`tone`（既有的色系之一）。最多 8 個、代號不重複、不能用 `recent` 與 `all`；作物的 `category` 必須是其中之一。沒寫就是預設七個（名稱、圖示、色系照原本的），所以印度、馬來西亞的 seed 不用改。每個分類 2–9 種作物（馬來西亞原本的例外不變），測試檢查。
+  - 存在 `countries.categories`（jsonb，migration `5c3e1f7a9b20`，down_revision `5c1e7a9d2b40`），`GET /countries` 的每個國家多 `categories`。作物 API 不變（仍是 `category` 代號）。
+  - 台灣六類：葉菜類（Leafy）、根莖類（Roots）、瓜類（Gourds）、花果菜類（Veg）、辛香料（Spices）、水果（Fruit）。英文名稱要短：128×160 的格子約放 6 個英文字母，「Fruit veg」會被截成「Fruit…」，和「Fruit」分不出來，所以花果菜類的英文用「Veg」。
+  - 前端：九宮格用 API 的分類加「最近」，分類載入前不畫格子（焦點才會落在第一格）；作物清單的標題用 API 的名稱，`/cat/<代號>` 不是這個國家的分類（包括 `/cat/all`）就回首頁。作物圖示方塊與圖表的顏色由該國分類的 `tone` 決定（`useCountryData().toneOf`）；國際參考價的序列仍用預設七類的顏色。i18n 只留「最近」，分類名稱的字串拿掉。
+- 理由：分類跟著各國的資料，九宮格不會有點進去是空的格子；分類名稱和作物名稱一樣由資料決定，新增國家不用改前端。
+- 影響：`backend/app/seed/schema.py`、`backend/app/db/models.py`、migration、`backend/app/ingest/seed.py`、`backend/app/schemas/catalog.py`、`backend/app/services/catalog.py`；`frontend/src/components/categories.ts`、`CropIcon`、`screens/home/HomeScreen.tsx`、`screens/crop-list/CropListScreen.tsx`、各畫面的圖示顏色、`i18n/locales/*.json`；docs/02 §5.2–5.3、03 §3.1、04 §3、§7、06 §1.4。其他 agent 新增的語言檔若還有 `categories.cereal` 等字串，可以刪掉（只剩 `categories.recent` 有用到）。
+
+## 2026-09-20 新聞變成首頁分頁、國際參考價變成九宮格的格子
+- 情況：使用者決定把兩個入口從左軟鍵選單移到首頁：新聞成為第三個分頁（關注｜全部作物｜新聞），國際參考價成為九宮格裡原本「全部」的位置。
+- 決定：
+  - 九宮格＝該國分類（最多 7 個）＋國際參考價（藍、地球圖示 `globec`）＋最近看過，共最多 9 格；seed 的分類上限因此改成 7，`intl` 也是保留代號。
+  - 新聞仍是 `/news`（詳情頁與行為不變），但畫面上多了和首頁一樣的分頁列（目前分頁是「新聞」）、左軟鍵選單、`#` 換地區，右軟鍵是「離開」（分頁用取代歷史）。首頁「全部作物」在最右欄按 ▶ 會到新聞，新聞按 ◀ 回到「全部作物」。
+  - 選單拿掉「國際參考價」與「新聞」兩列，其餘各列的數字鍵不變（首頁 1–5、詳情頁 1–6）。i18n 的 `menu.intl`、`menu.news` 刪掉，新增 `categories.intl`（國際價／Global／Global／वैश्विक），四種語言都有。
+- 理由：兩個入口原本藏在選單裡，使用者不容易發現；首頁的分頁與九宮格是最容易按到的地方。
+- 影響：`frontend/src/screens/home/HomeScreen.tsx`、`screens/news/NewsListScreen.tsx`、`screens/shared/MenuSheet.tsx`、`focus/useGrid.ts`（多了 `onRightEdge`）、`components/categories.ts`、`icons/`（新圖示 `globec`）、四個語言檔、相關測試與 e2e；`backend/app/seed/schema.py`（分類上限 7、保留 `intl`）；docs/02 §3.1、§3.2、§5.2、§5.8、§5.9、docs/03 §4。
+
+## 2026-09-20 台灣保留芒果，三國共同的作物
+- 情況：跨國比價卡（另一條線）需要三個國家有共同的作物；台灣依覆蓋率重選後少了芒果。
+- 決定：台灣加回芒果（愛文，覆蓋率 42%，產季尾聲），共 30 種。三國共同的 12 種是番茄、甘藍、辣椒、蒜頭、洋蔥、馬鈴薯、胡蘿蔔、薑、香蕉、芒果、小黃瓜、茄子（代號相同）。芒果的示範價格改成真實中位數 81.1 元／公斤（原本 55 元）。
+- 理由：跨國比較要用同一個代號；覆蓋率低的那一種在沒有交易的縣市照原本的規則顯示「—」。
+- 影響：`backend/app/seed/TW.yaml`、測試的作物數、docs/06 §7.3。

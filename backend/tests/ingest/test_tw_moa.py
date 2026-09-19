@@ -160,10 +160,17 @@ def test_only_the_listed_varieties_are_mapped(provider: TwMoaProvider, maps: Sou
     assert crop("小番茄-聖女") is None
 
 
-def test_markets_outside_our_areas_are_not_mapped(
+def test_every_market_of_the_sample_is_in_one_of_our_areas(
     provider: TwMoaProvider, maps: SourceMaps
 ) -> None:
-    assert provider.normalize(real("115.09.16", "溪湖鎮", "甘藍-初秋"), maps) is None
+    q = provider.normalize(real("115.09.16", "溪湖鎮", "甘藍-初秋"), maps)
+    assert q is not None
+    assert (q.area_id, q.market_id) == ("changhua", "xihu")
+    markets = {r["市場名稱"] for r in ROWS if r["作物代號"] != "rest"}
+    assert {m for m in markets if maps.market("TW", m) is None} == set()
+    # A market we do not know (say, a new one) is never guessed.
+    row = {**real("115.09.16", "溪湖鎮", "甘藍-初秋"), "市場名稱": "台南市場"}
+    assert provider.normalize(row, maps) is None
 
 
 def test_closure_notices_are_counted_apart_from_unmapped_rows(
@@ -306,8 +313,8 @@ async def test_an_answer_that_is_not_json_fails_the_run() -> None:
 def test_products_come_from_the_seed_maps() -> None:
     products = products_from_seeds(SEEDS)
     assert products[:3] == ["甘藍-初秋", "小白菜-土白菜", "香蕉"]
-    assert "濕香菇" in products
-    assert len(products) == len(set(products)) == 18
+    assert "絲瓜" in products
+    assert len(products) == len(set(products)) == 30
 
 
 # ---------- pipeline ----------

@@ -6,6 +6,7 @@ import { type IntlItem, useIntlPrices, useRefresh } from '@/api/queries'
 import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
 import { Card, CardList } from '@/components/Card/Card'
+import { toneOf } from '@/components/categories'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import type { PillProps } from '@/components/Pill/Pill'
 import { Shell } from '@/components/Shell/Shell'
@@ -134,7 +135,7 @@ function SeriesCard({ item, index, today, old, fmt }: SeriesCardProps) {
       lead={
         <CropIcon
           crop={item.icon}
-          category={item.category}
+          tone={toneOf(item.category)}
           keyCap={index < DIGIT_KEYS ? index + 1 : undefined}
         />
       }

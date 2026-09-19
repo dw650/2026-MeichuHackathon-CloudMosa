@@ -239,7 +239,7 @@ async def test_single_market(api: httpx.AsyncClient) -> None:
     m = res.json()
     assert (m["market_id"], m["area_id"], m["currency"]) == ("tp1", "taipei", "TWD")
     assert m["name"] == {"zh-TW": "台北一", "en": "Taipei 1"}
-    assert m["price_per_kg"] == pytest.approx(38.5, rel=0.03)
+    assert m["price_per_kg"] == pytest.approx(32.6, rel=0.03)  # mock p of cabbage
     assert m["low_per_kg"] < m["price_per_kg"] < m["high_per_kg"]
     assert m["change"]["direction"] == "up"
     assert m["staleness"]["state"] == "today"

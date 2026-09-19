@@ -98,7 +98,7 @@ describe('HomeScreen · watchlist', () => {
       'cat:spice',
       'cat:oil',
       'cat:other',
-      'cat:all',
+      'cat:intl',
       'cat:recent',
     ])
     expect(app.focusedId()).toBe('cat:cereal')
@@ -114,10 +114,44 @@ describe('HomeScreen · watchlist', () => {
     await waitFor(() => expect(app.focusedId()).toBe('crop:onion'))
   })
 
-  it('opens a category from the grid by its digit', async () => {
+  it('opens a category, the international prices or 最近 from the grid by its digit', async () => {
     const app = await renderApp('/?tab=all')
+    await screen.findByText('其他')
     app.press('8')
-    await waitFor(() => expect(app.path()).toBe('/cat/all'))
+    await waitFor(() => expect(app.path()).toBe('/intl'))
+    await app.back()
+    app.press('9')
+    await waitFor(() => expect(app.path()).toBe('/cat/recent'))
+  })
+
+  it('goes on to the 新聞 tab with ▶ on the last column', async () => {
+    const app = await renderApp('/?tab=all')
+    await screen.findByText('其他')
+    app.press('ArrowRight')
+    app.press('ArrowRight')
+    app.press('ArrowRight')
+    await waitFor(() => expect(app.path()).toBe('/news'))
+    expect(app.router.state.historyAction).toBe('REPLACE')
+    app.press('ArrowLeft')
+    await waitFor(() => expect(app.path()).toBe('/?tab=all'))
+  })
+
+  it("shows the country's own categories, named by the API, then 最近", async () => {
+    await renderApp('/?tab=all', { country: 'TW' })
+    await screen.findByText('葉菜類')
+    expect(focusIds()).toEqual([
+      'cat:leafy',
+      'cat:root',
+      'cat:gourd',
+      'cat:fruitveg',
+      'cat:spice',
+      'cat:fruit',
+      'cat:intl',
+      'cat:recent',
+    ])
+    expect(screen.getByText('花果菜類')).toBeInTheDocument()
+    expect(screen.getByText('國際價')).toBeInTheDocument()
+    expect(screen.getByText('最近')).toBeInTheDocument()
   })
 
   it('opens the area sheet with # and the menu with the left soft key', async () => {

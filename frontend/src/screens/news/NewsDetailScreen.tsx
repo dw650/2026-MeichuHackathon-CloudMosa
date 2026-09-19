@@ -97,7 +97,9 @@ function NewsDetail({ id }: { id: number }) {
                 <Card
                   key={crop.id}
                   compact
-                  lead={<CropIcon crop={crop.id} category={crop.category} keyCap={index + 1} />}
+                  lead={
+                    <CropIcon crop={crop.id} tone={data.toneOf(crop.category)} keyCap={index + 1} />
+                  }
                   name={pick(crop.name)}
                   trailing={<Chevron />}
                 />

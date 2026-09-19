@@ -90,19 +90,10 @@
     "about": "Perihal & data",
     "settings": "Tetapan",
     "addWatch": "Tambah ke kegemaran",
-    "removeWatch": "Buang dari kegemaran",
-    "intl": "Harga antarabangsa",
-    "news": "Berita"
+    "removeWatch": "Buang dari kegemaran"
   },
   "categories": {
-    "cereal": "Bijirin",
-    "veg": "Sayur",
-    "fruit": "Buah",
-    "pulse": "Kacang",
-    "spice": "Rempah",
-    "oil": "Biji minyak",
-    "other": "Lain",
-    "all": "Semua",
+    "intl": "Global",
     "recent": "Terkini"
   },
   "setup": {

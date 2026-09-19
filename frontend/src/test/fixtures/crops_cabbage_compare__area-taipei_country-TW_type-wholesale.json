@@ -30,17 +30,17 @@
   "world": null
  },
  "rank": {
-  "position": 1,
-  "total": 9
+  "position": 2,
+  "total": 12
  },
  "rows": [
   {
-   "area_id": "taipei",
-   "diff_per_kg": 0.0,
-   "distance_km": 0,
-   "is_base": true,
-   "n_markets": 2,
-   "price_per_kg": 38.25,
+   "area_id": "taitung",
+   "diff_per_kg": 0.9,
+   "distance_km": 257,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 33.3,
    "rank": 1,
    "staleness": {
     "days": 0,
@@ -49,12 +49,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "newtaipei",
-   "diff_per_kg": -0.7,
-   "distance_km": 11,
-   "is_base": false,
+   "area_id": "taipei",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
    "n_markets": 2,
-   "price_per_kg": 37.55,
+   "price_per_kg": 32.4,
    "rank": 2,
    "staleness": {
     "days": 0,
@@ -63,12 +63,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "taoyuan",
-   "diff_per_kg": -1.35,
-   "distance_km": 27,
+   "area_id": "newtaipei",
+   "diff_per_kg": -0.65,
+   "distance_km": 11,
    "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 36.9,
+   "n_markets": 2,
+   "price_per_kg": 31.75,
    "rank": 3,
    "staleness": {
     "days": 0,
@@ -77,12 +77,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "kaohsiung",
-   "diff_per_kg": -2.55,
-   "distance_km": 297,
+   "area_id": "taoyuan",
+   "diff_per_kg": -1.1,
+   "distance_km": 27,
    "is_base": false,
-   "n_markets": 2,
-   "price_per_kg": 35.7,
+   "n_markets": 1,
+   "price_per_kg": 31.3,
    "rank": 4,
    "staleness": {
     "days": 0,
@@ -91,12 +91,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "taichung",
-   "diff_per_kg": -3.35,
-   "distance_km": 134,
+   "area_id": "kaohsiung",
+   "diff_per_kg": -2.2,
+   "distance_km": 297,
    "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 34.9,
+   "n_markets": 2,
+   "price_per_kg": 30.2,
    "rank": 5,
    "staleness": {
     "days": 0,
@@ -105,12 +105,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "pingtung",
-   "diff_per_kg": -4.25,
-   "distance_km": 285,
+   "area_id": "taichung",
+   "diff_per_kg": -2.75,
+   "distance_km": 134,
    "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 34.0,
+   "n_markets": 2,
+   "price_per_kg": 29.65,
    "rank": 6,
    "staleness": {
     "days": 0,
@@ -119,12 +119,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "yunlin",
-   "diff_per_kg": -5.65,
-   "distance_km": 177,
+   "area_id": "nantou",
+   "diff_per_kg": -3.2,
+   "distance_km": 154,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 32.6,
+   "price_per_kg": 29.2,
    "rank": 7,
    "staleness": {
     "days": 0,
@@ -133,13 +133,55 @@
    "trade_date": "2026-09-19"
   },
   {
+   "area_id": "pingtung",
+   "diff_per_kg": -3.6,
+   "distance_km": 285,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 28.8,
+   "rank": 8,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "changhua",
+   "diff_per_kg": -4.0,
+   "distance_km": 148,
+   "is_base": false,
+   "n_markets": 2,
+   "price_per_kg": 28.4,
+   "rank": 9,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "yunlin",
+   "diff_per_kg": -4.8,
+   "distance_km": 177,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 27.6,
+   "rank": 10,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
    "area_id": "yilan",
-   "diff_per_kg": -10.55,
+   "diff_per_kg": -8.9,
    "distance_km": 38,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 27.7,
-   "rank": 8,
+   "price_per_kg": 23.5,
+   "rank": 11,
    "staleness": {
     "days": 3,
     "state": "stale"
@@ -148,12 +190,12 @@
   },
   {
    "area_id": "chiayi",
-   "diff_per_kg": -14.25,
+   "diff_per_kg": -12.0,
    "distance_km": 207,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 24.0,
-   "rank": 9,
+   "price_per_kg": 20.4,
+   "rank": 12,
    "staleness": {
     "days": 1,
     "state": "stale"

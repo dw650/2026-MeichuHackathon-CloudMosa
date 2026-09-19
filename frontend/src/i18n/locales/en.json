@@ -90,19 +90,10 @@
     "about": "About & data",
     "settings": "Settings",
     "addWatch": "Add to watchlist",
-    "removeWatch": "Remove from list",
-    "intl": "International prices",
-    "news": "News"
+    "removeWatch": "Remove from list"
   },
   "categories": {
-    "cereal": "Cereals",
-    "veg": "Veg",
-    "fruit": "Fruit",
-    "pulse": "Pulses",
-    "spice": "Spices",
-    "oil": "Oilseed",
-    "other": "Other",
-    "all": "All",
+    "intl": "Global",
     "recent": "Recent"
   },
   "setup": {
