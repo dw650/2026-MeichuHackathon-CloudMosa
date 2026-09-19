@@ -26,7 +26,7 @@ function serve(others: unknown) {
 describe('crop detail · 比價 tab · 各國參考價', () => {
   it('lists the other countries with their price type, areas and trade date', async () => {
     const app = await renderApp('/crop/cabbage/compare', { country: 'TW' })
-    await screen.findByText('台北市 價格排第 1／9')
+    await screen.findByText('台北市 價格排第 2／12')
     expect(screen.getByText('各國參考價')).toBeInTheDocument()
     // Converted into the viewer's currency and unit (TWD per kg), never the country's own.
     expect(within(row('印度')).getByText('4.3')).toBeInTheDocument()
@@ -37,7 +37,7 @@ describe('crop detail · 比價 tab · 各國參考價', () => {
       screen.getByText('批發與零售不能直接比，品種與品質也不同，匯率僅供參考'),
     ).toBeInTheDocument()
     // Informational: the card adds nothing to the focus list, which stays on the areas.
-    expect(app.focusedId()).toBe('area:taipei')
+    expect(app.focusedId()).toBe('area:taitung') // the first row, the highest price
     expect(within(section()).queryByRole('button')).not.toBeInTheDocument()
   })
 

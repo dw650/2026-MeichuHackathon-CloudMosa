@@ -83,8 +83,7 @@
     "about": "About & data",
     "settings": "Settings",
     "addWatch": "Add to watchlist",
-    "removeWatch": "Remove from list",
-    "news": "News"
+    "removeWatch": "Remove from list"
   },
   "categories": {
     "intl": "Global",
