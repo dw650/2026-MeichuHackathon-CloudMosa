@@ -21,6 +21,9 @@ country:
   closed_weekdays: [] # prices are reported every day; public holidays simply have no rows
   default_area: kualalumpur
   default_recent_areas: [kualalumpur, klang, seremban]
+  # PriceCatcher has retail prices only (the wholesale markets stopped reporting in 2026), so
+  # new users start on retail; `*` still switches to wholesale.
+  default_price_type: retail
   area_suffix: { zh-TW: "", en: "" }
   rep_price_label: { zh-TW: 查報價, en: Reported price }
   source_label:

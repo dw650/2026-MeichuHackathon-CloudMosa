@@ -58,6 +58,8 @@ class Country(Base):
     source_label: Mapped[I18n]
     # Per price type: {"default": "qtl", "options": [{"id", "per_kg", "decimals", "label"}]}.
     units: Mapped[dict[str, Any]]
+    # The price type a new user of this country starts on: wholesale or retail.
+    default_price_type: Mapped[str] = mapped_column(String(10), server_default="wholesale")
 
 
 class Area(Base):

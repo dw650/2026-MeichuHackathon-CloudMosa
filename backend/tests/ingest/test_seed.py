@@ -97,6 +97,19 @@ def test_unknown_category_is_rejected(tmp_path: Path) -> None:
         load_seed_file(_write(tmp_path, data))
 
 
+def test_a_country_starts_on_wholesale_unless_it_says_otherwise(tmp_path: Path) -> None:
+    seeds = {s.country.code: s for s in load_seed_files()}
+    assert {cc: s.country.default_price_type for cc, s in seeds.items()} == {
+        "IN": "wholesale",
+        "TW": "wholesale",
+        "MY": "retail",
+    }
+    data = _raw("MY")
+    data["country"]["default_price_type"] = "farmgate"
+    with pytest.raises(ValidationError):
+        load_seed_file(_write(tmp_path, data))
+
+
 def test_references_to_unknown_ids_are_rejected(tmp_path: Path) -> None:
     data = _raw("TW")
     data["source_maps"]["mock"]["markets"].append({"source_market": "X", "market": "nowhere"})
@@ -148,11 +161,16 @@ async def test_sync_stores_country_settings(session: AsyncSession) -> None:
         await session.execute(
             text(
                 "SELECT currency, locale, utc_offset_min, closed_weekdays, default_area_id,"
-                " units->'wholesale'->>'default' FROM countries WHERE code = 'IN'"
+                " units->'wholesale'->>'default', default_price_type FROM countries"
+                " WHERE code = 'IN'"
             )
         )
     ).one()
-    assert tuple(row) == ("INR", "en-IN", 330, [7], "nashik", "qtl")
+    assert tuple(row) == ("INR", "en-IN", 330, [7], "nashik", "qtl", "wholesale")
+    retail = await session.execute(
+        text("SELECT default_price_type FROM countries WHERE code = 'MY'")
+    )
+    assert retail.scalar_one() == "retail"
 
 
 async def test_sync_removes_entities_dropped_from_the_seed(
