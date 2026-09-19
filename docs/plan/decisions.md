@@ -229,3 +229,23 @@
   - demo 標頭只在 `DEMO_MODE=true` 時解析：`X-Demo-Fail: 1` 只讓價格類端點回 503 `demo_failure`（目錄、健康檢查、`/locate` 不受影響）；`X-Demo-Stale: 地區:天數`（可用逗號放多個，天數 1–60，格式錯的忽略），同時影響價格端點與地區清單的新舊；`X-Demo-IP` 取代轉發位址；`X-Demo-Locate: IN:nashik` 或 `none` 直接指定結果（地區必須存在，否則視為推測不到）。
 - 理由：照文件的規則，細節選最簡單而且能在 demo 時重現每種狀態的做法。
 - 影響：`backend/app/services/locate.py`、`backend/app/services/demo.py`、`backend/app/deps.py`、`infra/geoip/README.md`、`scripts/fetch-geoip.sh`。
+
+## 2026-09-19 T19 按鍵範圍的層級與順序
+- 情況：04 §4.2 只寫「分派給堆疊最上層、面板打開時不穿透」，沒寫上下順序怎麼決定。React 先執行子元件的 effect，畫在畫面裡的面板會比畫面早註冊，只看註冊順序的話面板會被壓在下面。也沒寫最上層沒有某個鍵的 handler 時要不要往下傳。
+- 決定：
+  - `useKeys(handlers, { layer })` 分兩層：`screen`（預設，畫面）與 `overlay`（面板：選單、換地區、排序）。`overlay` 永遠在 `screen` 之上；同一層裡最新註冊的在上面。
+  - 只有最上面的範圍收到按鍵；它沒寫的鍵直接丟掉，不往下傳。所以一個畫面、一個面板各只呼叫一次 `useKeys`，焦點 hook 提供的 handler 合併進同一個物件。
+  - handler 存在 ref 裡，每次按鍵都讀最新的；只在掛載與 `layer` 改變時註冊，重新 render 不會改變順序。註冊用 `useLayoutEffect`，畫面 commit 後、下一個按鍵進來前，堆疊就已經更新。
+  - `window` 上唯一的 `keydown` 監聽器在有範圍時自動掛上，最後一個範圍移除時拿掉，不需要另外呼叫安裝函式。除錯頁 `/debug/keys` 不註冊範圍，看到的仍是原始事件。
+- 理由：用層級決定順序，不受 effect 執行順序影響；不往下傳最符合「面板打開時按鍵不會穿透」。
+- 影響：`frontend/src/keys/keyScope.ts`、`useKeys.ts`；`frontend/eslint.config.js` 另外擋下 `keys/` import `screens/`。要加新的層（例如 B8 語音播報要蓋在面板上）就在 `keyScope.ts` 的 `LAYERS` 加一個名稱。
+
+## 2026-09-19 T19 preventDefault 與不處理的按鍵
+- 情況：04 §4.2 寫「按鍵處理完都要 preventDefault」「Enter 只在 keydown 處理」，沒寫沒處理的鍵、被忽略的長按、組合鍵與輸入法怎麼辦。
+- 決定：
+  - 最上層範圍有對應 handler 的鍵才 `preventDefault()`，長按時被忽略的重複事件也算；沒有 handler 的鍵不動，保留瀏覽器的預設行為。
+  - `Enter` 不論有沒有 handler、是不是長按，一律 `preventDefault()`，焦點在按鈕上時不會再觸發 `click`（08 §12「統一只處理 keydown」）。
+  - 帶 Ctrl、Meta、Alt 的組合鍵與輸入法組字中（`isComposing`）的事件完全不處理。Shift 照常處理，因為桌機要按 Shift 才打得出 `#`、`*`。
+  - 不另外排除輸入框（baseline 不需要打字，08 §4【決定】）；長按不節流，等 08 §12 實機確認 repeat 速度再調。
+- 理由：只攔自己處理的鍵，其他交給瀏覽器；OK 只走 keydown 一條路，不會觸發兩次。
+- 影響：`frontend/src/keys/keyScope.ts` 的 `onKeyDown`。
