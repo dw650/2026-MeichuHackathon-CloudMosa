@@ -226,13 +226,13 @@ test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async
   await step(page, errors, /sheet=menu/)
   await press(page, '7') // 新聞, after 國際參考價
   await step(page, errors, /^\/news$/)
-  // The first item mentions my area (台北市) and is about cabbage.
+  // The newest item is about guava; the list is chronological, not my area first.
   await press(page, 'Enter')
   await step(page, errors, /^\/news\/\d+$/)
   const item = where(page)
   await press(page, 'ArrowDown') // scrolls the page; nothing to select
   await press(page, '1')
-  await step(page, errors, /^\/crop\/cabbage\/today/)
+  await step(page, errors, /^\/crop\/guava\/today/)
   await page.goBack()
   await step(page, errors, new RegExp(`^${item}$`))
   await page.goBack()
