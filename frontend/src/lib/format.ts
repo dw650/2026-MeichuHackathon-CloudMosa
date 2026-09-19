@@ -10,7 +10,8 @@ export const MINUS = '−'
 
 type Sign = -1 | 0 | 1
 
-const isNumber = (value: number | null | undefined): value is number =>
+/** True for a real number; `null`, `undefined`, NaN and ±Infinity count as missing. */
+export const isFiniteNumber = (value: number | null | undefined): value is number =>
   typeof value === 'number' && Number.isFinite(value)
 
 /**
@@ -45,7 +46,7 @@ export function formatNumber(
   locale: string,
   decimals: number,
 ): string {
-  if (!isNumber(value)) return MISSING
+  if (!isFiniteNumber(value)) return MISSING
   const { sign, digits } = splitSign(value, locale, decimals)
   return sign < 0 ? MINUS + digits : digits
 }
@@ -56,7 +57,7 @@ export function formatSignedNumber(
   locale: string,
   decimals: number,
 ): string {
-  if (!isNumber(value)) return MISSING
+  if (!isFiniteNumber(value)) return MISSING
   const { sign, digits } = splitSign(value, locale, decimals)
   return (sign > 0 ? '+' : sign < 0 ? MINUS : '±') + digits
 }
