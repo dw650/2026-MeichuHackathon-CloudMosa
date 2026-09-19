@@ -4,6 +4,7 @@
   {
    "category": "leafy",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "cabbage",
    "name": {
@@ -18,6 +19,7 @@
   {
    "category": "leafy",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "bokchoy",
    "name": {
@@ -32,6 +34,7 @@
   {
    "category": "fruit",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "banana",
    "name": {
@@ -46,6 +49,7 @@
   {
    "category": "root",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "sweetpotato",
    "name": {
@@ -60,6 +64,7 @@
   {
    "category": "spice",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "scallion",
    "name": {
@@ -74,6 +79,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "tomato",
    "name": {
@@ -88,6 +94,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "pineapple",
    "name": {
@@ -102,6 +109,7 @@
   {
    "category": "fruitveg",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "cauliflower",
    "name": {
@@ -116,6 +124,7 @@
   {
    "category": "leafy",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "waterspinach",
    "name": {
@@ -130,6 +139,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "maize",
    "name": {
@@ -144,6 +154,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "guava",
    "name": {
@@ -158,6 +169,7 @@
   {
    "category": "spice",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "garlic",
    "name": {
@@ -172,6 +184,7 @@
   {
    "category": "spice",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "chilli",
    "name": {
@@ -186,6 +199,7 @@
   {
    "category": "leafy",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "napacabbage",
    "name": {
@@ -200,6 +214,7 @@
   {
    "category": "root",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "carrot",
    "name": {
@@ -214,6 +229,7 @@
   {
    "category": "root",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "taro",
    "name": {
@@ -228,6 +244,7 @@
   {
    "category": "root",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "potato",
    "name": {
@@ -242,6 +259,7 @@
   {
    "category": "root",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "onion",
    "name": {
@@ -256,6 +274,7 @@
   {
    "category": "gourd",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "loofah",
    "name": {
@@ -270,6 +289,7 @@
   {
    "category": "gourd",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "cucumber",
    "name": {
@@ -284,6 +304,7 @@
   {
    "category": "gourd",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "bittergourd",
    "name": {
@@ -298,6 +319,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "eggplant",
    "name": {
@@ -312,6 +334,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "greenpepper",
    "name": {
@@ -326,6 +349,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "longbean",
    "name": {
@@ -340,6 +364,7 @@
   {
    "category": "fruitveg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "frenchbean",
    "name": {
@@ -354,6 +379,7 @@
   {
    "category": "spice",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "ginger",
    "name": {
@@ -368,6 +394,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "dragonfruit",
    "name": {
@@ -382,6 +409,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "passionfruit",
    "name": {
@@ -396,6 +424,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "mango",
    "name": {
@@ -410,6 +439,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "papaya",
    "name": {
