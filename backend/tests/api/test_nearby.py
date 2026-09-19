@@ -66,44 +66,33 @@ async def _prices(
     return {r["area_id"]: r["price_per_kg"] for r in rows if r["price_per_kg"] is not None}
 
 
-async def test_the_highest_and_lowest_of_the_nearest_areas(api: httpx.AsyncClient) -> None:
-    # Around Nashik: Ahmednagar 142 km, Pune 165 km, Jalgaon 215 km (yesterday's data, left out).
-    nearby = await _nearby(api, "nashik")
-    prices = await _prices(api)
-    nashik, pune, ahmednagar = prices["nashik"], prices["pune"], prices["ahmednagar"]
-    assert nearby == {
-        "highest": {
-            "area_id": "pune",
-            "price_per_kg": pune,
-            "diff_per_kg": pytest.approx(pune - nashik, abs=1e-4),
-            "distance_km": 165,
-            "is_base": False,
-        },
-        "lowest": {
-            "area_id": "ahmednagar",
-            "price_per_kg": ahmednagar,
-            "diff_per_kg": pytest.approx(ahmednagar - nashik, abs=1e-4),
-            "distance_km": 142,
-            "is_base": False,
-        },
-    }
+async def test_the_highest_and_lowest_within_100_km(api: httpx.AsyncClient) -> None:
+    # Around Taipei: New Taipei 11 km, Taoyuan 27 km, Yilan 38 km (3 days old, left out).
+    nearby = await _nearby(api, "taipei", crop="cabbage", country="TW")
+    prices = await _prices(api, crop="cabbage", country="TW")
+    pool = {a: prices[a] for a in ("taipei", "newtaipei", "taoyuan")}
+    high = max(pool, key=lambda a: pool[a])
+    low = min(pool, key=lambda a: pool[a])
+    assert (nearby["highest"]["area_id"], nearby["lowest"]["area_id"]) == (high, low)
+    for row in nearby.values():
+        diff = pool[row["area_id"]] - pool["taipei"]
+        assert row["diff_per_kg"] == pytest.approx(diff, abs=1e-4)
+        assert row["is_base"] is (row["area_id"] == "taipei")
 
 
-async def test_the_viewed_area_itself_can_be_the_highest(api: httpx.AsyncClient) -> None:
-    # North Delhi has the highest onion price; its only area within 300 km is Agra (191 km).
-    nearby = await _nearby(api, "delhi")
-    assert nearby["highest"]["is_base"] is True
-    assert nearby["highest"]["area_id"] == "delhi"
-    assert (nearby["highest"]["diff_per_kg"], nearby["highest"]["distance_km"]) == (0, 0)
-    assert nearby["lowest"]["area_id"] == "agra"
-    assert nearby["lowest"]["distance_km"] == 191
-    assert nearby["lowest"]["diff_per_kg"] < 0
+async def test_the_viewed_area_itself_can_be_the_highest_or_lowest(
+    api: httpx.AsyncClient,
+) -> None:
+    nearby = await _nearby(api, "taipei", crop="cabbage", country="TW")
+    base = next(row for row in nearby.values() if row["is_base"])
+    assert (base["area_id"], base["diff_per_kg"], base["distance_km"]) == ("taipei", 0, 0)
 
 
 @pytest.mark.parametrize(
     ("area", "why"),
     [
-        ("bengaluru", "Kolar (61 km) is 3 days old and Kurnool is 322 km away"),
+        ("nashik", "no other area within 100 km"),
+        ("bengaluru", "Kolar (61 km) is 3 days old"),
         ("kolar", "the viewed area itself is 3 days old"),
         ("kurnool", "the viewed area has no price at all"),
     ],
@@ -115,32 +104,13 @@ async def test_nothing_nearby_when_no_area_qualifies(
 
 
 async def test_retail_compares_retail_prices_only(api: httpx.AsyncClient) -> None:
-    # Ahmednagar has no retail reports and Jalgaon is a day old: only Pune is left.
-    nearby = await _nearby(api, "nashik", price_type="retail")
-    prices = await _prices(api, price_type="retail")
-    assert {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]} == {"nashik", "pune"}
-    pune = next(r for r in nearby.values() if not r["is_base"])
-    assert pune["price_per_kg"] == prices["pune"]
-
-
-async def test_taiwan_counties_nearby(api: httpx.AsyncClient) -> None:
-    # Around Taipei: New Taipei 11 km, Taoyuan 27 km, Yilan 38 km (3 days old, left out).
-    nearby = await _nearby(api, "taipei", crop="cabbage", country="TW")
-    prices = await _prices(api, crop="cabbage", country="TW")
+    nearby = await _nearby(api, "taipei", crop="cabbage", country="TW", price_type="retail")
+    prices = await _prices(api, crop="cabbage", country="TW", price_type="retail")
     shown = {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]}
     assert shown <= {"taipei", "newtaipei", "taoyuan"}
     compared = [prices[a] for a in ("taipei", "newtaipei", "taoyuan")]
     assert nearby["highest"]["price_per_kg"] == max(compared)
     assert nearby["lowest"]["price_per_kg"] == min(compared)
-
-
-async def test_a_closed_day_compares_the_last_trading_day(sunday: httpx.AsyncClient) -> None:
-    # Sunday in India: every area shows Saturday's price, which is not old.
-    params = {"country": "IN", "area": "nashik", "type": "wholesale"}
-    quote = (await sunday.get(QUOTE.format(crop="onion"), params=params)).json()
-    assert quote["staleness"]["state"] == "closed"
-    nearby = quote["nearby"]
-    assert (nearby["highest"]["area_id"], nearby["lowest"]["area_id"]) == ("pune", "ahmednagar")
 
 
 async def test_old_data_is_never_compared(sunday: httpx.AsyncClient) -> None:
@@ -149,9 +119,12 @@ async def test_old_data_is_never_compared(sunday: httpx.AsyncClient) -> None:
 
 
 async def test_demo_stale_areas_drop_out(demo: httpx.AsyncClient) -> None:
-    stale_pune = {"X-Demo-Stale": "pune:1"}
-    nearby = await _nearby(demo, "nashik", headers=stale_pune)
-    # Nashik is above Ahmednagar, and Pune no longer counts.
-    assert (nearby["highest"]["area_id"], nearby["highest"]["is_base"]) == ("nashik", True)
-    assert nearby["lowest"]["area_id"] == "ahmednagar"
-    assert await _nearby(demo, "nashik", headers={"X-Demo-Stale": "nashik:3"}) is None
+    fresh = await _nearby(demo, "taipei", crop="cabbage", country="TW")
+    stale_new_taipei = {"X-Demo-Stale": "newtaipei:1"}
+    nearby = await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_new_taipei)
+    shown = {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]}
+    assert "newtaipei" not in shown
+    assert shown <= {"taipei", "taoyuan"}
+    assert fresh is not None
+    stale_taipei = {"X-Demo-Stale": "taipei:3"}
+    assert await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_taipei) is None

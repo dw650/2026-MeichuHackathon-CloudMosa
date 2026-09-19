@@ -15,22 +15,7 @@
   "min_per_kg": 29.18,
   "total": 2
  },
- "nearby": {
-  "highest": {
-   "area_id": "delhi",
-   "diff_per_kg": 0.0,
-   "distance_km": 0,
-   "is_base": true,
-   "price_per_kg": 29.535
-  },
-  "lowest": {
-   "area_id": "agra",
-   "diff_per_kg": -3.465,
-   "distance_km": 191,
-   "is_base": false,
-   "price_per_kg": 26.07
-  }
- },
+ "nearby": null,
  "price_per_kg": 29.535,
  "reason": null,
  "series": [

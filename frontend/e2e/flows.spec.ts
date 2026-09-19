@@ -132,9 +132,10 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   page,
   errors,
 }) => {
-  await seed(page, { country: 'IN' })
-  await page.goto('/crop/onion/today')
-  await step(page, errors, /^\/crop\/onion\/today$/)
+  // Around New Taipei: Taipei (11 km) pays more, Taoyuan (16 km) less.
+  await seed(page, { country: 'TW' })
+  await page.goto('/crop/cabbage/today?area=newtaipei')
+  await step(page, errors, /^\/crop\/cabbage\/today\?area=newtaipei$/)
   expect(await focusedId(page)).toBe('markets')
 
   // Each nearby card scrolls into view with the focus, fonts and layout intact.
@@ -145,12 +146,12 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   expect(await focusedId(page)).toBe('nearby-low')
   await expectCleanScreen(page, errors)
 
-  // 2 opens the highest nearby area (Pune) on its 行情 tab, like the compare tab does.
-  await press(page, '2')
-  await step(page, errors, /^\/crop\/onion\/today\?area=pune$/)
+  // 3 opens the lowest nearby area (Taoyuan) on its 行情 tab, like the compare tab does.
+  await press(page, '3')
+  await step(page, errors, /^\/crop\/cabbage\/today\?area=taoyuan$/)
   await page.goBack()
-  await step(page, errors, /^\/crop\/onion\/today$/)
-  await expect.poll(() => focusedId(page)).toBe('nearby-high')
+  await step(page, errors, /^\/crop\/cabbage\/today\?area=newtaipei$/)
+  await expect.poll(() => focusedId(page)).toBe('nearby-low')
 })
 
 test('international prices by key only: menu → list → a series → back', async ({
