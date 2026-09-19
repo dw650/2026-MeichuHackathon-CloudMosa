@@ -248,15 +248,15 @@ describe('crop detail · 行情 tab · nearby prices', () => {
 
   it('speaks English', async () => {
     const app = await renderApp('/crop/cabbage/today', { country: 'TW', lang: 'en' })
-    await screen.findByText('38.3')
+    await screen.findByText('32.4')
     const own = within(ownRow('Highest nearby'))
     expect(own.getByText('Taipei')).toBeInTheDocument()
     expect(own.getByText('You')).toBeInTheDocument()
     const low = within(nearbyCard('nearby-low'))
     expect(low.getByText('Taoyuan')).toBeInTheDocument()
     expect(low.getByText('Lowest · 27 km (straight)')).toBeInTheDocument()
-    expect(low.getByText('36.9')).toBeInTheDocument()
-    expect(low.getByText('−1.4')).toBeInTheDocument()
+    expect(low.getByText('31.3')).toBeInTheDocument()
+    expect(low.getByText('−1.1')).toBeInTheDocument()
     await press(app, 'ArrowDown')
     expect(app.softKey('center')).toBe('View')
     await press(app, 'Enter')

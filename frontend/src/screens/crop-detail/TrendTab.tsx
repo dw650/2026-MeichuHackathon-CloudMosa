@@ -2,7 +2,6 @@ import { useRef } from 'react'
 
 import type { Quote } from '@/api/queries'
 import { CardList } from '@/components/Card/Card'
-import { toneOf } from '@/components/categories'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { MetricGrid } from '@/components/MetricGrid/MetricGrid'
 import { Pill } from '@/components/Pill/Pill'
@@ -143,7 +142,7 @@ export function TrendTab({ detail }: { detail: Detail }) {
               ) : (
                 <TrendChart
                   points={points}
-                  tone={toneOf(detail.crop?.category)}
+                  tone={detail.tone}
                   formatValue={fmt.price}
                   closedLabel={t('detail.trend.closedShort')}
                 />
@@ -151,7 +150,7 @@ export function TrendTab({ detail }: { detail: Detail }) {
             </div>
             {!empty && (
               <MetricGrid
-                tone={toneOf(detail.crop?.category)}
+                tone={detail.tone}
                 items={[
                   { label: t('detail.stats.high'), value: fmt.price(high) },
                   { label: t('detail.stats.low'), value: fmt.price(low) },

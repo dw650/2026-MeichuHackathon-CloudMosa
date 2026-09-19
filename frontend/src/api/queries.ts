@@ -22,6 +22,8 @@ import type {
 
 export type PriceType = 'wholesale' | 'retail'
 export type Country = SchemaCountriesOut['countries'][number]
+/** A tile of the home grid (docs/02 §5.2); crops carry its `id` as their `category`. */
+export type Category = Country['categories'][number]
 export type Area = SchemaAreasOut['areas'][number]
 export type Crop = SchemaCropsOut['crops'][number]
 export type PriceItem = SchemaPricesOut['items'][number]

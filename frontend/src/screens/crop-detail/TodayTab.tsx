@@ -3,7 +3,6 @@ import { useRef } from 'react'
 import type { Quote } from '@/api/queries'
 import { paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
-import { toneOf } from '@/components/categories'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import { cx } from '@/components/cx'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
@@ -106,7 +105,7 @@ function Hero({ detail, quote, fmt }: ContentProps) {
   return (
     <div className={cx(styles.box, styles.hero)}>
       <span className={styles.heroTile}>
-        <CropIcon crop={detail.cropId} category={detail.crop?.category} />
+        <CropIcon crop={detail.cropId} tone={detail.tone} />
       </span>
       <div className={styles.heroBody}>
         <div className={styles.label}>
@@ -170,7 +169,7 @@ function Ready({ detail, quote, fmt, keyCapOf }: ReadyProps) {
         </div>
       )}
       {quote.price_per_kg !== null && (
-        <MetricGrid items={metricsOf(quote, fmt, t)} tone={toneOf(detail.crop?.category)} />
+        <MetricGrid items={metricsOf(quote, fmt, t)} tone={detail.tone} />
       )}
       {quote.nearby && <NearbyCards nearby={quote.nearby} fmt={fmt} keyCapOf={keyCapOf} />}
     </div>

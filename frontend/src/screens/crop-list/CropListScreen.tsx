@@ -4,7 +4,7 @@ import { Navigate, useParams } from 'react-router'
 import type { Crop } from '@/api/queries'
 import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
-import { type CategoryId, CATEGORY_IDS } from '@/components/categories'
+import { RECENT_CATEGORY } from '@/components/categories'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
@@ -31,31 +31,29 @@ import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSession } from '@/store/session'
 import { useSettings } from '@/store/settings'
 
-/** A crop list (F03, docs/02 §5.3): one category, every crop, or the recently viewed ones. */
+/** A crop list (F03, docs/02 §5.3): one of the country's categories, or the recently viewed
+ *  crops (「最近」). */
 export default function CropListScreen() {
-  const { catId } = useParams()
-  const category = CATEGORY_IDS.find((id) => id === catId)
-  // Unknown paths go home (docs/04 §4.3).
-  if (!category) return <Navigate to={paths.home()} replace />
-  return <CropList category={category} />
+  const { catId = '' } = useParams()
+  const data = useCountryData()
+  const known = catId === RECENT_CATEGORY.id || data.categories.some((c) => c.id === catId)
+  // Unknown paths (and the old /cat/all) go home once the country's categories are known
+  // (docs/04 §4.3).
+  if (!known && data.country) return <Navigate to={paths.home()} replace />
+  return <CropList categoryId={catId} />
 }
 
 /** The crops listed under a home grid cell, in catalog order (「最近」: newest first). */
-function cropsIn(
-  category: CategoryId,
-  catalog: readonly Crop[],
-  recent: readonly string[],
-): Crop[] {
-  if (category === 'all') return [...catalog]
-  if (category === 'recent') {
+function cropsIn(categoryId: string, catalog: readonly Crop[], recent: readonly string[]): Crop[] {
+  if (categoryId === RECENT_CATEGORY.id) {
     return recent.flatMap((id) => catalog.filter((crop) => crop.id === id))
   }
-  return catalog.filter((crop) => crop.category === category)
+  return catalog.filter((crop) => crop.category === categoryId)
 }
 
-function CropList({ category }: { category: CategoryId }) {
+function CropList({ categoryId }: { categoryId: string }) {
   const nav = useNav()
-  const { t, lang } = useText()
+  const { t, lang, pick } = useText()
   const data = useCountryData()
   const format = usePriceFormat()
   const areaId = useSettings((s) => s.areaId)
@@ -66,7 +64,11 @@ function CropList({ category }: { category: CategoryId }) {
   const openCrop = useOpenCrop()
   const root = useRef<HTMLDivElement>(null)
 
-  const crops = cropsIn(category, data.crops, recentCrops)
+  const crops = cropsIn(categoryId, data.crops, recentCrops)
+  const title =
+    categoryId === RECENT_CATEGORY.id
+      ? t('categories.recent')
+      : pick(data.categories.find((c) => c.id === categoryId)?.name)
   const list = useFocusList(cropListIds(crops, prices), {
     root,
     digitOffset: leadingItems(prices),
@@ -95,7 +97,7 @@ function CropList({ category }: { category: CategoryId }) {
 
   return (
     <Shell
-      title={t(`categories.${category}`)}
+      title={title}
       softKeys={
         nav.sheet
           ? sheetSoftKeys(t)

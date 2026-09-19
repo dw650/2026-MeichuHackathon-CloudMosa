@@ -677,6 +677,161 @@ const ART: Readonly<Record<CropIconId, ReactElement>> = {
       />
     </>
   ),
+  napacabbage: (
+    <>
+      <path
+        d="M12 2.5c-3.6 0-5.8 3.4-5.8 8.6 0 5.6 2.4 10.4 5.8 10.4s5.8-4.8 5.8-10.4C17.8 5.9 15.6 2.5 12 2.5z"
+        fill="#EFE7B8"
+      />
+      <path
+        d="M6.3 10.2C6.8 5.5 9 2.5 12 2.5s5.2 3 5.7 7.7c-1-.9-2.1-1.1-3-.4-.8-1-1.9-1.4-2.7-1.4s-1.9.4-2.7 1.4c-.9-.7-2-.5-3 .4z"
+        fill="#86BE55"
+      />
+      <path
+        d="M12 9.4v11.2M9.3 10.7c.4 3.3.3 6.5-.5 9M14.7 10.7c-.4 3.3-.3 6.5.5 9"
+        stroke="#D2C47E"
+        strokeWidth=".9"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </>
+  ),
+  taro: (
+    <>
+      <path d="M12 6.2c-1-1.6-.7-3.3.6-4.2 1 1.4.8 3-.6 4.2z" fill="#B0588A" />
+      <ellipse cx="12" cy="13.6" rx="6.6" ry="7.6" fill="#8B6B4E" />
+      <path
+        d="M6.1 10.8c3.9 1.3 7.9 1.3 11.8 0M5.5 14.4c4.3 1.4 8.7 1.4 13 0M6.5 18c3.6 1.2 7.4 1.2 11 0"
+        stroke="#5E4530"
+        strokeWidth="1"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse cx="9.4" cy="12.4" rx="1.1" ry="1.8" fill="#B38F6C" opacity=".7" />
+    </>
+  ),
+  loofah: (
+    <>
+      <path
+        d="M4.6 18.4c-.9-.9-.6-2.4.6-3.6L15.6 4.6c1.4-1.4 3-1.8 3.8-1s.4 2.4-1 3.8L8.2 17.8c-1.2 1.2-2.7 1.5-3.6.6z"
+        fill="#3F7A2A"
+      />
+      <path
+        d="M6.3 15.3l10-9.9M7.7 16.7l10-9.9"
+        stroke="#86B85A"
+        strokeWidth=".9"
+        strokeLinecap="round"
+      />
+      <path d="M19 5l1.6-1.6" stroke="#6B5314" strokeWidth="1.4" strokeLinecap="round" />
+      <g fill="#F6C83A">
+        <circle cx="3.6" cy="18.2" r="1.3" />
+        <circle cx="5.8" cy="20.4" r="1.3" />
+        <circle cx="3.4" cy="20.6" r="1.3" />
+      </g>
+      <circle cx="4.3" cy="19.8" r=".8" fill="#E08A1E" />
+    </>
+  ),
+  bittergourd: (
+    <>
+      <path d="M12 3V1.6M12 2.4l1.8-.9" stroke="#3E7A2A" strokeWidth="1.4" strokeLinecap="round" />
+      <path
+        d="M12 2.8c-2.9 2.4-4.8 6.3-4.8 10.4 0 4 2 7.1 4.8 8.3 2.8-1.2 4.8-4.3 4.8-8.3S14.9 5.2 12 2.8z"
+        fill="#BFDC93"
+      />
+      <g fill="#EEF7DC">
+        <ellipse cx="12" cy="6.6" rx=".7" ry="1.1" />
+        <ellipse cx="10" cy="9.4" rx=".7" ry="1.2" />
+        <ellipse cx="14" cy="9.4" rx=".7" ry="1.2" />
+        <ellipse cx="12" cy="11.8" rx=".7" ry="1.2" />
+        <ellipse cx="9.4" cy="13.6" rx=".7" ry="1.3" />
+        <ellipse cx="14.6" cy="13.6" rx=".7" ry="1.3" />
+        <ellipse cx="12" cy="16" rx=".7" ry="1.2" />
+        <ellipse cx="10.1" cy="17.8" rx=".6" ry="1" />
+        <ellipse cx="13.9" cy="17.8" rx=".6" ry="1" />
+      </g>
+    </>
+  ),
+  greenpepper: (
+    <>
+      <path
+        d="M12 8.6V6.4c0-1.2.8-2.1 2-2.4"
+        stroke="#3E6B1F"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M7.2 8.6C5 9.4 4.4 12.4 5 15.3c.6 3 2.4 5.2 4.3 5.2.9 0 1.6-.5 2.7-.5s1.8.5 2.7.5c1.9 0 3.7-2.2 4.3-5.2.6-2.9 0-5.9-2.2-6.7-1.4-.5-2.7.1-4.8.1s-3.4-.6-4.8-.1z"
+        fill="#2F8A2F"
+      />
+      <path
+        d="M12 9.2c-.3 3.6-.2 7.4.2 11.1"
+        stroke="#1F6B22"
+        strokeWidth=".9"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M7.4 11.4c-.7 1.7-.6 3.5.1 5.1"
+        stroke="#7CC46A"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse cx="12" cy="8.5" rx="2.3" ry=".9" fill="#1F6B22" />
+    </>
+  ),
+  dragonfruit: (
+    <>
+      <ellipse cx="12" cy="13.2" rx="6.6" ry="7.8" fill="#D9267A" />
+      <g fill="#8CC63F">
+        <path d="M12 5.6c-.3-1.6.3-2.9 1.6-3.6.3 1.4-.3 2.7-1.6 3.6z" />
+        <path d="M7.6 8.8c-1.2-.9-2.6-1-3.8-.4.9 1 2.3 1.2 3.8.4z" />
+        <path d="M16.4 8.8c1.2-.9 2.6-1 3.8-.4-.9 1-2.3 1.2-3.8.4z" />
+        <path d="M5.8 14.6c-1.4-.5-2.6-.1-3.4.8 1.2.6 2.5.4 3.4-.8z" />
+        <path d="M18.2 14.6c1.4-.5 2.6-.1 3.4.8-1.2.6-2.5.4-3.4-.8z" />
+        <path d="M12 12.4c-.8-1.2-2-1.7-3.3-1.6.6 1.2 1.8 1.8 3.3 1.6z" />
+        <path d="M13.6 16.8c.8-1.1 2-1.6 3.2-1.5-.6 1.2-1.8 1.7-3.2 1.5z" />
+        <path d="M10 18.6c-.7-1-1.8-1.4-2.9-1.3.5 1 1.6 1.5 2.9 1.3z" />
+      </g>
+    </>
+  ),
+  passionfruit: (
+    <>
+      <path d="M13.2 5.4c.4-1.8 1.8-3 3.8-3.2-.3 1.9-1.7 3-3.8 3.2z" fill="#3E8A2E" />
+      <circle cx="12" cy="13.5" r="8" fill="#6B2F7A" />
+      <circle cx="12" cy="13.5" r="6.4" fill="#FFF1C4" />
+      <circle cx="12" cy="13.5" r="5.3" fill="#F2B632" />
+      <g fill="#4A3210">
+        <circle cx="10.2" cy="11.6" r=".8" />
+        <circle cx="13.6" cy="11.2" r=".8" />
+        <circle cx="12" cy="13.6" r=".8" />
+        <circle cx="9.6" cy="15" r=".8" />
+        <circle cx="14.4" cy="14.8" r=".8" />
+        <circle cx="12.2" cy="16.6" r=".8" />
+      </g>
+    </>
+  ),
+  papaya: (
+    <>
+      <path
+        d="M12 2.5c-2 0-3.2 2-3.6 4.4C7.9 9.8 5.6 11.8 5.6 15.2c0 3.5 2.9 6.3 6.4 6.3s6.4-2.8 6.4-6.3c0-3.4-2.3-5.4-2.8-8.3C15.2 4.5 14 2.5 12 2.5z"
+        fill="#9CC04A"
+      />
+      <path
+        d="M12 4.3c-1.2 0-2 1.3-2.2 3.1-.4 2.8-2.7 4.6-2.7 7.6 0 2.8 2.2 4.9 4.9 4.9s4.9-2.1 4.9-4.9c0-3-2.3-4.8-2.7-7.6C14 5.6 13.2 4.3 12 4.3z"
+        fill="#F0703A"
+      />
+      <ellipse cx="12" cy="14.6" rx="2" ry="3.4" fill="#FBD9A0" />
+      <g fill="#2B2B2B">
+        <circle cx="11.4" cy="12.5" r=".6" />
+        <circle cx="12.6" cy="13.5" r=".6" />
+        <circle cx="11.3" cy="14.7" r=".6" />
+        <circle cx="12.7" cy="15.9" r=".6" />
+        <circle cx="11.7" cy="16.9" r=".6" />
+      </g>
+    </>
+  ),
   oil: (
     <>
       <path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="#E8B92F" />

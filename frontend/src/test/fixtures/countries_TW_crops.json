@@ -2,7 +2,7 @@
  "country": "TW",
  "crops": [
   {
-   "category": "veg",
+   "category": "leafy",
    "default_watch": true,
    "has_retail": true,
    "id": "cabbage",
@@ -16,7 +16,7 @@
    }
   },
   {
-   "category": "veg",
+   "category": "leafy",
    "default_watch": true,
    "has_retail": true,
    "id": "bokchoy",
@@ -44,7 +44,7 @@
    }
   },
   {
-   "category": "veg",
+   "category": "root",
    "default_watch": true,
    "has_retail": true,
    "id": "sweetpotato",
@@ -72,7 +72,7 @@
    }
   },
   {
-   "category": "veg",
+   "category": "fruitveg",
    "default_watch": false,
    "has_retail": true,
    "id": "tomato",
@@ -83,20 +83,6 @@
    "variety": {
     "en": "Beef",
     "zh-TW": "牛番茄"
-   }
-  },
-  {
-   "category": "fruit",
-   "default_watch": false,
-   "has_retail": true,
-   "id": "mango",
-   "name": {
-    "en": "Mango",
-    "zh-TW": "芒果"
-   },
-   "variety": {
-    "en": "Irwin",
-    "zh-TW": "愛文"
    }
   },
   {
@@ -114,7 +100,7 @@
    }
   },
   {
-   "category": "veg",
+   "category": "fruitveg",
    "default_watch": true,
    "has_retail": false,
    "id": "cauliflower",
@@ -128,7 +114,7 @@
    }
   },
   {
-   "category": "veg",
+   "category": "leafy",
    "default_watch": false,
    "has_retail": false,
    "id": "waterspinach",
@@ -142,7 +128,7 @@
    }
   },
   {
-   "category": "cereal",
+   "category": "fruitveg",
    "default_watch": false,
    "has_retail": true,
    "id": "maize",
@@ -153,20 +139,6 @@
    "variety": {
     "en": "Sweet",
     "zh-TW": "甜玉米"
-   }
-  },
-  {
-   "category": "cereal",
-   "default_watch": false,
-   "has_retail": true,
-   "id": "rice",
-   "name": {
-    "en": "Rice",
-    "zh-TW": "稻米"
-   },
-   "variety": {
-    "en": "Japonica",
-    "zh-TW": "蓬萊米"
    }
   },
   {
@@ -181,34 +153,6 @@
    "variety": {
     "en": "Pearl",
     "zh-TW": "珍珠拔"
-   }
-  },
-  {
-   "category": "pulse",
-   "default_watch": false,
-   "has_retail": true,
-   "id": "soybean",
-   "name": {
-    "en": "Edamame",
-    "zh-TW": "毛豆"
-   },
-   "variety": {
-    "en": "Fresh pods",
-    "zh-TW": "鮮莢"
-   }
-  },
-  {
-   "category": "pulse",
-   "default_watch": false,
-   "has_retail": true,
-   "id": "adzuki",
-   "name": {
-    "en": "Adzuki bean",
-    "zh-TW": "紅豆"
-   },
-   "variety": {
-    "en": "Local",
-    "zh-TW": "本地種"
    }
   },
   {
@@ -235,64 +179,232 @@
     "zh-TW": "辣椒"
    },
    "variety": {
-    "en": "Bird's eye",
-    "zh-TW": "朝天椒"
+    "en": "Small red",
+    "zh-TW": "紅小"
    }
   },
   {
-   "category": "oil",
-   "default_watch": false,
-   "has_retail": false,
-   "id": "peanut",
-   "name": {
-    "en": "Peanut",
-    "zh-TW": "落花生"
-   },
-   "variety": {
-    "en": "In shell",
-    "zh-TW": "帶殼"
-   }
-  },
-  {
-   "category": "oil",
-   "default_watch": false,
-   "has_retail": false,
-   "id": "sesame",
-   "name": {
-    "en": "Sesame",
-    "zh-TW": "芝麻"
-   },
-   "variety": {
-    "en": "Black",
-    "zh-TW": "黑芝麻"
-   }
-  },
-  {
-   "category": "other",
+   "category": "leafy",
    "default_watch": false,
    "has_retail": true,
-   "id": "sugarcane",
+   "id": "napacabbage",
    "name": {
-    "en": "Sugarcane",
-    "zh-TW": "甘蔗"
+    "en": "Napa cabbage",
+    "zh-TW": "包心白菜"
    },
    "variety": {
-    "en": "Red",
-    "zh-TW": "紅甘蔗"
+    "en": "Local",
+    "zh-TW": "包白"
    }
   },
   {
-   "category": "other",
+   "category": "root",
    "default_watch": false,
    "has_retail": true,
-   "id": "mushroom",
+   "id": "carrot",
    "name": {
-    "en": "Shiitake",
-    "zh-TW": "香菇"
+    "en": "Carrot",
+    "zh-TW": "胡蘿蔔"
    },
    "variety": {
-    "en": "Bag-grown",
-    "zh-TW": "太空包"
+    "en": "Washed",
+    "zh-TW": "清洗"
+   }
+  },
+  {
+   "category": "root",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "taro",
+   "name": {
+    "en": "Taro",
+    "zh-TW": "芋頭"
+   },
+   "variety": {
+    "en": "Betelnut",
+    "zh-TW": "檳榔心芋"
+   }
+  },
+  {
+   "category": "root",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "potato",
+   "name": {
+    "en": "Potato",
+    "zh-TW": "馬鈴薯"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本產"
+   }
+  },
+  {
+   "category": "root",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "onion",
+   "name": {
+    "en": "Onion",
+    "zh-TW": "洋蔥"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本產"
+   }
+  },
+  {
+   "category": "gourd",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "loofah",
+   "name": {
+    "en": "Loofah",
+    "zh-TW": "絲瓜"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "gourd",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "cucumber",
+   "name": {
+    "en": "Cucumber",
+    "zh-TW": "小黃瓜"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "花胡瓜"
+   }
+  },
+  {
+   "category": "gourd",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "bittergourd",
+   "name": {
+    "en": "Bitter gourd",
+    "zh-TW": "苦瓜"
+   },
+   "variety": {
+    "en": "White",
+    "zh-TW": "白大米"
+   }
+  },
+  {
+   "category": "fruitveg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "eggplant",
+   "name": {
+    "en": "Eggplant",
+    "zh-TW": "茄子"
+   },
+   "variety": {
+    "en": "Long purple",
+    "zh-TW": "麻荸茄"
+   }
+  },
+  {
+   "category": "fruitveg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "greenpepper",
+   "name": {
+    "en": "Bell pepper",
+    "zh-TW": "甜椒"
+   },
+   "variety": {
+    "en": "Green",
+    "zh-TW": "青椒"
+   }
+  },
+  {
+   "category": "fruitveg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "longbean",
+   "name": {
+    "en": "Long bean",
+    "zh-TW": "菜豆"
+   },
+   "variety": {
+    "en": "Green",
+    "zh-TW": "青色"
+   }
+  },
+  {
+   "category": "fruitveg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "frenchbean",
+   "name": {
+    "en": "French bean",
+    "zh-TW": "敏豆"
+   },
+   "variety": {
+    "en": "White",
+    "zh-TW": "白豆"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "ginger",
+   "name": {
+    "en": "Ginger",
+    "zh-TW": "薑"
+   },
+   "variety": {
+    "en": "Mature",
+    "zh-TW": "老薑"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "dragonfruit",
+   "name": {
+    "en": "Dragon fruit",
+    "zh-TW": "紅龍果"
+   },
+   "variety": {
+    "en": "Red flesh",
+    "zh-TW": "紅肉"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "passionfruit",
+   "name": {
+    "en": "Passion fruit",
+    "zh-TW": "百香果"
+   },
+   "variety": {
+    "en": "Improved",
+    "zh-TW": "改良種"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "papaya",
+   "name": {
+    "en": "Papaya",
+    "zh-TW": "木瓜"
+   },
+   "variety": {
+    "en": "Net-house red",
+    "zh-TW": "網室紅肉"
    }
   }
  ]

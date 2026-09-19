@@ -11,7 +11,6 @@ const IN_SCREENS = [
   '/?sheet=menu',
   '/?sheet=area',
   '/cat/veg',
-  '/cat/all',
   '/crop/onion/today',
   '/crop/onion/trend',
   '/crop/onion/trend?days=30',
@@ -86,6 +85,8 @@ const cases: { name: string; state: AppState; paths: string[]; locale?: string }
     paths: [
       '/',
       '/?tab=all',
+      '/cat/leafy',
+      '/cat/fruitveg',
       '/crop/cabbage/today',
       // Nearby prices on both sides (Taipei higher, Taoyuan lower).
       '/crop/cabbage/today?area=newtaipei',
@@ -97,6 +98,19 @@ const cases: { name: string; state: AppState; paths: string[]; locale?: string }
       '/settings',
       '/intl',
       '/intl/palm_oil',
+    ],
+  },
+  {
+    // Taiwan's own categories (docs/02 §5.2) and a crop of the new markets.
+    name: 'TW zh-TW',
+    state: { country: 'TW', lang: 'zh-TW' },
+    paths: [
+      '/?tab=all',
+      '/cat/root',
+      '/cat/gourd',
+      '/crop/napacabbage/today',
+      '/crop/napacabbage/today?area=changhua',
+      '/crop/napacabbage/markets?area=taichung',
     ],
   },
   {

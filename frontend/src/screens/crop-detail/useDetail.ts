@@ -6,6 +6,7 @@ import { errorKind } from '@/api/client'
 import { type Crop, type PriceType, type Quote, useQuote, useRefresh } from '@/api/queries'
 import { type Nav, useNav } from '@/app/navigation'
 import { DETAIL_TABS, type DetailTab, paths, withoutSheet, withParam } from '@/app/paths'
+import type { Tone } from '@/components/categories'
 import type { KeyHandlers } from '@/keys/keyScope'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useCountryData } from '@/screens/shared/useCountryData'
@@ -22,6 +23,8 @@ export type Days = 7 | 30
 export interface Detail {
   cropId: string
   crop: Crop | undefined
+  /** The crop category's tone (tile and chart colour). */
+  tone: Tone
   tab: DetailTab
   country: string
   /** The viewed area: `?area=`, else my area. Viewing never changes my area. */
@@ -75,6 +78,7 @@ export function useDetail(): Detail {
   return {
     cropId,
     crop: catalog.crop(cropId),
+    tone: catalog.toneOf(catalog.crop(cropId)?.category),
     tab,
     country,
     areaId,

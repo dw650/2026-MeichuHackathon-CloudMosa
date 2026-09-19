@@ -16,7 +16,7 @@ import { useSettings } from '@/store/settings'
  */
 export default function WatchScreen() {
   const { t, pick } = useText()
-  const { crops } = useCountryData()
+  const { crops, toneOf } = useCountryData()
   const watchlist = useSettings((s) => s.watchlist)
   const toggleWatch = useSettings((s) => s.toggleWatch)
   const root = useRef<HTMLDivElement>(null)
@@ -39,7 +39,7 @@ export default function WatchScreen() {
             <Card
               key={crop.id}
               focusId={crop.id}
-              lead={<CropIcon crop={crop.id} category={crop.category} />}
+              lead={<CropIcon crop={crop.id} tone={toneOf(crop.category)} />}
               name={pick(crop.name)}
               meta={pick(crop.variety) || undefined}
               trailing={<CheckBox checked={watchlist.includes(crop.id)} />}

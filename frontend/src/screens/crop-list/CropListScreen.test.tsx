@@ -44,15 +44,30 @@ describe('CropListScreen', () => {
     expect(useSession.getState().recentCrops).toEqual(['tomato'])
   })
 
-  it('lists every crop, with digit key caps on the first nine only', async () => {
+  it("lists one of the country's own categories under its name from the API", async () => {
+    const app = await renderApp('/cat/fruitveg', { country: 'TW' })
+    await screen.findByText('茄子')
+    expect(screen.getByRole('heading', { name: '花果菜類' })).toBeInTheDocument()
+    expect(focusIds()).toEqual([
+      'crop:tomato',
+      'crop:cauliflower',
+      'crop:maize',
+      'crop:eggplant',
+      'crop:greenpepper',
+      'crop:longbean',
+      'crop:frenchbean',
+    ])
+    // A category has at most nine crops, so every card has its digit key.
+    expect(card('crop:frenchbean').querySelector('kbd')).toHaveTextContent('7')
+    app.press('7')
+    await waitFor(() => expect(app.path()).toBe('/crop/frenchbean/today'))
+  })
+
+  it("sends the old 全部 list and another country's category home", async () => {
     const app = await renderApp('/cat/all')
-    await screen.findByText('大蒜')
-    expect(screen.getByRole('heading', { name: '全部' })).toBeInTheDocument()
-    expect(focusIds()).toHaveLength(21)
-    expect(card('crop:banana').querySelector('kbd')).toHaveTextContent('9')
-    expect(card('crop:garlic').querySelector('kbd')).toBeNull()
-    app.press('9')
-    await waitFor(() => expect(app.path()).toBe('/crop/banana/today'))
+    await waitFor(() => expect(app.path()).toBe('/'))
+    const tw = await renderApp('/cat/cereal', { country: 'TW' })
+    await waitFor(() => expect(tw.path()).toBe('/'))
   })
 
   it('lists the recently viewed crops, newest first', async () => {

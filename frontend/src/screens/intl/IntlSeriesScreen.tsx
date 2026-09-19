@@ -119,7 +119,7 @@ function Hero({ data, fmt }: PartProps) {
   return (
     <div className={cx(styles.box, styles.hero)}>
       <span className={styles.heroTile}>
-        <CropIcon crop={data.icon} category={data.category} />
+        <CropIcon crop={data.icon} tone={toneOf(data.category)} />
       </span>
       <div className={styles.heroBody}>
         <div className={styles.label}>{pick(data.spec)}</div>

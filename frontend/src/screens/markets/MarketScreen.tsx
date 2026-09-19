@@ -6,7 +6,7 @@ import { type Market, useMarket, useRefresh } from '@/api/queries'
 import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
-import { type Tone, toneOf } from '@/components/categories'
+import type { Tone } from '@/components/categories'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import { cx } from '@/components/cx'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
@@ -75,7 +75,7 @@ export default function MarketScreen() {
   const action = useNavigationType()
   const nav = useNav()
   const { t, lang, pick, dates } = useText()
-  const { country, crop, area } = useCountryData()
+  const { country, crop, area, toneOf } = useCountryData()
   const fmt = usePriceFormat()
   const countryCode = useSettings((s) => s.country)
   const myAreaId = useSettings((s) => s.areaId)
@@ -152,7 +152,7 @@ export default function MarketScreen() {
           <div className={styles.stack}>
             <div className={cx(styles.box, styles.hero)}>
               <span className={styles.heroTile}>
-                <CropIcon crop={cropId} category={cropInfo?.category} />
+                <CropIcon crop={cropId} tone={toneOf(cropInfo?.category)} />
               </span>
               <div className={styles.heroText}>
                 <div className={styles.label}>

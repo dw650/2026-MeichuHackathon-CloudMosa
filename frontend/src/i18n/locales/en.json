@@ -88,14 +88,6 @@
     "news": "News"
   },
   "categories": {
-    "cereal": "Cereals",
-    "veg": "Veg",
-    "fruit": "Fruit",
-    "pulse": "Pulses",
-    "spice": "Spices",
-    "oil": "Oilseed",
-    "other": "Other",
-    "all": "All",
     "recent": "Recent"
   },
   "setup": {

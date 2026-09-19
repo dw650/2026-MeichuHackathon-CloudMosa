@@ -1,9 +1,9 @@
 {
  "area_id": "taipei",
  "change": {
-  "diff_per_kg": 10.7,
+  "diff_per_kg": 9.1,
   "direction": "up",
-  "pct": 0.388385,
+  "pct": 0.390558,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "cabbage",
@@ -11,8 +11,8 @@
  "fetched_at": "2026-09-19T14:10:00+08:00",
  "markets": {
   "count": 2,
-  "max_per_kg": 38.5,
-  "min_per_kg": 38.0,
+  "max_per_kg": 32.6,
+  "min_per_kg": 32.2,
   "total": 2
  },
  "nearby": {
@@ -21,22 +21,22 @@
    "diff_per_kg": 0.0,
    "distance_km": 0,
    "is_base": true,
-   "price_per_kg": 38.25
+   "price_per_kg": 32.4
   },
   "lowest": {
    "area_id": "taoyuan",
-   "diff_per_kg": -1.35,
+   "diff_per_kg": -1.1,
    "distance_km": 27,
    "is_base": false,
-   "price_per_kg": 36.9
+   "price_per_kg": 31.3
   }
  },
- "price_per_kg": 38.25,
+ "price_per_kg": 32.4,
  "reason": null,
  "series": [
   {
    "date": "2026-09-13",
-   "price_per_kg": 26.05
+   "price_per_kg": 22.05
   },
   {
    "date": "2026-09-14",
@@ -44,23 +44,23 @@
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 26.75
+   "price_per_kg": 22.7
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 27.2
+   "price_per_kg": 23.05
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 26.85
+   "price_per_kg": 22.7
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 27.55
+   "price_per_kg": 23.3
   },
   {
    "date": "2026-09-19",
-   "price_per_kg": 38.25
+   "price_per_kg": 32.4
   }
  ],
  "source": {
@@ -76,17 +76,17 @@
  },
  "stats": {
   "arrivals": "low",
-  "arrivals_ratio": 0.619997,
-  "change30_pct": 0.432584,
-  "change7_pct": 0.46833,
-  "high30_per_kg": 38.25,
-  "high7_per_kg": 38.25,
-  "low30_per_kg": 23.4,
-  "low7_per_kg": 26.05,
+  "arrivals_ratio": 0.620013,
+  "change30_pct": 0.433628,
+  "change7_pct": 0.469388,
+  "high30_per_kg": 32.4,
+  "high7_per_kg": 32.4,
+  "low30_per_kg": 19.8,
+  "low7_per_kg": 22.05,
   "pos30": 1.0,
   "volatility": "high",
-  "volatility_pct": 0.094203,
-  "vs_avg7_pct": 0.329279
+  "volatility_pct": 0.095414,
+  "vs_avg7_pct": 0.329685
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

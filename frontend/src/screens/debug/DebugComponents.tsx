@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Card, CardList, CheckBox, Chevron } from '@/components/Card/Card'
-import { CATEGORY_ICON, CATEGORY_IDS, CATEGORY_TONE, toneOf } from '@/components/categories'
+import { RECENT_CATEGORY, toneOf, type Tone } from '@/components/categories'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
@@ -39,6 +39,20 @@ const INDIA = { locale: 'en-IN', unit: UNITS.qtl, unitLabel: { 'zh-TW': '₹/公
 const TAIWAN = { locale: 'zh-TW', unit: UNITS.kg, unitLabel: { 'zh-TW': '元/公斤', en: 'NT$/kg' } }
 const AREA: LocalizedText = { 'zh-TW': 'Nashik 縣', en: 'Nashik' }
 const TODAY = '2026-09-19'
+/** Sample home grid categories (the API sends each country's; these are Taiwan's). */
+const SAMPLE_CATEGORIES: { id: string; name: LocalizedText; icon: string; tone: Tone }[] = [
+  { id: 'leafy', name: { 'zh-TW': '葉菜類', en: 'Leafy' }, icon: 'cabbage', tone: 'green' },
+  { id: 'root', name: { 'zh-TW': '根莖類', en: 'Roots' }, icon: 'sweetpotato', tone: 'amber' },
+  { id: 'gourd', name: { 'zh-TW': '瓜類', en: 'Gourds' }, icon: 'loofah', tone: 'olive' },
+  {
+    id: 'fruitveg',
+    name: { 'zh-TW': '花果菜類', en: 'Fruit veg' },
+    icon: 'eggplant',
+    tone: 'yellow',
+  },
+  { id: 'spice', name: { 'zh-TW': '辛香料', en: 'Spices' }, icon: 'chilli', tone: 'red' },
+  { id: 'fruit', name: { 'zh-TW': '水果', en: 'Fruit' }, icon: 'pineapple', tone: 'orange' },
+]
 
 interface SampleCrop {
   id: string
@@ -148,7 +162,7 @@ export default function DebugComponents() {
       <Card
         key={crop.id}
         focusId={`crop:${crop.id}`}
-        lead={<CropIcon crop={crop.id} category={crop.category} keyCap={index + 1} />}
+        lead={<CropIcon crop={crop.id} tone={toneOf(crop.category)} keyCap={index + 1} />}
         name={text(crop.name)}
         meta={crop.price === null ? t('freshness.none') : text(crop.variety)}
         spark={direction && <Sparkline values={crop.week} direction={direction} />}
@@ -231,7 +245,7 @@ export default function DebugComponents() {
             {CROPS.map((crop, i) => cropCard(crop, i))}
             <Card
               name={text({ 'zh-TW': '大蒜', en: 'Garlic' })}
-              lead={<CropIcon crop="garlic" category="spice" />}
+              lead={<CropIcon crop="garlic" tone={toneOf('spice')} />}
               spark={<Sparkline values={[]} direction="flat" />}
               loading
             />
@@ -270,14 +284,14 @@ export default function DebugComponents() {
             />
             <Card
               focusId="watch:onion"
-              lead={<CropIcon crop="onion" category="veg" />}
+              lead={<CropIcon crop="onion" tone={toneOf('veg')} />}
               name={text(CROPS[0]?.name ?? {})}
               meta={text(CROPS[0]?.variety ?? {})}
               trailing={<CheckBox checked />}
             />
             <Card
               focusId="watch:tomato"
-              lead={<CropIcon crop="tomato" category="veg" />}
+              lead={<CropIcon crop="tomato" tone={toneOf('veg')} />}
               name={text(CROPS[1]?.name ?? {})}
               trailing={<CheckBox checked={false} />}
             />
@@ -395,13 +409,22 @@ export default function DebugComponents() {
 
         <Section title="Category grid">
           <IconGrid
-            items={CATEGORY_IDS.map((id, i) => ({
-              focusId: `cat:${id}`,
-              label: t(`categories.${id}`),
-              icon: CATEGORY_ICON[id],
-              tone: CATEGORY_TONE[id],
-              keyCap: i + 1,
-            }))}
+            items={[
+              ...SAMPLE_CATEGORIES.map((cat, i) => ({
+                focusId: `cat:${cat.id}`,
+                label: text(cat.name),
+                icon: cat.icon,
+                tone: cat.tone,
+                keyCap: i + 1,
+              })),
+              {
+                focusId: `cat:${RECENT_CATEGORY.id}`,
+                label: t('categories.recent'),
+                icon: RECENT_CATEGORY.icon,
+                tone: RECENT_CATEGORY.tone,
+                keyCap: SAMPLE_CATEGORIES.length + 1,
+              },
+            ]}
           />
         </Section>
 

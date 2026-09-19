@@ -9,7 +9,7 @@ import styles from './IconGrid.module.css'
 export interface IconGridItem {
   focusId: string
   label: string
-  /** Crop illustration, e.g. `CATEGORY_ICON[category]`. */
+  /** Crop illustration id, e.g. a category's `icon` from the API. */
   icon: string
   tone: Tone
   /** Number key cap, drawn on both sizes: the cells sit where keys 1–9 are. */

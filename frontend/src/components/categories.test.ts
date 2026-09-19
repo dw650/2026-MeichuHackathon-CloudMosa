@@ -2,25 +2,11 @@ import { describe, expect, it } from 'vitest'
 
 import { isCropIconId } from '@/icons/names'
 
-import { CATEGORY_ICON, CATEGORY_IDS, CATEGORY_TONE, toneOf } from './categories'
+import { DEFAULT_CATEGORY_TONE, RECENT_CATEGORY, toneOf } from './categories'
 
 describe('categories', () => {
-  it('lists the categories in keypad order 1–9 (docs/02 §5.2)', () => {
-    expect(CATEGORY_IDS).toEqual([
-      'cereal',
-      'veg',
-      'fruit',
-      'pulse',
-      'spice',
-      'oil',
-      'other',
-      'all',
-      'recent',
-    ])
-  })
-
-  it('gives every category its tone from docs/03 §3.1', () => {
-    expect(CATEGORY_TONE).toEqual({
+  it('keeps the tones of the default seven categories (docs/03 §3.1)', () => {
+    expect(DEFAULT_CATEGORY_TONE).toEqual({
       cereal: 'amber',
       veg: 'green',
       fruit: 'orange',
@@ -28,19 +14,30 @@ describe('categories', () => {
       spice: 'red',
       oil: 'yellow',
       other: 'slate',
-      all: 'blue',
-      recent: 'purple',
     })
   })
 
-  it('draws every category with an existing crop illustration', () => {
-    for (const id of CATEGORY_IDS) expect(isCropIconId(CATEGORY_ICON[id])).toBe(true)
+  it('draws the 「最近」 tile with its own illustration and colour', () => {
+    expect(RECENT_CATEGORY).toEqual({ id: 'recent', icon: 'clockc', tone: 'purple' })
+    expect(isCropIconId(RECENT_CATEGORY.icon)).toBe(true)
+  })
+
+  it("takes a category's tone from the country's list first", () => {
+    const taiwan = [
+      { id: 'leafy', tone: 'green' as const },
+      { id: 'spice', tone: 'blue' as const },
+    ]
+    expect(toneOf('leafy', taiwan)).toBe('green')
+    expect(toneOf('spice', taiwan)).toBe('blue')
+    // Outside the list (the international series): the default seven.
+    expect(toneOf('cereal', taiwan)).toBe('amber')
+    expect(toneOf('veg')).toBe('green')
   })
 
   it('uses the "other" tone for unknown or missing categories', () => {
-    expect(toneOf('veg')).toBe('green')
     expect(toneOf('mushroom')).toBe('slate')
     expect(toneOf('toString')).toBe('slate')
     expect(toneOf(null)).toBe('slate')
+    expect(toneOf(undefined, [{ id: 'leafy', tone: 'green' }])).toBe('slate')
   })
 })
