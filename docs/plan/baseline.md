@@ -118,7 +118,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：`Shell` 會顯示左、中、右軟鍵標籤。
   - 完成條件：`make up` 後 `http://localhost:8080` 顯示 Shell；`http://localhost:8080/api/v1/health` 回傳 ok；`curl -sI http://localhost:8080/` 看得到上面的安全標頭，而且瀏覽器 console 沒有 CSP 錯誤。
 
-- [ ] **T04 開發模式**
+- [x] **T04 開發模式**
   - 參考：[04](../04-architecture.md) §2.1
   - 內容：`compose.dev.yaml`、`Caddyfile.dev`、`frontend-dev`（Vite HMR）、api `--reload`、bind mount；Makefile 加 `dev`。
   - 完成條件：`make dev` 後在 8080 看得到 Vite 的頁面，改前端檔案後頁面會更新；`/api` 仍然轉發到 api。
