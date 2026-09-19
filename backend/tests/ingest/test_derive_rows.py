@@ -42,7 +42,9 @@ async def store(session: AsyncSession, *quotes: NormalizedQuote) -> None:
     await repo.upsert_quotes(session, quotes, run_id, NOW)
 
 
-async def area_rows(session: AsyncSession, price_type: str, crop: str = "cabbage") -> dict:
+async def area_rows(
+    session: AsyncSession, price_type: str, crop: str = "cabbage"
+) -> dict[str, Any]:
     result = await session.execute(
         text(
             "SELECT area_id, price, n_markets, min_market, max_market, volume_kg FROM area_daily"
@@ -53,7 +55,7 @@ async def area_rows(session: AsyncSession, price_type: str, crop: str = "cabbage
     return {r.area_id: r for r in result.all()}
 
 
-async def market_rows(session: AsyncSession, crop: str = "tomato") -> dict:
+async def market_rows(session: AsyncSession, crop: str = "tomato") -> dict[str, Any]:
     result = await session.execute(
         text(
             "SELECT market_id, rep_price, low_price, high_price, volume_kg FROM market_daily"
