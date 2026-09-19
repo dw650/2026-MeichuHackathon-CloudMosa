@@ -7,6 +7,7 @@ import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
@@ -212,6 +213,7 @@ export default function MarketsScreen() {
             </>
           }
         />
+        <FxNote />
         {body}
       </div>
     </Shell>

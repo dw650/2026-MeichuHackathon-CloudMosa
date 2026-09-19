@@ -115,6 +115,12 @@ const ART: Readonly<Record<UiIconName, ReactElement>> = {
       <path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z" />
     </>
   ),
+  coins: (
+    <>
+      <circle cx="9.5" cy="9.5" r="5.5" />
+      <path d="M13.5 5.2A5.5 5.5 0 1 1 10.3 15" />
+    </>
+  ),
   scale: (
     <>
       <path d="M12 4v16M7 20h10M5 8h14M5 8l-2.5 6a2.5 2.5 0 0 0 5 0zM19 8l-2.5 6a2.5 2.5 0 0 0 5 0z" />

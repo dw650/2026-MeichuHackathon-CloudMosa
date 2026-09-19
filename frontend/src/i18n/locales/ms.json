@@ -254,6 +254,27 @@
     "sourceUndated": "Sumber: World Bank Pink Sheet",
     "credit": "Rates By Exchange Rate API"
   },
+  "currency": {
+    "local": "Mata wang tempatan",
+    "localNote": "Setiap negara sendiri",
+    "localShort": "Tempatan",
+    "converted": "Ditukar pada kadar {{date}}",
+    "convertedShort": "Kadar {{date}}",
+    "noRate": "Tiada kadar; mata wang tempatan",
+    "unitLabel": "{{symbol}}/{{unit}}",
+    "names": {
+      "TWD": "Dolar Taiwan",
+      "MYR": "Ringgit Malaysia",
+      "INR": "Rupee India",
+      "USD": "Dolar AS"
+    },
+    "units": {
+      "kg": "kg",
+      "qtl": "qtl",
+      "catty": "kati Taiwan",
+      "kati": "kati"
+    }
+  },
   "settings": {
     "title": "Tetapan",
     "rows": {
@@ -261,7 +282,8 @@
       "country": "Negara",
       "area": "Kawasan",
       "wholesaleUnit": "Unit borong",
-      "retailUnit": "Unit runcit"
+      "retailUnit": "Unit runcit",
+      "currency": "Mata wang paparan"
     },
     "demo": {
       "title": "Demo",

@@ -33,6 +33,8 @@ export interface AppState {
   /** Demo switches (F18): price APIs fail / my area's data is 3 days old. */
   fail?: boolean
   stale?: boolean
+  /** Display currency (F19); `local` (the default) keeps each country's own. */
+  currency?: 'local' | 'TWD' | 'MYR' | 'INR' | 'USD'
 }
 
 /** Seeds the stores (same format as src/store) so the next navigation starts in that state. */
@@ -53,6 +55,7 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
       watchlist: [],
       priceType: 'wholesale',
       units: { wholesale: null, retail: null },
+      displayCurrency: state.currency ?? 'local',
       setupDone: false,
       demo,
     },
@@ -70,6 +73,7 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
             watchlist: d.watch,
             priceType: state.priceType ?? 'wholesale',
             units: { wholesale: null, retail: null },
+            displayCurrency: state.currency ?? 'local',
             setupDone: true,
             demo,
           },

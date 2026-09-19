@@ -91,7 +91,9 @@ const asIs = (currency: string, reason: Conversion['reason'] = null): Conversion
 function rateOf(currency: string, rates: readonly FxRate[]): FxRate | undefined {
   const row = rates.find((rate) => rate.currency === currency)
   if (row && Number.isFinite(row.per_usd) && row.per_usd > 0) return row
-  return currency === USD ? { currency: USD, per_usd: 1, rate_date: row?.rate_date ?? '' } : undefined
+  return currency === USD
+    ? { currency: USD, per_usd: 1, rate_date: row?.rate_date ?? '' }
+    : undefined
 }
 
 /** The older of the two rate days, i.e. the day the conversion is only as fresh as. */

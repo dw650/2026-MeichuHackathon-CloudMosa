@@ -1,0 +1,26 @@
+/* One line under the info bar saying the prices are converted (F19). It is only rendered
+   while a display currency is in use, so it costs no height on the default screens. */
+.note {
+  margin: 0;
+  padding: 2px var(--gut) 0;
+  overflow: hidden;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.short {
+  display: none;
+}
+
+/* 128×160 (docs/03 §6): the short form, the long one not fitting. */
+@media (max-width: 176px) {
+  .long {
+    display: none;
+  }
+
+  .short {
+    display: inline;
+  }
+}

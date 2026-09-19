@@ -30,8 +30,19 @@ const settings = () => useSettings.getState()
 
 const data = (): SettingsData => {
   const { language, country, areaId, recentAreaIds, watchlist, priceType, units } = settings()
-  const { setupDone, demo } = settings()
-  return { language, country, areaId, recentAreaIds, watchlist, priceType, units, setupDone, demo }
+  const { displayCurrency, setupDone, demo } = settings()
+  return {
+    language,
+    country,
+    areaId,
+    recentAreaIds,
+    watchlist,
+    priceType,
+    units,
+    displayCurrency,
+    setupDone,
+    demo,
+  }
 }
 
 const stored = () =>
@@ -78,6 +89,7 @@ describe('settings store', () => {
       watchlist: [],
       priceType: 'wholesale',
       units: { wholesale: null, retail: null },
+      displayCurrency: 'local',
       setupDone: false,
       demo: { fail: false, stale: false, locate: 'auto' },
     })
@@ -100,6 +112,11 @@ describe('settings store', () => {
       'choosing a unit',
       (s) => s.setUnit('wholesale', 'kg'),
       { units: { wholesale: 'kg', retail: null } },
+    ],
+    [
+      'choosing a display currency',
+      (s) => s.chooseDisplayCurrency('USD'),
+      { displayCurrency: 'USD' },
     ],
     [
       'changing a demo switch',
@@ -151,6 +168,21 @@ describe('settings store', () => {
     })
   })
 
+  describe('the display currency', () => {
+    it('stays over a change of country, the point being to compare them', () => {
+      setUpIndia()
+      settings().chooseDisplayCurrency('USD')
+      settings().chooseCountry('TW', TW)
+      expect(settings().displayCurrency).toBe('USD')
+      expect(stored()?.state.displayCurrency).toBe('USD')
+    })
+
+    it('starts at the local currency of each country', () => {
+      setUpIndia()
+      expect(settings().displayCurrency).toBe('local')
+    })
+  })
+
   describe('changing the country', () => {
     it('resets my area, the recent areas, the watchlist, the units and the recent crops', () => {
       setUpIndia()
@@ -171,6 +203,7 @@ describe('settings store', () => {
         watchlist: ['cabbage', 'bokchoy', 'banana'],
         priceType: 'retail',
         units: { wholesale: null, retail: null },
+        displayCurrency: 'local',
         setupDone: true,
         demo: { fail: false, stale: true, locate: 'auto' },
       })
@@ -279,6 +312,7 @@ describe('settings store', () => {
       watchlist: ['garlic', 'onion'],
       priceType: 'retail',
       units: { wholesale: 'kg', retail: null },
+      displayCurrency: 'USD',
       setupDone: true,
       demo: { fail: true, stale: false, locate: 'none' },
     }
@@ -307,12 +341,13 @@ describe('settings store', () => {
 
     it('fills settings the saved data lacks with their defaults', async () => {
       // As saved by a build without these fields (JSON drops `undefined`).
-      seed({ ...saved, demo: undefined, units: undefined })
+      seed({ ...saved, demo: undefined, units: undefined, displayCurrency: undefined })
       await rehydrate()
       expect(data()).toEqual({
         ...saved,
         demo: DEFAULT_SETTINGS.demo,
         units: DEFAULT_SETTINGS.units,
+        displayCurrency: DEFAULT_SETTINGS.displayCurrency,
       })
     })
 

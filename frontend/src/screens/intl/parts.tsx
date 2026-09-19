@@ -20,10 +20,14 @@ interface Fx {
   rate_date: string
 }
 
-/** 「元/公斤」 on the left; 「以 9/19 匯率換算」 on the right (「9/19 匯率」 on 128×160). */
+/**
+ * 「元/公斤」 on the left; 「以 9/19 匯率換算」 on the right (「9/19 匯率」 on 128×160). The day is
+ * the one of the rates actually used: the page's own, or the display currency's (F19).
+ */
 export function IntlInfoBar({ fx, fmt }: { fx: Fx | null | undefined; fmt: IntlFormat }) {
   const { t } = useText()
-  const date = fx ? formatDay(fx.rate_date, fmt.months) : null
+  const rateDate = fmt.rateDate ?? fx?.rate_date
+  const date = rateDate ? formatDay(rateDate, fmt.months) : null
   return (
     <InfoBar
       left={

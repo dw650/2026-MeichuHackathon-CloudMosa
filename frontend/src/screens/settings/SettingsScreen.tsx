@@ -10,6 +10,7 @@ import { Shell } from '@/components/Shell/Shell'
 import { Tile } from '@/components/Tile/Tile'
 import { useFocusList } from '@/focus/useFocusList'
 import { languageName } from '@/i18n'
+import { currencySymbol, LOCAL } from '@/lib/money'
 import type { UiIconName } from '@/icons/names'
 import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
@@ -32,15 +33,17 @@ interface Row {
 }
 
 /**
- * 設定 (F10, docs/02 §5.7): language, country, my area, wholesale unit and retail unit, each with
- * its current value on the right; demo builds add a 「Demo」 row (F18). OK (or the row's digit)
- * opens the language, country or area list, or steps a unit to the country's next option.
+ * 設定 (F10, docs/02 §5.7): language, country, my area, display currency, wholesale unit and
+ * retail unit, each with its current value on the right; demo builds add a 「Demo」 row (F18).
+ * OK (or the row's digit) opens the language, country, area or currency list, or steps a unit
+ * to the country's next option.
  */
 export default function SettingsScreen() {
   const { t, lang, pick } = useText()
   const nav = useNav()
   const { country, myArea } = useCountryData()
   const language = useSettings((s) => s.language)
+  const currency = useSettings((s) => s.displayCurrency)
   const demo = useSettings((s) => s.demo)
   const setUnit = useSettings((s) => s.setUnit)
   const wholesale = usePriceFormat('wholesale')
@@ -75,6 +78,13 @@ export default function SettingsScreen() {
       name: t('settings.rows.area'),
       value: areaLabel(myArea, country, lang),
       run: () => nav.open(paths.areas('home')),
+    },
+    {
+      id: 'currency',
+      icon: 'coins',
+      name: t('settings.rows.currency'),
+      value: currency === LOCAL ? t('currency.localShort') : currencySymbol(currency),
+      run: () => nav.open(paths.settingsItem('currency')),
     },
     {
       id: 'wholesaleUnit',
