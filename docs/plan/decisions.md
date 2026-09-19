@@ -809,3 +809,11 @@
   - 軟鍵左右兩格加 `max-width: 100%`，太長時以省略號結尾，不會蓋住中間軟鍵；e2e 的版面檢查多一項「軟鍵互相重疊」。
 - 理由：數字與單位要看得到；只換更短的說法，不縮字。
 - 影響：`frontend/src/i18n/locales/{ms,hi}.json`、`frontend/src/components/SoftKeys/SoftKeys.module.css`、`frontend/e2e/checks.ts`。
+
+## 2026-09-20 新聞清單照時間、額度花在清單上的那幾則
+- 情況：使用者看新聞清單預期是新到舊，但原本把提到「我的地區」的排到最前面；而且摘要的額度是照抓取順序花的（伺服器上台灣存了 24 則、讀了 10 篇、產出 8 則摘要），清單只顯示 9 則，其中好幾則沒有摘要。
+- 決定：
+  - 清單（`GET /news` 與畫面）一律依發布時間新到舊，`area` 參數只用來回 `area_id` 與檢查地區；提到的地區仍在每則的 `area_ids`，資訊列照舊顯示我的地區。
+  - worker 每個國家改成先算出「API 會回的那份清單」（同一個排序與上限：最近 7 天最新的 9 則，由 `repositories.news.list_items` 提供），只對其中還沒有摘要、且重試次數還沒到上限（2 次）的，由新到舊花額度；排在清單之外的只先存起來，等它排進清單再輪到它。每日額度（`NEWS_DAILY_ARTICLES`、`NEWS_DAILY_MODEL_CALLS`，預設各 30、滾動 24 小時、三國共用）與每次呼叫的間隔不變，所以實際買到的是每國每天最多 9 則摘要。
+- 理由：新聞清單照時間才符合預期；額度只值得花在使用者真的會看到的那幾則。
+- 影響：`backend/app/repositories/news.py`、`services/news.py`、`ingest/news/pipeline.py`、`api/v1/news.py`、`schemas/news.py`、`db/models.py`（新增 `NEWS_LIST_ITEMS`）、`frontend/src/screens/news/`、msw fixtures；docs/02 §5.9、docs/04 §6、docs/06 §1.6。

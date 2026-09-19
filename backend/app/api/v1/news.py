@@ -12,7 +12,7 @@ from app.services import news as service
 router = APIRouter(tags=["news"], dependencies=[Depends(public_cache)])
 
 Country = Annotated[str, Query(description="Country code", examples=["TW"])]
-AreaId = Annotated[str, Query(description="The user's area, listed first", examples=["taichung"])]
+AreaId = Annotated[str, Query(description="The user's area", examples=["taichung"])]
 NewsId = Annotated[int, Path(description="News item id", examples=[12])]
 
 ITEM_EXAMPLE = {
@@ -40,9 +40,10 @@ def _example(value: object) -> dict[int | str, dict[str, object]]:
     "/news",
     summary="Farm price news of a country",
     description=(
-        "Up to 9 news items of the last 7 days: those mentioning the area (any of its names)"
-        " first, then the newest first. `summary` is null when no summary could be made"
-        " from the article; never invented. Updated once a day at 00:00 local time."
+        "Up to 9 news items of the last 7 days, the newest first; `area_ids` says which"
+        " areas an item mentions (any of their names). `summary` is null when no summary"
+        " could be made from the article; never invented. Updated once a day at 00:00 local"
+        " time."
     ),
     response_model=NewsOut,
     responses=_example(

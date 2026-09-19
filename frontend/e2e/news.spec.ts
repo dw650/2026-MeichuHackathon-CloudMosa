@@ -16,7 +16,7 @@ async function newsIds(page: Page, country: string, area: string): Promise<numbe
   const res = await page.request.get(`/api/v1/news?country=${country}&area=${area}`)
   expect(res.ok()).toBe(true)
   const body = (await res.json()) as NewsList
-  // The first item (my area, with a summary) and one without a summary.
+  // The newest item (with a summary) and one without a summary.
   const plain = body.items.find((item) => item.summary === null)
   return [body.items[0]?.id, plain?.id].filter((id): id is number => id !== undefined)
 }

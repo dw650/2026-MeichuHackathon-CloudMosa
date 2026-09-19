@@ -36,12 +36,17 @@ def row(n: int, hours_ago: float, areas: list[str], **extra: Any) -> dict[str, A
 
 @pytest.fixture
 async def api(settings: Settings, seeded: AsyncSession) -> AsyncIterator[httpx.AsyncClient]:
-    rows = [row(n, hours_ago=n, areas=[]) for n in range(1, 10)]
+    rows = [row(n, hours_ago=n, areas=[]) for n in (1, 3, 4, 5, 6, 7, 8, 9)]
     rows += [
         row(
-            10, 30, ["taichung"], summary="台中菜價上漲三成。預計兩週內回穩。", summary_lang="zh-TW"
+            2,
+            2,
+            ["yunlin", "taichung"],
+            summary="台中菜價上漲三成。預計兩週內回穩。",
+            summary_lang="zh-TW",
         ),
-        row(11, 60, ["yunlin", "taichung"]),
+        row(10, 30, ["taichung"]),  # mentions the area but is not one of the nine newest
+        row(11, 60, ["yunlin"]),
         row(12, 24 * 8, ["taichung"]),  # older than a week: never listed
     ]
     await repo.insert_items(seeded, rows)
@@ -55,7 +60,7 @@ async def api(settings: Settings, seeded: AsyncSession) -> AsyncIterator[httpx.A
     await app.state.engine.dispose()
 
 
-async def test_the_area_comes_first_then_the_newest(api: httpx.AsyncClient) -> None:
+async def test_the_newest_come_first(api: httpx.AsyncClient) -> None:
     res = await api.get("/news", params={"country": "TW", "area": "taichung"})
     assert res.status_code == 200
     assert res.headers["cache-control"] == "public, max-age=60"
@@ -63,26 +68,28 @@ async def test_the_area_comes_first_then_the_newest(api: httpx.AsyncClient) -> N
     assert (body["country"], body["area_id"], body["today"]) == ("TW", "taichung", "2026-09-20")
     assert body["fetched_at"] == "2026-09-20T00:28:00+08:00"
     titles = [i["title"] for i in body["items"]]
-    assert titles == ["菜價新聞 10", "菜價新聞 11"] + [f"菜價新聞 {n}" for n in range(1, 8)]
+    assert titles == [f"菜價新聞 {n}" for n in range(1, 10)]
+    assert "菜價新聞 10" not in titles  # mentioning the area no longer floats an item up
 
 
-async def test_without_area_mentions_it_is_simply_the_newest(api: httpx.AsyncClient) -> None:
-    body = (await api.get("/news", params={"country": "TW", "area": "taipei"})).json()
-    assert [i["title"] for i in body["items"]] == [f"菜價新聞 {n}" for n in range(1, 10)]
+async def test_the_area_does_not_change_the_order(api: httpx.AsyncClient) -> None:
+    mine = (await api.get("/news", params={"country": "TW", "area": "taichung"})).json()
+    other = (await api.get("/news", params={"country": "TW", "area": "taipei"})).json()
+    assert [i["id"] for i in mine["items"]] == [i["id"] for i in other["items"]]
 
 
 async def test_item_fields(api: httpx.AsyncClient) -> None:
     body = (await api.get("/news", params={"country": "TW", "area": "taichung"})).json()
     first, second = body["items"][:2]
-    assert first["summary"] == "台中菜價上漲三成。預計兩週內回穩。"
-    assert first["summary_lang"] == "zh-TW"
-    assert first["source"] == {"name": "公視新聞網PNN", "domain": "news.pts.org.tw"}
-    assert first["published_at"] == "2026-09-18T18:30:00+08:00"
-    assert (first["published_date"], first["days_ago"]) == ("2026-09-18", 2)
+    assert first["summary"] is None
+    assert first["summary_lang"] is None
+    assert first["published_at"] == "2026-09-19T23:30:00+08:00"
+    assert (first["published_date"], first["days_ago"]) == ("2026-09-19", 1)
     assert first["crop_ids"] == ["cabbage"]
-    assert second["summary"] is None
-    assert second["summary_lang"] is None
-    assert second["area_ids"] == ["yunlin", "taichung"]
+    assert second["summary"] == "台中菜價上漲三成。預計兩週內回穩。"
+    assert second["summary_lang"] == "zh-TW"
+    assert second["source"] == {"name": "公視新聞網PNN", "domain": "news.pts.org.tw"}
+    assert second["area_ids"] == ["yunlin", "taichung"]  # the areas it mentions stay visible
 
 
 async def test_one_item(api: httpx.AsyncClient) -> None:

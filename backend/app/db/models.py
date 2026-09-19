@@ -31,6 +31,8 @@ PRICE = Numeric(12, 4)
 PRICE_TYPES = ("wholesale", "retail")
 # News items older than this are deleted and never listed (docs/06 §1.6).
 NEWS_KEEP_DAYS = 7
+# How many items the news list shows, one per digit key; the job summarises exactly these.
+NEWS_LIST_ITEMS = 9
 
 
 class Base(DeclarativeBase):

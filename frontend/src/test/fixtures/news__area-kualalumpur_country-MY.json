@@ -5,27 +5,6 @@
  "items": [
   {
    "area_ids": [
-    "kualalumpur"
-   ],
-   "crop_ids": [
-    "chilli"
-   ],
-   "days_ago": 0,
-   "id": 12,
-   "lang": "en",
-   "published_at": "2026-09-19T02:10:00+08:00",
-   "published_date": "2026-09-19",
-   "source": {
-    "domain": "demo.example",
-    "name": "Demo data"
-   },
-   "summary": "Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.",
-   "summary_lang": "en",
-   "title": "Chilli prices ease at the Kuala Lumpur wholesale market",
-   "url": "https://demo.example/my/1"
-  },
-  {
-   "area_ids": [
     "johorbahru"
    ],
    "crop_ids": [
@@ -44,6 +23,27 @@
    "summary_lang": "en",
    "title": "Tomato prices rise in Johor after heavy rain",
    "url": "https://demo.example/my/2"
+  },
+  {
+   "area_ids": [
+    "kualalumpur"
+   ],
+   "crop_ids": [
+    "chilli"
+   ],
+   "days_ago": 0,
+   "id": 12,
+   "lang": "en",
+   "published_at": "2026-09-19T02:10:00+08:00",
+   "published_date": "2026-09-19",
+   "source": {
+    "domain": "demo.example",
+    "name": "Demo data"
+   },
+   "summary": "Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.",
+   "summary_lang": "en",
+   "title": "Chilli prices ease at the Kuala Lumpur wholesale market",
+   "url": "https://demo.example/my/1"
   },
   {
    "area_ids": [

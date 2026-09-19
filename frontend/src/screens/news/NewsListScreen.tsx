@@ -24,9 +24,9 @@ import { dayLabel, newsFocusId, newsIdOf, RETRY_ID } from './newsItems'
 const DIGIT_KEYS = 9
 
 /**
- * 新聞 (docs/02 §5.9): farm price news of my country, those mentioning my area first, then the
- * newest. OK or 1–9 opens an item; the right soft key goes back. The info bar shows my area
- * and when the news was fetched; each card shows its date.
+ * 新聞 (docs/02 §5.9): farm price news of my country, the newest first. OK or 1–9 opens an
+ * item; the right soft key goes back. The info bar shows my area and when the news was
+ * fetched; each card shows its date.
  */
 export default function NewsListScreen() {
   const nav = useNav()
