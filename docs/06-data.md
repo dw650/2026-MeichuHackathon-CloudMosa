@@ -121,7 +121,7 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
 **標籤與排序**
 
 - 相關作物：標題（和摘要）裡出現的作物名稱，seed 的每種語言都算，另外加上 `sources.yaml` 的別名（高麗菜→甘藍、地瓜→甘藷、corn→maize…）；英文要整個字相符並接受複數（onions、tomatoes），所以 price 不會被當成 rice。模型挑的作物只收該國作物清單裡的代號。
-- 提到的地區：地區名稱的每種語言，中文另外去掉「市」「縣」（台中市→台中），加上別名（北農→台北市、西螺→雲林縣、Lasalgaon→Nashik、Bangalore→Bengaluru Urban）；「臺」一律當成「台」。
+- 提到的地區：地區名稱的每種語言，中文另外去掉「市」「縣」（台中市→台中），加上別名（北農→台北市、西螺→雲林縣、Lasalgaon→Nashik、Bangalore→Bengaluru Urban；馬來西亞的州名給那個州的每一個縣，例：Pahang→Bera、Kuantan、Temerloh）；「臺」一律當成「台」。
 - 重複：同一個 guid，或標題只差標點、空白、大小寫的，只留一則。
 - 清單：最近 7 天，提到使用者地區的排前面，其餘新到舊，最多 9 則。超過 7 天的新聞每次執行時刪掉。
 

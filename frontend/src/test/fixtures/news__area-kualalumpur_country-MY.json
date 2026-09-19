@@ -26,7 +26,14 @@
   },
   {
    "area_ids": [
-    "johorbahru"
+    "johorbahru",
+    "batupahat",
+    "kluang",
+    "kotatinggi",
+    "mersing",
+    "muar",
+    "pontian",
+    "segamat"
    ],
    "crop_ids": [
     "tomato"
@@ -47,7 +54,9 @@
   },
   {
    "area_ids": [
-    "kuantan"
+    "kuantan",
+    "bera",
+    "temerloh"
    ],
    "crop_ids": [
     "cabbage",
@@ -69,7 +78,11 @@
   },
   {
    "area_ids": [
-    "timurlaut"
+    "timurlaut",
+    "baratdaya",
+    "seberangperaiselatan",
+    "seberangperaitengah",
+    "seberangperaiutara"
    ],
    "crop_ids": [
     "carrot",

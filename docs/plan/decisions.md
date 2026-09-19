@@ -818,9 +818,10 @@
   - 座標：追加的 64 個縣用 OpenStreetMap Nominatim 查一次（每秒最多 1 個請求，共 77 個請求），存在 seed：有同名市鎮就用市鎮（35 個），沒有就用 OpenStreetMap 給這個縣的點（28 個），Larut, Matang & Selama 用首府 Taiping。原本 11 個縣的座標不變（首府，和查到的點相差不到 20 公里）。
   - mock：追加的縣 `retail: true`、`lag: 0`、沒有市場，價格水準 `k` 用 7–9 月的真實資料算（每個作物、每天「縣的中位數 ÷ 各縣中位數的中位數」再取中位數）。Borong 2026 年沒有回報，追加的縣不加市場，原本的 7 個不變。
   - `coverage` 改成「15 個州與直轄區、75 個縣」。
+  - 新聞（N1）原本假設一州一個地區，州名別名只給一個縣（例：Pahang→Kuantan）。改成州名別名給那個州的每一個縣（`backend/app/ingest/news/sources.yaml`；Sabah、Melaka、Perlis 是新加的州），標題寫 Pahang 的新聞，Bera、Kuantan、Temerloh 的使用者都會排在前面；縣名本身照原本的規則自動比對。
 - 理由：規則只看資料、每個合格的縣都有 2 個以上的濕巴剎可取中位數；地區多了，位置推測與「附近最高／最低」也更準。
-- 取捨：地區清單變長（75 個，照距離排序）；吉隆坡附近多了 Petaling Jaya、Petaling、Gombak 等縣，示範資料在批發模式下「附近」找不到有批發價的地區就不顯示。`PROVIDERS=mock` 的示範資料多了約 7.6 萬列，後端測試變慢約一成。
-- 影響：`backend/app/seed/MY.yaml`、`backend/tests/ingest/test_seed.py`、`backend/tests/api/test_catalog.py`、`frontend/src/test/fixtures/`（`make fixtures`）、docs/06 §1.5、§7.2、§7.4。
+- 取捨：地區清單變長（75 個，照距離排序）；吉隆坡附近多了 Petaling Jaya、Petaling、Gombak 等縣，示範資料在批發模式下「附近」找不到有批發價的地區就不顯示。`PROVIDERS=mock` 每次執行的示範資料從約 7.7 萬列變成約 15.3 萬列（多出來的是馬來西亞 64 個縣的零售），用到 mock 的後端測試跟著變慢。
+- 影響：`backend/app/seed/MY.yaml`、`backend/app/ingest/news/sources.yaml`、`backend/tests/ingest/test_seed.py`、`backend/tests/api/test_catalog.py`、`backend/tests/news/test_pipeline.py`、`frontend/src/test/fixtures/`（`make fixtures`）、docs/06 §1.5、§7.2、§7.4。
 
 ## 2026-09-20 PriceCatcher 的濕巴剎改從 lookup 讀
 - 情況：原本 seed 列出 79 個濕巴剎的代號，新開的濕巴剎要改 seed 才會收；擴充後要列 285 個。使用者要求從 lookup 找出每個縣全部的濕巴剎。

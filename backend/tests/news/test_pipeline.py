@@ -460,7 +460,7 @@ async def test_malaysia_demo_news_uses_the_malay_aliases(
     malay = next(i for i in stored if i.title.startswith("Harga kubis"))
     assert (malay.lang, malay.summary) == ("ms", None)
     assert malay.crop_ids == ["cabbage", "bokchoy"]  # kubis, sawi
-    assert malay.area_ids == ["kuantan"]  # Pahang
+    assert malay.area_ids == ["kuantan", "bera", "temerloh"]  # Pahang: each of its districts
     kl = next(i for i in stored if "Kuala Lumpur" in i.title)
     assert (kl.crop_ids, kl.area_ids) == (["chilli"], ["kualalumpur"])
 
