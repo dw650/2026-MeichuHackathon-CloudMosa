@@ -286,7 +286,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：用 memory router 測 push 與 replace 的次數、還原後按返回會回到首頁。
   - 完成條件：測試通過。
 
-- [ ] **T22 API client 與 queries**
+- [x] **T22 API client 與 queries**
   - 參考：[04](../04-architecture.md) §4.5、§6.1、§6.2
   - 內容：
     - `fetch` 包裝：10 秒逾時、依錯誤碼轉換錯誤、帶 demo 標頭。

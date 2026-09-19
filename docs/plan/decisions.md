@@ -304,3 +304,16 @@
 - 決定：前端基礎改成 T20、T23（子 agent，各自的 worktree）與 T21（主 session）同時做；同步點 1 分兩段（先合併 T16–T21，T23／T24 完成後再合併並跑 `make e2e`）；畫面階段由多個子 agent 各用一個 worktree 同時做，主 session 先做共用的畫面工具與首頁當範本，再負責合併。品質關卡不變（lint、型別、測試、覆蓋率門檻、大段落 Playwright）；畫面測試只寫計畫要求的核心情境。
 - 理由：縮短等待時間，品質底線不變。
 - 影響：只影響執行順序，不影響規格。
+
+## 2026-09-19 T22 API client 與 query 的細節
+- 情況：04 §4.5 規定 10 秒逾時、重試 1 次、保留舊資料，但沒寫逾時要不要重試（重試會讓錯誤畫面晚 20 秒才出現）、msw 的 fixtures 怎麼產生才能一直跟 API 對得上。
+- 決定：
+  - `apiGet` 用 `AbortController` 做 10 秒逾時；錯誤一律轉成 `ApiError(code, status, requestId)`，`code` 取自 API 的錯誤本文，沒有本文時依 HTTP 狀態推（400 → `invalid_param`、404 → `not_found`、500 → `internal`、503 → `upstream_unavailable`），另外有前端自己的 `timeout`、`network`、`aborted`。`errorKind()` 把錯誤分成 `not_found`（回到選擇畫面）、`bad_request`（回首頁）、`unavailable`（連線失敗、保留舊資料）。
+  - 只重試一次連線問題（網路錯誤、5xx）；逾時與 4xx 不重試，確保「超過 10 秒會顯示錯誤」成立。
+  - TanStack Query：`staleTime` 5 分鐘、`placeholderData: keepPreviousData`、不因視窗焦點或重新連線而重抓、不輪詢；目錄類（國家、作物）的 `staleTime` 1 小時。選單「重新整理」與「重試」用 `useRefresh()` 重抓畫面上的資料。
+  - msw fixtures 由後端實際回應存下來（`make fixtures`：測試資料庫、固定時鐘、mock 資料，重跑結果相同）；handlers 找不到完全對應的 fixture 時，退回該國的預設地區或代表作物並換掉 id，讓畫面測試可以用任何作物與地區。
+  - demo 建置才把設定裡的 demo 開關轉成標頭（`X-Demo-Fail`、`X-Demo-Stale: <我的地區>:3`、`X-Demo-Locate`）；正式建置不帶。
+  - 漲跌顏色由 `CountryTheme` 依國家的 `up_is_pos` 設在 `<html data-up>`。
+  - `StalenessOut.state` 改成 Literal，產生的前端型別變成 `'today' | 'closed' | 'stale' | 'none'`。
+- 理由：錯誤處理集中在 client；fixtures 與 API 同源，契約改了重跑一次即可。
+- 影響：`frontend/src/api/`、`frontend/src/app/{providers,CountryTheme,demoHeaders}.tsx`、`frontend/src/test/msw/`、`frontend/src/test/fixtures/`、`backend/tests/dump_api_fixtures.py`、`scripts/save-api-fixtures.sh`。
