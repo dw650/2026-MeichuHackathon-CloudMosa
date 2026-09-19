@@ -214,7 +214,7 @@ export interface NewsParams {
   area: string
 }
 
-/** The 新聞 list (docs/02 §5.8): up to 9 items, my area first. */
+/** The 新聞 list (docs/02 §5.9): up to 9 items, my area first. */
 export function useNews(p: NewsParams | null) {
   return useQuery({
     queryKey: p ? queryKeys.news(p) : ['news', 'off'],

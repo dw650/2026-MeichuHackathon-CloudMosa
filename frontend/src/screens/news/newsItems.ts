@@ -1,4 +1,4 @@
-// Focus ids and labels shared by the news list and the news detail (docs/02 §5.8).
+// Focus ids and labels shared by the news list and the news detail (docs/02 §5.9).
 
 import { type DateLabels, formatDate } from '@/lib/dates'
 import type { Text } from '@/screens/shared/useText'

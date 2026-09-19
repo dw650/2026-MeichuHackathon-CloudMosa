@@ -25,7 +25,7 @@ const NO_ITEMS: readonly string[] = []
 /** Related crops shown; 1, 2, 3 open them. */
 const MAX_CROPS = 3
 
-/** A news item (docs/02 §5.8); unknown ids go back to the list. */
+/** A news item (docs/02 §5.9); unknown ids go back to the list. */
 export default function NewsDetailScreen() {
   const { newsId } = useParams()
   const id = Number(newsId)

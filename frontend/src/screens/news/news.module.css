@@ -1,4 +1,4 @@
-/* News detail (docs/02 §5.8): the headline, date and source, the summary box, related crops. */
+/* News detail (docs/02 §5.9): the headline, date and source, the summary box, related crops. */
 .detail {
   display: grid;
   gap: 4px;

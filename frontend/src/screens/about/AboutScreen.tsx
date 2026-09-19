@@ -13,7 +13,7 @@ const NO_ITEMS: readonly string[] = []
 
 /**
  * 關於與資料說明 (F11, docs/02 §5.7): how the prices are worked out, where the news and its AI
- * summaries come from (docs/02 §5.8), the country's data source with the IP database credit
+ * summaries come from (docs/02 §5.9), the country's data source with the IP database credit
  * (DB-IP Lite, CC BY 4.0) and the international prices' sources (World Bank Pink Sheet,
  * CC BY 4.0; Rates By Exchange Rate API), and that the app never asks for money or codes.
  * Nothing to select: ↑ ↓ scroll the page by 60% (docs/03 §5).

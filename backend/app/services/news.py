@@ -1,4 +1,4 @@
-"""The 新聞 page (docs/02 §5.8): the country's recent news with the user's area first."""
+"""The 新聞 page (docs/02 §5.9): the country's recent news with the user's area first."""
 
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
