@@ -6,6 +6,7 @@ import { useNav } from '@/app/navigation'
 import { paths } from '@/app/paths'
 import { type CategoryId, CATEGORY_IDS } from '@/components/categories'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
@@ -124,6 +125,7 @@ function CropList({ category }: { category: CategoryId }) {
           </>
         }
       />
+      <FxNote />
       <div ref={root}>
         <CropPriceList
           crops={crops}

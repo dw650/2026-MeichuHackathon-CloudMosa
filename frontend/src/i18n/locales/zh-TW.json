@@ -276,6 +276,27 @@
     "sourceUndated": "資料：世界銀行 Pink Sheet",
     "credit": "匯率：Rates By Exchange Rate API"
   },
+  "currency": {
+    "local": "當地幣別",
+    "localNote": "各國用自己的幣別",
+    "localShort": "當地",
+    "converted": "以 {{date}} 匯率換算",
+    "convertedShort": "{{date}} 匯率",
+    "noRate": "缺匯率，顯示當地幣別",
+    "unitLabel": "{{symbol}}/{{unit}}",
+    "names": {
+      "TWD": "新台幣",
+      "MYR": "馬來西亞令吉",
+      "INR": "印度盧比",
+      "USD": "美元"
+    },
+    "units": {
+      "kg": "公斤",
+      "qtl": "公擔",
+      "catty": "台斤",
+      "kati": "斤"
+    }
+  },
   "settings": {
     "title": "設定",
     "rows": {
@@ -283,7 +304,8 @@
       "country": "國家",
       "area": "我的地區",
       "wholesaleUnit": "批發單位",
-      "retailUnit": "零售單位"
+      "retailUnit": "零售單位",
+      "currency": "顯示幣別"
     },
     "demo": {
       "title": "Demo",

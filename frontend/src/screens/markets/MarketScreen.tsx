@@ -10,6 +10,7 @@ import { type Tone, toneOf } from '@/components/categories'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import { cx } from '@/components/cx'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { Pill } from '@/components/Pill/Pill'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
@@ -226,6 +227,7 @@ export default function MarketScreen() {
             </>
           }
         />
+        <FxNote />
         {body}
       </div>
     </Shell>

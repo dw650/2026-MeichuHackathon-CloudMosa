@@ -1,23 +1,21 @@
 import type { Country, PriceType } from '@/api/queries'
-import {
-  type Direction,
-  formatPercent,
-  formatSignedPercent,
-  priceDiffDirection,
-} from '@/lib/change'
-import { formatPrice, formatPriceDiff } from '@/lib/format'
+import { type Direction, formatPercent, formatSignedPercent } from '@/lib/change'
+import { type Conversion, formatMoney, formatMoneyDiff, moneyDiffDirection } from '@/lib/money'
 import { defaultUnitTable, resolveUnit, type UnitChoice, type UnitSpec } from '@/lib/units'
 import { useSettings } from '@/store/settings'
 
 import { useCountryData } from './useCountryData'
+import { moneyUnitLabel, useDisplayCurrency } from './useDisplayCurrency'
 import { useText } from './useText'
 
 export interface PriceFormat {
   type: PriceType
   unit: UnitSpec
-  /** e.g. ₹/公擔, NT$/kg (docs/06 §5). */
+  /** e.g. ₹/公擔, NT$/kg (docs/06 §5); the display currency's once converted. */
   unitLabel: string
   locale: string
+  /** The currency the prices are shown in, and why (F19). */
+  fx: Conversion
   /** A per-kg price in the chosen unit; null → 「—」. */
   price(perKg: number | null | undefined): string
   /** A signed per-kg difference in the chosen unit (+95, −3.2, ±0). */
@@ -50,19 +48,22 @@ export function usePriceFormat(type?: PriceType): PriceFormat {
   const units = useSettings((s) => s.units)
   const code = useSettings((s) => s.country)
   const { country } = useCountryData()
-  const { pick } = useText()
+  const { t, pick } = useText()
   const priceType = type ?? chosenType
   const unit = resolveUnit(unitChoice(country, code, priceType), units[priceType])
   const option = country?.units[priceType].options.find((o) => o.id === unit.id)
   const locale = country?.locale ?? 'en-IN'
+  const fx = useDisplayCurrency()
+  const unitLabel = moneyUnitLabel(t, fx, unit.id, pick(option?.label))
   return {
     type: priceType,
     unit,
-    unitLabel: pick(option?.label),
+    unitLabel,
     locale,
-    price: (perKg) => formatPrice(perKg, unit, locale),
-    diff: (perKg) => formatPriceDiff(perKg, unit, locale),
-    diffDirection: (perKg) => priceDiffDirection(perKg, unit),
+    fx,
+    price: (perKg) => formatMoney(perKg, unit, locale, fx),
+    diff: (perKg) => formatMoneyDiff(perKg, unit, locale, fx),
+    diffDirection: (perKg) => moneyDiffDirection(perKg, unit, fx),
     percent: (ratio) => formatPercent(ratio, locale),
     signedPercent: (ratio) => formatSignedPercent(ratio, locale),
   }

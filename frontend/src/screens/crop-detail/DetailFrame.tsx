@@ -3,6 +3,7 @@ import { Navigate } from 'react-router'
 
 import { DETAIL_TABS, paths } from '@/app/paths'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell, type SoftKeyLabels } from '@/components/Shell/Shell'
@@ -75,6 +76,7 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
           </>
         }
       />
+      <FxNote />
       <Tabs
         tabs={DETAIL_TABS.map((id) => ({ id, label: t(`detail.tabs.${id}`) }))}
         activeId={tab}

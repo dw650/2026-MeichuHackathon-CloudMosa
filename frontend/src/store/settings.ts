@@ -7,6 +7,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import { isLanguageId, phoneLanguage, setLanguage, type LanguageId } from '@/i18n'
+import { DISPLAY_CURRENCIES, LOCAL, type DisplayCurrency } from '@/lib/money'
 import type { PriceType } from '@/lib/units'
 
 import {
@@ -81,6 +82,8 @@ export interface SettingsData {
   readonly priceType: PriceType
   /** Unit id per price type; `null` uses the country default from the API. */
   readonly units: Readonly<Record<PriceType, string | null>>
+  /** Currency every price is shown in; `local` keeps each country's own (F19). */
+  readonly displayCurrency: DisplayCurrency
   /** First-run setup finished: a country and an area are chosen. */
   readonly setupDone: boolean
   readonly demo: DemoSwitches
@@ -104,6 +107,8 @@ export interface SettingsActions {
   togglePriceType(): void
   /** `null` goes back to the country default. */
   setUnit(priceType: PriceType, unitId: string | null): void
+  /** Shows every price in one currency, or `local` for each country's own. */
+  chooseDisplayCurrency(currency: DisplayCurrency): void
   setDemo(switches: Partial<DemoSwitches>): void
 }
 
@@ -117,6 +122,7 @@ export const DEFAULT_SETTINGS: SettingsData = {
   watchlist: [],
   priceType: 'wholesale',
   units: { wholesale: null, retail: null },
+  displayCurrency: LOCAL,
   setupDone: false,
   demo: { fail: false, stale: false, locate: 'auto' },
 }
@@ -142,6 +148,7 @@ const settingsFormat: PersistedFormat<SettingsData> = {
     watchlist: readIds(),
     priceType: readOneOf(PRICE_TYPES),
     units: readObject({ wholesale: readUnitId, retail: readUnitId }, DEFAULT_SETTINGS.units),
+    displayCurrency: readOneOf(DISPLAY_CURRENCIES),
     setupDone: readBoolean,
     demo: readObject(
       { fail: readBoolean, stale: readBoolean, locate: readOneOf(DEMO_LOCATE_OPTIONS) },
@@ -190,6 +197,7 @@ export const useSettings = create<SettingsState>()(
         set((state) => ({ priceType: state.priceType === 'wholesale' ? 'retail' : 'wholesale' })),
       setUnit: (priceType, unitId) =>
         set((state) => ({ units: { ...state.units, [priceType]: unitId } })),
+      chooseDisplayCurrency: (displayCurrency) => set({ displayCurrency }),
       setDemo: (switches) => set((state) => ({ demo: { ...state.demo, ...switches } })),
     }),
     persistOptions<SettingsData, SettingsState>(settingsFormat),

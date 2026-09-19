@@ -79,6 +79,7 @@ export const UI_ICON_NAMES = [
   'store',
   'trend',
   'globe',
+  'coins',
   'scale',
   'shield',
   'truck',

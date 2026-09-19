@@ -66,6 +66,10 @@ COUNTRY_EXAMPLE = {
         },
     },
 }
+FX_EXAMPLE = [
+    {"currency": "INR", "per_usd": 95.989567, "rate_date": "2026-09-19"},
+    {"currency": "USD", "per_usd": 1.0, "rate_date": "2026-09-19"},
+]
 AREAS_EXAMPLE = {
     "country": "IN",
     "today": "2026-09-19",
@@ -118,12 +122,14 @@ def _example(value: object) -> dict[int | str, dict[str, object]]:
         "Currency, locale, local today, closed weekdays (ISO, 7 = Sunday), rise colour"
         " (`up_is_pos`: rising prices shown green), default area, recent areas and watchlist,"
         " and the unit table (per-kg factor and decimals) for wholesale and retail."
+        " `fx` carries the exchange rate of every currency the app can show prices in"
+        " (`price / per_usd_from * per_usd_to`); a currency without a rate is left out."
     ),
     response_model=CountriesOut,
-    responses=_example({"countries": [COUNTRY_EXAMPLE]}),
+    responses=_example({"countries": [COUNTRY_EXAMPLE], "fx": FX_EXAMPLE}),
 )
 async def countries(session: SessionDep, now: NowDep) -> CountriesOut:
-    return CountriesOut.model_validate({"countries": await service.list_countries(session, now)})
+    return CountriesOut.model_validate(await service.countries_payload(session, now))
 
 
 @router.get(

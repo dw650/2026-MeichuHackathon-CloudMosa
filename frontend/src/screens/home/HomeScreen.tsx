@@ -8,6 +8,7 @@ import { Card, CardList, Chevron } from '@/components/Card/Card'
 import { CATEGORY_ICON, CATEGORY_IDS, CATEGORY_TONE } from '@/components/categories'
 import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
+import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
@@ -125,6 +126,7 @@ export default function HomeScreen() {
           ) : undefined
         }
       />
+      <FxNote />
       <Tabs
         tabs={[
           { id: 'watch', label: t('home.tabs.watch') },

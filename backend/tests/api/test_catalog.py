@@ -120,3 +120,13 @@ async def test_openapi_and_docs_are_published(api: httpx.AsyncClient) -> None:
     docs = await api.get("/api/docs")
     assert docs.status_code == 200
     assert "swagger" in docs.text.lower()
+
+
+async def test_countries_carries_the_rates_the_app_converts_prices_with(
+    api: httpx.AsyncClient,
+) -> None:
+    body = (await api.get("/api/v1/countries")).json()
+    rates = {r["currency"]: r for r in body["fx"]}
+    assert set(rates) == {"INR", "MYR", "TWD", "USD"}
+    assert rates["TWD"] == {"currency": "TWD", "per_usd": 31.834145, "rate_date": "2026-09-19"}
+    assert rates["USD"]["per_usd"] == 1.0

@@ -869,3 +869,16 @@
   - 走現有的 `GET /crops/{crop}/compare`（多一個 `other_countries` 欄位），不開新端點、不加新表。
 - 理由：農夫要判斷的是「我這裡算貴還是便宜」，全國中位數＋既有匯率就夠，而且不必新增資料管線；卡片不可選，按鍵操作不變。
 - 影響：`backend/app/services/crosscountry.py`（新）、`app/services/prices.py`、`app/repositories/{catalog,intl,prices}.py`、`app/schemas/prices.py`、`frontend/src/screens/crop-detail/OtherCountriesCard.tsx`（新）、`CompareTab.tsx`、四個字串檔、關於頁；docs/00、02 §5.4、04、06 §4.1。
+## 2026-09-20 顯示幣別（F19）
+- 情況：每個國家的價格都用自己的幣別（NT$、RM、₹），評審或想比較國家的人沒辦法把兩國的價格放在一起看。B5 已經有 `fx_rates`（每個幣別對美元的 `per_usd` 與 `rate_date`，每天更新）與 `services/intl.py` 的換算。
+- 決定：
+  - **API**：`GET /countries` 多一個 `fx` 陣列（各國幣別與 USD 的 `per_usd`、`rate_date`），不開新端點：catalog 本來就是前端啟動時一定會拿的資料，匯率跟著它走不多一次請求。SQL 放在 `repositories/intl.py` 的 `get_rates()`，`services/catalog.py` 的 `countries_payload()` 組起來。
+  - **換算在前端**，而且只在 `lib/money.ts`：`conversion(local, wanted, rates)` 算出係數，`formatMoney`／`formatMoneyDiff`／`moneyDiffDirection` 是唯一會乘上係數的地方；畫面只透過 `usePriceFormat`、`useIntlFormat` 取數字，所以不可能換算兩次。`price_in_B = price_in_A ÷ per_usd_A × per_usd_B`。
+  - **小數位依幣別**（TWD、INR 整數，MYR、USD 兩位，未知幣別兩位），數字小的時候補到兩位有效數字、最多四位小數：換算後的真實價格不會顯示成 0（CLAUDE.md）。單位仍照使用者的批發／零售單位設定，`toUnit` 的乘法和換算是同一條線性運算，先後沒有差別。
+  - **一個畫面只說一次**：資訊列的單位標籤換成 `currency.unitLabel`（`NT$/公斤`），下面多一行 `FxNote`（「以 9/19 匯率換算」／128×160「9/19 匯率」）。這一行只在換算時存在，所以預設畫面的高度完全不變，也不會變成「整條提示列」。
+  - **匯率日期取兩邊較舊的那一天**：換算不會比較舊的那筆匯率新。USD 沒有匯率列時當成 1（定義如此，不是猜的）。
+  - **缺匯率**：留在當地幣別，`FxNote` 改寫「缺匯率，顯示當地幣別」，不猜、不顯示 0。
+  - 設定列放在「我的地區」後面（數字鍵 `4`），單位兩列與 Demo 的數字往後移一位；`displayCurrency` 換國家時**不**重設（它的用途就是跨國比較）。
+  - 幣別名稱、單位名稱（公斤／公擔／台斤／斤）、換算說明四個語言都有；ms、hi 是機器翻譯。
+- 理由：匯率是既有資料，後端不必再算；換算只影響顯示，比價與「地區價」的定義（06 §3）完全不動；集中在 `lib/money.ts` 才能保證每個畫面一致、也能用單元測試覆蓋。
+- 影響：`backend/app/{repositories/intl.py,services/catalog.py,schemas/catalog.py,api/v1/catalog.py}`、`frontend/src/lib/money.ts`、`frontend/src/store/settings.ts`、`frontend/src/screens/shared/{useDisplayCurrency.ts,FxNote.tsx,fxNote.module.css,usePriceFormat.ts,useCountryData.ts}`、`frontend/src/screens/settings/CurrencySettings.tsx`、`frontend/src/screens/intl/{useIntlFormat.ts,parts.tsx}`、五個價格畫面各多一行 `<FxNote />`、`frontend/src/i18n/locales/*.json`、`frontend/src/icons/{names.ts,ui.tsx}`（多一個 `coins` 圖示）；docs/00 決定表、docs/02 §3.1 F10、§3.4 F19、§5.7、§5.8、docs/04 §API。

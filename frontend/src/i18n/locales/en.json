@@ -263,6 +263,27 @@
     "sourceUndated": "Source: World Bank Pink Sheet",
     "credit": "Rates By Exchange Rate API"
   },
+  "currency": {
+    "local": "Local currency",
+    "localNote": "Each country's own",
+    "localShort": "Local",
+    "converted": "Converted at the {{date}} rate",
+    "convertedShort": "{{date}} rate",
+    "noRate": "No rate; local currency",
+    "unitLabel": "{{symbol}}/{{unit}}",
+    "names": {
+      "TWD": "New Taiwan dollar",
+      "MYR": "Malaysian ringgit",
+      "INR": "Indian rupee",
+      "USD": "US dollar"
+    },
+    "units": {
+      "kg": "kg",
+      "qtl": "qtl",
+      "catty": "catty",
+      "kati": "kati"
+    }
+  },
   "settings": {
     "title": "Settings",
     "rows": {
@@ -270,7 +291,8 @@
       "country": "Country",
       "area": "My area",
       "wholesaleUnit": "Wholesale unit",
-      "retailUnit": "Retail unit"
+      "retailUnit": "Retail unit",
+      "currency": "Display currency"
     },
     "demo": {
       "title": "Demo",

@@ -123,6 +123,35 @@ const cases: { name: string; state: AppState; paths: string[]; locale?: string }
     state: { country: 'MY', lang: 'zh-TW', priceType: 'retail' },
     paths: ['/', '/?tab=all', '/crop/calamansi/today', '/crop/tomato/compare', '/areas?for=home'],
   },
+  // Display currency (F19): the longest converted labels and the conversion note, on the
+  // screens where prices are densest.
+  {
+    name: 'IN in NT$',
+    state: { country: 'IN', lang: 'zh-TW', currency: 'TWD' },
+    paths: [
+      '/',
+      '/cat/veg',
+      '/crop/onion/today',
+      '/crop/onion/trend',
+      '/crop/onion/compare',
+      '/crop/onion/markets',
+      '/crop/onion/markets/lasalgaon',
+      '/settings',
+      '/settings/currency',
+      '/intl',
+      '/intl/rice',
+    ],
+  },
+  {
+    name: 'MY in US$ retail',
+    state: { country: 'MY', lang: 'ms', priceType: 'retail', currency: 'USD' },
+    paths: ['/', '/crop/tomato/today', '/crop/tomato/compare', '/settings/currency'],
+  },
+  {
+    name: 'TW in ₹',
+    state: { country: 'TW', lang: 'en', currency: 'INR' },
+    paths: ['/', '/crop/cabbage/today', '/crop/cabbage/markets/tp1'],
+  },
   {
     name: 'first run',
     state: { setupDone: false },

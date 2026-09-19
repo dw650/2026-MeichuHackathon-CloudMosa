@@ -21,7 +21,7 @@ const rows = () =>
   )
 
 describe('SettingsScreen', () => {
-  it('shows the five settings with their values, plus Demo in demo builds; OK cycles a unit', async () => {
+  it('shows the six settings with their values, plus Demo in demo builds; OK cycles a unit', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
     await screen.findByText('₹/公擔')
     expect(screen.getByRole('heading')).toHaveTextContent('設定')
@@ -29,6 +29,7 @@ describe('SettingsScreen', () => {
       '語言|繁體中文',
       '國家|印度',
       '我的地區|Nashik 縣',
+      '顯示幣別|當地',
       '批發單位|₹/公擔',
       '零售單位|₹/公斤',
       'Demo|關',
@@ -36,9 +37,9 @@ describe('SettingsScreen', () => {
     expect(app.focusedId()).toBe('language')
     expect(softKeys(app)).toEqual(['', '切換', '返回'])
 
-    app.press('4')
+    app.press('5')
     expect(useSettings.getState().units.wholesale).toBe('kg')
-    expect(rows()[3]).toBe('批發單位|₹/公斤')
+    expect(rows()[4]).toBe('批發單位|₹/公斤')
     app.press('Enter')
     expect(useSettings.getState().units.wholesale).toBe('qtl')
     app.press('ArrowDown')
@@ -85,10 +86,32 @@ describe('SettingsScreen', () => {
     expect(app.focusedId()).toBe('language')
   })
 
+  it('shows every price in one currency once 顯示幣別 is chosen, and says so once', async () => {
+    const app = await renderApp('/settings', { history: ['/'] })
+    await screen.findByText('₹/公擔')
+    app.press('4')
+    expect(app.path()).toBe('/settings/currency')
+    expect(screen.getByText('當地幣別')).toBeInTheDocument()
+    expect(app.focusedId()).toBe('local')
+
+    app.press('5')
+    expect(useSettings.getState().displayCurrency).toBe('USD')
+    expect(app.path()).toBe('/settings')
+    expect(rows()[3]).toBe('顯示幣別|US$')
+    expect(app.focusedId()).toBe('currency')
+
+    await app.back()
+    // ₹23.95/kg at 95.989567 to the dollar is US$24.95 per quintal, the unit being kept.
+    expect(await screen.findByText('24.95')).toBeInTheDocument()
+    expect(screen.getByText('US$/公擔')).toBeInTheDocument()
+    expect(screen.getAllByText('以 9/19 匯率換算')).toHaveLength(1)
+    expect(screen.queryByText('₹/公擔')).toBeNull()
+  })
+
   it('toggles the demo switches from the Demo row', async () => {
     const app = await renderApp('/settings', { history: ['/'] })
     await screen.findByText('₹/公擔')
-    app.press('6')
+    app.press('7')
     expect(app.path()).toBe('/settings/demo')
     expect(screen.getByRole('heading')).toHaveTextContent('Demo')
     expect(softKeys(app)).toEqual(['', '切換', '返回'])
@@ -115,6 +138,6 @@ describe('SettingsScreen', () => {
     expect(screen.getAllByText('開')).toHaveLength(2)
 
     await app.back()
-    expect(rows()[5]).toBe('Demo|開')
+    expect(rows()[6]).toBe('Demo|開')
   })
 })

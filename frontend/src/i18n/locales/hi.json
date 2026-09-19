@@ -276,6 +276,27 @@
     "sourceUndated": "स्रोत: World Bank Pink Sheet",
     "credit": "Rates By Exchange Rate API"
   },
+  "currency": {
+    "local": "स्थानीय मुद्रा",
+    "localNote": "हर देश की अपनी मुद्रा",
+    "localShort": "स्थानीय",
+    "converted": "{{date}} की दर से परिवर्तित",
+    "convertedShort": "दर {{date}}",
+    "noRate": "दर नहीं; स्थानीय मुद्रा",
+    "unitLabel": "{{symbol}}/{{unit}}",
+    "names": {
+      "TWD": "ताइवान डॉलर",
+      "MYR": "मलेशियाई रिंगिट",
+      "INR": "भारतीय रुपया",
+      "USD": "अमेरिकी डॉलर"
+    },
+    "units": {
+      "kg": "kg",
+      "qtl": "क्विंटल",
+      "catty": "कैटी",
+      "kati": "काटी"
+    }
+  },
   "settings": {
     "title": "सेटिंग्स",
     "rows": {
@@ -283,7 +304,8 @@
       "country": "देश",
       "area": "मेरा क्षेत्र",
       "wholesaleUnit": "थोक इकाई",
-      "retailUnit": "खुदरा इकाई"
+      "retailUnit": "खुदरा इकाई",
+      "currency": "प्रदर्शन मुद्रा"
     },
     "demo": {
       "title": "Demo",
