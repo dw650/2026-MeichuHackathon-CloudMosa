@@ -151,7 +151,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：對測試資料庫跑 upgrade 與 downgrade 都成功；`quotes` 的唯一鍵會擋下重複資料。
   - 完成條件：測試通過；api 啟動時會自動 migrate。
 
-- [ ] **T08 Seed**
+- [x] **T08 Seed**
   - 參考：[06](../06-data.md) §7.2–§7.3；`ui-mockup/src/data.js` 的 `COUNTRIES`
   - 內容：
     - `app/seed/IN.yaml`、`TW.yaml`：國家設定、地區、市場、作物、預設關注、單位、休市日、mock 參數（`p`、`lo`、`hi`、`chg`、`arr`、`arrR`、`rt`、`k`）、來源對照表。

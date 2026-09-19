@@ -11,3 +11,4 @@
 - 2026-09-19 T05 完成：ci.yml（frontend、backend＋PostgreSQL service、images），每步都呼叫 make 目標；覆蓋率一行摘要；make audit（npm audit、pip-audit，目前 0 漏洞）；YAML 與 actionlint 檢查通過（2417253）
 - 2026-09-19 T06 完成：/debug/keys（key、code、repeat、時間差、popstate／back、Enter click 次數）、/debug/viewport（尺寸、字級、Intl 樣本），只在 dev 或 VITE_DEMO 建置；/api/v1/debug/headers 只在 DEMO_MODE（8359ab2）
 - 2026-09-19 T07 完成：全部資料表的 SQLAlchemy 模型與初始 migration（quotes 唯一鍵 NULLS NOT DISTINCT、area_daily 索引、source_area_map）；升降級與模型一致性測試；api 啟動時自動 migrate（4dd298c）
+- 2026-09-19 T08 完成：IN.yaml（11 地區、31 市場、10 作物）與 TW.yaml（10 地區、14 市場、10 作物）含國家設定、單位、休市日、mock 參數與對照表；pydantic 驗證參照；同步可重複執行並刪除已移除的項目（a2f9fe8）
