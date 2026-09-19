@@ -1,0 +1,60 @@
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 4px var(--gut);
+}
+
+/* The mockup draws the arrows at 9px; they use the 11px floor instead (docs/03 §3.2). */
+.arrow {
+  flex: none;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  line-height: 1;
+}
+
+.segment {
+  display: grid;
+  flex: 1;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  min-width: 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink3);
+  font-size: var(--fs-2);
+  font-weight: 900;
+  text-align: center;
+}
+
+.tab {
+  overflow: hidden;
+  padding: 2px 0;
+  border-radius: 999px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+@media (max-width: 176px) {
+  .tabs {
+    margin: 2px var(--gut);
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .segment {
+    padding: 1px;
+  }
+
+  .tab {
+    padding: 0;
+  }
+}

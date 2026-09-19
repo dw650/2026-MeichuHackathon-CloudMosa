@@ -1,0 +1,48 @@
+/* Rounded tag (docs/03 §4): pos green, neg red, flat grey, old = warning, you = brand. */
+.pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 1px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  font-size: var(--fs-3);
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pos {
+  color: var(--pos);
+  background: var(--pos-bg);
+}
+
+.neg {
+  color: var(--neg);
+  background: var(--neg-bg);
+}
+
+.flat {
+  color: var(--flat);
+  background: var(--flat-bg);
+}
+
+.old {
+  color: var(--warn);
+  background: var(--warn-bg);
+}
+
+.you {
+  color: var(--brand-ink);
+  background: var(--brand);
+}
+
+@media (max-width: 176px) {
+  .pill {
+    padding: 1px 3px;
+  }
+
+  .glyphOnly .text {
+    display: none;
+  }
+}

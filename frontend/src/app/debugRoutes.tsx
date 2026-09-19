@@ -13,5 +13,11 @@ export const debugRoutes: RouteObject[] = IS_DEMO_BUILD
         path: '/debug/viewport',
         lazy: async () => ({ Component: (await import('@/screens/debug/DebugViewport')).default }),
       },
+      {
+        path: '/debug/components',
+        lazy: async () => ({
+          Component: (await import('@/screens/debug/DebugComponents')).default,
+        }),
+      },
     ]
   : []

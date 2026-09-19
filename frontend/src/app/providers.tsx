@@ -9,8 +9,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [client] = useState(() => createQueryClient())
   return (
     <QueryClientProvider client={client}>
-      <CountryTheme />
-      {children}
+      <CountryTheme>{children}</CountryTheme>
     </QueryClientProvider>
   )
 }

@@ -27,3 +27,4 @@
 - 2026-09-19 T21 完成：一次登記全部路由（佔位畫面）、useNav（面板 push／關閉 back、分頁 replace、面板項目 replace）、啟動時先換成首頁再 push 上次畫面並帶回焦點、未完成設定導向首次設定、未知路徑回首頁（836367a）
 - 2026-09-19 同步點 1（第一段）完成：track/frontend（T16–T21）合併進 main，make lint、make test 通過；T23、T24 完成後再合併並跑 make e2e（5478422）
 - 2026-09-19 T22 完成：fetch 包裝（10 秒逾時、錯誤碼轉換、demo 標頭）、TanStack Query 預設值與每個端點的 hook、由 API 實際回應存下的 msw fixtures 與 handlers、QueryClientProvider 與漲跌顏色（892b191）
+- 2026-09-19 T23 完成：src/components 的 Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton（另有 Tile、PriceTypeTag、IconGrid），SVG 搬到 src/icons；漲跌色改由 UpIsPosContext 決定；/debug/components 展示頁在兩種尺寸與語言下沒有溢出、字級不低於下限（45cf36f）

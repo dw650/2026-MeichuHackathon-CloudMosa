@@ -295,7 +295,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：逾時；503 時保留舊資料；錯誤碼轉換。
   - 完成條件：測試通過。
 
-- [ ] **T23 元件**
+- [x] **T23 元件**
   - 參考：[03](../03-ux-ui.md) §4、§6、§8；`ui-mockup/src/icons.js`、`render-core.js`、`phone.css`
   - 內容：
     - Header、InfoBar、SoftKeys、Tabs、Card、CropIcon（搬移所有 SVG）、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton。
@@ -303,7 +303,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：Pill 的符號與顏色依國家；TrendChart 遇到 `null` 會斷線；Card 沒有資料時顯示「—」。
   - 完成條件：測試通過。
 
-- [ ] **T24 🔍 大段落檢查 A**
+- [x] **T24 🔍 大段落檢查 A**
   - 參考：[07](../07-dev-workflow.md) §4
   - 內容：
     - `playwright.config.ts`；自訂報告只輸出 JSON 摘要；失敗時才存截圖。

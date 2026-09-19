@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding-inline: var(--gut);
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+.title {
+  overflow: hidden;
+  font-size: var(--fs-t);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 176px) {
+  .header kbd {
+    display: none;
+  }
+}

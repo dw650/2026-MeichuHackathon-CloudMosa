@@ -1,0 +1,170 @@
+.list {
+  display: grid;
+  gap: var(--gap);
+  padding: var(--gap) var(--gut);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--row);
+  padding: 4px 6px;
+  border-radius: var(--rad);
+  background: var(--card);
+}
+
+.compact {
+  min-height: var(--row-compact);
+}
+
+.mine {
+  background: var(--brand-soft);
+}
+
+.alert {
+  --tile-bg: transparent;
+  --tile-ink: var(--warn);
+
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+/* Focus (docs/03 §4, §5): ring, light blue background and a pointer in the left gutter. */
+.card[data-focus-id]:focus {
+  outline: none;
+  background: var(--focus-bg);
+  box-shadow: 0 0 0 var(--ring) var(--focus);
+}
+
+.card[data-focus-id]:focus::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--gut) - 1px);
+  border: 5px solid transparent;
+  border-left-color: var(--focus);
+  transform: translateY(-50%);
+}
+
+.lead {
+  display: flex;
+  flex: none;
+}
+
+.body {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font-size: var(--fs-1);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  overflow: hidden;
+  color: var(--ink3);
+  font-size: var(--fs-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spark {
+  display: flex;
+  flex: none;
+}
+
+/* Prices never shrink or get cut; the name gives way instead. */
+.end {
+  display: grid;
+  flex: none;
+  justify-items: end;
+  gap: 1px;
+}
+
+.price {
+  font-size: var(--fs-1);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.dim .name,
+.dim .price {
+  color: var(--ink3);
+}
+
+.trailing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  color: var(--ink3);
+  font-size: var(--fs-2);
+  white-space: nowrap;
+}
+
+.card[data-focus-id]:focus .trailing {
+  color: var(--focus);
+}
+
+.go {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.go > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.check {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--key-line);
+  border-radius: 4px;
+  color: var(--brand-ink);
+}
+
+.checked {
+  border-color: var(--brand);
+  background: var(--brand);
+}
+
+.check > svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* 128×160: one line of icon, name, price and change glyph (docs/03 §6). */
+@media (max-width: 176px) {
+  .card {
+    gap: 3px;
+    padding: 1px 3px;
+  }
+
+  .card[data-focus-id]:focus::before {
+    border-width: 3px;
+  }
+
+  .meta,
+  .spark,
+  .trailing kbd {
+    display: none;
+  }
+
+  .end {
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 2px;
+  }
+}

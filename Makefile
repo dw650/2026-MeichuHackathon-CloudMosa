@@ -12,7 +12,7 @@ TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@
 export TEST_DATABASE_URL
 
 .PHONY: up dev down logs seed db-up test test-frontend test-backend lint lint-frontend lint-backend \
-	audit audit-frontend audit-backend build-frontend types geoip fixtures
+	audit audit-frontend audit-backend build-frontend types geoip fixtures e2e
 
 ## Start all services (production build) and wait until they are healthy.
 up: .env
@@ -76,6 +76,13 @@ audit-backend:
 	cd backend && uv export --frozen --no-dev --no-emit-project --quiet > .audit-requirements.txt
 	cd backend && uvx pip-audit -r .audit-requirements.txt --disable-pip --progress-spinner off; \
 		status=$$?; rm -f .audit-requirements.txt; exit $$status
+
+## Playwright UI checks (milestones only): full stack in demo mode, JSON summary output.
+E2E_BASE_URL ?= http://localhost:$(WEB_PORT)
+e2e: .env frontend/node_modules/.package-lock.json
+	VITE_DEMO=true DEMO_MODE=true $(COMPOSE) up -d --build --wait
+	cd frontend && npx playwright install chromium >/dev/null
+	cd frontend && E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test
 
 ## Re-save the frontend msw fixtures from real API responses (fixed clock, mock data).
 fixtures: db-up

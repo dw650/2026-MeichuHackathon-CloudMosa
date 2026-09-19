@@ -1,0 +1,42 @@
+.softkeys {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  overflow: hidden;
+  padding-inline: var(--gut);
+  border-top: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: var(--fs-sk);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.left {
+  justify-self: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right {
+  justify-self: end;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.center {
+  justify-self: center;
+}
+
+.center:not(:empty) {
+  padding: 1px 10px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+@media (max-width: 176px) {
+  .center:not(:empty) {
+    padding: 0 5px;
+  }
+}
