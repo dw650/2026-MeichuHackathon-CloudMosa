@@ -16,3 +16,4 @@
 - 2026-09-19 T10 完成：各來源格式的正規化（quintal→公斤、民國日期、對照表，對照不到與格式錯誤分別記數）與 06 §2.1 全部檢查規則（缺值、≤0、區間、離群值、日期、去重）（9b084dd）
 - 2026-09-19 T11 完成：管線（fetch→正規化→檢查→COPY upsert quotes→market_daily／area_daily 中位數→ingest_runs）、worker（啟動時一次、各國當地 00:05）、compose worker、make seed；make up 後 area_daily 有資料（1f69f15）
 - 2026-09-19 T12 完成：純函式：資料新舊（today／closed／stale／none）、漲跌與持平門檻、比 7 日均價、30 日位置、波動、到貨量、30 天序列（缺值 null）、比價名次與 haversine、市場差額；開啟後端覆蓋率門檻（services+ingest ≥ 90%，目前 97%）（ef6a230）
+- 2026-09-19 T13 完成：GET /countries（含當地 today、單位表、預設關注）、/countries/{cc}/areas（座標、最新交易日與新舊）、/countries/{cc}/crops；每個端點有 summary 與範例、Swagger 在 /api/docs；scripts/gen-api-types.sh、make types、CI contract job（34c25a5）

@@ -203,7 +203,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每個函式的邊界情況，包括樣本不足時回傳空值、最高等於最低時位置是 0.5、休市日不算舊資料。
   - 完成條件：測試通過。開啟後端覆蓋率門檻：`app/services` 與 `app/ingest` 合計 ≥ 90%，`make test` 與 CI 都檢查。
 
-- [ ] **T13 目錄 API 與型別產生**
+- [x] **T13 目錄 API 與型別產生**
   - 參考：[04](../04-architecture.md) §6
   - 內容：
     - `GET /countries`、`/countries/{cc}/areas`、`/countries/{cc}/crops`；多語名稱用物件表示。
