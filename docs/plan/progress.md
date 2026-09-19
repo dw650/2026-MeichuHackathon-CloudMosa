@@ -30,3 +30,6 @@
 - 2026-09-19 T23 完成：src/components 的 Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton（另有 Tile、PriceTypeTag、IconGrid），SVG 搬到 src/icons；漲跌色改由 UpIsPosContext 決定；/debug/components 展示頁在兩種尺寸與語言下沒有溢出、字級不低於下限（45cf36f）
 - 2026-09-19 T24 完成：Playwright 設定、只輸出 JSON 摘要的報告器、失敗才截圖、溢出／字級下限／焦點／console 檢查、make e2e（demo 模式完整服務）與 e2e.yml；元件展示頁在兩種尺寸 × 兩種語言通過（00cc165）
 - 2026-09-19 同步點 1 完成：T23、T24 合併進 main，make lint、make test（前端 404、後端 157）、make e2e（70 項）全部通過（00cc165）
+- 2026-09-19 T27 完成：作物詳情的外框（資訊列、分頁、選單與換地區面板）與行情分頁：大數字卡、本地區市場卡或零售說明、三個指標，以及載入中、連線失敗、沒有零售、今天未更新、無資料等狀態（8aa1055）
+- 2026-09-19 T28 完成：走勢分頁：# 切換 7／30 日（`?days=30`）、沒有價格的日子斷線、高／低／波動跟著區間（f26ebeb）
+- 2026-09-19 T29 完成：比價分頁與排序面板：API 名次、「你」、與正在看的地區的差額、四種排序（`?sort=`）、OK 或數字鍵開啟該地區的行情（8a7cae9）
