@@ -57,6 +57,8 @@ ignore_missing_imports = true
 module = ["tests.*"]
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
+# pytest.approx inside tuples is fine at runtime but trips strict equality checks.
+disable_error_code = ["comparison-overlap"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
