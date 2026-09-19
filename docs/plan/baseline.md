@@ -213,7 +213,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：API 測試（回應格式、不存在的國家回傳 404 與錯誤碼）。
   - 完成條件：測試通過；`make types` 產生 `frontend/src/api/schema.d.ts`；`http://localhost:8080/api/docs` 可以打開。
 
-- [ ] **T14 價格 API**
+- [x] **T14 價格 API**
   - 參考：[04](../04-architecture.md) §6；[06](../06-data.md) §3
   - 內容：
     - `GET /prices`、`/crops/{crop}/quote`、`/crops/{crop}/compare`、`/crops/{crop}/markets`、`/crops/{crop}/markets/{market}`。
