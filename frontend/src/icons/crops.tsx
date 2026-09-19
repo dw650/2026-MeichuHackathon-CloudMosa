@@ -4,6 +4,11 @@ import type { ReactElement } from 'react'
 
 import { isCropIconId, type CropIconId } from './names'
 
+// Shapes repeated within one icon, centred on 0,0 and placed with translate/rotate.
+const CHICKPEA = 'M-3.2-1.85Q-3.3-2.7-3.18-3.18-2.7-3.3-1.85-3.2A3.7 3.7 0 1 1-3.2-1.85z'
+const CHICKPEA_CREASE = 'M-2.6-2.6c.9.6 1.4 1.6 1.4 2.8'
+const SESAME_SEED = 'M0-2.4C.9-1.6 1.6-.4 1.6.7S.9 2.3 0 2.3-1.6 1.7-1.6.7-.9-1.6 0-2.4z'
+
 const ART: Readonly<Record<CropIconId, ReactElement>> = {
   onion: (
     <>
@@ -249,6 +254,262 @@ const ART: Readonly<Record<CropIconId, ReactElement>> = {
         d="M12 9c-1-3 0-5.5 0-7 1.2 2 1.8 4.5 0 7zM8 10c-3 .5-5-1-6-2.5 2.5-.5 4.5 0 6 2.5zM16 7c1-2.8 3.5-3.6 5-3.5-.8 2.3-2.5 3.5-5 3.5z"
         fill="#3E9A3A"
       />
+    </>
+  ),
+  rice: (
+    <>
+      <path d="M7.8 21.8C5.2 18.5 3.9 14.5 4.2 10c1.9 3 3.3 6.6 4.2 11z" fill="#5DAA3F" />
+      <path d="M8 21.8c.5-4.8 3-8.3 7-9.6-2.8 2.6-4.6 5.6-5.4 9.6z" fill="#4E9A3E" />
+      <path
+        d="M7.8 22C7.4 14 8 7 12 4.2c4.5-1 6.8 3.8 6.3 12.8"
+        stroke="#7FA33A"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <g fill="#EBBD45">
+        <ellipse cx="15" cy="5.4" rx="1.35" ry="2.2" transform="rotate(-47 15 5.4)" />
+        <ellipse cx="15.2" cy="3" rx="1.35" ry="2.2" transform="rotate(-123 15.2 3)" />
+        <ellipse cx="16" cy="6.7" rx="1.35" ry="2.2" transform="rotate(-15 16 6.7)" />
+        <ellipse cx="17.4" cy="4.8" rx="1.35" ry="2.2" transform="rotate(-91 17.4 4.8)" />
+        <ellipse cx="16.6" cy="8.5" rx="1.35" ry="2.2" transform="rotate(10 16.6 8.5)" />
+        <ellipse cx="18.7" cy="7.4" rx="1.35" ry="2.2" transform="rotate(-66 18.7 7.4)" />
+        <ellipse cx="17" cy="11.1" rx="1.35" ry="2.2" transform="rotate(25 17 11.1)" />
+        <ellipse cx="19.4" cy="10.6" rx="1.35" ry="2.2" transform="rotate(-51 19.4 10.6)" />
+        <ellipse cx="17.2" cy="14.6" rx="1.35" ry="2.2" transform="rotate(35 17.2 14.6)" />
+        <ellipse cx="19.6" cy="14.5" rx="1.35" ry="2.2" transform="rotate(-41 19.6 14.5)" />
+        <ellipse cx="18.2" cy="18.5" rx="1.35" ry="2.2" transform="rotate(3 18.2 18.5)" />
+      </g>
+    </>
+  ),
+  eggplant: (
+    <>
+      <path
+        d="M12.8 6.5C10 8.5 6.5 9.5 4.8 12.1A5 5 0 0 0 12.2 18.9C14.5 17.5 16.8 14 17.2 10.5A3 3 0 0 0 12.8 6.5z"
+        fill="#532C80"
+      />
+      <path
+        d="M6.3 14.6c.3-1.3 1.2-2.3 2.4-3"
+        stroke="#A47CD0"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M-3.3-.5L-2.6 2.6-1.2.8 0 3.2 1.2.8 2.6 2.6 3.3-.5C3-2.5 1.5-3.4 0-3.4S-3-2.5-3.3-.5z"
+        transform="translate(15 8.5) rotate(43)"
+        fill="#3E9A3A"
+      />
+      <path d="M16.7 6.7l1.8-2" stroke="#2E6B2A" strokeWidth="1.8" strokeLinecap="round" />
+    </>
+  ),
+  pomegranate: (
+    <>
+      <path d="M10.3 8L9 4.4l1.9 1.2L12 3.4l1.1 2.2L15 4.4 13.7 8z" fill="#A11D34" />
+      <ellipse cx="12" cy="14.2" rx="8" ry="7.4" fill="#C9243F" />
+      <ellipse cx="8.6" cy="12.6" rx="1.5" ry="2.4" fill="#F27A8C" opacity=".7" />
+    </>
+  ),
+  chickpea: (
+    <>
+      <g fill="#EDCB8A" stroke="#B98C4C" strokeWidth=".8">
+        <path d={CHICKPEA} transform="translate(12 8.4) rotate(-20)" />
+        <path d={CHICKPEA} transform="translate(8 15.2) rotate(10)" />
+        <path d={CHICKPEA} transform="translate(16 15) rotate(95)" />
+      </g>
+      <g fill="#F9E6BE">
+        <ellipse cx="-.4" cy="-.7" rx="1.3" ry=".9" transform="translate(12 8.4) rotate(-20)" />
+        <ellipse cx="-.4" cy="-.7" rx="1.3" ry=".9" transform="translate(8 15.2) rotate(10)" />
+        <ellipse cx="-.4" cy="-.7" rx="1.3" ry=".9" transform="translate(16 15) rotate(95)" />
+      </g>
+      <g stroke="#B98C4C" strokeWidth=".8" strokeLinecap="round" fill="none">
+        <path d={CHICKPEA_CREASE} transform="translate(12 8.4) rotate(-20)" />
+        <path d={CHICKPEA_CREASE} transform="translate(8 15.2) rotate(10)" />
+        <path d={CHICKPEA_CREASE} transform="translate(16 15) rotate(95)" />
+      </g>
+    </>
+  ),
+  turmeric: (
+    <>
+      <path
+        d="M11.2 13.2c2.4-2.2 4.2-3.4 7.2-4.6M12.8 11.9c.1-2.2.8-4.2 2.2-6.2M13.6 12.4c2.3 0 4.3.8 6.2 2.4"
+        stroke="#C8843C"
+        strokeWidth="3.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path d="M6.8 17.4l5.4-5" stroke="#C8843C" strokeWidth="6" />
+      <path
+        d="M9.6 12.2c1.1.8 1.9 2 2.2 3.4M15.4 9c.8.6 1.3 1.5 1.5 2.5M16.6 12.6c.3.9.3 1.9-.1 2.9M12.7 7.9c.9.2 1.8.8 2.4 1.6"
+        stroke="#93541E"
+        strokeWidth=".8"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse
+        cx="6.8"
+        cy="17.4"
+        rx="2"
+        ry="3"
+        transform="rotate(-43 6.8 17.4)"
+        fill="#F7931E"
+        stroke="#A8652A"
+        strokeWidth=".6"
+      />
+      <ellipse cx="6.8" cy="17.4" rx="1" ry="1.6" transform="rotate(-43 6.8 17.4)" fill="#FFB12B" />
+    </>
+  ),
+  peanut: (
+    <g transform="translate(12 12) rotate(45)">
+      <path
+        d="M0-8.9c2.6 0 4.3 1.8 4.3 4.3S3.1-1.4 3.1 0s1.5 2.1 1.5 4.4S2.6 9 0 9s-4.6-1.8-4.6-4.6S-3.1 1.4-3.1 0s-1.2-2.3-1.2-4.6S-2.6-8.9 0-8.9z"
+        fill="#D4A35F"
+      />
+      <path
+        d="M-1.6-7.8v6.6M1.6-7.8v6.6M-1.7 1.2V8M1.7 1.2V8M-3.6-5.8h7.2M-3.4-3.2h6.8M-3.8 3.4h7.6M-3.8 6.1h7.6"
+        stroke="#A87A3E"
+        strokeWidth=".7"
+        fill="none"
+      />
+    </g>
+  ),
+  mustard: (
+    <>
+      <path
+        d="M12 22c0-4.5-.3-9 .2-13.5M12 15.5c-1.5-1.5-3-3-4.8-4.6M12.1 13c1.4-1.4 2.8-2.7 4.7-3.8"
+        stroke="#4E9A3E"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M12 20.5c-3 .2-5.5-1-6.8-3.4 3-.3 5.3.8 6.8 3.4zM12 18.5c2.8-.1 5-1.5 6.2-3.9-2.9 0-5 1.2-6.2 3.9z"
+        fill="#5DAA3F"
+      />
+      <g fill="#F6C818" stroke="#E0A410" strokeWidth=".4">
+        <circle cx="12.2" cy="5.3" r="1.25" />
+        <circle cx="13.4" cy="6.5" r="1.25" />
+        <circle cx="12.2" cy="7.7" r="1.25" />
+        <circle cx="11" cy="6.5" r="1.25" />
+        <circle cx="7" cy="8" r="1.25" />
+        <circle cx="8.2" cy="9.2" r="1.25" />
+        <circle cx="7" cy="10.4" r="1.25" />
+        <circle cx="5.8" cy="9.2" r="1.25" />
+        <circle cx="17" cy="7.1" r="1.25" />
+        <circle cx="18.2" cy="8.3" r="1.25" />
+        <circle cx="17" cy="9.5" r="1.25" />
+        <circle cx="15.8" cy="8.3" r="1.25" />
+        <circle cx="9.3" cy="3.6" r="1.1" />
+        <circle cx="15" cy="3.4" r="1.1" />
+      </g>
+      <g fill="#C77E0C">
+        <circle cx="12.2" cy="6.5" r=".6" />
+        <circle cx="7" cy="9.2" r=".6" />
+        <circle cx="17" cy="8.3" r=".6" />
+      </g>
+    </>
+  ),
+  cotton: (
+    <>
+      <path d="M12 13L2 14.5l5.5 2.3-1.8 5 6.3-2.5 6.3 2.5-1.8-5 5.5-2.3z" fill="#7B4F2C" />
+      <g fill="#FFFFFF" stroke="#C9C1B1" strokeWidth=".8">
+        <circle cx="12" cy="7" r="4.2" />
+        <circle cx="7.4" cy="10.8" r="3.9" />
+        <circle cx="16.6" cy="10.8" r="3.9" />
+        <circle cx="12" cy="13.2" r="4" />
+      </g>
+    </>
+  ),
+  sugarcane: (
+    <>
+      <g transform="rotate(15 12 13)">
+        <path d="M7.6 21.5V9M12 22V6.5M16.4 21.5V9.5" stroke="#8A2D52" strokeWidth="3" />
+        <path
+          d="M6.1 17.8h3M6.1 13.4h3M10.5 19.4h3M10.5 15h3M10.5 10.6h3M14.9 17.6h3M14.9 13.4h3"
+          stroke="#E8B4C7"
+          strokeWidth="1"
+        />
+      </g>
+      <path
+        d="M13.6 6.3C11.8 3.9 9 2.6 5.5 2.9c3 1 5.5 2.4 7.4 4.6zM13.6 6.3c1.6-2.3 4-3.6 7.4-3.4-3 .9-5 2.4-6.6 4.6z"
+        fill="#4E9A3E"
+      />
+      <path d="M13.6 6.3c.8-1.8 1-3.6.4-5.3-1 1.6-1.2 3.4-.4 5.3z" fill="#62BF4E" />
+    </>
+  ),
+  guava: (
+    <>
+      <circle cx="10" cy="11.3" r="6.8" fill="#A3CF55" />
+      <ellipse cx="6.8" cy="9.6" rx="1.3" ry="2.1" fill="#E2F5B8" opacity=".9" />
+      <path d="M10.3 4.9c.8-1.8 2.6-2.8 4.6-2.6-.8 1.9-2.6 2.9-4.6 2.6z" fill="#3E9A3A" />
+      <circle cx="15.3" cy="15.6" r="5.6" fill="#86BD3E" />
+      <circle cx="15.3" cy="15.6" r="4.6" fill="#FCE8D8" />
+      <circle cx="15.3" cy="15.6" r="2.3" fill="#F9D2BC" />
+      <g fill="#C98F5E">
+        <circle cx="16.7" cy="15.6" r=".45" />
+        <circle cx="15.7" cy="16.9" r=".45" />
+        <circle cx="14.2" cy="16.4" r=".45" />
+        <circle cx="14.2" cy="14.8" r=".45" />
+        <circle cx="15.7" cy="14.3" r=".45" />
+      </g>
+    </>
+  ),
+  adzuki: (
+    <>
+      <g fill="#8E1C2E">
+        <ellipse cx="13.2" cy="8.2" rx="3" ry="4.2" transform="rotate(25 13.2 8.2)" />
+        <ellipse cx="8" cy="14.5" rx="3" ry="4.2" transform="rotate(-30 8 14.5)" />
+        <ellipse cx="16" cy="15.5" rx="3" ry="4.2" transform="rotate(65 16 15.5)" />
+      </g>
+      <g stroke="#FFF4EE" strokeWidth=".9" strokeLinecap="round">
+        <path d="M15.2 6.7v3" transform="rotate(25 13.2 8.2)" />
+        <path d="M10 13v3" transform="rotate(-30 8 14.5)" />
+        <path d="M18 14v3" transform="rotate(65 16 15.5)" />
+      </g>
+    </>
+  ),
+  sesame: (
+    <>
+      <g fill="#2B2522">
+        <path d={SESAME_SEED} transform="translate(6 17.4) rotate(-70)" />
+        <path d={SESAME_SEED} transform="translate(13.8 17.9) rotate(95)" />
+        <path d={SESAME_SEED} transform="translate(18.2 16.6) rotate(25)" />
+        <path d={SESAME_SEED} transform="translate(8.6 12.8) rotate(15)" />
+        <path d={SESAME_SEED} transform="translate(16 12.2) rotate(-40)" />
+        <path d={SESAME_SEED} transform="translate(12.4 7.8) rotate(60)" />
+      </g>
+      <g fill="#F1E4C4" stroke="#B9A273" strokeWidth=".6">
+        <path d={SESAME_SEED} transform="translate(10 17.6) rotate(-15)" />
+        <path d={SESAME_SEED} transform="translate(12.3 12.6) rotate(-110)" />
+        <path d={SESAME_SEED} transform="translate(15.2 7.4) rotate(20)" />
+      </g>
+    </>
+  ),
+  mushroom: (
+    <>
+      <path
+        d="M3.6 13.3c2.6-1 5.4-1.5 8.4-1.5s5.8.5 8.4 1.5c-2.4 1-5.2 1.4-8.4 1.4s-6-.4-8.4-1.4z"
+        fill="#E8D6B4"
+      />
+      <path
+        d="M10.2 13l-.5 6.2c-.1 1.7 4.7 1.7 4.6 0L13.8 13z"
+        fill="#F2E8D3"
+        stroke="#CDBA95"
+        strokeWidth=".8"
+      />
+      <path
+        d="M3.3 13.2C3.3 7.6 7.2 3.8 12 3.8s8.7 3.8 8.7 9.4c-2.6-1.1-5.5-1.6-8.7-1.6s-6.1.5-8.7 1.6z"
+        fill="#7C4A2A"
+      />
+      <g fill="#E4C9A0">
+        <ellipse cx="8" cy="8" rx=".9" ry=".5" transform="rotate(-40 8 8)" />
+        <ellipse cx="12.5" cy="6.3" rx=".9" ry=".5" />
+        <ellipse cx="15.8" cy="8.6" rx=".9" ry=".5" transform="rotate(35 15.8 8.6)" />
+        <ellipse cx="10.3" cy="10.3" rx=".8" ry=".45" />
+        <ellipse cx="6" cy="11.2" rx=".8" ry=".45" transform="rotate(-20 6 11.2)" />
+        <ellipse cx="17.6" cy="11.3" rx=".8" ry=".45" transform="rotate(20 17.6 11.3)" />
+        <ellipse cx="13.8" cy="10.2" rx=".8" ry=".45" />
+      </g>
     </>
   ),
   oil: (
