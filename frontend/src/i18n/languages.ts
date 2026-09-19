@@ -163,7 +163,7 @@ const HTML_LANG: Readonly<Record<UiLanguage, string>> = {
   hi: 'hi',
 }
 
-/** `<html lang>` for a UI language; tokens.css sizes Chinese and Hindi with `:lang(zh, hi)`. */
+/** `<html lang>` for a UI language; tokens.css sizes Chinese and Hindi with `:lang(zh)`, `:lang(hi)`. */
 export function htmlLang(language: UiLanguage): string {
   return HTML_LANG[language]
 }
