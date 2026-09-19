@@ -121,6 +121,10 @@ class TwMoaProvider:
         logger.info(
             "tw_moa: %d rows for %s to %s, %d requests", len(seen), first, last, self._requests
         )
+        window = {to_roc(first + timedelta(days=i)) for i in range((last - first).days + 1)}
+        outside = sum(len(rows) for d, rows in by_day.items() if d not in window)
+        if outside:
+            logger.warning("tw_moa: %d rows dated outside %s to %s ignored", outside, first, last)
         return by_day
 
     async def _product(

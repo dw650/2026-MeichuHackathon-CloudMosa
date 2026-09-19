@@ -235,6 +235,16 @@ async def test_full_pages_are_followed() -> None:
     assert sorted(map(json.dumps, rows)) == sorted(map(json.dumps, expected))
 
 
+async def test_rows_dated_outside_the_window_are_reported(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    odd = {**real("115.09.16", "台北二", "甘藍-初秋"), "交易日期": "2026-09-16"}
+    provider, _ = make(FakeServer(payload=[odd]), products=["甘藍-初秋"])
+    with caplog.at_level("WARNING", logger="app.ingest.tw_moa"):
+        assert await fetch_window(provider) == []
+    assert "1 rows dated outside" in caplog.text
+
+
 async def test_endless_paging_is_cut_off() -> None:
     provider, _ = make(FakeServer(), products=["甘藍-初秋"], page_size=1)
     with pytest.raises(UpstreamError, match="pages"):
