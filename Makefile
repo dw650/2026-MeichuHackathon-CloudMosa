@@ -47,9 +47,15 @@ test: db-up test-frontend test-backend
 test-frontend: frontend/node_modules/.package-lock.json
 	cd frontend && npm run coverage
 
+# Gate: app/services + app/ingest together must stay at 90% or more.
+BACKEND_CORE = app/services/*,app/ingest/*
+
 test-backend:
 	cd backend && uv run pytest -q --cov=app --cov-report=
 	@cd backend && echo "backend coverage (app): $$(uv run coverage report --format=total)%"
+	@cd backend && echo "backend core coverage (services + ingest, gate 90%):" \
+		"$$(uv run coverage report --include='$(BACKEND_CORE)' --format=total)%"
+	@cd backend && uv run coverage report --include='$(BACKEND_CORE)' --fail-under=90 > /dev/null
 
 ## Run all linters and type checks.
 lint: lint-frontend lint-backend
