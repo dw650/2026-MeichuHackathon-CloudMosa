@@ -22,7 +22,7 @@ def test_seed_files_have_the_expected_areas_and_crops() -> None:
     assert len(seeds["TW"].areas) == 13
     assert len(seeds["MY"].areas) == 75
     assert len(seeds["IN"].crops) == 21
-    assert len(seeds["TW"].crops) == 29
+    assert len(seeds["TW"].crops) == 30
     assert len(seeds["MY"].crops) == 21
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
     assert len(nashik.markets) == 10
@@ -143,7 +143,8 @@ def _category(cat_id: str) -> dict[str, Any]:
         ([_category("leafy"), _category("leafy")], "duplicate"),
         ([_category("recent")], "reserved"),
         ([_category("all")], "reserved"),
-        ([_category(f"c{i}") for i in range(9)], "at most 8"),
+        ([_category("intl")], "reserved"),
+        ([_category(f"c{i}") for i in range(8)], "at most 7"),
         ([{**_category("x"), "tone": "pink"}], "tone"),
         ([{**_category("x"), "name": {"en": "Kind"}}], "missing translations"),
     ],
@@ -241,7 +242,7 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     assert await _counts(session) == first
     assert first["countries"] == 3
     assert first["areas"] == 99
-    assert first["crops"] == 71
+    assert first["crops"] == 72
     assert first["markets"] == 57
 
 

@@ -314,7 +314,7 @@ def test_products_come_from_the_seed_maps() -> None:
     products = products_from_seeds(SEEDS)
     assert products[:3] == ["甘藍-初秋", "小白菜-土白菜", "香蕉"]
     assert "絲瓜" in products
-    assert len(products) == len(set(products)) == 29
+    assert len(products) == len(set(products)) == 30
 
 
 # ---------- pipeline ----------

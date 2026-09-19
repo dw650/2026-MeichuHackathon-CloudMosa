@@ -889,3 +889,18 @@
   - 前端：九宮格用 API 的分類加「最近」，分類載入前不畫格子（焦點才會落在第一格）；作物清單的標題用 API 的名稱，`/cat/<代號>` 不是這個國家的分類（包括 `/cat/all`）就回首頁。作物圖示方塊與圖表的顏色由該國分類的 `tone` 決定（`useCountryData().toneOf`）；國際參考價的序列仍用預設七類的顏色。i18n 只留「最近」，分類名稱的字串拿掉。
 - 理由：分類跟著各國的資料，九宮格不會有點進去是空的格子；分類名稱和作物名稱一樣由資料決定，新增國家不用改前端。
 - 影響：`backend/app/seed/schema.py`、`backend/app/db/models.py`、migration、`backend/app/ingest/seed.py`、`backend/app/schemas/catalog.py`、`backend/app/services/catalog.py`；`frontend/src/components/categories.ts`、`CropIcon`、`screens/home/HomeScreen.tsx`、`screens/crop-list/CropListScreen.tsx`、各畫面的圖示顏色、`i18n/locales/*.json`；docs/02 §5.2–5.3、03 §3.1、04 §3、§7、06 §1.4。其他 agent 新增的語言檔若還有 `categories.cereal` 等字串，可以刪掉（只剩 `categories.recent` 有用到）。
+
+## 2026-09-20 新聞變成首頁分頁、國際參考價變成九宮格的格子
+- 情況：使用者決定把兩個入口從左軟鍵選單移到首頁：新聞成為第三個分頁（關注｜全部作物｜新聞），國際參考價成為九宮格裡原本「全部」的位置。
+- 決定：
+  - 九宮格＝該國分類（最多 7 個）＋國際參考價（藍、地球圖示 `globec`）＋最近看過，共最多 9 格；seed 的分類上限因此改成 7，`intl` 也是保留代號。
+  - 新聞仍是 `/news`（詳情頁與行為不變），但畫面上多了和首頁一樣的分頁列（目前分頁是「新聞」）、左軟鍵選單、`#` 換地區，右軟鍵是「離開」（分頁用取代歷史）。首頁「全部作物」在最右欄按 ▶ 會到新聞，新聞按 ◀ 回到「全部作物」。
+  - 選單拿掉「國際參考價」與「新聞」兩列，其餘各列的數字鍵不變（首頁 1–5、詳情頁 1–6）。i18n 的 `menu.intl`、`menu.news` 刪掉，新增 `categories.intl`（國際價／Global／Global／वैश्विक），四種語言都有。
+- 理由：兩個入口原本藏在選單裡，使用者不容易發現；首頁的分頁與九宮格是最容易按到的地方。
+- 影響：`frontend/src/screens/home/HomeScreen.tsx`、`screens/news/NewsListScreen.tsx`、`screens/shared/MenuSheet.tsx`、`focus/useGrid.ts`（多了 `onRightEdge`）、`components/categories.ts`、`icons/`（新圖示 `globec`）、四個語言檔、相關測試與 e2e；`backend/app/seed/schema.py`（分類上限 7、保留 `intl`）；docs/02 §3.1、§3.2、§5.2、§5.8、§5.9、docs/03 §4。
+
+## 2026-09-20 台灣保留芒果，三國共同的作物
+- 情況：跨國比價卡（另一條線）需要三個國家有共同的作物；台灣依覆蓋率重選後少了芒果。
+- 決定：台灣加回芒果（愛文，覆蓋率 42%，產季尾聲），共 30 種。三國共同的 12 種是番茄、甘藍、辣椒、蒜頭、洋蔥、馬鈴薯、胡蘿蔔、薑、香蕉、芒果、小黃瓜、茄子（代號相同）。芒果的示範價格改成真實中位數 81.1 元／公斤（原本 55 元）。
+- 理由：跨國比較要用同一個代號；覆蓋率低的那一種在沒有交易的縣市照原本的規則顯示「—」。
+- 影響：`backend/app/seed/TW.yaml`、測試的作物數、docs/06 §7.3。

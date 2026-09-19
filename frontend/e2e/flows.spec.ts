@@ -200,9 +200,9 @@ test('international prices by key only: menu → list → a series → back', as
   await seed(page, { country: 'TW', lang: 'zh-TW' })
   await page.goto('/')
   await step(page, errors, /^\/$/)
-  await press(page, 'Escape')
-  await step(page, errors, /sheet=menu/)
-  await press(page, '6') // 國際參考價, after the baseline rows
+  await press(page, 'ArrowRight') // 全部作物
+  await step(page, errors, /tab=all/)
+  await press(page, '7') // 國際價, after Taiwan's six categories
   await step(page, errors, /^\/intl$/)
   await press(page, 'Enter') // the first series
   await step(page, errors, /^\/intl\/rice$/)
@@ -224,9 +224,11 @@ test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async
   await waitForNews(page, 'TW', 'taipei')
   await page.goto('/')
   await step(page, errors, /^\/$/)
-  await press(page, 'Escape')
-  await step(page, errors, /sheet=menu/)
-  await press(page, '7') // 新聞, after 國際參考價
+  await press(page, 'ArrowRight') // 全部作物
+  await step(page, errors, /tab=all/)
+  await press(page, 'ArrowRight') // 新聞 (the grid's last column)
+  await press(page, 'ArrowRight')
+  await press(page, 'ArrowRight')
   await step(page, errors, /^\/news$/)
   // The newest item is about guava; the list is chronological, not my area first.
   await press(page, 'Enter')

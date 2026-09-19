@@ -13,8 +13,9 @@ PriceType = Literal["wholesale", "retail"]
 # Colour families of the frontend (styles/tokens.css `data-tone`).
 Tone = Literal["green", "orange", "amber", "red", "olive", "yellow", "slate", "blue", "purple"]
 I18n = dict[str, str]
-MAX_CATEGORIES = 8  # the home grid has nine keys and the last one is 「最近」
-RESERVED_CATEGORY_IDS = {"all", "recent"}  # home grid paths /cat/all (gone) and /cat/recent
+MAX_CATEGORIES = 7  # the home grid has nine keys; 國際參考價 and 「最近」 take the last two
+# /cat/all is gone; 「最近」 and 國際參考價 are tiles of the grid, not categories.
+RESERVED_CATEGORY_IDS = {"all", "recent", "intl"}
 
 
 def _check_i18n(value: I18n) -> I18n:

@@ -44,9 +44,9 @@ describe('NewsListScreen', () => {
 
     expect(app.focusedId()).toBe('news:2')
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
-      '',
+      '選單',
       '開啟',
-      '返回',
+      '離開',
     ])
     app.press('ArrowDown')
     expect(app.focusedId()).toBe('news:1')

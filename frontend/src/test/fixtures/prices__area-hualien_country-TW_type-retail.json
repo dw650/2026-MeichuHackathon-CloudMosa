@@ -566,6 +566,26 @@
   },
   {
    "change": null,
+   "crop_id": "mango",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
    "crop_id": "papaya",
    "price_per_kg": null,
    "reason": "no_data",

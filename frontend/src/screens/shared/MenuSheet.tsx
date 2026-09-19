@@ -40,7 +40,8 @@ export function useMenuSheetSoftKeys(): SoftKeyLabels {
 }
 
 /**
- * The left soft key menu (F08, docs/02 §5.7), shown while `?sheet=menu` is open. Screens render
+ * The left soft key menu (F08, docs/02 §5.7), shown while `?sheet=menu` is open. 國際參考價
+ * and 新聞 are not rows: they are a tile of the 全部作物 grid and the third home tab. Screens render
  * it in Shell's `overlay` slot and pass `useMenuSheetSoftKeys()` as their soft keys meanwhile;
  * a screen with this menu must also render its `AreaSheet` for `?sheet=area`, which 「換地區」
  * opens in place of the menu.
@@ -102,20 +103,6 @@ export function MenuSheet({ cropId }: MenuSheetProps) {
       icon: 'gear',
       label: t('menu.settings'),
       run: () => nav.leaveSheet(paths.settings()),
-    },
-    // Bonus B5, after the baseline rows so their number keys stay the same.
-    {
-      focusId: 'intl',
-      icon: 'globe',
-      label: t('menu.intl'),
-      run: () => nav.leaveSheet(paths.intl()),
-    },
-    // 新聞 (N1), added after B5 for the same reason.
-    {
-      focusId: 'news',
-      icon: 'news',
-      label: t('menu.news'),
-      run: () => nav.leaveSheet(paths.news()),
     },
   ]
 

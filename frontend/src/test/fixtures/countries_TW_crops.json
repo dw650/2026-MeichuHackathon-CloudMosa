@@ -397,6 +397,20 @@
    "category": "fruit",
    "default_watch": false,
    "has_retail": true,
+   "id": "mango",
+   "name": {
+    "en": "Mango",
+    "zh-TW": "芒果"
+   },
+   "variety": {
+    "en": "Irwin",
+    "zh-TW": "愛文"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
    "id": "papaya",
    "name": {
     "en": "Papaya",

@@ -706,6 +706,31 @@
   },
   {
    "change": {
+    "diff_per_kg": -5.95,
+    "direction": "down",
+    "pct": -0.070539,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "mango",
+   "price_per_kg": 78.4,
+   "reason": null,
+   "spark": [
+    87.95,
+    null,
+    89.05,
+    89.95,
+    86.05,
+    84.35,
+    78.4
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
     "diff_per_kg": -0.1,
     "direction": "down",
     "pct": -0.003135,

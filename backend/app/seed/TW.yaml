@@ -351,6 +351,12 @@ crops:
     variety: { zh-TW: 改良種, en: Improved }
     retail: true
     mock: { p: 70.8, lo: 46.1, hi: 109.0, chg: 0.02, arr: 2160, arrR: 0.98, rt: 1.6 }
+  - id: mango
+    name: { zh-TW: 芒果, en: Mango }
+    category: fruit
+    variety: { zh-TW: 愛文, en: Irwin }
+    retail: true
+    mock: { p: 81.1, lo: 44.0, hi: 120.0, chg: -0.08, arr: 2059, arrR: 0.7, rt: 1.5 }
   - id: papaya
     name: { zh-TW: 木瓜, en: Papaya }
     category: fruit
@@ -392,6 +398,7 @@ source_maps:
       - { source_name: 薑, crop: ginger }
       - { source_name: 紅龍果, crop: dragonfruit }
       - { source_name: 百香果, crop: passionfruit }
+      - { source_name: 芒果, crop: mango }
       - { source_name: 木瓜, crop: papaya }
     markets: &tw_markets
       - { source_market: 台北一, market: tp1 }
@@ -463,5 +470,6 @@ source_maps:
       - { source_name: 薑, source_variety: 老薑, crop: ginger }
       - { source_name: 紅龍果, source_variety: 紅肉, crop: dragonfruit }
       - { source_name: 百香果, source_variety: 改良種, crop: passionfruit }
+      - { source_name: 芒果, source_variety: 愛文, crop: mango }
       - { source_name: 木瓜, source_variety: 網室紅肉, crop: papaya }
     markets: *tw_markets

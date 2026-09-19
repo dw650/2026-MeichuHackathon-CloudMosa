@@ -84,10 +84,10 @@
     "settings": "Tetapan",
     "addWatch": "Tambah ke kegemaran",
     "removeWatch": "Buang dari kegemaran",
-    "intl": "Harga antarabangsa",
     "news": "Berita"
   },
   "categories": {
+    "intl": "Global",
     "recent": "Terkini"
   },
   "setup": {

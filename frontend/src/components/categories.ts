@@ -28,6 +28,13 @@ export const DEFAULT_CATEGORY_TONE: Readonly<Record<string, Tone>> = {
 
 const DEFAULT_TONES: ReadonlyMap<string, Tone> = new Map(Object.entries(DEFAULT_CATEGORY_TONE))
 
+/** The home grid's tile for the international reference prices (bonus B5, docs/02 §5.8). */
+export const INTL_TILE: { readonly id: 'intl'; readonly icon: CropIconId; readonly tone: Tone } = {
+  id: 'intl',
+  icon: 'globec',
+  tone: 'blue',
+}
+
 /** The home grid's last tile after the country's categories: the recently viewed crops. */
 export const RECENT_CATEGORY: {
   readonly id: 'recent'

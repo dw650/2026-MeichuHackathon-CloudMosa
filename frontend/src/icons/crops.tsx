@@ -860,6 +860,21 @@ const ART: Readonly<Record<CropIconId, ReactElement>> = {
       </g>
     </>
   ),
+  globec: (
+    <>
+      <circle cx="12" cy="12" r="8.6" fill="#3D6FD9" />
+      <path
+        d="M12 3.4c2.1 2.2 3.2 5.1 3.2 8.6S14.1 18.4 12 20.6c-2.1-2.2-3.2-5.1-3.2-8.6S9.9 5.6 12 3.4z"
+        fill="#8FB4F2"
+      />
+      <path
+        d="M3.7 9.4h16.6M3.7 14.6h16.6M12 3.4v17.2"
+        stroke="#E3ECFC"
+        strokeWidth="1"
+        fill="none"
+      />
+    </>
+  ),
   clockc: (
     <>
       <circle cx="12" cy="12" r="8.5" fill="#8B6BE0" />

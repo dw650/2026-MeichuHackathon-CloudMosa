@@ -75,8 +75,6 @@ describe('MenuSheet', () => {
       '4重新整理',
       '5關於與資料說明',
       '6設定',
-      '7國際參考價',
-      '8新聞',
     ])
     expect(menu.focusedId()).toBe('watchToggle')
     expect([menu.softKey('left'), menu.softKey('center'), menu.softKey('right')]).toEqual([
@@ -106,17 +104,12 @@ describe('MenuSheet', () => {
     menu.press('5')
     expect(menu.path()).toBe('/settings')
 
-    // International prices (bonus B5) come after the baseline rows.
+    // 國際參考價 and 新聞 are not rows any more (they are on the home screen, docs/02 §5.2),
+    // so the home menu ends at 5 設定 and a sixth digit does nothing.
     await act(() => menu.router.navigate(-1))
     menu.press('Escape')
     menu.press('6')
-    expect(menu.path()).toBe('/intl')
-
-    // So does 新聞 (N1), after it.
-    await act(() => menu.router.navigate(-1))
-    menu.press('Escape')
-    menu.press('7')
-    expect(menu.path()).toBe('/news')
+    expect(menu.path()).toBe('/?sheet=menu')
   })
 
   it('moves to the area sheet, and closes with the left soft key', async () => {

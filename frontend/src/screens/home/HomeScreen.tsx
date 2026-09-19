@@ -5,7 +5,7 @@ import type { Crop } from '@/api/queries'
 import { useNav } from '@/app/navigation'
 import { type HomeTab, paths } from '@/app/paths'
 import { Card, CardList, Chevron } from '@/components/Card/Card'
-import { RECENT_CATEGORY } from '@/components/categories'
+import { INTL_TILE, RECENT_CATEGORY } from '@/components/categories'
 import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
@@ -35,8 +35,9 @@ const BROWSE_ID = 'action:browse'
 
 /**
  * Home (F02, docs/02 §5.2): my area's prices in two tabs, 關注 (the watchlist's crop cards)
- * and 全部作物 (the country's categories and 「最近」 in a 3×3 grid laid out like keys 1–9,
- * names from the API). ◀ ▶ switch tabs in place,
+ * and 全部作物 (the country's categories, 國際參考價 and 「最近」 in a 3×3 grid laid out like
+ * keys 1–9, category names from the API); ▶ on the last column goes on to the 新聞 tab
+ * (`/news`). ◀ ▶ switch tabs in place,
  * `*` switches wholesale ⇄ retail, `#` opens the change-area panel.
  */
 export default function HomeScreen() {
@@ -57,8 +58,8 @@ export default function HomeScreen() {
   const crops = watchlist.map((id) => data.crop(id)).filter((crop): crop is Crop => !!crop)
   const empty = prices.status === 'ready' && crops.length === 0
   const watchIds = empty ? [BROWSE_ID] : cropListIds(crops, prices)
-  // The country's categories, then 「最近」; nothing until the categories are known, so the
-  // focus starts on the first category.
+  // The country's categories, then 國際參考價 and 「最近」; nothing until the categories are
+  // known, so the focus starts on the first category.
   const gridItems = (
     data.country
       ? [
@@ -67,12 +68,15 @@ export default function HomeScreen() {
             label: pick(cat.name),
             icon: cat.icon,
             tone: cat.tone,
+            to: paths.category(cat.id),
           })),
-          { ...RECENT_CATEGORY, label: t('categories.recent') },
+          { ...INTL_TILE, label: t('categories.intl'), to: paths.intl() },
+          { ...RECENT_CATEGORY, label: t('categories.recent'), to: paths.category('recent') },
         ]
       : []
   ).map((item, i) => ({ ...item, focusId: CATEGORY_PREFIX + item.id, keyCap: i + 1 }))
   const toWatch = () => nav.switchTab(paths.home('watch'))
+  const toNews = () => nav.switchTab(paths.news())
   const toAll = () => nav.switchTab(paths.home('all'))
 
   const list = useFocusList(tab === 'watch' ? watchIds : [], {
@@ -89,8 +93,12 @@ export default function HomeScreen() {
   const grid = useGrid(tab === 'all' ? gridItems.map((item) => item.focusId) : [], 3, {
     root: gridRoot,
     active: tab === 'all' && !nav.sheet,
-    onActivate: (id) => nav.open(paths.category(id.slice(CATEGORY_PREFIX.length))),
+    onActivate: (id) => {
+      const item = gridItems.find((cell) => cell.focusId === id)
+      if (item) nav.open(item.to)
+    },
     onLeftEdge: toWatch,
+    onRightEdge: toNews,
   })
   useKeys({
     ...(tab === 'all' ? grid.keys : { ...list.keys, onRight: toAll }),
@@ -144,6 +152,7 @@ export default function HomeScreen() {
         tabs={[
           { id: 'watch', label: t('home.tabs.watch') },
           { id: 'all', label: t('home.tabs.all') },
+          { id: 'news', label: t('news.title') },
         ]}
         activeId={tab}
       />

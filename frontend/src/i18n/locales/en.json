@@ -84,10 +84,10 @@
     "settings": "Settings",
     "addWatch": "Add to watchlist",
     "removeWatch": "Remove from list",
-    "intl": "International prices",
     "news": "News"
   },
   "categories": {
+    "intl": "Global",
     "recent": "Recent"
   },
   "setup": {
