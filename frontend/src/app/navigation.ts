@@ -3,6 +3,7 @@
  * soft key (history.back()) closes a panel, then leaves a screen, then leaves the app on home.
  * Screens use `useNav()` instead of calling `navigate` directly.
  */
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 
 import { selectLastFocusId, useSession } from '@/store/session'
@@ -25,6 +26,26 @@ export interface Nav {
   closeSheet(): void
   /** A panel item that opens another screen: the panel's entry becomes that screen. */
   leaveSheet(to: string): void
+  /**
+   * A panel item that changes the screen below it (another viewed area, another sort): closes
+   * the panel (back), then replaces that screen's entry with `to`, so no history is added.
+   */
+  closeSheetAndReplace(to: string): void
+}
+
+// Where to go once the pending history.back() of closeSheetAndReplace has landed.
+let pendingReplace: string | null = null
+
+/** Finishes closeSheetAndReplace; RootLayout runs it on every location change. */
+export function useApplyPendingReplace(): void {
+  const navigate = useNavigate()
+  const location = useLocation()
+  useEffect(() => {
+    if (pendingReplace === null) return
+    const target = pendingReplace
+    pendingReplace = null
+    void navigate(target, { replace: true })
+  }, [location.key, navigate])
 }
 
 const SHEETS: readonly string[] = ['menu', 'area', 'sort']
@@ -59,6 +80,14 @@ export function useNav(): Nav {
       }
     },
     leaveSheet: (to) => void navigate(to, { replace: true }),
+    closeSheetAndReplace: (to) => {
+      if (sheet === null || location.key === 'default') {
+        void navigate(to, { replace: true })
+        return
+      }
+      pendingReplace = to
+      void navigate(-1)
+    },
   }
 }
 

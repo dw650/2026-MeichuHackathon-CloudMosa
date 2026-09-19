@@ -4,6 +4,7 @@ import { Navigate, Outlet, useLocation } from 'react-router'
 import { useSession } from '@/store/session'
 import { useSettings } from '@/store/settings'
 
+import { useApplyPendingReplace } from './navigation'
 import { paths, withoutSheet } from './paths'
 
 /** Wraps every route: first-run setup gate and "remember where I am" (F13). */
@@ -11,6 +12,7 @@ export function RootLayout() {
   const location = useLocation()
   const setupDone = useSettings((s) => s.setupDone)
   const rememberLocation = useSession((s) => s.rememberLocation)
+  useApplyPendingReplace()
 
   useEffect(() => {
     rememberLocation(withoutSheet(location.pathname + location.search), location.key)

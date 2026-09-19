@@ -60,6 +60,7 @@ export default defineConfig([
   },
   {
     files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}'],
     rules: {
       'no-restricted-imports': ['error', { patterns: noStoreOrApi }],
       'no-restricted-globals': ['error', ...noDirectIo('components/')],
@@ -68,6 +69,8 @@ export default defineConfig([
   },
   {
     files: ['src/screens/**/*.{ts,tsx}'],
+    // Tests may prepare storage and stub fetch; the rule guards production code.
+    ignores: ['src/**/*.test.{ts,tsx}'],
     rules: {
       'no-restricted-globals': ['error', ...noDirectIo('screens/')],
       'no-restricted-properties': ['error', ...platformProperties, ...noWindowIo('screens/')],
