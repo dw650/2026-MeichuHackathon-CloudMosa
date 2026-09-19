@@ -1,0 +1,76 @@
+.chart {
+  display: block;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.small {
+  display: none;
+}
+
+@media (max-width: 176px) {
+  .large {
+    display: none;
+  }
+
+  .small {
+    display: block;
+  }
+}
+
+.grid {
+  stroke: var(--line);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+}
+
+.band {
+  fill: var(--line);
+  opacity: 0.45;
+}
+
+.area {
+  fill: var(--tc, var(--brand));
+  opacity: 0.16;
+}
+
+.line {
+  fill: none;
+  stroke: var(--tc, var(--brand));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.point {
+  fill: var(--card);
+  stroke: var(--tc, var(--brand));
+  stroke-width: 1.5;
+}
+
+.now {
+  fill: var(--tc, var(--brand));
+  stroke: var(--card);
+  stroke-width: 2;
+}
+
+/* The mockup draws 9px labels and a 10px price; both use the 11px floor (docs/03 §3.2). */
+.svg text {
+  fill: var(--ink3);
+  font-family: var(--font);
+  font-size: var(--fs-3);
+}
+
+.svg .value {
+  fill: var(--ink);
+  font-weight: 900;
+}
+
+.svg .closed {
+  font-weight: 700;
+}
