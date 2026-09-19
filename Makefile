@@ -84,12 +84,14 @@ audit-backend:
 E2E_BASE_URL ?= http://localhost:$(WEB_PORT)
 e2e: .env frontend/node_modules/.package-lock.json
 	VITE_DEMO=true DEMO_MODE=true NEWS_SOURCE=demo $(COMPOSE) up -d --build --wait
+	./scripts/wait-for-data.sh $(E2E_BASE_URL)
 	cd frontend && npx playwright install chromium >/dev/null
 	cd frontend && E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test
 
 ## Regenerate the README screenshots (docs/images/) from the running demo stack.
 screenshots: .env frontend/node_modules/.package-lock.json
 	VITE_DEMO=true DEMO_MODE=true NEWS_SOURCE=demo $(COMPOSE) up -d --build --wait
+	./scripts/wait-for-data.sh $(E2E_BASE_URL)
 	mkdir -p docs/images
 	cd frontend && SCREENSHOTS=1 E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test screenshots --project=qvga
 
