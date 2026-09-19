@@ -238,5 +238,12 @@
     "source": "資料來源",
     "noMoney": "本 App 不會向你要錢、密碼或驗證碼。",
     "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）"
+  },
+  "errors": {
+    "screen": {
+      "title": "這個畫面出了問題",
+      "note": "你的設定都還在，可以回首頁再試一次",
+      "home": "回首頁"
+    }
   }
 }
