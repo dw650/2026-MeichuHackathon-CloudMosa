@@ -20,14 +20,22 @@ import httpx
 
 from app.ingest import normalize as fmt
 from app.ingest.http import Fetcher, RetryPolicy, Sleep, UpstreamError
-from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
+from app.ingest.providers.base import (
+    BuildContext,
+    FetchStats,
+    NormalizedQuote,
+    RawRow,
+    SourceInfo,
+    SourceMaps,
+)
 from app.seed.schema import SeedFile
 from app.timeutil import to_roc
 
 SOURCE = "tw_moa"
 URL = "https://data.moa.gov.tw/Service/OpenData/FromM/FarmTransData.aspx"
 WINDOW_DAYS = 60  # a full run: every day the validator still accepts
-REFRESH_DAYS = 3  # an hourly refresh: today and the two days before
+REFRESH_DAYS = 3  # scheduled runs always fetch today and the two days before
+REFRESH_HOURS = "6-15"  # hourly while the markets publish the day's prices (Taiwan time)
 PAGE_SIZE = 5000  # one product over 60 days is about 1 500 rows; the API refuses > 10 000
 MAX_PAGES = 20
 ATTEMPTS = 3
@@ -77,13 +85,17 @@ class TwMoaProvider:
         today_of: Callable[[str], date],
         *,
         days: int = WINDOW_DAYS,
+        plan: Sequence[date] | None = None,
         transport: httpx.AsyncBaseTransport | None = None,
         sleep: Sleep = asyncio.sleep,
         page_size: int = PAGE_SIZE,
         attempts: int = ATTEMPTS,
     ) -> None:
+        """`days` back from today, or the range spanning the `plan` (the planned trade dates:
+        one request per product covers a date range, so the days in between come along)."""
         self.products = list(products)
         self.days = days
+        self.plan = sorted(plan) if plan is not None else None
         self._today_of = today_of
         self._transport = transport
         self._sleep = sleep
@@ -91,18 +103,25 @@ class TwMoaProvider:
         self._policy = RetryPolicy(
             attempts=attempts, pause_s=PAUSE_S, backoff_s=BACKOFF_S, timeout=TIMEOUT
         )
-        self.requests = 0
+        self.stats = FetchStats()
         self._batch: tuple[date, dict[str, list[RawRow]]] | None = None  # (today, by ROC date)
 
     # ---------- fetch ----------
 
+    def _range(self, today: date) -> tuple[date, date] | None:
+        if self.plan is None:
+            return today - timedelta(days=self.days - 1), today
+        if not self.plan:
+            return None
+        return self.plan[0], min(self.plan[-1], today)
+
     async def fetch(self, day: date) -> list[RawRow]:
         today = self._today_of("TW")
-        first = today - timedelta(days=self.days - 1)
-        if not first <= day <= today:
+        span = self._range(today)
+        if span is None or not span[0] <= day <= span[1]:
             return []
         if self._batch is None or self._batch[0] != today:
-            self._batch = (today, await self._download(first, today))
+            self._batch = (today, await self._download(*span))
         return self._batch[1].get(to_roc(day), [])
 
     async def _download(self, first: date, last: date) -> dict[str, list[RawRow]]:
@@ -123,9 +142,13 @@ class TwMoaProvider:
                             day = str(row.get("交易日期", "")).strip()
                             by_day.setdefault(day, []).append(row)
         finally:
-            self.requests += http.requests
+            self.stats.requests += http.requests
         logger.info(
-            "tw_moa: %d rows for %s to %s, %d requests", len(seen), first, last, self.requests
+            "tw_moa: %d rows for %s to %s, %d requests",
+            len(seen),
+            first,
+            last,
+            self.stats.requests,
         )
         window = {to_roc(first + timedelta(days=i)) for i in range((last - first).days + 1)}
         outside = sum(len(rows) for d, rows in by_day.items() if d not in window)
@@ -155,3 +178,20 @@ class TwMoaProvider:
 
     def normalize(self, raw: RawRow, maps: SourceMaps) -> NormalizedQuote | None:
         return fmt.moa_farmtrans(raw, maps, SOURCE, exact=True)
+
+
+def _build(ctx: BuildContext) -> TwMoaProvider:
+    return TwMoaProvider(products_from_seeds(ctx.seeds), ctx.today_of, plan=ctx.days)
+
+
+INFO = SourceInfo(
+    id=SOURCE,
+    countries=TwMoaProvider.countries,
+    price_types=("wholesale",),
+    build=_build,
+    network=True,
+    window_days=WINDOW_DAYS,
+    refresh_days=REFRESH_DAYS,
+    refresh_hours=REFRESH_HOURS,
+    fresh_for=timedelta(hours=6),
+)

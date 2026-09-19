@@ -14,12 +14,19 @@ from functools import cache
 from typing import Any
 
 from app.ingest import normalize as fmt
-from app.ingest.providers.base import NormalizedQuote, RawRow, SourceMaps
+from app.ingest.providers.base import (
+    WINDOW_DAYS,
+    BuildContext,
+    FetchStats,
+    NormalizedQuote,
+    RawRow,
+    SourceInfo,
+    SourceMaps,
+)
 from app.seed.schema import AreaSeed, CropSeed, MarketSeed, SeedFile
 from app.timeutil import to_roc
 
 SOURCE = "mock"
-WINDOW_DAYS = 60
 WALK_STEP = 0.035  # daily random walk ±3.5%
 MARKET_NOISE = 0.02  # market price ±2%
 RETAIL_NOISE = 0.025  # retail price ±2.5%
@@ -65,6 +72,7 @@ class MockProvider:
     def __init__(self, seeds: list[SeedFile], today_of: Callable[[str], date]) -> None:
         self.seeds = seeds
         self.countries = tuple(s.country.code for s in seeds)
+        self.stats = FetchStats()  # generated locally: no requests, nothing left out
         self._today_of = today_of
         self._series_cache: dict[tuple[str, str, date], dict[date, float]] = {}
         self._volume_cache: dict[tuple[str, str, date], dict[date, float]] = {}
@@ -278,3 +286,17 @@ class MockProvider:
         if kind == ("TW", "retail"):
             return fmt.tw_retail(raw, maps, SOURCE)
         raise fmt.RowError(f"unknown row kind {kind}")
+
+
+def _build(ctx: BuildContext) -> MockProvider:
+    return MockProvider([s for s in ctx.seeds if s.country.code in ctx.countries], ctx.today_of)
+
+
+# The demo covers every country no real source covers, over the whole window on every run.
+INFO = SourceInfo(
+    id=SOURCE,
+    countries=(),
+    price_types=("wholesale", "retail"),
+    build=_build,
+    fallback=True,
+)

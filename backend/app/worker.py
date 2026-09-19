@@ -1,13 +1,17 @@
-"""Worker: syncs the seed and runs every enabled provider at start-up, then again each day at
-00:05 local time of every country; real sources also refresh the last few days every hour while
-the markets publish (docs/06 §8). The international reference prices (bonus B5) are checked at
-start-up and with the daily jobs, but only downloaded when due. `python -m app.worker --once`
-runs one pass."""
+"""Worker: syncs the seed and runs every enabled source at start-up, then again each day at
+00:05 local time of every country; network sources also refresh hourly while their source
+publishes (docs/06 §8). The international reference prices (bonus B5) are checked at start-up
+and with the daily jobs, but only downloaded when due. `python -m app.worker --once` runs one
+pass.
+
+What a source is (countries, schedule, network or not) comes from `app.ingest.registry`; how
+much a network source downloads comes from the fetch policy (`app.ingest.policy`)."""
 
 import argparse
 import asyncio
 import logging
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import replace
 from datetime import UTC, date, datetime
 
 import httpx
@@ -16,13 +20,11 @@ from apscheduler.triggers.cron import CronTrigger
 
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_sessionmaker
+from app.ingest import registry
 from app.ingest.intl.pink_sheet import KNOWN_MONTHLY_URL
 from app.ingest.intl.refresh import IntlConfig, refresh_intl, sync_series
-from app.ingest.pipeline import RunSummary, retire_sources, run_provider
-from app.ingest.providers import tw_moa
-from app.ingest.providers.base import PriceProvider
-from app.ingest.providers.mock import MockProvider
-from app.ingest.providers.tw_moa import TwMoaProvider, products_from_seeds
+from app.ingest.pipeline import RunSummary, plan_run, retire_sources, run_provider
+from app.ingest.providers.base import BuildContext, PriceProvider
 from app.ingest.seed import sync_seed
 from app.middleware import configure_logging
 from app.seed.loader import load_intl_series, load_seed_files
@@ -32,67 +34,92 @@ from app.timeutil import country_tz, local_today
 logger = logging.getLogger("app.worker")
 Clock = Callable[[], datetime]
 
-# Real sources: the countries they take over from the mock, and the hours (local time) of
-# their hourly refresh while the markets publish the day's prices (docs/06 §8).
-REAL_SOURCES: dict[str, tuple[str, ...]] = {tw_moa.SOURCE: TwMoaProvider.countries}
-REFRESH_HOURS: dict[str, str] = {tw_moa.SOURCE: "6-15"}
-
 
 def _utc_now() -> datetime:
     return datetime.now(UTC)
 
 
-def build_providers(
-    ids: list[str], seeds: list[SeedFile], clock: Clock, *, refresh: bool = False
-) -> list[PriceProvider]:
-    """The enabled providers. A real source takes its countries over from the mock, so a country
-    never mixes demo and real prices; `refresh` gives real sources their short window."""
+def _today_of(seeds: Sequence[SeedFile], clock: Clock) -> Callable[[str], date]:
     offsets = {s.country.code: s.country.utc_offset_min for s in seeds}
 
     def today_of(country: str) -> date:
         return local_today(offsets[country], clock())
 
-    real = {cc for provider_id in ids for cc in REAL_SOURCES.get(provider_id, ())}
+    return today_of
+
+
+def build_providers(
+    ids: Sequence[str],
+    seeds: Sequence[SeedFile],
+    clock: Clock,
+    *,
+    plans: Mapping[str, Sequence[date]] | None = None,
+) -> list[PriceProvider]:
+    """The enabled providers. A real source takes its countries over from the mock, so a country
+    never mixes demo and real prices; `plans` gives network sources the days to fetch (default:
+    the whole window)."""
+    infos = registry.enabled(ids)
+    cover = registry.coverage(infos, seeds)
+    today_of = _today_of(seeds, clock)
     providers: list[PriceProvider] = []
-    for provider_id in ids:
-        if provider_id == "mock":
-            demo = [s for s in seeds if s.country.code not in real]
-            if demo:
-                providers.append(MockProvider(demo, today_of=today_of))
-        elif provider_id == tw_moa.SOURCE:
-            days = tw_moa.REFRESH_DAYS if refresh else tw_moa.WINDOW_DAYS
-            providers.append(TwMoaProvider(products_from_seeds(seeds), today_of, days=days))
-        else:
-            logger.warning("provider %r is not available yet; skipped", provider_id)
+    for info in infos:
+        if not cover[info.id]:
+            continue
+        days = plans.get(info.id) if plans else None
+        context = BuildContext(
+            seeds=seeds,
+            countries=cover[info.id],
+            today_of=today_of,
+            days=None if days is None else tuple(days),
+        )
+        providers.append(info.build(context))
     return providers
 
 
-def owners(providers: Sequence[PriceProvider], seeds: Sequence[SeedFile]) -> dict[str, set[str]]:
-    """country → the sources allowed to hold its prices."""
-    return {
-        s.country.code: {p.source for p in providers if s.country.code in p.countries}
-        for s in seeds
-    }
-
-
 async def run_once(
-    settings: Settings, clock: Clock = _utc_now, *, refresh: str | None = None
+    settings: Settings,
+    clock: Clock = _utc_now,
+    *,
+    refresh: str | None = None,
+    startup: bool = False,
 ) -> list[RunSummary]:
     """Syncs the seed, removes prices of sources no longer enabled for a country, then runs the
-    enabled providers. `refresh` runs only that real source over its short window."""
+    enabled sources (only `refresh` when given). Network sources fetch what the fetch policy
+    plans; at start-up they may be skipped after a recent success."""
     engine = create_engine(settings)
     maker = create_sessionmaker(engine)
     try:
         async with maker() as session:
             seeds = await sync_seed(session)
         today = {s.country.code: local_today(s.country.utc_offset_min, clock()) for s in seeds}
-        providers = build_providers(settings.provider_ids, seeds, clock, refresh=bool(refresh))
+        infos = registry.enabled(settings.provider_ids)
+        cover = registry.coverage(infos, seeds)
         async with maker() as session:
-            await retire_sources(session, owners(providers, seeds))
-        if refresh:
-            providers = [p for p in providers if p.source == refresh]
+            await retire_sources(session, registry.owners(cover, seeds))
+        today_of = _today_of(seeds, clock)
         summaries = []
-        for provider in providers:
+        for info in infos:
+            countries = cover[info.id]
+            if (refresh and info.id != refresh) or not countries:
+                continue
+            context = BuildContext(seeds=seeds, countries=countries, today_of=today_of)
+            if info.network:
+                async with maker() as session:
+                    plan = await plan_run(session, info, countries, today, clock(), startup=startup)
+                if plan.skip:
+                    logger.info("%s: start-up run skipped (%s)", info.id, plan.skip)
+                    summaries.append(RunSummary(source=info.id, status="skipped"))
+                    continue
+                logger.info(
+                    "%s: fetching %d days (%s to %s), %d cached files",
+                    info.id,
+                    len(plan.days),
+                    plan.days[0] if plan.days else "-",
+                    plan.days[-1] if plan.days else "-",
+                    len(plan.files),
+                )
+                context = replace(context, days=plan.days, files=plan.files)
+            provider = info.build(context)
             async with maker() as session:
                 summaries.append(await run_provider(session, provider, today, clock=clock))
         return summaries
@@ -117,18 +144,18 @@ def schedule_daily(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[
 def schedule_refresh(
     scheduler: AsyncIOScheduler, settings: Settings, seeds: list[SeedFile]
 ) -> None:
-    """Hourly refreshes of each enabled real source, in its country's local time."""
+    """Hourly refreshes of each enabled source that has them, in its country's local time."""
     offsets = {s.country.code: s.country.utc_offset_min for s in seeds}
-    for source, hours in REFRESH_HOURS.items():
-        if source not in settings.provider_ids:
+    for info in registry.enabled(settings.provider_ids):
+        country = next((cc for cc in info.countries if cc in offsets), None)
+        if info.refresh_hours is None or country is None:
             continue
-        country = REAL_SOURCES[source][0]
         scheduler.add_job(
             run_once,
-            CronTrigger(hour=hours, minute=0, timezone=country_tz(offsets[country])),
+            CronTrigger(hour=info.refresh_hours, minute=0, timezone=country_tz(offsets[country])),
             args=[settings],
-            kwargs={"refresh": source},
-            id=f"refresh-{source}",
+            kwargs={"refresh": info.id},
+            id=f"refresh-{info.id}",
             coalesce=True,
             max_instances=1,
             misfire_grace_time=600,
@@ -203,8 +230,10 @@ async def main(argv: list[str] | None = None) -> None:
         await sync_intl(settings)
     except Exception:
         logger.exception("syncing the international series failed")
-    summaries = await run_once(settings)
-    logger.info("start-up run: %s", [(s.source, s.status, s.rows_ok) for s in summaries])
+    summaries = await run_once(settings, startup=True)
+    logger.info(
+        "start-up run: %s", [(s.source, s.status, s.rows_ok, s.requests) for s in summaries]
+    )
     try:
         intl = await run_intl(settings)
         logger.info("start-up intl: %s", [(s.source, s.status, s.rows_ok) for s in intl])

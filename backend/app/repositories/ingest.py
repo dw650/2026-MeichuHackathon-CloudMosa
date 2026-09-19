@@ -26,6 +26,63 @@ async def finish_run(session: AsyncSession, run_id: int, **fields: Any) -> None:
     await session.execute(update(IngestRun).where(IngestRun.id == run_id).values(**fields))
 
 
+async def last_success(session: AsyncSession, source: str) -> tuple[datetime, str | None] | None:
+    """(finished_at, maps_hash) of the source's latest successful run."""
+    row = (
+        await session.execute(
+            select(IngestRun.finished_at, IngestRun.maps_hash)
+            .where(
+                IngestRun.source == source,
+                IngestRun.status == "ok",
+                IngestRun.finished_at.is_not(None),
+            )
+            .order_by(IngestRun.id.desc())
+            .limit(1)
+        )
+    ).first()
+    if row is None or row[0] is None:
+        return None
+    return row[0], row[1]
+
+
+async def run_files(
+    session: AsyncSession, source: str, maps_hash: str | None, limit: int = 200
+) -> dict[str, dict[str, str]]:
+    """Validators of the files the source's successful runs downloaded with these name maps,
+    by URL; the latest run wins."""
+    rows = await session.execute(
+        select(IngestRun.files)
+        .where(
+            IngestRun.source == source,
+            IngestRun.status == "ok",
+            IngestRun.maps_hash == maps_hash,
+            text("files <> '{}'::jsonb"),
+        )
+        .order_by(IngestRun.id.desc())
+        .limit(limit)
+    )
+    merged: dict[str, dict[str, str]] = {}
+    for files in rows.scalars().all():
+        for url, validators in files.items():
+            merged.setdefault(url, validators)
+    return merged
+
+
+async def covered_days(
+    session: AsyncSession, source: str, countries: Sequence[str], first: date, last: date
+) -> set[date]:
+    """Trade dates between `first` and `last` the source has at least one quote for."""
+    result = await session.execute(
+        text(
+            "SELECT DISTINCT trade_date FROM quotes WHERE source = :source"
+            " AND country = ANY(CAST(:countries AS varchar[]))"
+            " AND trade_date BETWEEN :first AND :last"
+        ),
+        {"source": source, "countries": list(countries), "first": first, "last": last},
+    )
+    return set(result.scalars().all())
+
+
 async def load_source_maps(session: AsyncSession, source: str) -> SourceMaps:
     crops = await session.execute(
         select(

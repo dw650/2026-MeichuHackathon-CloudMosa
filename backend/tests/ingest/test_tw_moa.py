@@ -9,6 +9,7 @@ API over those rows."""
 import json
 from collections import Counter
 from collections.abc import Sequence
+from dataclasses import replace
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -20,11 +21,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import worker
 from app.config import Settings
+from app.ingest import registry
 from app.ingest.maps import maps_from_seeds
 from app.ingest.normalize import normalize_all
 from app.ingest.pipeline import run_provider
 from app.ingest.providers import tw_moa
-from app.ingest.providers.base import RawRow, SourceMaps
+from app.ingest.providers.base import BuildContext, RawRow, SourceMaps
 from app.ingest.providers.tw_moa import TwMoaProvider, UpstreamError, products_from_seeds
 from app.ingest.seed import sync_seed
 from app.seed.loader import load_seed_files
@@ -337,12 +339,22 @@ async def test_real_rows_flow_through_the_pipeline(session: AsyncSession) -> Non
     assert sources.all() == [("tw_moa", "TW")]
 
 
+def offline(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Makes the worker build tw_moa over FakeServer instead of the real API."""
+
+    def build(ctx: BuildContext) -> TwMoaProvider:
+        server = httpx.MockTransport(FakeServer())
+        products = products_from_seeds(ctx.seeds)
+        return TwMoaProvider(
+            products, ctx.today_of, plan=ctx.days, transport=server, sleep=Sleeps()
+        )
+
+    monkeypatch.setitem(registry.SOURCES, tw_moa.SOURCE, replace(tw_moa.INFO, build=build))
+
+
 async def test_a_country_never_mixes_demo_and_real_prices(
     settings: Settings, session: AsyncSession, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    def offline(*args: Any, **kwargs: Any) -> TwMoaProvider:
-        server = httpx.MockTransport(FakeServer())
-        return TwMoaProvider(*args, transport=server, sleep=Sleeps(), **kwargs)
 
     def clock() -> datetime:
         return NOW
@@ -360,7 +372,7 @@ async def test_a_country_never_mixes_demo_and_real_prices(
         )
         return int(result.scalar_one())
 
-    monkeypatch.setattr(worker, "TwMoaProvider", offline)
+    offline(monkeypatch)
     demo = settings.model_copy(update={"providers": "mock"})
     real = settings.model_copy(update={"providers": "mock,tw_moa"})
 

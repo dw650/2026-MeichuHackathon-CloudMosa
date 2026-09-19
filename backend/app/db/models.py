@@ -154,6 +154,12 @@ class IngestRun(Base):
     # Dropped rows per reason (unmapped, non_positive, …) for the health check and logs.
     drop_reasons: Mapped[dict[str, Any]] = mapped_column(server_default=text("'{}'::jsonb"))
     error: Mapped[str | None] = mapped_column(Text)
+    # Network sources (docs/06 §8): HTTP requests sent, cache validators of the files
+    # downloaded ({url: {etag, last_modified}}) and a fingerprint of the source's name maps,
+    # so later runs can skip what they already have.
+    requests: Mapped[int] = mapped_column(Integer, server_default="0")
+    files: Mapped[dict[str, Any]] = mapped_column(server_default=text("'{}'::jsonb"))
+    maps_hash: Mapped[str | None] = mapped_column(String(64))
 
     __table_args__ = (
         CheckConstraint("status IN ('running', 'ok', 'failed')", name="ck_ingest_runs_status"),
