@@ -193,7 +193,16 @@
       "rank": "{{area}}: kedudukan harga {{rank}}/{{total}}",
       "rankNone": "{{area}}: tiada data, tiada kedudukan",
       "marketCount_one": "{{count}} pasar",
-      "marketCount_other": "{{count}} pasar"
+      "marketCount_other": "{{count}} pasar",
+      "others": {
+        "title": "Negara lain",
+        "none": "Tiada negara lain melaporkan tanaman ini",
+        "areaCount_one": "median {{count}} daerah",
+        "areaCount_other": "median {{count}} daerah",
+        "world": "Bank Dunia",
+        "worldMeta": "harga dunia {{month}}",
+        "note": "Borong dan peruncit tidak boleh dibandingkan, jenis dan kualiti berbeza, kadar tukaran hanya rujukan"
+      }
     }
   },
   "markets": {
@@ -287,6 +296,7 @@
     "areaPrice": "Harga kawasan = median harga pasar di kawasan itu; bilangan pasar ditunjukkan.",
     "distance": "Jarak = garis lurus antara pusat kawasan, bukan jarak jalan.",
     "nearby": "Tertinggi dan terendah berdekatan = semua kawasan dalam 100 km (garis lurus) yang ada harga pada hari dagangan yang sama.",
+    "otherCountries": "Negara lain = median harga daerah negara itu pada hari dagangan terkininya, ditukar ke mata wang anda dengan kadar tersimpan. Borong dan peruncit ialah dagangan berbeza dan tidak boleh dibandingkan terus; jenis, kualiti dan pembungkusan juga berbeza, dan kadar tukaran hanya rujukan.",
     "retail": "Harga runcit ikut kawasan; tiada pecahan ikut pasar.",
     "gap": "Beza runcit–borong bukan untung; ia termasuk pengangkutan, kerugian dan pembungkusan.",
     "demo": "Harga negara ialah data demo buat masa ini; harga antarabangsa ialah data sebenar World Bank.",

@@ -127,6 +127,51 @@ class CompareRowOut(BaseModel):
     is_base: bool
 
 
+class OtherCountryRowOut(BaseModel):
+    country: str
+    currency: str = Field(description="The other country's own currency.")
+    type: PriceType | None = Field(
+        description="What that country publishes for this crop (Malaysia retail, Taiwan and"
+        " India wholesale); null when it has no price."
+    )
+    local_per_kg: float | None = Field(description="National price in `currency`, as stored.")
+    price_per_kg: float | None = Field(
+        description="The same price converted to the viewer's currency; null without a rate."
+    )
+    n_areas: int = Field(description="Areas behind the median (0 when there is no price).")
+    trade_date: date | None
+    reason: Literal["no_data", "no_fx"] | None
+
+
+class WorldPriceOut(BaseModel):
+    """The World Bank Pink Sheet's world price of the crop (bonus B5's series): a reference,
+    not a country. Only crops with a published series have one."""
+
+    series_id: str
+    month: date | None
+    usd: float | None = Field(description="The published price, US dollars per `usd_unit`.")
+    usd_unit: Literal["mt", "kg"]
+    price_per_kg: float | None = Field(description="Converted to the viewer's currency.")
+    reason: Literal["no_data", "no_fx"] | None
+
+
+class OtherCountriesOut(BaseModel):
+    """各國參考價 (docs/02 §5.4): the same crop in the other countries that have it. A country's
+    national price is the median of its area prices on its own latest trading day. Wholesale and
+    retail are not comparable and the rate is a reference, so the client says so."""
+
+    currency: str = Field(description="The viewer's currency, which `price_per_kg` is in.")
+    fx_date: date | None = Field(
+        description="Oldest rate date behind a converted row; null when nothing was converted."
+    )
+    rows: list[OtherCountryRowOut] = Field(
+        description="Empty when no other country's catalog has this crop."
+    )
+    world: WorldPriceOut | None = Field(
+        description="Null when the Pink Sheet publishes no series for this crop."
+    )
+
+
 class CompareOut(BaseModel):
     crop_id: str
     area_id: str
@@ -135,6 +180,7 @@ class CompareOut(BaseModel):
     today: date
     rank: RankOut
     rows: list[CompareRowOut]
+    other_countries: OtherCountriesOut
 
 
 class MarketRowOut(BaseModel):

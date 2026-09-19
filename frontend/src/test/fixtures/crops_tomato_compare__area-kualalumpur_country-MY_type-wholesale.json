@@ -2,6 +2,33 @@
  "area_id": "kualalumpur",
  "crop_id": "tomato",
  "currency": "MYR",
+ "other_countries": {
+  "currency": "MYR",
+  "fx_date": "2026-09-19",
+  "rows": [
+   {
+    "country": "IN",
+    "currency": "INR",
+    "local_per_kg": 12.435,
+    "n_areas": 8,
+    "price_per_kg": 0.5287,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   },
+   {
+    "country": "TW",
+    "currency": "TWD",
+    "local_per_kg": 38.35,
+    "n_areas": 7,
+    "price_per_kg": 4.9164,
+    "reason": null,
+    "trade_date": "2026-09-19",
+    "type": "wholesale"
+   }
+  ],
+  "world": null
+ },
  "rank": {
   "position": 1,
   "total": 7

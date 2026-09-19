@@ -204,3 +204,26 @@
     display: none;
   }
 }
+
+/* 各國參考價 (docs/02 §5.4): section title with the rate date, and the one-line warning. */
+.othersHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 6px var(--gut) 2px;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+}
+
+.othersHead b {
+  color: var(--ink);
+}
+
+.othersNote {
+  padding: 3px var(--gut) 2px;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+  line-height: 1.3;
+}

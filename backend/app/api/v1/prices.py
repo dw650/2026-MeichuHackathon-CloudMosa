@@ -127,6 +127,23 @@ COMPARE_EXAMPLE = {
             "is_base": False,
         }
     ],
+    "other_countries": {
+        "currency": "INR",
+        "fx_date": "2026-09-19",
+        "world": None,
+        "rows": [
+            {
+                "country": "TW",
+                "currency": "TWD",
+                "type": "wholesale",
+                "local_per_kg": 31.4,
+                "price_per_kg": 86.8,
+                "n_areas": 6,
+                "trade_date": "2026-09-19",
+                "reason": None,
+            }
+        ],
+    },
 }
 MARKETS_EXAMPLE = {
     "crop_id": "onion",
@@ -232,7 +249,11 @@ async def quote(
     description=(
         "Each area's latest price, market count, straight-line distance from the area being"
         " viewed, difference and rank (highest price first, ties share a rank, no data is"
-        " not ranked). Sorting for display is left to the client."
+        " not ranked). Sorting for display is left to the client. `other_countries` adds the"
+        " same crop's national price in every other country that has it (median of that"
+        " country's area prices on its own latest trading day), converted to this country's"
+        " currency with the stored US-dollar rates, plus the World Bank's world price when it"
+        " publishes a series for the crop. The list is empty when no other country has it."
     ),
     response_model=CompareOut,
     responses=_example(COMPARE_EXAMPLE) | ERRORS,

@@ -207,7 +207,7 @@ class PriceProvider(Protocol):
 | `GET /countries/{cc}/crops` | 作物清單 | 名稱、分類、品種、有無零售 |
 | `GET /prices?country=&area=&type=&crops=` | 首頁與作物清單 | 每個作物的地區價、漲跌、7 日迷你走勢、新舊 |
 | `GET /crops/{crop}/quote?country=&area=&type=&days=30` | 行情頁與走勢頁 | 地區價、市場數、市場最高與最低、漲跌、指標、30 日序列、附近最高與最低（`nearby`） |
-| `GET /crops/{crop}/compare?country=&area=&type=` | 比價頁 | 各地區的價格、市場數、直線距離、差額、新舊、名次；目前地區的名次與總數 |
+| `GET /crops/{crop}/compare?country=&area=&type=` | 比價頁 | 各地區的價格、市場數、直線距離、差額、新舊、名次；目前地區的名次與總數；`other_countries`：使用者的幣別、換算用的匯率日期（`fx_date`）、其他國家各一列（國家、該國幣別、批發或零售、該國全國價與換算後的每公斤價、地區數、交易日、`reason`），以及世界銀行的世界價（`world`，沒有序列時為 `null`）。其他國家都沒有這項作物時 `rows` 是空陣列 |
 | `GET /crops/{crop}/markets?country=&area=` | 本地區各市場（只有批發） | 各市場代表價、距離、新舊、與中位數的差額 |
 | `GET /crops/{crop}/markets/{market}?country=` | 單一市場 | 代表價、漲跌、當日區間、來源 |
 | `GET /intl?country=` | 國際參考價清單（B5） | 國家幣別與今天、換算用的匯率（`fx`：每美元多少、匯率日期）、Pink Sheet 更新日；每條序列：名稱、規格、原文名稱、最新月份、原始美元價與單位、每公斤當地價、比上月、`reason` |

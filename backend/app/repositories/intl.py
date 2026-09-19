@@ -68,6 +68,17 @@ async def latest_month(session: AsyncSession) -> date | None:
     return month
 
 
+async def latest_price(session: AsyncSession, series_id: str) -> IntlPrice | None:
+    """Newest month of one series (the cross-country card's world reference row)."""
+    result = await session.execute(
+        select(IntlPrice)
+        .where(IntlPrice.series_id == series_id)
+        .order_by(IntlPrice.month.desc())
+        .limit(1)
+    )
+    return result.scalars().first()
+
+
 async def prices_since(
     session: AsyncSession, since: date, series_id: str | None = None
 ) -> list[IntlPrice]:
@@ -101,6 +112,12 @@ async def upsert_rates(
 
 async def get_rate(session: AsyncSession, currency: str) -> FxRate | None:
     return await session.get(FxRate, currency)
+
+
+async def get_rates(session: AsyncSession, currencies: Sequence[str]) -> dict[str, FxRate]:
+    """The stored rate of each currency that has one."""
+    result = await session.execute(select(FxRate).where(FxRate.currency.in_(currencies)))
+    return {r.currency: r for r in result.scalars().all()}
 
 
 async def has_rates(session: AsyncSession) -> bool:

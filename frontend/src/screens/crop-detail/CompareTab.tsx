@@ -17,6 +17,7 @@ import { useText } from '@/screens/shared/useText'
 import { SORT_LABEL, sortRows } from './compareRows'
 import styles from './CropDetailScreen.module.css'
 import { DetailFrame } from './DetailFrame'
+import { OtherCountriesCard } from './OtherCountriesCard'
 import { SortSheet } from './SortSheet'
 import { FailedState, LoadingState, StaleDataCard } from './states'
 import { DEFAULT_SORT, type Detail, RETRY, stageOf, useDetailQuote } from './useDetail'
@@ -82,6 +83,7 @@ function AreaCard({ row, detail }: RowProps) {
 /** 比價 (T29): every area of the country, the viewed one marked 「你」. */
 export function CompareTab({ detail }: { detail: Detail }) {
   const { t } = useText()
+  const fmt = usePriceFormat()
   const { nav, sort } = detail
   const quote = useDetailQuote(detail)
   const { country, areaId, cropId, type } = detail
@@ -156,6 +158,9 @@ export function CompareTab({ detail }: { detail: Detail }) {
               <AreaCard key={row.area_id} row={row} detail={detail} />
             ))}
           </CardList>
+        )}
+        {stage === 'ready' && data?.other_countries && (
+          <OtherCountriesCard others={data.other_countries} today={data.today} fmt={fmt} />
         )}
       </div>
     </DetailFrame>

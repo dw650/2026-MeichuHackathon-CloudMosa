@@ -67,3 +67,24 @@ async def quote_source(
         stmt = stmt.where(Quote.market_id == market_id)
     result = await session.execute(stmt.limit(1))
     return result.scalar_one_or_none()
+
+
+async def country_daily_rows(
+    session: AsyncSession,
+    *,
+    countries: Sequence[str],
+    crop_id: str,
+    start: date,
+    end: date,
+) -> list[AreaDaily]:
+    """Area prices of one crop across several countries, both price types (cross-country card)."""
+    result = await session.execute(
+        select(AreaDaily)
+        .where(
+            AreaDaily.country.in_(countries),
+            AreaDaily.crop_id == crop_id,
+            AreaDaily.trade_date.between(start, end),
+        )
+        .order_by(AreaDaily.trade_date)
+    )
+    return list(result.scalars().all())
