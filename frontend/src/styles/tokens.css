@@ -1,0 +1,129 @@
+/* Design tokens for the "harvest card" system (docs/03 §2–§3, values from ui-mockup/phone.css).
+   Defaults are 240×320 (QVGA); the media query below switches to 128×160 (QQVGA). */
+:root {
+  /* Layout */
+  --hdr: 40px;
+  --ctx: 22px;
+  --sk: 28px;
+  --gut: 6px;
+  --rad: 8px;
+  --ring: 3px;
+  --gap: 4px;
+  --tile: 30px;
+  --row: 44px;
+  --row-compact: 36px;
+
+  /* Type (px). Floor: 11px on 240×320; key caps are the only exception (9px). */
+  --font: Roboto, 'Noto Sans TC', 'Noto Sans', sans-serif;
+  --fs-t: 17px;
+  --fs-hero: 30px;
+  --fs-1: 15px;
+  --fs-2: 12px;
+  --fs-3: 11px;
+  --fs-sk: 13px;
+  --fs-kc: 9px;
+  --fs-kpi-v: 13px;
+
+  /* Colors */
+  --bg: #e9efea;
+  --card: #ffffff;
+  --ink: #0f2419;
+  --ink2: #3f5549;
+  --ink3: #5e7267;
+  --line: #d2ddd6;
+  --brand: #146c43;
+  --brand-ink: #ffffff;
+  --brand-soft: #dcefe3;
+  --focus: #0b57d0;
+  --focus-bg: #e8f0fe;
+  --pos: #0e7a3d;
+  --pos-bg: #d9f2e2;
+  --neg: #c42e1c;
+  --neg-bg: #fde2dd;
+  --flat: #56655d;
+  --flat-bg: #e6ece8;
+  --warn: #7f4c00;
+  --warn-bg: #ffedc7;
+  --retail: #7a4bc2;
+  --key-bg: #ffffff;
+  --key-ink: #0f2419;
+  --key-line: #9fb1a7;
+  --sheet: #ffffff;
+  --scrim: rgba(10, 25, 17, 0.55);
+
+  /* Category tones: light tile background (--t-*) and chart color (--c-*) */
+  --t-green: #ddf2e2;
+  --t-orange: #ffe6cf;
+  --t-amber: #fff0c7;
+  --t-red: #fde1dc;
+  --t-olive: #ecefd4;
+  --t-yellow: #fff5c4;
+  --t-slate: #e2e9f0;
+  --t-blue: #e0e9ff;
+  --t-purple: #ece5ff;
+  --c-green: #2e9e5b;
+  --c-orange: #e07b1f;
+  --c-amber: #c9930e;
+  --c-red: #d8412f;
+  --c-olive: #7d8b2e;
+  --c-yellow: #b8920f;
+  --c-slate: #5b7c99;
+  --c-blue: #3d6fd9;
+  --c-purple: #7a5ae0;
+
+  /* Rise/fall colors follow the country (data-up on the app root): India green-up, Taiwan red-up. */
+  --up: var(--pos);
+  --up-bg: var(--pos-bg);
+  --dn: var(--neg);
+  --dn-bg: var(--neg-bg);
+}
+
+[data-up='neg'] {
+  --up: var(--neg);
+  --up-bg: var(--neg-bg);
+  --dn: var(--pos);
+  --dn-bg: var(--pos-bg);
+}
+
+/* A system status bar may take some height on the device (docs/03 §2): compress the header. */
+@media (min-width: 177px) and (max-height: 300px) {
+  :root {
+    --hdr: 30px;
+    --fs-t: 15px;
+  }
+}
+
+/* 128×160 (QQVGA) */
+@media (max-width: 176px) {
+  :root {
+    --hdr: 20px;
+    --ctx: 14px;
+    --sk: 18px;
+    --gut: 3px;
+    --rad: 5px;
+    --ring: 2px;
+    --gap: 2px;
+    --tile: 16px;
+    --row: 24px;
+    --row-compact: 20px;
+    --fs-t: 12px;
+    --fs-hero: 20px;
+    --fs-1: 12px;
+    --fs-2: 10px;
+    --fs-3: 10px;
+    --fs-sk: 11px;
+    --fs-kpi-v: 12px;
+  }
+
+  /* Chinese needs 11px to stay legible (docs/03 §3.2). */
+  :root:lang(zh) {
+    --fs-2: 11px;
+  }
+}
+
+@media (max-width: 176px) and (max-height: 150px) {
+  :root {
+    --hdr: 16px;
+    --fs-t: 11px;
+  }
+}
