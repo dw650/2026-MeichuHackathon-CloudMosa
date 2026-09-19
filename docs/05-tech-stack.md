@@ -60,6 +60,7 @@
 | 對外 HTTP | `httpx` | 抓取真實資料用；設逾時與重試 |
 | 排程 | `apscheduler` | 在 worker 服務裡跑，不在 API 服務裡 |
 | IP 推測 | `geoip2` + 本機 mmdb 檔（DB-IP Lite City） | 不呼叫外部服務，不保存 IP；檔案不進 Git |
+| Excel 讀取（B5） | `openpyxl`（唯讀模式）＋ `defusedxml` | 讀世界銀行 Pink Sheet 的月資料 xlsx；裝了 `defusedxml`，openpyxl 就用它解析 XML，擋掉惡意的實體展開。型別檔 `types-openpyxl` 只在開發用 |
 | 測試 | `pytest`、`pytest-asyncio`、FastAPI `TestClient` | 資料庫測試用 compose 起的 PostgreSQL |
 | 程式風格 | `ruff`（lint + format）、`mypy` | CI 會檢查 |
 | 套件管理 | `uv` | 產生 `uv.lock`，Docker build 也用它 |
