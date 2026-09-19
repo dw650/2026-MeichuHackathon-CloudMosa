@@ -5,9 +5,13 @@ import { TrendChart, type TrendPoint } from './TrendChart'
 
 const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六']
 
-/** Days from Sunday on; `null` marks a day without a price. */
-const week = (values: (number | null)[]): TrendPoint[] =>
-  values.map((value, i) => ({ value, label: WEEKDAYS[i % 7] ?? '' }))
+/** Days from Sunday on; `null` is a day without a price, `'closed'` a market holiday. */
+const week = (values: (number | null | 'closed')[]): TrendPoint[] =>
+  values.map((value, i) => ({
+    value: value === 'closed' ? null : value,
+    label: WEEKDAYS[i % 7] ?? '',
+    closed: value === 'closed',
+  }))
 
 /** Thirty days labelled `9/1`…`9/30`. */
 const month = (value: (i: number) => number | null): TrendPoint[] =>
@@ -55,8 +59,8 @@ describe('TrendChart', () => {
     expect(large.querySelectorAll('path.area')).toHaveLength(2)
   })
 
-  it('labels every day of the 7-day chart and marks days without a price as closed', () => {
-    const { large, texts } = renderChart(week([10, 12, null, 11, 13, 14, 15]))
+  it('labels every day of the 7-day chart and marks market holidays as closed', () => {
+    const { large, texts } = renderChart(week([10, 12, 'closed', 11, 13, 14, 15]))
     expect(texts(large, 'text.tick')).toEqual(['日', '一', '休', '三', '四', '五', '六'])
     expect(texts(large, 'text.closed')).toEqual(['休'])
   })
@@ -82,7 +86,7 @@ describe('TrendChart', () => {
   })
 
   it('marks the latest day that has a price when today has none', () => {
-    const { large, texts } = renderChart(week([10, 12, 11, 13, 14, 15, null]))
+    const { large, texts } = renderChart(week([10, 12, 11, 13, 14, 15, 'closed']))
     expect(texts(large, 'text.value')).toEqual(['$15.0'])
     expect(texts(large, 'text.closed')).toEqual(['休'])
   })
@@ -96,5 +100,13 @@ describe('TrendChart', () => {
   it('draws a single reference line when the price never moved', () => {
     const { large, texts } = renderChart(week([12, 12, 12]))
     expect(texts(large, 'text.reference')).toEqual(['$12.0'])
+  })
+})
+
+describe('TrendChart days without data', () => {
+  it('keeps the weekday of a day that is only missing data (not a holiday)', () => {
+    const { large, texts } = renderChart(week([10, 12, null, 11, null, 'closed', null]))
+    expect(texts(large, 'text.tick')).toEqual(['日', '一', '二', '三', '四', '休', '六'])
+    expect(texts(large, 'text.closed')).toEqual(['休'])
   })
 })

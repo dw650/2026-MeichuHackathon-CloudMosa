@@ -23,15 +23,39 @@ export interface AppState {
   priceType?: 'wholesale' | 'retail'
   /** false = a brand-new user (first-run setup). */
   setupDone?: boolean
+  /** Demo switch for the location guess (F18); a new user can have it set too. */
+  locate?: 'auto' | 'none' | 'IN:nashik' | 'TW:taipei'
+  /** Demo switches (F18): price APIs fail / my area's data is 3 days old. */
+  fail?: boolean
+  stale?: boolean
 }
 
 /** Seeds the stores (same format as src/store) so the next navigation starts in that state. */
 export async function seed(page: Page, state: AppState = {}): Promise<void> {
   const country = state.country ?? 'IN'
   const d = DEFAULTS[country]
+  const demo = {
+    fail: state.fail ?? false,
+    stale: state.stale ?? false,
+    locate: state.locate ?? 'auto',
+  }
+  const fresh = {
+    state: {
+      language: null,
+      country: null,
+      areaId: null,
+      recentAreaIds: [],
+      watchlist: [],
+      priceType: 'wholesale',
+      units: { wholesale: null, retail: null },
+      setupDone: false,
+      demo,
+    },
+    version: 1,
+  }
   const settings =
     state.setupDone === false
-      ? null
+      ? fresh
       : {
           state: {
             language: state.lang ?? 'zh-TW',
@@ -42,10 +66,22 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
             priceType: state.priceType ?? 'wholesale',
             units: { wholesale: null, retail: null },
             setupDone: true,
-            demo: { fail: false, stale: false, locate: 'auto' },
+            demo,
           },
           version: 1,
         }
+  // Counts API requests in flight so `settled` can wait for client-side navigations too.
+  // Plain JavaScript: injected as-is into every document before the app runs.
+  await page.addInitScript({
+    content: `(() => {
+      window.__inflight = 0
+      const original = window.fetch.bind(window)
+      window.fetch = (...args) => {
+        window.__inflight += 1
+        return original(...args).finally(() => { window.__inflight -= 1 })
+      }
+    })()`,
+  })
   await page.addInitScript(
     (value) => {
       if (sessionStorage.getItem('e2e-seeded')) return
@@ -57,8 +93,20 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
   )
 }
 
-/** Waits until the screen has rendered its data (no skeletons left). */
-export async function settled(page: Page): Promise<void> {
+/**
+ * Waits until the screen has rendered its data: a title, no API request in flight and no
+ * skeleton left (client-side navigations never reset Playwright's `networkidle`).
+ */
+export async function settled(page: Page, options: { skeletons?: boolean } = {}): Promise<void> {
   await page.locator('h1').first().waitFor()
-  await page.waitForLoadState('networkidle')
+  await page.waitForFunction(
+    (skeletonsAllowed) =>
+      (window as unknown as { __inflight?: number }).__inflight === 0 &&
+      (skeletonsAllowed || !document.querySelector('[data-skeleton]')),
+    options.skeletons ?? false,
+    { polling: 50, timeout: 15_000 },
+  )
+  await page.evaluate(
+    () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))),
+  )
 }

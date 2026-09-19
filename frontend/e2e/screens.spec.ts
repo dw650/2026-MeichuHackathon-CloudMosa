@@ -24,7 +24,13 @@ const IN_SCREENS = [
   '/areas?for=home',
   '/watch',
   '/settings',
+  '/settings/language',
+  '/settings/demo',
   '/about',
+  '/cat/recent',
+  '/crop/onion/today?area=jalgaon',
+  '/crop/onion/compare?sort=distance_asc',
+  '/crop/onion/markets?area=kurnool',
 ]
 
 const cases: { name: string; state: AppState; paths: string[] }[] = [
@@ -32,12 +38,29 @@ const cases: { name: string; state: AppState; paths: string[] }[] = [
   {
     name: 'IN retail',
     state: { country: 'IN', lang: 'zh-TW', priceType: 'retail' },
-    paths: ['/', '/crop/onion/today', '/crop/chilli/today', '/crop/onion/markets'],
+    paths: [
+      '/',
+      '/crop/onion/today',
+      '/crop/chilli/today',
+      '/crop/onion/today?area=ahmednagar',
+      '/crop/onion/markets',
+      '/crop/onion/markets/lasalgaon',
+    ],
   },
   {
     name: 'TW en',
     state: { country: 'TW', lang: 'en' },
-    paths: ['/', '/?tab=all', '/crop/cabbage/today', '/crop/cabbage/compare', '/areas?for=home'],
+    paths: [
+      '/',
+      '/?tab=all',
+      '/crop/cabbage/today',
+      '/crop/cabbage/trend',
+      '/crop/cabbage/compare',
+      '/crop/cabbage/markets',
+      '/crop/cabbage/markets/tp1',
+      '/areas?for=home',
+      '/settings',
+    ],
   },
   {
     name: 'first run',

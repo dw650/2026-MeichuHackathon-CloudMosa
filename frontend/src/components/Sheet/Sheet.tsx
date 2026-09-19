@@ -33,6 +33,7 @@ export function Sheet({ title, items }: SheetProps) {
         <div className={styles.title}>{title}</div>
         {items.map((item, i) => (
           <div
+            data-fixed=""
             key={item.focusId}
             className={styles.row}
             data-focus-id={item.focusId}

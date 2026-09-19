@@ -6,7 +6,8 @@ for (const lang of ['zh-TW', 'en'] as const) {
   test(`components page (${lang})`, async ({ page, errors }) => {
     await seed(page, { country: 'TW', lang })
     await page.goto('/debug/components')
-    await settled(page)
+    // The showcase shows skeleton bars on purpose.
+    await settled(page, { skeletons: true })
     await expectCleanScreen(page, errors)
   })
 }

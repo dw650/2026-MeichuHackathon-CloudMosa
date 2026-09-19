@@ -1,0 +1,33 @@
+/* Scrollable note cards (mockup `vHelp`: `.stack` of `.box.meta`). */
+.stack {
+  display: grid;
+  gap: 4px;
+  padding: 4px var(--gut);
+}
+
+.box {
+  display: grid;
+  gap: 2px;
+  padding: 5px 7px;
+  border-radius: var(--rad);
+  background: var(--card);
+  color: var(--ink3);
+  font-size: var(--fs-2);
+}
+
+.label {
+  color: var(--ink);
+  font-weight: 900;
+}
+
+@media (max-width: 176px) {
+  .stack {
+    gap: 2px;
+    padding: 2px var(--gut);
+  }
+
+  .box {
+    gap: 0;
+    padding: 2px 4px;
+  }
+}
