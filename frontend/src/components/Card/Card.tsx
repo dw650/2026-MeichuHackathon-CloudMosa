@@ -57,6 +57,7 @@ export function Card({
   const showsData = !missing && !loading
   return (
     <div
+      data-fixed=""
       className={cx(
         styles.card,
         variant && styles[variant],

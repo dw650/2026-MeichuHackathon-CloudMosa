@@ -18,7 +18,7 @@ export interface InfoBarProps {
  */
 export function InfoBar({ left, right }: InfoBarProps) {
   return (
-    <div className={styles.bar}>
+    <div className={styles.bar} data-fixed="">
       <span className={styles.cell}>{left}</span>
       {right != null && <span className={cx(styles.cell, styles.right)}>{right}</span>}
     </div>
