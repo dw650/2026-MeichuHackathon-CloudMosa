@@ -1,0 +1,64 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  padding: 6px var(--gut);
+}
+
+.cell {
+  position: relative;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 58px;
+  border-radius: 10px;
+  background: var(--tn, var(--t-slate));
+  color: var(--ink);
+  text-align: center;
+}
+
+.cell[data-focus-id]:focus {
+  outline: none;
+  box-shadow: 0 0 0 var(--ring) var(--focus);
+}
+
+.cell > kbd {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+}
+
+.label {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--fs-2);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 128×160: the grid sits under the home tabs, so the cells are much shorter. */
+@media (max-width: 176px) {
+  .grid {
+    gap: 2px;
+    padding: 2px var(--gut);
+  }
+
+  .cell {
+    gap: 0;
+    min-height: 26px;
+    border-radius: 5px;
+  }
+
+  .icon {
+    width: 14px;
+    height: 14px;
+  }
+}
