@@ -26,11 +26,16 @@ export type UnitTable = Readonly<Record<PriceType, UnitChoice>>
 const KG: UnitSpec = { id: 'kg', perKg: 1, decimals: 1 }
 const QUINTAL: UnitSpec = { id: 'qtl', perKg: 100, decimals: 0 }
 const CATTY: UnitSpec = { id: 'catty', perKg: 0.6, decimals: 1 }
+// Malaysia prices in ringgit and sen; a kati is 0.605 kg.
+const KG_SEN: UnitSpec = { id: 'kg', perKg: 1, decimals: 2 }
+const KATI: UnitSpec = { id: 'kati', perKg: 0.605, decimals: 2 }
 
-export const UNITS = { kg: KG, qtl: QUINTAL, catty: CATTY } as const
+export const UNITS = { kg: KG, qtl: QUINTAL, catty: CATTY, kgSen: KG_SEN, kati: KATI } as const
+
+const KG_ONLY: UnitChoice = { options: [KG], defaultId: KG.id }
 
 /** Unit tables of the supported countries, matching docs/06 §5. */
-export const DEFAULT_UNIT_TABLES: Readonly<Record<'IN' | 'TW', UnitTable>> = {
+export const DEFAULT_UNIT_TABLES: Readonly<Record<'IN' | 'TW' | 'MY', UnitTable>> = {
   IN: {
     wholesale: { options: [QUINTAL, KG], defaultId: QUINTAL.id },
     retail: { options: [KG, QUINTAL], defaultId: KG.id },
@@ -39,6 +44,19 @@ export const DEFAULT_UNIT_TABLES: Readonly<Record<'IN' | 'TW', UnitTable>> = {
     wholesale: { options: [KG, CATTY], defaultId: KG.id },
     retail: { options: [KG, CATTY], defaultId: KG.id },
   },
+  MY: {
+    wholesale: { options: [KG_SEN, KATI], defaultId: KG_SEN.id },
+    retail: { options: [KG_SEN, KATI], defaultId: KG_SEN.id },
+  },
+}
+
+/**
+ * The static unit table of a country, used only while `GET /countries` has not answered; a
+ * country without one gets kg.
+ */
+export function defaultUnitTable(code: string | null | undefined): UnitTable {
+  const tables: Readonly<Record<string, UnitTable | undefined>> = DEFAULT_UNIT_TABLES
+  return (code ? tables[code] : undefined) ?? { wholesale: KG_ONLY, retail: KG_ONLY }
 }
 
 /**

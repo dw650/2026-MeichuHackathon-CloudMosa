@@ -1,0 +1,285 @@
+{
+ "country": "MY",
+ "crops": [
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "tomato",
+   "name": {
+    "en": "Tomato",
+    "zh-TW": "番茄"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "cabbage",
+   "name": {
+    "en": "Cabbage",
+    "zh-TW": "甘藍"
+   },
+   "variety": {
+    "en": "Beijing import",
+    "zh-TW": "北京進口"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "chilli",
+   "name": {
+    "en": "Chilli",
+    "zh-TW": "辣椒"
+   },
+   "variety": {
+    "en": "Green",
+    "zh-TW": "青辣椒"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "onion",
+   "name": {
+    "en": "Onion",
+    "zh-TW": "洋蔥"
+   },
+   "variety": {
+    "en": "Yellow",
+    "zh-TW": "黃洋蔥"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "cucumber",
+   "name": {
+    "en": "Cucumber",
+    "zh-TW": "黃瓜"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "bokchoy",
+   "name": {
+    "en": "Pak choy",
+    "zh-TW": "小白菜"
+   },
+   "variety": {
+    "en": "Siew pak choy",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "garlic",
+   "name": {
+    "en": "Garlic",
+    "zh-TW": "蒜頭"
+   },
+   "variety": {
+    "en": "China import",
+    "zh-TW": "中國進口"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "ginger",
+   "name": {
+    "en": "Ginger",
+    "zh-TW": "薑"
+   },
+   "variety": {
+    "en": "Mature",
+    "zh-TW": "老薑"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "carrot",
+   "name": {
+    "en": "Carrot",
+    "zh-TW": "胡蘿蔔"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "cauliflower",
+   "name": {
+    "en": "Cauliflower",
+    "zh-TW": "花椰菜"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "waterspinach",
+   "name": {
+    "en": "Water spinach",
+    "zh-TW": "空心菜"
+   },
+   "variety": {
+    "en": "Kangkung",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "potato",
+   "name": {
+    "en": "Potato",
+    "zh-TW": "馬鈴薯"
+   },
+   "variety": {
+    "en": "China import",
+    "zh-TW": "中國進口"
+   }
+  },
+  {
+   "category": "pulse",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "longbean",
+   "name": {
+    "en": "Long bean",
+    "zh-TW": "長豆"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "pulse",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "frenchbean",
+   "name": {
+    "en": "French bean",
+    "zh-TW": "四季豆"
+   },
+   "variety": {
+    "en": "Common",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "turmeric",
+   "name": {
+    "en": "Turmeric",
+    "zh-TW": "薑黃"
+   },
+   "variety": {
+    "en": "Fresh",
+    "zh-TW": "鮮薑黃"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "lime",
+   "name": {
+    "en": "Lime",
+    "zh-TW": "萊姆"
+   },
+   "variety": {
+    "en": "Limau nipis",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "calamansi",
+   "name": {
+    "en": "Calamansi",
+    "zh-TW": "金桔"
+   },
+   "variety": {
+    "en": "Limau kasturi",
+    "zh-TW": "一般"
+   }
+  },
+  {
+   "category": "oil",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "peanut",
+   "name": {
+    "en": "Peanut",
+    "zh-TW": "花生"
+   },
+   "variety": {
+    "en": "Imported",
+    "zh-TW": "進口"
+   }
+  },
+  {
+   "category": "oil",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "coconut",
+   "name": {
+    "en": "Coconut",
+    "zh-TW": "椰子"
+   },
+   "variety": {
+    "en": "Grated",
+    "zh-TW": "椰絲"
+   }
+  },
+  {
+   "category": "cereal",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "wheat",
+   "name": {
+    "en": "Wheat flour",
+    "zh-TW": "麵粉"
+   },
+   "variety": {
+    "en": "1 kg pack",
+    "zh-TW": "1 公斤包裝"
+   }
+  }
+ ]
+}

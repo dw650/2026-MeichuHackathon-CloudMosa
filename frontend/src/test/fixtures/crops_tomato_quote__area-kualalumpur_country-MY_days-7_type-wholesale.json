@@ -1,0 +1,78 @@
+{
+ "area_id": "kualalumpur",
+ "change": {
+  "diff_per_kg": 0.32,
+  "direction": "up",
+  "pct": 0.044017,
+  "prev_trade_date": "2026-09-18"
+ },
+ "crop_id": "tomato",
+ "currency": "MYR",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "markets": {
+  "count": 1,
+  "max_per_kg": 7.59,
+  "min_per_kg": 7.59,
+  "total": 1
+ },
+ "price_per_kg": 7.59,
+ "reason": null,
+ "series": [
+  {
+   "date": "2026-09-13",
+   "price_per_kg": 7.18
+  },
+  {
+   "date": "2026-09-14",
+   "price_per_kg": 7.13
+  },
+  {
+   "date": "2026-09-15",
+   "price_per_kg": 6.82
+  },
+  {
+   "date": "2026-09-16",
+   "price_per_kg": 7.1
+  },
+  {
+   "date": "2026-09-17",
+   "price_per_kg": 7.26
+  },
+  {
+   "date": "2026-09-18",
+   "price_per_kg": 7.27
+  },
+  {
+   "date": "2026-09-19",
+   "price_per_kg": 7.59
+  }
+ ],
+ "source": {
+  "id": "mock",
+  "name": {
+   "en": "Demo data",
+   "zh-TW": "示範資料"
+  }
+ },
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "stats": {
+  "arrivals": null,
+  "arrivals_ratio": null,
+  "change30_pct": 0.012,
+  "change7_pct": 0.057103,
+  "high30_per_kg": 7.9,
+  "high7_per_kg": 7.59,
+  "low30_per_kg": 6.82,
+  "low7_per_kg": 6.82,
+  "pos30": 0.712963,
+  "volatility": "mid",
+  "volatility_pct": 0.026571,
+  "vs_avg7_pct": 0.055214
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19",
+ "type": "wholesale"
+}

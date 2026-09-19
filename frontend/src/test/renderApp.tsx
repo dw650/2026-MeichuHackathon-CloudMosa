@@ -28,6 +28,11 @@ const DEFAULTS: Record<CountryCode, { area: string; recent: string[]; watch: str
     recent: ['taipei', 'newtaipei', 'taichung'],
     watch: ['cabbage', 'bokchoy', 'banana', 'sweetpotato', 'scallion', 'cauliflower'],
   },
+  MY: {
+    area: 'kualalumpur',
+    recent: ['kualalumpur', 'klang', 'seremban'],
+    watch: ['tomato', 'cabbage', 'chilli', 'onion', 'cucumber', 'bokchoy', 'garlic'],
+  },
 }
 
 export interface RenderAppOptions {

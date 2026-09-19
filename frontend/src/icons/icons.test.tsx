@@ -14,6 +14,16 @@ describe('CropSvg', () => {
     expect(new Set(drawn).size).toBe(CROP_ICON_IDS.length)
   })
 
+  it('has its own illustration for every crop of every country', () => {
+    const catalogs = import.meta.glob<{ crops: { id: string }[] }>(
+      '../test/fixtures/countries_*_crops.json',
+      { eager: true, import: 'default' },
+    )
+    const ids = Object.values(catalogs).flatMap((catalog) => catalog.crops.map((c) => c.id))
+    expect(ids).toContain('calamansi')
+    expect(ids.filter((id) => !isCropIconId(id))).toEqual([])
+  })
+
   it('falls back to the box for a crop without its own art', () => {
     expect(isCropIconId('durian')).toBe(false)
     expect(markup(<CropSvg id="durian" />)).toBe(markup(<CropSvg id="box" />))

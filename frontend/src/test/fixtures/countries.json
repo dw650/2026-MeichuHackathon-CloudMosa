@@ -186,6 +186,98 @@
    },
    "up_is_pos": false,
    "utc_offset_min": 480
+  },
+  {
+   "area_suffix": {
+    "en": "",
+    "zh-TW": ""
+   },
+   "closed_weekdays": [],
+   "code": "MY",
+   "coverage": {
+    "en": "11 states & territories",
+    "zh-TW": "11 個州與直轄區"
+   },
+   "currency": "MYR",
+   "default_area_id": "kualalumpur",
+   "default_recent_area_ids": [
+    "kualalumpur",
+    "klang",
+    "seremban"
+   ],
+   "default_watch": [
+    "tomato",
+    "cabbage",
+    "chilli",
+    "onion",
+    "cucumber",
+    "bokchoy",
+    "garlic"
+   ],
+   "locale": "en-MY",
+   "name": {
+    "en": "Malaysia",
+    "zh-TW": "馬來西亞"
+   },
+   "rep_price_label": {
+    "en": "Reported price",
+    "zh-TW": "查報價"
+   },
+   "source_label": {
+    "en": "KPDN PriceCatcher (data.gov.my, CC BY 4.0)",
+    "zh-TW": "KPDN PriceCatcher（data.gov.my，CC BY 4.0）"
+   },
+   "today": "2026-09-19",
+   "units": {
+    "retail": {
+     "default": "kg",
+     "options": [
+      {
+       "decimals": 2,
+       "id": "kg",
+       "label": {
+        "en": "RM/kg",
+        "zh-TW": "RM/公斤"
+       },
+       "per_kg": 1.0
+      },
+      {
+       "decimals": 2,
+       "id": "kati",
+       "label": {
+        "en": "RM/kati",
+        "zh-TW": "RM/斤"
+       },
+       "per_kg": 0.605
+      }
+     ]
+    },
+    "wholesale": {
+     "default": "kg",
+     "options": [
+      {
+       "decimals": 2,
+       "id": "kg",
+       "label": {
+        "en": "RM/kg",
+        "zh-TW": "RM/公斤"
+       },
+       "per_kg": 1.0
+      },
+      {
+       "decimals": 2,
+       "id": "kati",
+       "label": {
+        "en": "RM/kati",
+        "zh-TW": "RM/斤"
+       },
+       "per_kg": 0.605
+      }
+     ]
+    }
+   },
+   "up_is_pos": true,
+   "utc_offset_min": 480
   }
  ]
 }

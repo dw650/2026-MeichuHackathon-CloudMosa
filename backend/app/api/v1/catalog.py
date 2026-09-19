@@ -9,7 +9,7 @@ from app.services import catalog as service
 
 router = APIRouter(tags=["catalog"], dependencies=[Depends(public_cache)])
 
-CountryCode = Path(description="Country code, e.g. `IN` or `TW`", examples=["IN"])
+CountryCode = Path(description="Country code, e.g. `IN`, `TW` or `MY`", examples=["IN"])
 NOT_FOUND = error_responses((404, "country_not_found", "Country 'XX' not found"))
 
 _EN_ZH = {"zh-TW": "印度", "en": "India"}

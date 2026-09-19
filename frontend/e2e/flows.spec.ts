@@ -51,11 +51,27 @@ test('first-run setup without a guess: country and area by hand', async ({ page,
   await step(page, errors, /^\/(\?.*)?$/)
 })
 
+test('first-run setup of Malaysia in English', async ({ page, errors }) => {
+  await seed(page, { setupDone: false, locate: 'none' })
+  await page.goto('/')
+  await step(page, errors, /^\/setup\/lang$/)
+  await press(page, '2') // English
+  await step(page, errors, /^\/setup\/country/)
+  await press(page, '3') // Malaysia
+  await step(page, errors, /^\/setup\/area/)
+  await expect(page.getByText('Kuala Lumpur').first()).toBeVisible()
+  await press(page, 'Enter')
+  await step(page, errors, /^\/(\?.*)?$/)
+  await expect(page.getByText('RM/kg').first()).toBeVisible()
+})
+
 const combos: [Country, Lang, string][] = [
   ['IN', 'en', 'onion'],
   ['IN', 'zh-TW', 'onion'],
   ['TW', 'zh-TW', 'cabbage'],
   ['TW', 'en', 'cabbage'],
+  ['MY', 'en', 'tomato'],
+  ['MY', 'zh-TW', 'tomato'],
 ]
 
 for (const [country, lang, crop] of combos) {

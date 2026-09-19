@@ -15,9 +15,9 @@ const fixtures: Record<string, Json> = Object.fromEntries(
   ]),
 )
 
-const DEFAULT_AREA: Record<string, string> = { IN: 'nashik', TW: 'taipei' }
-const SHOWCASE_CROP: Record<string, string> = { IN: 'onion', TW: 'cabbage' }
-const SHOWCASE_MARKET: Record<string, string> = { IN: 'lasalgaon', TW: 'tp1' }
+const DEFAULT_AREA: Record<string, string> = { IN: 'nashik', TW: 'taipei', MY: 'kualalumpur' }
+const SHOWCASE_CROP: Record<string, string> = { IN: 'onion', TW: 'cabbage', MY: 'tomato' }
+const SHOWCASE_MARKET: Record<string, string> = { IN: 'lasalgaon', TW: 'tp1', MY: 'klborong' }
 
 function name(path: string, params: Record<string, string>): string {
   const base = path.replace(/^\//, '').replaceAll('/', '_')

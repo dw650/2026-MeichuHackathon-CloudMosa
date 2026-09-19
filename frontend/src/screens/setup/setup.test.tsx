@@ -115,7 +115,10 @@ describe('country screen', () => {
   it('lists each country with its coverage and goes back after a change once set up', async () => {
     const app = await renderApp('/setup/country', { history: ['/areas?for=home'] })
     expect(await screen.findByText('台灣')).toBeInTheDocument()
+    expect(rowIds()).toEqual(['IN', 'TW', 'MY'])
     expect(screen.getByText('6 個邦、11 個縣')).toBeInTheDocument()
+    expect(screen.getByText('馬來西亞')).toBeInTheDocument()
+    expect(screen.getByText('11 個州與直轄區')).toBeInTheDocument()
     expect(screen.queryByRole('img', { name: /步/ })).toBeNull()
     expect(app.focusedId()).toBe('IN')
     expect(softKeys(app)).toEqual(['', '選取', '返回'])
@@ -123,6 +126,27 @@ describe('country screen', () => {
     app.press('Enter')
     await waitFor(() => expect(app.path()).toBe('/areas?for=home'))
     expect(useSettings.getState()).toMatchObject({ country: 'TW', areaId: 'taipei' })
+  })
+
+  it('sets up Malaysia with 3: Kuala Lumpur first, its watchlist and RM prices', async () => {
+    const app = await renderApp('/setup/country?depth=1', {
+      country: null,
+      lang: 'en',
+      history: ['/setup/lang'],
+    })
+    expect(await screen.findByText('Malaysia')).toBeInTheDocument()
+    app.press('3')
+    expect(app.path()).toBe('/setup/area?depth=2')
+    expect(await screen.findByText('Kuala Lumpur')).toBeInTheDocument()
+    expect(rowIds()[0]).toBe('kualalumpur')
+    app.press('Enter')
+    await waitFor(() => expect(app.path()).toBe('/'))
+    expect(useSettings.getState()).toMatchObject({
+      country: 'MY',
+      areaId: 'kualalumpur',
+      watchlist: ['tomato', 'cabbage', 'chilli', 'onion', 'cucumber', 'bokchoy', 'garlic'],
+    })
+    expect(await screen.findByText('RM/kg')).toBeInTheDocument()
   })
 
   it('offers a retry when the countries cannot be loaded', async () => {

@@ -26,7 +26,8 @@ export const SETTINGS_STORAGE_KEY = 'agriprice.settings'
 /** Bump with a migration step in `steps` whenever the stored shape changes. */
 export const SETTINGS_VERSION = 1
 
-export const COUNTRY_CODES = ['IN', 'TW'] as const
+/** Countries the app can show; others in `GET /countries` are left out of the list. */
+export const COUNTRY_CODES = ['IN', 'TW', 'MY'] as const
 export type CountryCode = (typeof COUNTRY_CODES)[number]
 
 export const PRICE_TYPES = ['wholesale', 'retail'] as const satisfies readonly PriceType[]
@@ -35,7 +36,13 @@ export const PRICE_TYPES = ['wholesale', 'retail'] as const satisfies readonly P
 export const RECENT_AREAS_MAX = 3
 
 /** The demo location guess: the real IP, no guess, or a fixed area (docs/06 §7.5). */
-export const DEMO_LOCATE_OPTIONS = ['auto', 'none', 'IN:nashik', 'TW:taipei'] as const
+export const DEMO_LOCATE_OPTIONS = [
+  'auto',
+  'none',
+  'IN:nashik',
+  'TW:taipei',
+  'MY:kualalumpur',
+] as const
 export type DemoLocate = (typeof DEMO_LOCATE_OPTIONS)[number]
 
 /** Demo switches (F18, docs/04 §6.2); only demo builds send them as request headers. */

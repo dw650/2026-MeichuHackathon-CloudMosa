@@ -28,6 +28,7 @@ from tests.conftest import alembic_config as _alembic_config
 AREAS = {
     "IN": ["nashik", "pune", "kolar", "kurnool"],
     "TW": ["taipei", "newtaipei", "yilan", "hualien"],
+    "MY": ["kualalumpur", "timurlaut"],
 }
 QUOTES = [
     ("IN", "onion", "nashik", "wholesale"),
@@ -41,7 +42,11 @@ QUOTES = [
     ("TW", "cabbage", "taipei", "wholesale"),
     ("TW", "cabbage", "taipei", "retail"),
     ("TW", "cauliflower", "taipei", "retail"),
+    ("MY", "tomato", "kualalumpur", "wholesale"),
+    ("MY", "tomato", "kualalumpur", "retail"),
+    ("MY", "tomato", "timurlaut", "wholesale"),
 ]
+SHOWCASES = {("nashik", "wholesale"), ("taipei", "wholesale"), ("kualalumpur", "wholesale")}
 INTL_SERIES = ["rice", "wheat", "maize", "soybeans", "sugar", "palm_oil"]
 
 
@@ -77,13 +82,14 @@ async def collect() -> dict[str, object]:
     for cc, crop, area, price_type in QUOTES:
         params = {"country": cc, "area": area, "type": price_type}
         requests.append((f"/crops/{crop}/quote", params | {"days": "30"}, {}))
-        if (area, price_type) in {("nashik", "wholesale"), ("taipei", "wholesale")}:
+        if (area, price_type) in SHOWCASES:
             requests.append((f"/crops/{crop}/quote", params | {"days": "7"}, {}))
             requests.append((f"/crops/{crop}/compare", params, {}))
             requests.append((f"/crops/{crop}/markets", {"country": cc, "area": area}, {}))
     requests += [
         ("/crops/onion/markets/lasalgaon", {"country": "IN"}, {}),
         ("/crops/cabbage/markets/tp1", {"country": "TW"}, {}),
+        ("/crops/tomato/markets/klborong", {"country": "MY"}, {}),
         ("/locate", {}, {"X-Demo-Locate": "IN:nashik"}),
     ]
     for cc in AREAS:

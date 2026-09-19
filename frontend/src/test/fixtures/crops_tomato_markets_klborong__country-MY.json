@@ -1,0 +1,35 @@
+{
+ "area_id": "kualalumpur",
+ "change": {
+  "diff_per_kg": 0.32,
+  "direction": "up",
+  "pct": 0.044017,
+  "prev_trade_date": "2026-09-18"
+ },
+ "crop_id": "tomato",
+ "currency": "MYR",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "high_per_kg": null,
+ "km_from_center": 12,
+ "low_per_kg": null,
+ "market_id": "klborong",
+ "name": {
+  "en": "Pasar Borong KL",
+  "zh-TW": "Pasar Borong KL"
+ },
+ "price_per_kg": 7.59,
+ "reason": null,
+ "source": {
+  "id": "mock",
+  "name": {
+   "en": "Demo data",
+   "zh-TW": "示範資料"
+  }
+ },
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19"
+}
