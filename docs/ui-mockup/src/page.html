@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>農產行情 UI 草圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;700;900&family=Roboto:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="phone.css">
+<style>
+  :root {
+    --pg: #ECF0EE; --card: #FFFFFF; --ink: #17221E; --ink2: #4B5B54; --line: #CAD5D0;
+    --acc: #146C43; --acc-ink: #FFFFFF; --dev: #1B1F23; --dev2: #353C43;
+    --key: #F6F8F7; --key-ink: #17221E; --hit: #FFC21A; --hit-ink: #17221E;
+    --zoom: 1.5; color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg: #111715; --card: #19211E; --ink: #E3EBE7; --ink2: #9CAEA6; --line: #2B3732;
+      --acc: #7FC49F; --acc-ink: #0E1411; --dev: #07090A; --dev2: #2A3137; --key: #222B27; --key-ink: #E3EBE7; color-scheme: dark; }
+  }
+  [hidden] { display: none !important; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--pg); color: var(--ink); font: 15px/1.6 "Noto Sans TC", system-ui, sans-serif;
+    padding-inline: 16px; padding-block: 20px 48px; }
+  .wrap { max-width: 1440px; margin: 0 auto; display: grid; gap: 20px; }
+  header.top { display: grid; gap: 4px; }
+  header.top h1 { margin: 0; font-size: 26px; font-weight: 900; text-wrap: balance; }
+  header.top p { margin: 0; color: var(--ink2); max-width: 72ch; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .grp > .lab { font: 600 11px/1 "IBM Plex Mono", monospace; letter-spacing: .08em; color: var(--ink2); margin-right: 4px; }
+  button { font: inherit; color: inherit; }
+  .seg, .act { border: 1px solid var(--line); background: transparent; border-radius: 6px; padding: 4px 10px; font-size: 13px; cursor: pointer; line-height: 1.4; }
+  .seg.on { background: var(--acc); color: var(--acc-ink); border-color: var(--acc); font-weight: 700; }
+  .seg:focus-visible, .act:focus-visible, .pad-key:focus-visible { outline: 3px solid var(--hit); outline-offset: 2px; }
+  .act { background: var(--key); }
+  .device { zoom: var(--zoom); display: inline-block; background: var(--dev); padding: 14px 12px 18px; border-radius: 18px;
+    box-shadow: 0 0 0 1px var(--dev2), 0 12px 28px rgba(0, 0, 0, .18); }
+  .device.qq { padding: 9px 8px 12px; border-radius: 12px; }
+  .dev-cap { font: 600 12px/1.4 "IBM Plex Mono", monospace; color: var(--ink2); text-align: center; }
+  .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .col { display: grid; gap: 8px; justify-items: center; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; max-width: 100%; }
+  .keypad { display: grid; grid-template-columns: repeat(3, 64px); gap: 7px; justify-content: center; }
+  .pad-key { height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--key); color: var(--key-ink);
+    display: grid; place-items: center; line-height: 1.1; cursor: pointer; font-weight: 700; font-size: 15px; }
+  .pad-key small { display: block; font: 400 10px/1 "Noto Sans TC", sans-serif; color: var(--ink2); }
+  .pad-key.soft { background: var(--dev); color: #fff; border-color: var(--dev2); }
+  .pad-key.soft small { color: #b9c2c9; }
+  .pad-key.ok { border-radius: 50%; width: 46px; justify-self: center; }
+  .pad-key.hit { background: var(--hit); color: var(--hit-ink); border-color: var(--hit); }
+  .pad-key.hit small { color: var(--hit-ink); }
+  .keypad .gap { height: 6px; grid-column: 1 / -1; }
+  .status { display: grid; gap: 2px; font-size: 13px; }
+  .status b { font-family: "IBM Plex Mono", monospace; }
+  .keys-help { font-size: 12.5px; color: var(--ink2); margin: 0; padding-left: 1.1em; max-width: 34ch; }
+  .row-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gallery { display: flex; flex-wrap: wrap; gap: 18px; }
+  .shot { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; max-width: 100%; overflow-x: auto; }
+  .shot figcaption { font-weight: 700; font-size: 14px; display: flex; gap: 8px; align-items: baseline; }
+  .shot .idx { font: 600 11px/1 "IBM Plex Mono", monospace; color: var(--ink2); }
+  .pair { display: flex; gap: 14px; align-items: flex-start; }
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .note { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .note h2 { margin: 0 0 6px; font-size: 16px; }
+  .note ul, .note ol { margin: 0; padding-left: 1.2em; }
+  .note li + li { margin-top: 4px; }
+  kbd { font: 600 12px "IBM Plex Mono", monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--key); }
+  @media (max-width: 720px) { :root { --zoom: 1 !important; } .pair { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>農產行情 UI 草圖</h1>
+    <p>「收成卡片」設計：每種作物有自己的圖示和分類色，首頁每列附 7 日迷你走勢，詳情頁有行情指標和走勢圖。<kbd>*</kbd> 和 <kbd>#</kbd> 是每頁的兩個功能鍵。所有價格都是示範資料。</p>
+  </header>
+
+  <section class="toolbar" aria-label="檢視設定">
+    <div class="grp"><span class="lab">模式</span>
+      <button type="button" class="seg" data-set="mode:play">互動試玩</button>
+      <button type="button" class="seg" data-set="mode:gallery">全部畫面</button>
+    </div>
+    <div class="grp"><span class="lab">語言</span>
+      <button type="button" class="seg" data-set="lang:zh">繁中</button>
+      <button type="button" class="seg" data-set="lang:en">English</button>
+    </div>
+    <div class="grp"><span class="lab">國家</span>
+      <button type="button" class="seg" data-set="country:IN">印度</button>
+      <button type="button" class="seg" data-set="country:TW">台灣</button>
+    </div>
+    <div class="grp"><span class="lab">IP 推測</span>
+      <button type="button" class="seg" data-set="ip:IN">印度 Nashik</button>
+      <button type="button" class="seg" data-set="ip:TW">台灣 台北市</button>
+      <button type="button" class="seg" data-set="ip:none">猜不到</button>
+    </div>
+    <div class="grp"><span class="lab">模擬</span>
+      <button type="button" class="seg" data-sim="ok">正常</button>
+      <button type="button" class="seg" data-sim="loading">載入中</button>
+      <button type="button" class="seg" data-sim="error">連線失敗</button>
+      <button type="button" class="seg" data-sim="empty">地區未更新</button>
+    </div>
+    <div class="grp"><span class="lab">系統狀態列</span>
+      <button type="button" class="seg" data-set="sb:false">不預留</button>
+      <button type="button" class="seg" data-set="sb:true">預留 20px</button>
+    </div>
+    <div class="grp"><span class="lab">放大</span>
+      <button type="button" class="seg" data-set="zoom:1">1×</button>
+      <button type="button" class="seg" data-set="zoom:1.5">1.5×</button>
+      <button type="button" class="seg" data-set="zoom:2">2×</button>
+    </div>
+  </section>
+
+  <section id="mode-play" aria-label="互動試玩">
+    <div class="stage">
+      <div class="col"><div class="device q" id="dev-q" data-slot="play-q"></div><div class="dev-cap">240×320・主要</div></div>
+      <div class="col"><div class="device qq" id="dev-qq" data-slot="play-qq"></div><div class="dev-cap">128×160・加分</div></div>
+      <div class="panel" aria-label="手機按鍵">
+        <div class="keypad">
+          <button type="button" class="pad-key soft" data-key="LSK">左軟鍵<small>Esc</small></button>
+          <button type="button" class="pad-key" data-key="ArrowUp">▲<small>↑</small></button>
+          <button type="button" class="pad-key soft" data-key="RSK">右軟鍵<small>⌫</small></button>
+          <button type="button" class="pad-key" data-key="ArrowLeft">◀<small>←</small></button>
+          <button type="button" class="pad-key ok" data-key="Enter">OK<small>Enter</small></button>
+          <button type="button" class="pad-key" data-key="ArrowRight">▶<small>→</small></button>
+          <span></span>
+          <button type="button" class="pad-key" data-key="ArrowDown">▼<small>↓</small></button>
+          <span></span>
+          <span class="gap"></span>
+          <button type="button" class="pad-key" data-key="1">1</button>
+          <button type="button" class="pad-key" data-key="2">2</button>
+          <button type="button" class="pad-key" data-key="3">3</button>
+          <button type="button" class="pad-key" data-key="4">4</button>
+          <button type="button" class="pad-key" data-key="5">5</button>
+          <button type="button" class="pad-key" data-key="6">6</button>
+          <button type="button" class="pad-key" data-key="7">7</button>
+          <button type="button" class="pad-key" data-key="8">8</button>
+          <button type="button" class="pad-key" data-key="9">9</button>
+          <button type="button" class="pad-key" data-key="*">*<small>看零售</small></button>
+          <button type="button" class="pad-key" data-key="0">0<small>語音</small></button>
+          <button type="button" class="pad-key" data-key="#">#<small>換地區</small></button>
+        </div>
+        <div class="status">
+          <span>上一個按鍵：<b id="last-key">—</b></span>
+          <span>目前畫面：<b id="route-now">—</b></span>
+        </div>
+        <ul class="keys-help">
+          <li>電腦鍵盤：方向鍵、<kbd>Enter</kbd>、<kbd>Esc</kbd>＝左軟鍵、<kbd>Backspace</kbd>＝右軟鍵、<kbd>0</kbd>–<kbd>9</kbd>、<kbd>*</kbd>、<kbd>#</kbd></li>
+          <li>◀ ▶ 永遠是換分頁：首頁「關注｜全部作物」、詳情「走勢｜行情｜比價」</li>
+          <li><kbd>*</kbd> 永遠是批發／零售；<kbd>#</kbd> 是這一頁的選項，鍵帽畫在它控制的東西旁邊</li>
+        </ul>
+        <div class="row-acts">
+          <button type="button" class="act" id="restart">從首次設定開始</button>
+          <button type="button" class="act" id="reset">重設到首頁</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mode-gallery" aria-label="全部畫面" hidden>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section class="notes" aria-label="說明">
+    <div class="note">
+      <h2>這一版改了什麼</h2>
+      <ul>
+        <li><b>首頁兩個分頁「關注｜全部作物」</b>：打開就看到關注作物的價格；◀ ▶ 切到九宮格瀏覽全部作物，兩者同一層。</li>
+        <li><b>拿掉按鍵提示列</b>：每個按鍵只在一個地方提示，就在它控制的東西旁邊：<kbd>*</kbd> 在批發／零售標籤旁、<kbd>#</kbd> 在地區名稱或切換鈕旁、◀ ▶ 在分頁兩側。</li>
+        <li><b>刪掉重複</b>：首頁不再每列寫「今日」和市場數；連線失敗只標一次「舊」；比價的排序合成一個標籤；選單拿掉「瀏覽作物」，「關於」和「資料說明」合併。</li>
+        <li><b>地區清單最後加「更改國家…」</b>：比價只在同一個國家內，要看別國就整個切過去。</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h2>設計原則</h2>
+      <ul>
+        <li><b>以地區為單位</b>：台灣是縣市、印度是縣；地區批發價是各市場代表價的中位數，並標出市場數。</li>
+        <li><b>按鍵意義固定</b>：◀ ▶ 換分頁、<kbd>*</kbd> 批發／零售、<kbd>#</kbd> 這一頁的選項、1–9 直接開啟、左軟鍵選單、右軟鍵返回。</li>
+        <li><b>誠實的資料</b>：缺資料就說缺，不用 0 補；中位數、直線距離、「批零差額不是利潤」寫在「關於與資料說明」。</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h2>請你們看的問題</h2>
+      <ol>
+        <li>首頁「關注｜全部作物」這樣的層級可以嗎？</li>
+        <li>拿掉提示列後，按鍵還看得懂嗎？</li>
+        <li>還有哪裡覺得重複或多餘？</li>
+      </ol>
+    </div>
+  </section>
+</div>
+<script src="data.js"></script>
+<script src="icons.js"></script>
+<script src="render-core.js"></script>
+<script src="render-views.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

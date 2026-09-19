@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>農產行情 UI 草圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;700;900&family=Roboto:wght@400;700;900&display=swap">
+<style>
+/* ===== phone.css ===== */
+/* 手機螢幕：「收成卡片」設計系統。兩種尺寸，元件只讀 token。 */
+
+.scr {
+  --sb: 0px;
+  position: relative; overflow: hidden;
+  display: grid; grid-template-rows: var(--sb) var(--hdr) minmax(0, 1fr) var(--sk);
+  background: var(--bg); color: var(--ink);
+  font-family: Roboto, "Noto Sans TC", "Noto Sans", sans-serif; font-size: var(--fs-1); line-height: 1.25;
+  font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- 尺寸 ---------- */
+.scr.q {
+  width: 240px; height: 320px;
+  --hdr: 40px; --hint: 16px; --sk: 28px; --gut: 6px; --rad: 8px; --ring: 3px;
+  --fs-t: 17px; --fs-1: 15px; --fs-2: 12px; --fs-3: 11px; --fs-hero: 30px; --fs-sk: 13px;
+  --tile: 30px; --row: 44px;
+}
+.scr.qq {
+  width: 128px; height: 160px;
+  --hdr: 20px; --hint: 0px; --sk: 18px; --gut: 3px; --rad: 5px; --ring: 2px;
+  --fs-t: 12px; --fs-1: 12px; --fs-2: 10px; --fs-3: 10px; --fs-hero: 20px; --fs-sk: 11px;
+  --tile: 16px; --row: 24px;
+}
+.scr.qq:lang(zh) { --fs-2: 11px; }
+.scr.q[data-sb="1"] { --sb: 20px; --hdr: 30px; --fs-t: 15px; }
+.scr.qq[data-sb="1"] { --sb: 12px; --hdr: 16px; --fs-t: 11px; }
+.sb { display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; overflow: hidden;
+  background: repeating-linear-gradient(135deg, #5b5f66 0 4px, #474b52 4px 8px); }
+.scr:not([data-sb="1"]) .sb { visibility: hidden; } /* 不能用 display:none，否則 grid 列會錯位 */
+.hintbar:empty { visibility: hidden; }
+
+/* ---------- 主題：日間（預設）---------- */
+.scr {
+  --bg: #E9EFEA; --card: #FFFFFF; --ink: #0F2419; --ink2: #3F5549; --ink3: #5E7267; --line: #D2DDD6;
+  --brand: #146C43; --brand-ink: #FFFFFF; --brand-soft: #DCEFE3;
+  --focus: #0B57D0; --focus-bg: #E8F0FE;
+  --pos: #0E7A3D; --pos-bg: #D9F2E2; --neg: #C42E1C; --neg-bg: #FDE2DD; --flat: #56655D; --flat-bg: #E6ECE8;
+  --warn: #7F4C00; --warn-bg: #FFEDC7;
+  --key-bg: #FFFFFF; --key-ink: #0F2419; --key-line: #9FB1A7;
+  --sheet: #FFFFFF; --scrim: rgba(10, 25, 17, .55); --sk-bg: #FFFFFF;
+  --t-green: #DDF2E2; --t-orange: #FFE6CF; --t-amber: #FFF0C7; --t-red: #FDE1DC; --t-olive: #ECEFD4;
+  --t-yellow: #FFF5C4; --t-slate: #E2E9F0; --t-blue: #E0E9FF; --t-purple: #ECE5FF;
+  --c-green: #2E9E5B; --c-orange: #E07B1F; --c-amber: #C9930E; --c-red: #D8412F; --c-olive: #7D8B2E;
+  --c-yellow: #B8920F; --c-slate: #5B7C99; --c-blue: #3D6FD9; --c-purple: #7A5AE0;
+}
+/* 漲跌顏色由地區決定：台灣紅漲綠跌，印度綠漲紅跌 */
+.scr[data-up="pos"] { --up: var(--pos); --up-bg: var(--pos-bg); --dn: var(--neg); --dn-bg: var(--neg-bg); }
+.scr[data-up="neg"] { --up: var(--neg); --up-bg: var(--neg-bg); --dn: var(--pos); --dn-bg: var(--pos-bg); }
+/* 分類色 */
+.tn-green { --tn: var(--t-green); --tc: var(--c-green); } .tn-orange { --tn: var(--t-orange); --tc: var(--c-orange); }
+.tn-amber { --tn: var(--t-amber); --tc: var(--c-amber); } .tn-red { --tn: var(--t-red); --tc: var(--c-red); }
+.tn-olive { --tn: var(--t-olive); --tc: var(--c-olive); } .tn-yellow { --tn: var(--t-yellow); --tc: var(--c-yellow); }
+.tn-slate { --tn: var(--t-slate); --tc: var(--c-slate); } .tn-blue { --tn: var(--t-blue); --tc: var(--c-blue); }
+.tn-purple { --tn: var(--t-purple); --tc: var(--c-purple); }
+
+/* ---------- 外殼 ---------- */
+.hdr { display: flex; align-items: center; justify-content: center; gap: 6px; padding-inline: var(--gut);
+  background: var(--brand); color: var(--brand-ink); min-width: 0; }
+.hdr .ttl { font-size: var(--fs-t); font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hdr .ci { width: calc(var(--fs-t) + 3px); height: calc(var(--fs-t) + 3px); flex: none; }
+.bd { position: relative; overflow: hidden; min-height: 0; }
+.hintbar { display: flex; align-items: center; justify-content: center; gap: 9px; font-size: 10px; color: var(--ink3);
+  border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden; }
+.hintbar span { display: inline-flex; align-items: center; gap: 3px; }
+.sk { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding-inline: var(--gut);
+  background: var(--sk-bg); color: var(--ink); border-top: 1px solid var(--line);
+  font-size: var(--fs-sk); font-weight: 900; white-space: nowrap; }
+.sk .l { justify-self: start; } .sk .r { justify-self: end; }
+.sk .c:not(:empty) { justify-self: center; background: var(--brand); color: var(--brand-ink); border-radius: 999px; padding: 1px 10px; }
+.scr.qq .sk .c:not(:empty) { padding: 0 5px; }
+
+/* 鍵帽：畫面上的按鍵提示，長得像實體鍵 */
+.kc { display: inline-grid; place-items: center; min-width: 12px; height: 12px; padding: 0 2px; font: 900 9px/1 Roboto, sans-serif;
+  color: var(--key-ink); background: var(--key-bg); border: 1px solid var(--key-line); border-bottom-width: 2px; border-radius: 3px; }
+
+/* ---------- 共用 ---------- */
+.ui { width: 1em; height: 1em; flex: none; }
+.ctx { display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 0 var(--gut);
+  height: 22px; font-size: var(--fs-2); color: var(--ink2); background: var(--card); border-bottom: 1px solid var(--line); white-space: nowrap; }
+.scr.qq .ctx { height: 14px; }
+.ctx > span { display: inline-flex; align-items: center; gap: 3px; min-width: 0; overflow: hidden; }
+.ctx b { color: var(--ink); overflow: hidden; text-overflow: ellipsis; }
+.ctx .ui { color: var(--brand); }
+.list { display: grid; gap: 4px; padding: 4px var(--gut); }
+.scr.qq .list { gap: 2px; padding: 2px var(--gut); }
+.sec { font-size: var(--fs-3); font-weight: 900; color: var(--ink3); letter-spacing: .04em; padding: 2px 2px 0; }
+.meta { font-size: var(--fs-2); color: var(--ink3); }
+.center { text-align: center; }
+
+/* ---------- 卡片與焦點指標 ---------- */
+.card { position: relative; display: grid; grid-template-columns: var(--tile) minmax(0, 1fr) auto; align-items: center; gap: 6px;
+  min-height: var(--row); padding: 4px 6px; background: var(--card); border-radius: var(--rad); }
+.card.sp { grid-template-columns: var(--tile) minmax(0, 1fr) 38px auto; }
+.scr.qq .card { gap: 3px; padding: 1px 3px; }
+.card.f { background: var(--focus-bg); box-shadow: 0 0 0 var(--ring) var(--focus); }
+/* 指標：焦點卡片左側的三角形，指向目前選到的項目 */
+.card.f::before { content: ""; position: absolute; left: calc(-1 * var(--gut) - 1px); top: 50%; transform: translateY(-50%);
+  border: 5px solid transparent; border-left-color: var(--focus); }
+.scr.qq .card.f::before { border-width: 3px; }
+.tile { position: relative; width: var(--tile); height: var(--tile); border-radius: 8px; background: var(--tn, var(--t-slate));
+  display: grid; place-items: center; color: var(--tc, var(--ink2)); }
+.scr.qq .tile { border-radius: 4px; }
+.tile .ci { width: 80%; height: 80%; }
+.tile .ui { width: 62%; height: 62%; }
+.tile .kc { position: absolute; left: -5px; top: -5px; }
+.two { display: grid; min-width: 0; }
+.nm { font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.two .meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rt { display: grid; justify-items: end; gap: 1px; }
+.pr { font-weight: 900; white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; gap: 1px; font-size: var(--fs-3); font-weight: 900; line-height: 1; white-space: nowrap;
+  padding: 2px 5px; border-radius: 999px; }
+.scr.qq .pill { padding: 1px 3px; }
+.pill.up { color: var(--up); background: var(--up-bg); } .pill.dn { color: var(--dn); background: var(--dn-bg); }
+.pill.eq { color: var(--flat); background: var(--flat-bg); } .pill.old { color: var(--warn); background: var(--warn-bg); }
+.pill.me { color: var(--brand-ink); background: var(--brand); }
+.spark { width: 38px; height: 16px; overflow: visible; }
+.spark.up { color: var(--up); } .spark.dn { color: var(--dn); } .spark.eq { color: var(--flat); }
+.chk { width: 16px; height: 16px; border-radius: 4px; border: 2px solid var(--key-line); display: grid; place-items: center; color: var(--brand-ink); }
+.chk.on { background: var(--brand); border-color: var(--brand); }
+.val { font-size: var(--fs-2); font-weight: 900; color: var(--ink2); background: var(--bg); border-radius: 999px; padding: 2px 7px; white-space: nowrap; }
+.dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; background: var(--pos); }
+.dot.stale { background: var(--warn); } .dot.none { background: var(--line); }
+
+/* ---------- 首頁摘要列 ---------- */
+.insight { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 4px var(--gut) 0; padding: 3px 6px;
+  border-radius: 6px; background: var(--brand-soft); font-size: var(--fs-3); color: var(--ink2); white-space: nowrap; }
+.insight b { color: var(--ink); }
+.insight .cnt { display: inline-flex; gap: 3px; }
+
+/* ---------- 分頁 ---------- */
+.tabseg { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); margin: 4px var(--gut); padding: 2px; border-radius: 999px; background: var(--card);
+  font-size: var(--fs-2); font-weight: 900; color: var(--ink3); text-align: center; }
+.scr.qq .tabseg { margin: 2px var(--gut); padding: 1px; }
+.tabseg span { border-radius: 999px; padding: 2px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scr.qq .tabseg span { padding: 0; }
+.tabseg .on { background: var(--brand); color: var(--brand-ink); }
+
+/* ---------- 行情：大數字、區間、指標 ---------- */
+.stack { display: grid; gap: 4px; padding: 0 var(--gut) 4px; }
+.scr.qq .stack { gap: 2px; }
+.box { background: var(--card); border-radius: var(--rad); padding: 5px 7px; }
+.scr.qq .box { padding: 2px 4px; }
+.hero { display: grid; grid-template-columns: 36px 1fr; gap: 7px; align-items: center; }
+.hero .tile { --tile: 36px; }
+.scr.qq .hero { grid-template-columns: 1fr; }
+.hero .lbl { display: flex; justify-content: space-between; align-items: center; gap: 4px; font-size: var(--fs-3); color: var(--ink3); font-weight: 700; }
+.hero .big { font-size: var(--fs-hero); font-weight: 900; line-height: 1; letter-spacing: -.01em; }
+.hero .cl { display: flex; align-items: center; gap: 4px; font-size: var(--fs-3); color: var(--ink3); margin-top: 2px; white-space: nowrap; }
+.rng .t { font-size: var(--fs-3); color: var(--ink3); font-weight: 700; display: flex; justify-content: space-between; }
+.rng .bar { position: relative; height: 6px; border-radius: 999px; background: var(--line); margin: 6px 4px 4px; }
+.rng .fill { position: absolute; inset: 0; border-radius: 999px; background: var(--tn); opacity: 1; }
+.rng .mk { position: absolute; top: 50%; width: 12px; height: 12px; margin-left: -6px; transform: translateY(-50%);
+  border-radius: 50%; background: var(--tc); border: 2px solid var(--card); }
+.rng .ends { display: flex; justify-content: space-between; font-size: var(--fs-3); font-weight: 900; }
+.rng .ends small { font-weight: 400; color: var(--ink3); }
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.kpi { background: var(--card); border-radius: var(--rad); padding: 4px 5px; display: grid; gap: 1px; min-width: 0; }
+.kpi .k { font-size: 10px; color: var(--ink3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi .v { font-size: 13px; font-weight: 900; white-space: nowrap; }
+.kpi .v.up { color: var(--up); } .kpi .v.dn { color: var(--dn); }
+.kpi .gauge { height: 3px; border-radius: 3px; background: var(--line); position: relative; margin-top: 2px; }
+.kpi .gauge i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--tc, var(--brand)); }
+.srcl { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--ink3); white-space: nowrap; overflow: hidden; }
+.srcl .ui { color: var(--brand); }
+
+/* ---------- 走勢圖 ---------- */
+.sumrow { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: var(--fs-3); color: var(--ink3); white-space: nowrap; }
+.sumrow b { color: var(--ink); }
+.chart { width: 100%; display: block; overflow: visible; }
+.chart .gl { stroke: var(--line); stroke-width: 1; stroke-dasharray: 2 3; }
+.chart .ln { fill: none; stroke: var(--tc); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .ar { fill: var(--tc); opacity: .16; }
+.chart .pt { fill: var(--card); stroke: var(--tc); stroke-width: 1.5; }
+.chart .now { fill: var(--tc); stroke: var(--card); stroke-width: 2; }
+.chart text { font: 9px Roboto, "Noto Sans TC", sans-serif; fill: var(--ink3); }
+.chart .tv { font-weight: 900; font-size: 10px; fill: var(--ink); }
+.chart .cz { fill: var(--ink3); font-weight: 700; }
+.chart .band { fill: var(--line); opacity: .45; }
+
+/* ---------- 九宮格 ---------- */
+.g9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 6px var(--gut); }
+.scr.qq .g9 { gap: 2px; padding: 2px var(--gut); }
+.cell { position: relative; display: grid; justify-items: center; align-content: center; gap: 2px; min-height: 58px;
+  border-radius: 10px; background: var(--tn); color: var(--ink); text-align: center; }
+.scr.qq .cell { min-height: 36px; border-radius: 5px; }
+.cell .ci { width: 28px; height: 28px; }
+.scr.qq .cell .ci { width: 18px; height: 18px; }
+.cell .cn { font-size: var(--fs-2); font-weight: 900; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cell .kc { position: absolute; left: 3px; top: 3px; }
+.cell.f { box-shadow: 0 0 0 var(--ring) var(--focus); }
+
+/* ---------- 選項列（排序、市場）---------- */
+.sortbar { display: flex; align-items: center; justify-content: space-between; gap: 4px; margin: 0 var(--gut); padding: 2px 6px;
+  border-radius: 6px; background: var(--card); font-size: var(--fs-3); color: var(--ink2); white-space: nowrap; }
+.sortbar b { color: var(--ink); }
+.sortbar > span { display: inline-flex; align-items: center; gap: 3px; }
+.rank { width: var(--tile); height: var(--tile); border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: var(--fs-2);
+  background: var(--bg); color: var(--ink2); }
+.card.me { background: var(--brand-soft); }
+.card.f.me { background: var(--focus-bg); }
+
+/* ---------- 狀態 ---------- */
+.skel { display: block; height: 9px; border-radius: 3px; background: var(--line); }
+.alert { background: var(--warn-bg); color: var(--warn); }
+.alert .nm { color: var(--warn); }
+.alert .tile { background: transparent; color: var(--warn); }
+.state { display: grid; justify-items: center; gap: 2px; padding: 3px var(--gut) 2px; text-align: center; }
+.state .big2 { font-weight: 900; }
+.state .tile { --tile: 24px; background: var(--card); color: var(--ink3); border-radius: 50%; }
+.scr.qq .state { padding: 3px; }
+
+/* ---------- 底部選單（左軟鍵）---------- */
+.ov { position: absolute; left: 0; right: 0; top: 0; bottom: var(--sk); background: var(--scrim); display: flex; align-items: flex-end; }
+.sheet { width: 100%; background: var(--sheet); border-radius: 14px 14px 0 0; box-shadow: 0 -6px 18px rgba(0, 0, 0, .35); padding: 5px 0 4px; }
+.scr.qq .sheet { border-radius: 8px 8px 0 0; padding: 2px 0; }
+.sheet .grab { width: 30px; height: 4px; border-radius: 4px; background: var(--line); margin: 0 auto 4px; }
+.sheet .st { display: flex; justify-content: space-between; align-items: baseline; padding: 0 12px 3px; font-weight: 900; font-size: var(--fs-2); }
+.sheet .st small { font-weight: 400; color: var(--ink3); }
+.opt { position: relative; display: grid; grid-template-columns: 14px 16px 1fr auto; align-items: center; gap: 7px; min-height: 26px;
+  padding: 0 12px; font-size: var(--fs-2); font-weight: 700; }
+.scr.qq .opt { grid-template-columns: 10px 1fr; min-height: 16px; padding: 0 5px; gap: 3px; }
+.opt .ui { width: 16px; height: 16px; color: var(--ink2); }
+.opt.f { background: var(--focus-bg); box-shadow: inset 4px 0 0 var(--focus); }
+.opt .on { color: var(--brand); }
+.sheet .div { height: 1px; background: var(--line); margin: 3px 12px; }
+.voice { display: grid; grid-template-columns: 34px 1fr; gap: 8px; align-items: center; padding: 2px 12px 6px; }
+.voice .tile { --tile: 34px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); }
+.voice .wave { display: flex; align-items: center; gap: 2px; height: 14px; }
+.voice .wave i { width: 3px; border-radius: 2px; background: var(--brand); }
+.voice p { margin: 2px 0 0; font-size: var(--fs-3); color: var(--ink2); }
+
+/* ---------- 首次設定、離開 ---------- */
+.welcome { display: grid; justify-items: center; gap: 2px; padding: 4px var(--gut) 1px; text-align: center; }
+.welcome svg { width: 32px; height: 32px; }
+.scr.qq .welcome svg { width: 20px; height: 20px; }
+.welcome b { font-size: 16px; }
+.welcome span { font-size: var(--fs-3); color: var(--ink3); }
+.steps { display: flex; gap: 4px; justify-content: center; padding: 2px 0 4px; }
+.steps i { width: 6px; height: 6px; border-radius: 6px; background: var(--line); }
+.steps i.on { width: 16px; background: var(--brand); }
+.os { display: grid; justify-items: center; gap: 8px; padding: 14px 10px; text-align: center; }
+.os .apps { display: grid; grid-template-columns: repeat(3, 44px); gap: 10px; }
+.scr.qq .os { padding: 4px; gap: 4px; } .scr.qq .os .apps { grid-template-columns: repeat(3, 24px); gap: 6px; }
+.os .apps span { aspect-ratio: 1; border-radius: 12px; background: var(--line); }
+.os .apps svg { width: 100%; height: 100%; box-shadow: 0 0 0 3px var(--focus); border-radius: 12px; }
+
+/* ---------- 版面檢查後的微調 ---------- */
+.scr.qq .stack { padding-bottom: 2px; }
+.scr.qq .state .tile { display: none; }
+.card.cmp { min-height: 36px; }
+.scr.qq .card.cmp { min-height: 20px; }
+.state + .list { padding-top: 1px; }
+.scr.qq .state + .list { padding-top: 0; }
+
+/* 功能鍵選項：* 和 # 各管一個選項，目前生效的填滿顏色 */
+.fk { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px 1px 2px; border-radius: 999px; color: var(--ink2); white-space: nowrap; }
+.fk.on { background: var(--brand); color: var(--brand-ink); font-weight: 900; }
+.sortbar { justify-content: flex-start; gap: 3px; }
+.sumrow > span:last-child { display: inline-flex; gap: 2px; }
+
+/* ---------- 批發／零售、地區單位 ---------- */
+.mtag { display: inline-block; font-size: var(--fs-3); font-weight: 900; line-height: 1; padding: 2px 6px; border-radius: 999px; color: #fff; }
+.mtag.w { background: var(--brand); } .mtag.r { background: #7A4BC2; }
+.warn { color: var(--warn); }
+.card.dim .pr, .card.dim .nm { color: var(--ink3); }
+.go { display: grid; place-items: center; color: var(--ink3); } .go .ui { width: 14px; height: 14px; }
+.card.f .go { color: var(--focus); }
+.rankline { font-size: var(--fs-3); color: var(--ink2); padding: 3px var(--gut) 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.box.note { display: flex; align-items: center; gap: 4px; font-size: var(--fs-3); color: var(--ink2); }
+.hdr .kc { flex: none; }
+.sortbar { justify-content: space-between; }
+
+/* ---------- 確認位置 ---------- */
+.locq { font-size: 16px; line-height: 1.3; }
+.scr.qq .locq { font-size: 12px; }
+
+/* 「本地區各市場」卡片右側的 OK › 提示 */
+.okgo { display: inline-flex; align-items: center; gap: 2px; color: var(--ink3); }
+.okgo .ui { width: 14px; height: 14px; }
+.card.f .okgo { color: var(--focus); }
+
+/* 分頁兩側的 ◀ ▶：提示用方向鍵切換 */
+.tabwrap { display: flex; align-items: center; gap: 2px; margin: 4px var(--gut); }
+.tabwrap .tabseg { flex: 1; margin: 0; }
+.tabwrap .arr { font-size: 9px; color: var(--ink3); }
+/* 行情頁大數字旁的「0 聽」 */
+.lis { display: inline-flex; align-items: center; gap: 2px; color: var(--ink3); }
+.lis .ui { width: 13px; height: 13px; }
+.sortbar { justify-content: flex-start; }
+/* 128×160 的九宮格放在首頁分頁下，格子要更矮 */
+.scr.qq .cell { min-height: 26px; gap: 0; }
+.scr.qq .cell .ci { width: 14px; height: 14px; }
+.scr.qq .cell .cn { font-size: 10px; }
+</style>
+<style>
+  :root {
+    --pg: #ECF0EE; --card: #FFFFFF; --ink: #17221E; --ink2: #4B5B54; --line: #CAD5D0;
+    --acc: #146C43; --acc-ink: #FFFFFF; --dev: #1B1F23; --dev2: #353C43;
+    --key: #F6F8F7; --key-ink: #17221E; --hit: #FFC21A; --hit-ink: #17221E;
+    --zoom: 1.5; color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --pg: #111715; --card: #19211E; --ink: #E3EBE7; --ink2: #9CAEA6; --line: #2B3732;
+      --acc: #7FC49F; --acc-ink: #0E1411; --dev: #07090A; --dev2: #2A3137; --key: #222B27; --key-ink: #E3EBE7; color-scheme: dark; }
+  }
+  [hidden] { display: none !important; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--pg); color: var(--ink); font: 15px/1.6 "Noto Sans TC", system-ui, sans-serif;
+    padding-inline: 16px; padding-block: 20px 48px; }
+  .wrap { max-width: 1440px; margin: 0 auto; display: grid; gap: 20px; }
+  header.top { display: grid; gap: 4px; }
+  header.top h1 { margin: 0; font-size: 26px; font-weight: 900; text-wrap: balance; }
+  header.top p { margin: 0; color: var(--ink2); max-width: 72ch; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .grp { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .grp > .lab { font: 600 11px/1 "IBM Plex Mono", monospace; letter-spacing: .08em; color: var(--ink2); margin-right: 4px; }
+  button { font: inherit; color: inherit; }
+  .seg, .act { border: 1px solid var(--line); background: transparent; border-radius: 6px; padding: 4px 10px; font-size: 13px; cursor: pointer; line-height: 1.4; }
+  .seg.on { background: var(--acc); color: var(--acc-ink); border-color: var(--acc); font-weight: 700; }
+  .seg:focus-visible, .act:focus-visible, .pad-key:focus-visible { outline: 3px solid var(--hit); outline-offset: 2px; }
+  .act { background: var(--key); }
+  .device { zoom: var(--zoom); display: inline-block; background: var(--dev); padding: 14px 12px 18px; border-radius: 18px;
+    box-shadow: 0 0 0 1px var(--dev2), 0 12px 28px rgba(0, 0, 0, .18); }
+  .device.qq { padding: 9px 8px 12px; border-radius: 12px; }
+  .dev-cap { font: 600 12px/1.4 "IBM Plex Mono", monospace; color: var(--ink2); text-align: center; }
+  .stage { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+  .col { display: grid; gap: 8px; justify-items: center; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 12px; max-width: 100%; }
+  .keypad { display: grid; grid-template-columns: repeat(3, 64px); gap: 7px; justify-content: center; }
+  .pad-key { height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--key); color: var(--key-ink);
+    display: grid; place-items: center; line-height: 1.1; cursor: pointer; font-weight: 700; font-size: 15px; }
+  .pad-key small { display: block; font: 400 10px/1 "Noto Sans TC", sans-serif; color: var(--ink2); }
+  .pad-key.soft { background: var(--dev); color: #fff; border-color: var(--dev2); }
+  .pad-key.soft small { color: #b9c2c9; }
+  .pad-key.ok { border-radius: 50%; width: 46px; justify-self: center; }
+  .pad-key.hit { background: var(--hit); color: var(--hit-ink); border-color: var(--hit); }
+  .pad-key.hit small { color: var(--hit-ink); }
+  .keypad .gap { height: 6px; grid-column: 1 / -1; }
+  .status { display: grid; gap: 2px; font-size: 13px; }
+  .status b { font-family: "IBM Plex Mono", monospace; }
+  .keys-help { font-size: 12.5px; color: var(--ink2); margin: 0; padding-left: 1.1em; max-width: 34ch; }
+  .row-acts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .gallery { display: flex; flex-wrap: wrap; gap: 18px; }
+  .shot { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; max-width: 100%; overflow-x: auto; }
+  .shot figcaption { font-weight: 700; font-size: 14px; display: flex; gap: 8px; align-items: baseline; }
+  .shot .idx { font: 600 11px/1 "IBM Plex Mono", monospace; color: var(--ink2); }
+  .pair { display: flex; gap: 14px; align-items: flex-start; }
+  .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .note { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .note h2 { margin: 0 0 6px; font-size: 16px; }
+  .note ul, .note ol { margin: 0; padding-left: 1.2em; }
+  .note li + li { margin-top: 4px; }
+  kbd { font: 600 12px "IBM Plex Mono", monospace; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; background: var(--key); }
+  @media (max-width: 720px) { :root { --zoom: 1 !important; } .pair { flex-wrap: wrap; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>農產行情 UI 草圖</h1>
+    <p>「收成卡片」設計：每種作物有自己的圖示和分類色，首頁每列附 7 日迷你走勢，詳情頁有行情指標和走勢圖。<kbd>*</kbd> 和 <kbd>#</kbd> 是每頁的兩個功能鍵。所有價格都是示範資料。</p>
+  </header>
+
+  <section class="toolbar" aria-label="檢視設定">
+    <div class="grp"><span class="lab">模式</span>
+      <button type="button" class="seg" data-set="mode:play">互動試玩</button>
+      <button type="button" class="seg" data-set="mode:gallery">全部畫面</button>
+    </div>
+    <div class="grp"><span class="lab">語言</span>
+      <button type="button" class="seg" data-set="lang:zh">繁中</button>
+      <button type="button" class="seg" data-set="lang:en">English</button>
+    </div>
+    <div class="grp"><span class="lab">國家</span>
+      <button type="button" class="seg" data-set="country:IN">印度</button>
+      <button type="button" class="seg" data-set="country:TW">台灣</button>
+    </div>
+    <div class="grp"><span class="lab">IP 推測</span>
+      <button type="button" class="seg" data-set="ip:IN">印度 Nashik</button>
+      <button type="button" class="seg" data-set="ip:TW">台灣 台北市</button>
+      <button type="button" class="seg" data-set="ip:none">猜不到</button>
+    </div>
+    <div class="grp"><span class="lab">模擬</span>
+      <button type="button" class="seg" data-sim="ok">正常</button>
+      <button type="button" class="seg" data-sim="loading">載入中</button>
+      <button type="button" class="seg" data-sim="error">連線失敗</button>
+      <button type="button" class="seg" data-sim="empty">地區未更新</button>
+    </div>
+    <div class="grp"><span class="lab">系統狀態列</span>
+      <button type="button" class="seg" data-set="sb:false">不預留</button>
+      <button type="button" class="seg" data-set="sb:true">預留 20px</button>
+    </div>
+    <div class="grp"><span class="lab">放大</span>
+      <button type="button" class="seg" data-set="zoom:1">1×</button>
+      <button type="button" class="seg" data-set="zoom:1.5">1.5×</button>
+      <button type="button" class="seg" data-set="zoom:2">2×</button>
+    </div>
+  </section>
+
+  <section id="mode-play" aria-label="互動試玩">
+    <div class="stage">
+      <div class="col"><div class="device q" id="dev-q" data-slot="play-q"></div><div class="dev-cap">240×320・主要</div></div>
+      <div class="col"><div class="device qq" id="dev-qq" data-slot="play-qq"></div><div class="dev-cap">128×160・加分</div></div>
+      <div class="panel" aria-label="手機按鍵">
+        <div class="keypad">
+          <button type="button" class="pad-key soft" data-key="LSK">左軟鍵<small>Esc</small></button>
+          <button type="button" class="pad-key" data-key="ArrowUp">▲<small>↑</small></button>
+          <button type="button" class="pad-key soft" data-key="RSK">右軟鍵<small>⌫</small></button>
+          <button type="button" class="pad-key" data-key="ArrowLeft">◀<small>←</small></button>
+          <button type="button" class="pad-key ok" data-key="Enter">OK<small>Enter</small></button>
+          <button type="button" class="pad-key" data-key="ArrowRight">▶<small>→</small></button>
+          <span></span>
+          <button type="button" class="pad-key" data-key="ArrowDown">▼<small>↓</small></button>
+          <span></span>
+          <span class="gap"></span>
+          <button type="button" class="pad-key" data-key="1">1</button>
+          <button type="button" class="pad-key" data-key="2">2</button>
+          <button type="button" class="pad-key" data-key="3">3</button>
+          <button type="button" class="pad-key" data-key="4">4</button>
+          <button type="button" class="pad-key" data-key="5">5</button>
+          <button type="button" class="pad-key" data-key="6">6</button>
+          <button type="button" class="pad-key" data-key="7">7</button>
+          <button type="button" class="pad-key" data-key="8">8</button>
+          <button type="button" class="pad-key" data-key="9">9</button>
+          <button type="button" class="pad-key" data-key="*">*<small>看零售</small></button>
+          <button type="button" class="pad-key" data-key="0">0<small>語音</small></button>
+          <button type="button" class="pad-key" data-key="#">#<small>換地區</small></button>
+        </div>
+        <div class="status">
+          <span>上一個按鍵：<b id="last-key">—</b></span>
+          <span>目前畫面：<b id="route-now">—</b></span>
+        </div>
+        <ul class="keys-help">
+          <li>電腦鍵盤：方向鍵、<kbd>Enter</kbd>、<kbd>Esc</kbd>＝左軟鍵、<kbd>Backspace</kbd>＝右軟鍵、<kbd>0</kbd>–<kbd>9</kbd>、<kbd>*</kbd>、<kbd>#</kbd></li>
+          <li>◀ ▶ 永遠是換分頁：首頁「關注｜全部作物」、詳情「走勢｜行情｜比價」</li>
+          <li><kbd>*</kbd> 永遠是批發／零售；<kbd>#</kbd> 是這一頁的選項，鍵帽畫在它控制的東西旁邊</li>
+        </ul>
+        <div class="row-acts">
+          <button type="button" class="act" id="restart">從首次設定開始</button>
+          <button type="button" class="act" id="reset">重設到首頁</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mode-gallery" aria-label="全部畫面" hidden>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section class="notes" aria-label="說明">
+    <div class="note">
+      <h2>這一版改了什麼</h2>
+      <ul>
+        <li><b>首頁兩個分頁「關注｜全部作物」</b>：打開就看到關注作物的價格；◀ ▶ 切到九宮格瀏覽全部作物，兩者同一層。</li>
+        <li><b>拿掉按鍵提示列</b>：每個按鍵只在一個地方提示，就在它控制的東西旁邊：<kbd>*</kbd> 在批發／零售標籤旁、<kbd>#</kbd> 在地區名稱或切換鈕旁、◀ ▶ 在分頁兩側。</li>
+        <li><b>刪掉重複</b>：首頁不再每列寫「今日」和市場數；連線失敗只標一次「舊」；比價的排序合成一個標籤；選單拿掉「瀏覽作物」，「關於」和「資料說明」合併。</li>
+        <li><b>地區清單最後加「更改國家…」</b>：比價只在同一個國家內，要看別國就整個切過去。</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h2>設計原則</h2>
+      <ul>
+        <li><b>以地區為單位</b>：台灣是縣市、印度是縣；地區批發價是各市場代表價的中位數，並標出市場數。</li>
+        <li><b>按鍵意義固定</b>：◀ ▶ 換分頁、<kbd>*</kbd> 批發／零售、<kbd>#</kbd> 這一頁的選項、1–9 直接開啟、左軟鍵選單、右軟鍵返回。</li>
+        <li><b>誠實的資料</b>：缺資料就說缺，不用 0 補；中位數、直線距離、「批零差額不是利潤」寫在「關於與資料說明」。</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h2>請你們看的問題</h2>
+      <ol>
+        <li>首頁「關注｜全部作物」這樣的層級可以嗎？</li>
+        <li>拿掉提示列後，按鍵還看得懂嗎？</li>
+        <li>還有哪裡覺得重複或多餘？</li>
+      </ol>
+    </div>
+  </section>
+</div>
+<script>
+/* ===== data.js ===== */
+// UI 草圖用的示範資料。全部是假資料，數字只為了讓畫面像真的。
+// 單位：地區（台灣＝縣市、印度＝縣 district）；市場是地區底下的細節。
+(function () {
+  const STR = {
+    zh: {
+      app: '農價', home: '{a}行情', wd: ['日', '一', '二', '三', '四', '五', '六'], date: '{m}/{d} 週{w}',
+      mode: { w: '批發', r: '零售' }, modeAct: { w: '看零售', r: '看批發' },
+      medLbl: '{n} 個市場中位數', oneMkt: '僅 1 個市場', retailLbl: '零售調查價',
+      noRetail: '尚無零售資料', noRetailCrop: '這個作物沒有零售回報', retailNote: '零售價以地區為單位，沒有市場細項', homeTabs: ['關注', '全部作物'],
+      mktsCard: '本地區 {n} 個市場', mktsSub: '最高 {hi}・最低 {lo}',
+      tabs: ['走勢', '行情', '比價'], vsPrev: '較前一交易日',
+      ipT: '你的位置', ipQ: '你在 {a} 附近嗎？', ipHow: '依網路位置推測（不用 GPS，也不保存）', ipYes: '是，就是這裡', ipNo: '不是，我自己選',
+      ind: ['比 7 日均價', '到貨量', '30 日位置'], arr: ['偏少', '正常', '偏多'], lvl: ['低檔', '中段', '高檔'],
+      vol: ['穩定', '普通', '劇烈'], volT: '波動', avg: '均價', hi: '高', lo: '低',
+      demo: '示範資料', trend: '{n} 日走勢', closed: '休市', closedS: '休',
+      sortT: '排序方式', sorts: ['價格 高→低', '價格 低→高', '距離 近→遠', '距離 遠→近'],
+      youS: '你', rank: '{a} 價格排第 {r}／{n}', rankNone: '{a} 無資料，未列排名', dist: '直線 {k} km', mktsN: '{n} 市場',
+      today: '今日', yday: '昨天', daysAgo: '{n} 天前', none: '無資料', old: '舊',
+      loading: '正在取得 {m} 的行情', loadingNote: '超過 10 秒會顯示錯誤',
+      errT: '連線失敗', errSub: '先顯示 09:12 的資料', retry: '重試', errKeep: '你的設定都還在',
+      emptyT: '{m} 今天還沒更新', emptyNote: '這個地區通常 14:00 前更新', emptyLast: '最近一筆（{d}）：{p}',
+      emptyA: ['看其他地區', '看走勢'],
+      browse: '瀏覽作物', cats: ['穀物', '蔬菜', '水果', '豆類', '香料', '油籽', '其他', '全部', '最近'],
+      pickArea: '選擇地區', recent: '最近使用', allAreas: '全部地區', upd: '已更新', otherAreas: '其他地區…', changeArea: '換地區',
+      mktNoRetail: '這個市場沒有零售報價', seeAreaRetail: '看 {a} 的零售價', vsMedV: '與中位數 {p} 比較', changeCountry: '更改國家…',
+      watch: '編輯關注', settings: '設定', help: '關於與資料說明',
+      setRows: ['語言', '國家', '我的地區', '批發單位', '零售單位'],
+      menu: '選單', menuG: ['換地區', '編輯關注', '重新整理', '關於與資料說明', '設定'],
+      menuWatch: ['加入關注', '取消關注'],
+      sk: { menu: '選單', open: '開啟', back: '返回', exit: '離開', select: '選取', close: '關閉', toggle: '切換', view: '查看', compare: '比價', trend: '走勢', today: '行情', retry: '重試', markets: '市場' },
+      hint: { markets: '看市場', trend: '走勢', compare: '比價', listen: '聽', tabs: '分頁', open: '直接開啟', run: '直接執行', area: '換地區', sort: '排序', d7: '7 日', d30: '30 日' },
+      langT: 'Language・語言', countryT: '選擇國家', area0: '你的地區', step: '第 {a} 步，共 {b} 步',
+      welcome: '查各地今天的農產品價格', phoneLang: '手機語言', more: 'More・其他', moreSub: 'अन्य', notYet: '尚未提供',
+      page: '第 {a}／{b} 頁',
+      helpL: ['地區價＝該地區各市場代表價的中位數，並標出市場數。', '距離＝地區中心之間的直線距離，不是路程。',
+        '零售價以地區為單位，沒有市場細項。', '批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。', '畫面上的價格都是示範資料。'],
+      aboutL: ['資料來源', '畫面上的價格都是示範資料。', '本 App 不會向你要錢、', '密碼或驗證碼。'],
+      exitT: '已離開 App（示意）', exitN: '按 OK 重新開啟，會回到剛才的畫面',
+      voice: '語音播報', voiceS: '加分項・示意'
+    },
+    en: {
+      app: 'AgriPrice', home: '{a} prices', wd: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], date: '{w} {d}/{m}',
+      mode: { w: 'Wholesale', r: 'Retail' }, modeAct: { w: 'Retail', r: 'Wholesale' },
+      medLbl: 'Median of {n} markets', oneMkt: 'Only 1 market', retailLbl: 'Retail survey price',
+      noRetail: 'No retail data', noRetailCrop: 'No retail reports for this crop', retailNote: 'Retail prices are per area, not per market', homeTabs: ['Watchlist', 'All crops'],
+      mktsCard: '{n} markets in this area', mktsSub: 'High {hi} · Low {lo}',
+      tabs: ['Trend', 'Today', 'Compare'], vsPrev: 'vs last trading day',
+      ipT: 'Your location', ipQ: 'Are you near {a}?', ipHow: 'Guessed from your network (no GPS, not stored)', ipYes: 'Yes, that’s right', ipNo: 'No, let me choose',
+      ind: ['vs 7-day avg', 'Arrivals', '30-day level'], arr: ['Low', 'Normal', 'High'], lvl: ['Low', 'Mid', 'High'],
+      vol: ['Calm', 'Normal', 'Choppy'], volT: 'Swing', avg: 'Avg', hi: 'High', lo: 'Low',
+      demo: 'Demo data', trend: '{n}-day trend', closed: 'Closed', closedS: 'X',
+      sortT: 'Sort by', sorts: ['Price high→low', 'Price low→high', 'Nearest first', 'Farthest first'],
+      youS: 'You', rank: '{a}: price rank {r}/{n}', rankNone: '{a}: no data, not ranked', dist: '{k} km (straight)', mktsN: '{n} mkts',
+      today: 'Today', yday: 'Yesterday', daysAgo: '{n}d ago', none: 'No data', old: 'Old',
+      loading: 'Loading prices for {m}', loadingNote: 'Shows an error after 10 s',
+      errT: 'Connection failed', errSub: 'Showing data from 09:12', retry: 'Retry', errKeep: 'Your settings are kept',
+      emptyT: '{m}: no update yet', emptyNote: 'This area usually updates by 14:00', emptyLast: 'Last ({d}): {p}',
+      emptyA: ['Other areas', 'See trend'],
+      browse: 'Browse', cats: ['Cereals', 'Veg', 'Fruit', 'Pulses', 'Spices', 'Oilseed', 'Other', 'All', 'Recent'],
+      pickArea: 'Choose area', recent: 'Recent', allAreas: 'All areas', upd: 'Updated', otherAreas: 'Other areas…', changeArea: 'Change area',
+      mktNoRetail: 'No retail price for this market', seeAreaRetail: 'See {a} retail', vsMedV: 'Compared with median {p}', changeCountry: 'Change country…',
+      watch: 'Watchlist', settings: 'Settings', help: 'About & data',
+      setRows: ['Language', 'Country', 'My area', 'Wholesale unit', 'Retail unit'],
+      menu: 'Menu', menuG: ['Change area', 'Watchlist', 'Refresh', 'About & data', 'Settings'],
+      menuWatch: ['Add to watchlist', 'Remove from list'],
+      sk: { menu: 'Menu', open: 'Open', back: 'Back', exit: 'Exit', select: 'Select', close: 'Close', toggle: 'Change', view: 'View', compare: 'Compare', trend: 'Trend', today: 'Today', retry: 'Retry', markets: 'Markets' },
+      hint: { markets: 'Markets', trend: 'Trend', compare: 'Compare', listen: 'Listen', tabs: 'Tabs', open: 'Open', run: 'Run', area: 'Area', sort: 'Sort', d7: '7d', d30: '30d' },
+      langT: 'Language・語言', countryT: 'Choose country', area0: 'Your area', step: 'Step {a} of {b}',
+      welcome: "Today's crop prices, place by place", phoneLang: 'Phone language', more: 'More・其他', moreSub: 'अन्य', notYet: 'Not yet available',
+      page: 'Page {a}/{b}',
+      helpL: ['Area price = median of the area’s market prices; the market count is shown.', 'Distance = straight line between area centres, not road distance.',
+        'Retail prices are per area; there is no market breakdown.', 'The retail–wholesale gap is not profit; it includes transport, loss and packing.', 'All prices shown are demo data.'],
+      aboutL: ['Data source', 'All prices shown are demo data.', 'We never ask for money,', 'PINs or codes.'],
+      exitT: 'App closed (demo)', exitN: 'Press OK to reopen where you left off',
+      voice: 'Voice readout', voiceS: 'Bonus · demo'
+    }
+  };
+
+  // 語言：首頁只放三個已完成的語言，其他放在「More・其他」清單
+  const LANGS = [
+    { id: 'zh', name: '繁體中文', g: '中', tone: 'green', ok: true }, { id: 'en', name: 'English', g: 'A', tone: 'blue', ok: true },
+    { id: 'hi', name: 'हिन्दी', g: 'अ', tone: 'orange', ok: false }
+  ];
+  const MORE_LANGS = ['বাংলা', 'मराठी', 'Tiếng Việt', 'Kiswahili', 'اردو', 'தமிழ்', 'తెలుగు', 'Bahasa Indonesia'];
+
+  // 分類：九宮格的位置和實體鍵 1–9 一致
+  const CATS = [
+    { id: 'cereal', ic: 'wheat', tone: 'amber' }, { id: 'veg', ic: 'cabbage', tone: 'green' },
+    { id: 'fruit', ic: 'mango', tone: 'orange' }, { id: 'pulse', ic: 'soybean', tone: 'olive' },
+    { id: 'spice', ic: 'chilli', tone: 'red' }, { id: 'oil', ic: 'oil', tone: 'yellow' },
+    { id: 'other', ic: 'box', tone: 'slate' }, { id: 'all', ic: 'gridc', tone: 'blue' },
+    { id: 'recent', ic: 'clockc', tone: 'purple' }
+  ];
+  const TONE_OF = Object.fromEntries(CATS.map(c => [c.id, c.tone]));
+
+  // 地區 a：k＝價格水準、fresh＝批發資料新舊（0 今日、1 昨天、3 三天前、null 無資料）、retail＝有沒有零售回報
+  const mk = (id, n, km, k, fresh) => ({ id, n, km, k, fresh: fresh === undefined ? 0 : fresh });
+  const COUNTRIES = {
+    IN: {
+      name: { zh: '印度', en: 'India' }, cover: { zh: '6 個邦、11 個縣', en: '6 states, 11 districts' },
+      locale: 'en-IN', time: '11:40', upIsPos: true, closedWd: 0, sfx: { zh: ' 縣', en: ' district' },
+      src: { zh: 'Agmarknet・消費者事務部（印度政府）', en: 'Agmarknet · Dept of Consumer Affairs' },
+      rep: { zh: '常見價', en: 'Modal price' }, arrUnit: { zh: '公擔', en: 'qtl' },
+      units: [{ id: 'qtl', f: 1, dec: 0, zh: '₹/公擔', en: '₹/qtl' }, { id: 'kg', f: 0.01, dec: 1, zh: '₹/公斤', en: '₹/kg' }],
+      unitDef: { w: 0, r: 1 }, home: 'nashik', ra: ['nashik', 'pune', 'ahmednagar'],
+      areas: [
+        { id: 'nashik', n: 'Nashik', st: 'Maharashtra', lat: 20.0, lon: 73.79, k: 1, fresh: 0, retail: true, markets: [
+          mk('lasalgaon', 'Lasalgaon', 32, 1), mk('niphad', 'Niphad', 28, 0.99), mk('pimpalgaon', 'Pimpalgaon', 22, 1.055),
+          mk('yeola', 'Yeola', 60, 1.043, 3), mk('chandvad', 'Chandvad', 55, 1.0), mk('manmad', 'Manmad', 70, 1.0, null),
+          mk('nashikm', 'Nashik', 0, 1.017), mk('sinnar', 'Sinnar', 28, 0.98), mk('malegaon', 'Malegaon', 95, 1.03, 1), mk('satana', 'Satana', 88, 1.06)] },
+        { id: 'pune', n: 'Pune', st: 'Maharashtra', lat: 18.52, lon: 73.86, k: 1.08, fresh: 0, retail: true, markets: [mk('pune1', 'Pune (Gultekdi)', 0, 1.02), mk('khed', 'Khed', 40, 0.97), mk('manchar', 'Manchar', 60, 0.99)] },
+        { id: 'ahmednagar', n: 'Ahmednagar', st: 'Maharashtra', lat: 19.09, lon: 74.74, k: 0.97, fresh: 0, retail: false, markets: [mk('ahm', 'Ahmednagar', 0, 1), mk('rahuri', 'Rahuri', 35, 0.98), mk('sangamner', 'Sangamner', 70, 1.01)] },
+        { id: 'jalgaon', n: 'Jalgaon', st: 'Maharashtra', lat: 21.0, lon: 75.56, k: 1.02, fresh: 1, retail: true, markets: [mk('jal', 'Jalgaon', 0, 1), mk('chalisgaon', 'Chalisgaon', 55, 0.98)] },
+        { id: 'solapur', n: 'Solapur', st: 'Maharashtra', lat: 17.66, lon: 75.91, k: 0.95, fresh: 0, retail: true, markets: [mk('sol', 'Solapur', 0, 1), mk('pandharpur', 'Pandharpur', 65, 0.97)] },
+        { id: 'indore', n: 'Indore', st: 'Madhya Pradesh', lat: 22.72, lon: 75.86, k: 1.05, fresh: 0, retail: true, markets: [mk('ind', 'Indore', 0, 1), mk('mhow', 'Mhow', 23, 0.98)] },
+        { id: 'bengaluru', n: 'Bengaluru Urban', st: 'Karnataka', lat: 12.97, lon: 77.59, k: 1.18, fresh: 0, retail: true, markets: [mk('ypr', 'Yeshwanthpur', 0, 1.01), mk('binny', 'Binny Mill', 5, 0.99)] },
+        { id: 'kolar', n: 'Kolar', st: 'Karnataka', lat: 13.14, lon: 78.13, k: 1.1, fresh: 3, retail: false, markets: [mk('kol', 'Kolar', 0, 1), mk('chintamani', 'Chintamani', 45, 0.98)] },
+        { id: 'delhi', n: 'North Delhi', st: 'Delhi', lat: 28.7, lon: 77.1, k: 1.25, fresh: 0, retail: true, markets: [mk('azadpur', 'Azadpur', 0, 1.01), mk('narela', 'Narela', 18, 0.98)] },
+        { id: 'kurnool', n: 'Kurnool', st: 'Andhra Pradesh', lat: 15.83, lon: 78.04, k: 0.92, fresh: null, retail: false, markets: [mk('kur', 'Kurnool', 0, 1, null)] },
+        { id: 'agra', n: 'Agra', st: 'Uttar Pradesh', lat: 27.18, lon: 78.01, k: 1.12, fresh: 0, retail: true, markets: [mk('agr', 'Agra', 0, 1), mk('achhnera', 'Achhnera', 25, 0.97)] }
+      ],
+      crops: [
+        { id: 'onion', zh: '洋蔥', en: 'Onion', cat: 'veg', v: { zh: '紅洋蔥', en: 'Red' }, p: 2350, lo: 1900, hi: 2610, chg: 0.042, arr: 12400, arrR: 1.18, f: 0, rt: 1.6 },
+        { id: 'tomato', zh: '番茄', en: 'Tomato', cat: 'veg', v: { zh: '雜交種', en: 'Hybrid' }, p: 1180, lo: 900, hi: 1400, chg: -0.12, arr: 3100, arrR: 1.34, f: 0, rt: 1.9 },
+        { id: 'potato', zh: '馬鈴薯', en: 'Potato', cat: 'veg', v: { zh: '本地種', en: 'Local' }, p: 1420, lo: 1250, hi: 1600, chg: 0, arr: 2200, arrR: 0.97, f: 1, rt: 1.55 },
+        { id: 'chilli', zh: '青辣椒', en: 'Chilli', cat: 'spice', v: { zh: '本地種', en: 'Local' }, p: 3800, lo: 3200, hi: 4300, chg: 0.065, arr: 640, arrR: 0.82, f: 0, rt: null },
+        { id: 'soybean', zh: '大豆', en: 'Soybean', cat: 'pulse', v: { zh: '黃豆', en: 'Yellow' }, p: 4650, lo: 4400, hi: 4800, chg: 0.011, arr: 5300, arrR: 1.02, f: 0, rt: null },
+        { id: 'maize', zh: '玉米', en: 'Maize', cat: 'cereal', v: { zh: '雜交種', en: 'Hybrid' }, p: 2050, lo: 1900, hi: 2150, chg: -0.018, arr: 4100, arrR: 1.1, f: 0, rt: null },
+        { id: 'wheat', zh: '小麥', en: 'Wheat', cat: 'cereal', v: { zh: '本地種', en: 'Local' }, p: 2480, lo: 2350, hi: 2600, chg: 0.006, arr: 900, arrR: 0.9, f: 3, rt: 1.35 },
+        { id: 'grapes', zh: '葡萄', en: 'Grapes', cat: 'fruit', v: { zh: '綠葡萄', en: 'Green' }, p: 5200, lo: 4000, hi: 6100, chg: 0.09, arr: 380, arrR: 0.76, f: 0, rt: null },
+        { id: 'banana', zh: '香蕉', en: 'Banana', cat: 'fruit', v: { zh: '本地種', en: 'Local' }, p: 1600, lo: 1300, hi: 1850, chg: -0.031, arr: 720, arrR: 1.05, f: 0, rt: 1.5 },
+        { id: 'garlic', zh: '大蒜', en: 'Garlic', cat: 'spice', v: { zh: '本地種', en: 'Local' }, p: 9500, lo: 8200, hi: 10800, chg: 0.024, arr: 150, arrR: 0.88, f: 0, rt: 1.4 }
+      ],
+      watch: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat']
+    },
+    TW: {
+      name: { zh: '台灣', en: 'Taiwan' }, cover: { zh: '10 個縣市', en: '10 cities/counties' },
+      locale: 'zh-TW', time: '09:30', upIsPos: false, closedWd: 1, sfx: { zh: '', en: '' },
+      src: { zh: '農業部 農產品交易行情', en: 'MOA wholesale prices (Govt)' },
+      rep: { zh: '平均價', en: 'Average price' }, arrUnit: { zh: '公斤', en: 'kg' },
+      units: [{ id: 'kg', f: 1, dec: 1, zh: '元/公斤', en: 'NT$/kg' }, { id: 'catty', f: 0.6, dec: 1, zh: '元/台斤', en: 'NT$/catty' }],
+      unitDef: { w: 0, r: 0 }, home: 'taipei', ra: ['taipei', 'newtaipei', 'taichung'],
+      areas: [
+        { id: 'taipei', n: { zh: '台北市', en: 'Taipei' }, st: { zh: '北部', en: 'North' }, lat: 25.04, lon: 121.56, k: 1, fresh: 0, retail: true, markets: [mk('tp1', { zh: '台北一', en: 'Taipei 1' }, 4, 1), mk('tp2', { zh: '台北二', en: 'Taipei 2' }, 3, 1.02)] },
+        { id: 'newtaipei', n: { zh: '新北市', en: 'New Taipei' }, st: { zh: '北部', en: 'North' }, lat: 25.01, lon: 121.46, k: 0.98, fresh: 0, retail: true, markets: [mk('sanchong', { zh: '三重', en: 'Sanchong' }, 6, 0.97), mk('banqiao', { zh: '板橋', en: 'Banqiao' }, 2, 1.0)] },
+        { id: 'taoyuan', n: { zh: '桃園市', en: 'Taoyuan' }, st: { zh: '北部', en: 'North' }, lat: 24.99, lon: 121.3, k: 0.95, fresh: 0, retail: true, markets: [mk('taoyuanm', { zh: '桃園', en: 'Taoyuan' }, 3, 1)] },
+        { id: 'taichung', n: { zh: '台中市', en: 'Taichung' }, st: { zh: '中部', en: 'Central' }, lat: 24.15, lon: 120.67, k: 0.92, fresh: 0, retail: true, markets: [mk('taichungm', { zh: '台中', en: 'Taichung' }, 5, 1), mk('fengyuan', { zh: '豐原', en: 'Fengyuan' }, 14, 1.01, null)] },
+        { id: 'yunlin', n: { zh: '雲林縣', en: 'Yunlin' }, st: { zh: '中部', en: 'Central' }, lat: 23.8, lon: 120.46, k: 0.86, fresh: 0, retail: false, markets: [mk('xiluo', { zh: '西螺', en: 'Xiluo' }, 12, 1)] },
+        { id: 'chiayi', n: { zh: '嘉義市', en: 'Chiayi' }, st: { zh: '南部', en: 'South' }, lat: 23.48, lon: 120.45, k: 0.9, fresh: 1, retail: true, markets: [mk('chiayim', { zh: '嘉義', en: 'Chiayi' }, 2, 1)] },
+        { id: 'kaohsiung', n: { zh: '高雄市', en: 'Kaohsiung' }, st: { zh: '南部', en: 'South' }, lat: 22.63, lon: 120.3, k: 0.94, fresh: 0, retail: true, markets: [mk('kaohsiungm', { zh: '高雄', en: 'Kaohsiung' }, 4, 1), mk('fengshan', { zh: '鳳山', en: 'Fengshan' }, 9, 0.98)] },
+        { id: 'pingtung', n: { zh: '屏東縣', en: 'Pingtung' }, st: { zh: '南部', en: 'South' }, lat: 22.67, lon: 120.49, k: 0.9, fresh: 0, retail: false, markets: [mk('pingtungm', { zh: '屏東', en: 'Pingtung' }, 3, 1)] },
+        { id: 'yilan', n: { zh: '宜蘭縣', en: 'Yilan' }, st: { zh: '東部', en: 'East' }, lat: 24.75, lon: 121.75, k: 1.03, fresh: 3, retail: true, markets: [mk('yilanm', { zh: '宜蘭', en: 'Yilan' }, 3, 1)] },
+        { id: 'hualien', n: { zh: '花蓮縣', en: 'Hualien' }, st: { zh: '東部', en: 'East' }, lat: 23.99, lon: 121.6, k: 1.05, fresh: null, retail: true, markets: [mk('hualienm', { zh: '花蓮', en: 'Hualien' }, 2, 1, null)] }
+      ],
+      crops: [
+        { id: 'cabbage', zh: '甘藍', en: 'Cabbage', cat: 'veg', v: { zh: '初秋', en: 'Early autumn' }, p: 38.5, lo: 24.0, hi: 52.0, chg: 0.42, arr: 10862, arrR: 0.62, f: 0, rt: 1.7 },
+        { id: 'bokchoy', zh: '小白菜', en: 'Bok choy', cat: 'veg', v: { zh: '土白菜', en: 'Local' }, p: 45.2, lo: 30.1, hi: 60.0, chg: 0.61, arr: 4210, arrR: 0.55, f: 0, rt: 1.6 },
+        { id: 'banana', zh: '香蕉', en: 'Banana', cat: 'fruit', v: { zh: '北蕉', en: 'Pei-chiao' }, p: 27.0, lo: 18.5, hi: 35.0, chg: -0.031, arr: 8830, arrR: 1.04, f: 0, rt: 1.8 },
+        { id: 'sweetpotato', zh: '甘藷', en: 'Sweet potato', cat: 'veg', v: { zh: '台農57號', en: 'TN57' }, p: 22.4, lo: 15.0, hi: 28.0, chg: 0, arr: 5120, arrR: 0.98, f: 1, rt: 1.7 },
+        { id: 'scallion', zh: '青蔥', en: 'Scallion', cat: 'spice', v: { zh: '粉蔥', en: 'Local' }, p: 85.0, lo: 60.0, hi: 110.0, chg: 0.12, arr: 1960, arrR: 0.8, f: 0, rt: 1.5 },
+        { id: 'tomato', zh: '番茄', en: 'Tomato', cat: 'veg', v: { zh: '牛番茄', en: 'Beef' }, p: 42.0, lo: 28.0, hi: 55.0, chg: 0.05, arr: 3300, arrR: 0.93, f: 0, rt: 1.6 },
+        { id: 'mango', zh: '芒果', en: 'Mango', cat: 'fruit', v: { zh: '愛文', en: 'Irwin' }, p: 55.0, lo: 35.0, hi: 80.0, chg: -0.08, arr: 1250, arrR: 0.7, f: 0, rt: 1.5 },
+        { id: 'pineapple', zh: '鳳梨', en: 'Pineapple', cat: 'fruit', v: { zh: '金鑽', en: 'Tainung 17' }, p: 25.0, lo: 17.0, hi: 31.0, chg: 0.02, arr: 2700, arrR: 1.0, f: 0, rt: 1.7 },
+        { id: 'cauliflower', zh: '花椰菜', en: 'Cauliflower', cat: 'veg', v: { zh: '青梗', en: 'Green stem' }, p: 50.0, lo: 32.0, hi: 66.0, chg: 0.2, arr: 1830, arrR: 0.74, f: 0, rt: null },
+        { id: 'waterspinach', zh: '空心菜', en: 'Water spinach', cat: 'veg', v: { zh: '小葉', en: 'Small leaf' }, p: 40.0, lo: 26.0, hi: 52.0, chg: 0.35, arr: 2400, arrR: 0.66, f: 3, rt: null }
+      ],
+      watch: ['cabbage', 'bokchoy', 'banana', 'sweetpotato', 'scallion', 'cauliflower']
+    }
+  };
+
+  // 固定種子的亂數：每次打開畫面，數字都一樣
+  function seeded(str) {
+    let h = 1779033703;
+    for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    return function () {
+      h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909);
+      return ((h ^= h >>> 16) >>> 0) / 4294967296;
+    };
+  }
+
+  // 最近 n 天（今天 = 2026-09-19，週六）。休市日沒有資料。
+  function days(country, n) {
+    const out = [];
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(Date.UTC(2026, 8, 19 - i));
+      out.push({ m: d.getUTCMonth() + 1, d: d.getUTCDate(), wd: d.getUTCDay(), closed: d.getUTCDay() === COUNTRIES[country].closedWd });
+    }
+    return out;
+  }
+
+  // 30 天價格形狀：最後一天等於今日價，前一個交易日由漲跌幅推回去，其餘是固定種子的隨機漫步
+  function series(country, crop) {
+    const ds = days(country, 30), rnd = seeded(country + crop.id + 'walk');
+    const v = new Array(30).fill(null);
+    v[29] = crop.p;
+    let j = 28; while (ds[j].closed) j--;
+    v[j] = crop.p / (1 + crop.chg);
+    let last = v[j];
+    for (let i = j - 1; i >= 0; i--) {
+      if (ds[i].closed) continue;
+      last = last * (1 + (rnd() - 0.5) * 0.07);
+      v[i] = last;
+    }
+    return ds.map((x, i) => ({ ...x, v: v[i] }));
+  }
+
+  // 依 X-Forwarded-For 的 IP 推測的位置（草圖用固定值模擬；none＝猜不到）
+  const IPGUESS = { IN: { country: 'IN', area: 'nashik' }, TW: { country: 'TW', area: 'taipei' } };
+
+  window.MOCK = { STR, LANGS, MORE_LANGS, CATS, TONE_OF, COUNTRIES, IPGUESS, days, series, seeded };
+})();
+</script>
+<script>
+/* ===== icons.js ===== */
+// 圖示：作物用彩色平面插圖（每種作物都不一樣），介面用單色線條（跟著文字顏色）。viewBox 都是 24×24。
+(function () {
+  const CROP = {
+    onion: '<path d="M12 5.5c-2.6 2.2-6 4.6-6 9.3A6 6 0 0 0 18 14.8c0-4.7-3.4-7.1-6-9.3z" fill="#A23A6B"/><path d="M12 6.5c-1.1 2-2.2 4.8-2.2 8.3s1 5.1 2.2 5.4M12 6.5c1.1 2 2.2 4.8 2.2 8.3s-1 5.1-2.2 5.4" fill="none" stroke="#DB8AB0" stroke-width="1.1"/><path d="M12 5.5V2.5M12 4l-2-1.5M12 4l2-1.5" stroke="#3F8F3A" stroke-width="1.5" stroke-linecap="round" fill="none"/>',
+    tomato: '<circle cx="12" cy="13.5" r="7.5" fill="#E2412F"/><path d="M12 6.2l1.6 1.8 2.4-.6-1.2 2 1.9 1.2-2.6.2L12 12l-2.1-1.2-2.6-.2 1.9-1.2-1.2-2 2.4.6z" fill="#3E9A3A"/><ellipse cx="8.8" cy="13" rx="1.3" ry="2.1" fill="#F79282" opacity=".75"/>',
+    potato: '<ellipse cx="12" cy="13" rx="8.5" ry="6.3" transform="rotate(-18 12 13)" fill="#C8955A"/><g fill="#8A5E2F"><circle cx="9" cy="11.5" r=".9"/><circle cx="14" cy="10" r=".8"/><circle cx="15" cy="15" r=".9"/><circle cx="10.5" cy="15.5" r=".7"/></g>',
+    chilli: '<path d="M7 7c3 1 4 5 5.5 8.5S17 21 19.5 20.5c-3.5 2-8.5-.5-11-5.5C7 12 6.5 9 7 7z" fill="#3E9A3A"/><path d="M7 7c.2-1.5 1-2.5 2.3-3" stroke="#2E6B2A" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M8.4 9.5c1 2 1.8 4.5 3.2 7" stroke="#8FD77C" stroke-width="1" fill="none" stroke-linecap="round"/>',
+    soybean: '<path d="M4.5 15.5C6 9 12 5 19 5.5c.8 6.5-4.5 12.5-11 13.5-1.8.3-3-1.3-3.5-3.5z" fill="#9BBF4A"/><g fill="#EAD36A"><circle cx="9" cy="15" r="2"/><circle cx="12.5" cy="11.5" r="2"/><circle cx="16" cy="8.2" r="1.8"/></g>',
+    maize: '<path d="M12 3c2.8 0 4 4 4 9s-1.6 8-4 8-4-3-4-8 1.2-9 4-9z" fill="#F2C12E"/><path d="M10 8h4M9.5 11h5M9.6 14h4.8M10.2 17h3.6M12 3.5v16" stroke="#D69A12" stroke-width=".9" fill="none"/><path d="M12 21c-3-1-5.5-4-6-9 2 1.5 3.5 4 4.5 7zM12 21c3-1 5.5-4 6-9-2 1.5-3.5 4-4.5 7z" fill="#5DAA3F"/>',
+    wheat: '<path d="M12 21V7" stroke="#B07A1E" stroke-width="1.4" stroke-linecap="round"/><g fill="#E0A62B"><ellipse cx="12" cy="5" rx="1.6" ry="2.6"/><ellipse cx="9.6" cy="9" rx="1.5" ry="2.4" transform="rotate(-35 9.6 9)"/><ellipse cx="14.4" cy="9" rx="1.5" ry="2.4" transform="rotate(35 14.4 9)"/><ellipse cx="9.6" cy="13" rx="1.5" ry="2.4" transform="rotate(-35 9.6 13)"/><ellipse cx="14.4" cy="13" rx="1.5" ry="2.4" transform="rotate(35 14.4 13)"/><ellipse cx="9.8" cy="17" rx="1.4" ry="2.2" transform="rotate(-35 9.8 17)"/><ellipse cx="14.2" cy="17" rx="1.4" ry="2.2" transform="rotate(35 14.2 17)"/></g>',
+    grapes: '<path d="M12 5.2V3" stroke="#4E9A3E" stroke-width="1.3" stroke-linecap="round"/><path d="M12 4.5c1.5-1.8 3.5-2 5-1.5-1 1.8-2.8 2.4-5 1.5z" fill="#4E9A3E"/><g fill="#7A3FA6"><circle cx="9" cy="8" r="2.3"/><circle cx="13.6" cy="8" r="2.3"/><circle cx="7.4" cy="12" r="2.3"/><circle cx="11.5" cy="12" r="2.3"/><circle cx="15.6" cy="12" r="2.3"/><circle cx="9.6" cy="16" r="2.3"/><circle cx="13.6" cy="16" r="2.3"/><circle cx="11.6" cy="19.8" r="2.1"/></g>',
+    banana: '<path d="M4 9c2 6 7 10 14 9.5 1.5-.1 2-1.2 1-1.8C12.5 17 8.5 13 7 8c-.4-1.3-2.4-1.5-3 1z" fill="#F4CF3A"/><path d="M6.5 9.5c2 4.5 6 7.5 11.5 7.8" stroke="#D4A017" stroke-width="1" fill="none"/><path d="M4 9l-1.2-2.4" stroke="#6B5314" stroke-width="1.6" stroke-linecap="round"/>',
+    garlic: '<path d="M12 4c-1 2.5-7 5-7 10a7 7 0 0 0 14 0c0-5-6-7.5-7-10z" fill="#F4EFE6" stroke="#B8A88C" stroke-width="1"/><path d="M12 6c-1.5 3-3 6-3 9.5M12 6c1.5 3 3 6 3 9.5M12 6v13" stroke="#C9BBA3" stroke-width="1" fill="none"/><path d="M12 4V2" stroke="#8FA36B" stroke-width="1.6" stroke-linecap="round"/>',
+    cabbage: '<circle cx="12" cy="12.5" r="8" fill="#7CC35B"/><path d="M12 5c-2 2.5-3 5-3 7.5S10 18 12 20.5M12 5c2 2.5 3 5 3 7.5S14 18 12 20.5" stroke="#3F8A32" stroke-width="1.1" fill="none"/><path d="M5 11c2 .5 4 2 7 2s5-1.5 7-2" stroke="#C3EAA8" stroke-width="1.1" fill="none"/>',
+    bokchoy: '<path d="M10 21c-.5-4-.5-7 0-10h4c.5 3 .5 6 0 10z" fill="#EEF5E4" stroke="#B4CF9B" stroke-width=".8"/><path d="M12 11C8 10 5 7 6 3c3 0 6 3 6 8zM12 11c4-1 7-4 6-8-3 0-6 3-6 8z" fill="#3E9A3A"/><path d="M12 11c-1.5-2-1.5-5 0-8 1.5 3 1.5 6 0 8z" fill="#62BF4E"/>',
+    sweetpotato: '<path d="M4 14c1.5-5 7-8.5 12.5-7.5 3 .5 4 2.8 3 4.5-2 3.5-8 6.5-12.5 6-2-.2-3.3-1.4-3-3z" fill="#B24A6E"/><path d="M19.5 11l2-1M4 14.5l-2 1" stroke="#7A2E4A" stroke-width="1.3" stroke-linecap="round"/><g fill="#E794B2"><circle cx="10" cy="12" r=".7"/><circle cx="14" cy="10.5" r=".7"/></g>',
+    scallion: '<path d="M9 21v-7M12 21v-8M15 21v-7" stroke="#EDEBDC" stroke-width="3" stroke-linecap="round"/><path d="M9 14c-1-4-2.5-8-4-11M12 13c0-4 .2-7.5 1-10M15 14c1-4 2.5-7 4.5-10" stroke="#3E9A3A" stroke-width="2.2" stroke-linecap="round" fill="none"/>',
+    mango: '<path d="M7 9c3-4 10-3.5 12 1.5 2 5-1.5 10-7 10S3.5 14 7 9z" fill="#F6A623"/><path d="M7 9c3-4 10-3.5 12 1.5-3-1.5-7-1.5-12-1.5z" fill="#E4572E" opacity=".75"/><path d="M13 5.5c1-2 3-3 5-2.5-1 2-3 3-5 2.5z" fill="#3E9A3A"/>',
+    pineapple: '<ellipse cx="12" cy="15" rx="5.5" ry="6.5" fill="#F2B632"/><path d="M8 11l8 8M8 15l5 5M11 9.5l6 6M16 11l-8 8M16 15l-5 5M13 9.5l-6 6" stroke="#C47F10" stroke-width=".9"/><path d="M12 9L9 3l2.2 3L12 1.5 12.8 6 15 3z" fill="#3E9A3A"/>',
+    cauliflower: '<path d="M4.5 15c1 3.5 4 6 7.5 6s6.5-2.5 7.5-6c-2 1-5 1.5-7.5 1.5S6.5 16 4.5 15z" fill="#4E9A3E"/><g fill="#F7F3E3" stroke="#CFC39E" stroke-width=".8"><circle cx="8" cy="12" r="3"/><circle cx="12" cy="10" r="3.4"/><circle cx="16" cy="12" r="3"/><circle cx="10" cy="14.5" r="2.8"/><circle cx="14" cy="14.5" r="2.8"/></g>',
+    waterspinach: '<path d="M12 21V9M12 13l-4-3M12 11l4-4" stroke="#6BAF4F" stroke-width="1.4" stroke-linecap="round" fill="none"/><path d="M12 9c-1-3 0-5.5 0-7 1.2 2 1.8 4.5 0 7zM8 10c-3 .5-5-1-6-2.5 2.5-.5 4.5 0 6 2.5zM16 7c1-2.8 3.5-3.6 5-3.5-.8 2.3-2.5 3.5-5 3.5z" fill="#3E9A3A"/>',
+    oil: '<path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="#E8B92F"/><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5" stroke="#FFF3C4" stroke-width="1.3" fill="none" stroke-linecap="round"/>',
+    box: '<path d="M4 8l8-4 8 4v9l-8 4-8-4z" fill="#8FA3B8"/><path d="M4 8l8 4 8-4M12 12v9" stroke="#5E738A" stroke-width="1.2" fill="none"/>',
+    gridc: '<g fill="#4F7BD9"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5" opacity=".55"/></g>',
+    clockc: '<circle cx="12" cy="12" r="8.5" fill="#8B6BE0"/><path d="M12 7v5l3.5 2" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none"/>'
+  };
+
+  // 單色線條圖示
+  const UI = {
+    pin: '<path d="M12 21s-6-5.5-6-10.5a6 6 0 0 1 12 0C18 15.5 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/>',
+    cal: '<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8 3.5v4M16 3.5v4"/>',
+    clock: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
+    route: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6"/>',
+    speaker: '<path d="M5 9.5h3l4-3.5v12l-4-3.5H5z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/>',
+    sort: '<path d="M8 5v14M5 16l3 3 3-3M16 19V5M13 8l3-3 3 3"/>',
+    moon: '<path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7.5 7.5 0 1 0 19 14.5z"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    chev: '<path d="M9 5l7 7-7 7"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    alert: '<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.2v.3"/>',
+    refresh: '<path d="M19 8a7.5 7.5 0 1 0 1 6"/><path d="M19.5 3.5V8H15"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.3"/>',
+    grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.2"/>',
+    star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.3L12 16l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z"/>',
+    store: '<path d="M4 9.5L5.5 4.5h13L20 9.5M4 9.5h16v10H4zM9 19.5v-5h6v5"/>',
+    trend: '<path d="M4 17l5-5 4 3 7-7M15 8h5v5"/>',
+    globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/>',
+    scale: '<path d="M12 4v16M7 20h10M5 8h14M5 8l-2.5 6a2.5 2.5 0 0 0 5 0zM19 8l-2.5 6a2.5 2.5 0 0 0 5 0z"/>',
+    shield: '<path d="M12 3.5l7 2.5v5.5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    truck: '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/>'
+  };
+
+  // 產品標誌：葉子加價格標籤
+  const LOGO = '<svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#146C43"/><path d="M14 33c0-11 8-19 21-19 0 13-8 21-19 21" fill="#9BE07A"/><path d="M14 35c5-6 10-10 17-14" stroke="#146C43" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M27 30h9l3 3-3 3h-9z" fill="#FFC53D"/><circle cx="29.5" cy="33" r="1.2" fill="#146C43"/></svg>';
+
+  const crop = (id, cls) => `<svg class="${cls || 'ci'}" viewBox="0 0 24 24" aria-hidden="true">${CROP[id] || CROP.box}</svg>`;
+  const ui = (id, cls) => `<svg class="${cls || 'ui'}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${UI[id]}</svg>`;
+
+  window.ICON = { crop, ui, LOGO };
+})();
+</script>
+<script>
+/* ===== render-core.js ===== */
+// 畫面共用：格式化、地區價計算、指標、走勢圖、外框與底部面板。
+(function () {
+  const M = window.MOCK, I = window.ICON;
+  const esc = x => String(x).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const L = s => (s.lang === 'zh' ? 'zh' : 'en');
+  const S = s => M.STR[L(s)];
+  const t = (s, k, v) => { let x = S(s)[k]; if (v) for (const [a, b] of Object.entries(v)) x = x.split('{' + a + '}').join(b); return x; };
+  const nm = (s, o) => (o == null ? '' : typeof o === 'string' ? o : o[L(s)]);
+  const C = s => M.COUNTRIES[s.country];
+  const crop = (s, id) => C(s).crops.find(c => c.id === id) || C(s).crops[0];
+  const area = (s, id) => C(s).areas.find(a => a.id === id) || C(s).areas[0];
+  const areaName = (s, a) => nm(s, a.n) + nm(s, C(s).sfx);
+  const curAreaId = s => (['detail', 'mkts', 'mkt1'].includes(s.route) ? s.area : s.home[s.country]);
+  const unit = (s, mode) => C(s).units[s.unit[s.country][mode || s.mode]];
+  const unitLbl = (s, mode) => nm(s, unit(s, mode));
+  const tone = c => M.TONE_OF[c.cat] || 'slate';
+  const kc = k => `<span class="kc">${k}</span>`;
+  const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+  const median = a => { const b = [...a].sort((x, y) => x - y), h = b.length >> 1; return b.length % 2 ? b[h] : (b[h - 1] + b[h]) / 2; };
+
+  function fmt(s, v, signed, mode) {
+    if (v === null || v === undefined) return '—';
+    const u = unit(s, mode), x = v * u.f;
+    const f = new Intl.NumberFormat(C(s).locale, { minimumFractionDigits: u.dec, maximumFractionDigits: u.dec });
+    if (!signed) return f.format(x);
+    const r = Number(x.toFixed(u.dec));
+    return (r > 0 ? '+' : r < 0 ? '−' : '±') + f.format(Math.abs(r));
+  }
+  const pct = p => { const a = Math.abs(p) * 100; return a < 0.05 ? '0%' : (a >= 10 ? a.toFixed(0) : a.toFixed(1)) + '%'; };
+  const dir = p => (Math.abs(p) < 0.0005 ? 'eq' : p > 0 ? 'up' : 'dn');
+  const glyph = d => ({ up: '▲', dn: '▼', eq: '＝' }[d]);
+  const pill = (p, opt) => { const d = dir(p); return `<span class="pill ${d}">${glyph(d)}${opt && opt.noPct ? '' : pct(p)}</span>`; };
+  const dateStr = (s, x) => t(s, 'date', { m: x.m, d: x.d, w: S(s).wd[x.wd] });
+  const TODAY = { m: 9, d: 19, wd: 6 };
+  function fresh(s, d) {
+    if (d === null) return { txt: t(s, 'none'), cls: 'none' };
+    if (d === 0) return { txt: t(s, 'today'), cls: '' };
+    if (d === 1) return { txt: t(s, 'yday'), cls: '' };
+    return { txt: t(s, 'daysAgo', { n: d }), cls: 'stale' };
+  }
+  const tileCrop = (c, num) => `<span class="tile tn-${tone(c)}">${I.crop(c.id)}${num ? kc(num) : ''}</span>`;
+  const modeTag = s => `<span class="mtag ${s.mode}">${S(s).mode[s.mode]}</span>`;
+
+  // ---------- 價格 ----------
+  // 單一市場的批發代表價（印度＝常見價、台灣＝平均價）
+  function mktPrice(s, c, a, m) {
+    if (a.fresh === null || m.fresh === null) return null;
+    return c.p * a.k * m.k * (1 + (M.seeded(s.country + c.id + a.id + m.id)() - 0.5) * 0.04);
+  }
+  // 地區價：批發＝今日有報價的市場代表價中位數；零售＝地區的零售調查價
+  function price(s, c, a, mode) {
+    const md = mode || s.mode;
+    if (md === 'r') {
+      if (!a.retail || !c.rt || a.fresh === null) return { p: null, n: 0 };
+      return { p: c.p * c.rt * a.k * (1 + (M.seeded(s.country + c.id + a.id + 'r')() - 0.5) * 0.05), n: 1 };
+    }
+    const ps = a.markets.filter(m => m.fresh === 0).map(m => mktPrice(s, c, a, m)).filter(v => v !== null);
+    return ps.length ? { p: median(ps), n: ps.length } : { p: null, n: 0 };
+  }
+  const freshOf = (c, a) => (a.fresh === null ? null : Math.max(a.fresh, c.f));
+
+  // 30 天序列：批發依價格水準縮放；零售變動比較慢（和今日價各半平均）
+  function seriesFor(s, c, p, mode) {
+    if (p === null) return null;
+    const r = p / c.p;
+    return M.series(s.country, c).map(x => ({ ...x, v: x.v === null ? null : (mode === 'r' ? r * (0.5 * c.p + 0.5 * x.v) : r * x.v) }));
+  }
+  function stats(ser, c, mode) {
+    const w7 = ser.slice(-7), v7 = w7.filter(x => x.v !== null).map(x => x.v), v30 = ser.filter(x => x.v !== null).map(x => x.v);
+    const p = ser[29].v, lo30 = Math.min(...v30), hi30 = Math.max(...v30);
+    let sw = 0; for (let i = 1; i < v7.length; i++) sw += Math.abs(v7[i] / v7[i - 1] - 1);
+    const vol = sw / (v7.length - 1);
+    return {
+      w7, p, chg: v30[v30.length - 1] / v30[v30.length - 2] - 1, avg7: mean(v7), vsAvg: p / mean(v7) - 1,
+      hi7: Math.max(...v7), lo7: Math.min(...v7), chg7: v7[v7.length - 1] / v7[0] - 1,
+      avg30: mean(v30), chg30: v30[v30.length - 1] / v30[0] - 1, hi30, lo30, pos30: (p - lo30) / (hi30 - lo30 || 1),
+      volIdx: vol < 0.02 ? 0 : vol < 0.045 ? 1 : 2, arrIdx: mode === 'r' ? null : c.arrR < 0.9 ? 0 : c.arrR > 1.1 ? 2 : 1
+    };
+  }
+  // 一次算好某作物在某地區的價格、序列與指標
+  function quote(s, c, a, mode) {
+    const md = mode || s.mode, pr = price(s, c, a, md), ser = seriesFor(s, c, pr.p, md);
+    return { ...pr, ser, st: ser ? stats(ser, c, md) : null, fresh: freshOf(c, a) };
+  }
+
+  // 直線距離（km）：地區中心之間，不是路程
+  function distKm(a, b) {
+    const R = 6371, rad = x => x * Math.PI / 180, dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+    return Math.round(2 * R * Math.asin(Math.sqrt(h)));
+  }
+
+  // 比價：各地區（基準＝目前看的地區），四種排序；沒資料的放最後
+  function areaRows(s, cid) {
+    const c = crop(s, cid), base = area(s, s.area), bp = price(s, c, base).p;
+    const rows = C(s).areas.map(a => {
+      const pr = price(s, c, a);
+      return { a, p: pr.p, n: pr.n, km: distKm(base, a), me: a.id === base.id, fresh: freshOf(c, a), diff: pr.p === null || bp === null ? null : pr.p - bp };
+    });
+    const by = [(x, y) => y.p - x.p, (x, y) => x.p - y.p, (x, y) => x.km - y.km, (x, y) => y.km - x.km][s.sort];
+    rows.sort((x, y) => (x.p === null) - (y.p === null) || by(x, y));
+    const ranked = rows.filter(r => r.p !== null).map(r => r.p).sort((x, y) => y - x);
+    const me = rows.find(r => r.me);
+    return { rows, rank: me.p === null ? null : ranked.indexOf(me.p) + 1, total: ranked.length };
+  }
+  // 地區底下的各市場（只有批發）
+  function marketRows(s, cid) {
+    const c = crop(s, cid), a = area(s, s.area), med = price(s, c, a, 'w').p;
+    return a.markets.map(m => {
+      const p = mktPrice(s, c, a, m);
+      return { m, p, km: m.km, fresh: m.fresh === null ? null : Math.max(m.fresh, a.fresh || 0, c.f), diff: p === null || med === null ? null : p - med };
+    }).sort((x, y) => (x.p === null) - (y.p === null) || y.p - x.p);
+  }
+
+  // 走勢圖：7 日或 30 日。休市日斷線，今日點加粗並標數字。
+  function chart(s, c, ser, n, z) {
+    const data = n === 7 ? ser.slice(-7) : ser, q = z === 'q';
+    const W = q ? 216 : 114, H = q ? 112 : 58, pl = 3, pr = q ? 36 : 3, pt = q ? 16 : 10, pb = q ? 15 : 3;
+    const vals = data.filter(x => x.v !== null).map(x => x.v), vmax = Math.max(...vals), vmin = Math.min(...vals);
+    const padv = (vmax - vmin || vmax * 0.05) * 0.12, mn = vmin - padv, mx = vmax + padv;
+    const X = i => pl + (i / (data.length - 1)) * (W - pl - pr), Y = v => pt + (1 - (v - mn) / (mx - mn)) * (H - pt - pb);
+    let g = '';
+    if (q) [vmax, (vmax + vmin) / 2, vmin].forEach(v => {
+      g += `<line class="gl" x1="${pl}" x2="${W - pr + 2}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text x="${W - pr + 5}" y="${(Y(v) + 3).toFixed(1)}">${fmt(s, v)}</text>`;
+    });
+    data.forEach((x, i) => { if (x.v === null) g += `<rect class="band" x="${(X(i) - 3).toFixed(1)}" y="${pt}" width="6" height="${H - pt - pb}" rx="2"/>`; });
+    const segs = []; let cur = [];
+    data.forEach((x, i) => { if (x.v === null) { if (cur.length) segs.push(cur); cur = []; } else cur.push([X(i), Y(x.v)]); });
+    if (cur.length) segs.push(cur);
+    const base = H - pb;
+    segs.forEach(sg => {
+      const d = sg.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join('');
+      if (sg.length > 1) g += `<path class="ar" d="${d}L${sg[sg.length - 1][0].toFixed(1)} ${base}L${sg[0][0].toFixed(1)} ${base}Z"/>`;
+      g += `<path class="ln" d="${d}"/>`;
+    });
+    if (n === 7) data.forEach((x, i) => { if (x.v !== null && i < data.length - 1) g += `<circle class="pt" cx="${X(i).toFixed(1)}" cy="${Y(x.v).toFixed(1)}" r="2.3"/>`; });
+    const last = data[data.length - 1].v, tx = X(data.length - 1), ty = Y(last);
+    g += `<circle class="now" cx="${tx.toFixed(1)}" cy="${ty.toFixed(1)}" r="${q ? 4.5 : 3}"/>`;
+    if (q) g += `<text class="tv" x="${(tx - 7).toFixed(1)}" y="${(ty - 8).toFixed(1)}" text-anchor="end">${fmt(s, last)}</text>`;
+    if (q) data.forEach((x, i) => {
+      const lab = x.v === null && n === 7 ? t(s, 'closedS') : n === 7 ? S(s).wd[x.wd].slice(0, L(s) === 'zh' ? 1 : 2) : [0, 7, 14, 21, 29].includes(i) ? `${x.m}/${x.d}` : '';
+      if (lab) g += `<text class="${x.v === null ? 'cz' : ''}" x="${X(i).toFixed(1)}" y="${H - 3}" text-anchor="${n === 30 && i === 0 ? 'start' : n === 30 && i === 29 ? 'end' : 'middle'}">${lab}</text>`;
+    });
+    return `<svg class="chart tn-${tone(c)}" viewBox="0 0 ${W} ${H}" aria-hidden="true">${g}</svg>`;
+  }
+  // 首頁的迷你走勢線（7 日）
+  function spark(ser, d) {
+    const pts = ser.slice(-7).filter(x => x.v !== null).map(x => x.v);
+    const mn = Math.min(...pts), mx = Math.max(...pts), W = 38, H = 16;
+    const xy = pts.map((v, i) => [(i / (pts.length - 1)) * (W - 3) + 1.5, H - 2 - ((v - mn) / (mx - mn || 1)) * (H - 4)]);
+    const path = xy.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(''), e = xy[xy.length - 1];
+    return `<svg class="spark ${d}" viewBox="0 0 ${W} ${H}" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${e[0]}" cy="${e[1]}" r="2.2" fill="currentColor"/></svg>`;
+  }
+
+  // ---------- 底部面板：選單、換地區、排序 ----------
+  function sheetItems(s) {
+    if (s.sheet === 'area') {
+      const cur = curAreaId(s);
+      return [...s.ra[s.country].map(id => ({ id: 'area:' + id, ic: 'pin', label: areaName(s, area(s, id)), on: id === cur })), { id: 'areas', ic: 'grid', label: t(s, 'otherAreas') }];
+    }
+    if (s.sheet === 'sort') return S(s).sorts.map((x, i) => ({ id: 'sort:' + i, ic: 'sort', label: x, on: i === s.sort }));
+    const items = [];
+    if (s.route === 'detail') items.push({ id: 'watchToggle', ic: 'star', label: S(s).menuWatch[s.watch[s.country].includes(s.crop) ? 1 : 0] });
+    const ids = ['area', 'watch', 'refresh', 'help', 'settings'], ics = ['pin', 'star', 'refresh', 'info', 'gear'];
+    ids.forEach((id, i) => items.push({ id, ic: ics[i], label: S(s).menuG[i] }));
+    return items;
+  }
+  const sheetTitle = s => (s.sheet === 'area' ? t(s, 'changeArea') : s.sheet === 'sort' ? t(s, 'sortT') : t(s, 'menu'));
+
+  function shell(s, z, v) {
+    let ov = '', sk = v.sk;
+    if (s.sheet) {
+      const items = sheetItems(s);
+      const rows = items.map((it, i) => z === 'q'
+        ? `<div class="opt${s.sheetFocus === i ? ' f' : ''}">${kc(i + 1)}${I.ui(it.ic)}<span>${esc(it.label)}</span>${it.on ? `<span class="on">${I.ui('check')}</span>` : ''}</div>`
+        : `<div class="opt${s.sheetFocus === i ? ' f' : ''}">${kc(i + 1)}<span>${esc(it.label)}${it.on ? ' ✓' : ''}</span></div>`).join('');
+      ov = `<div class="ov"><div class="sheet"><div class="grab"></div>${z === 'q' ? `<div class="st">${sheetTitle(s)}</div>` : ''}${rows}</div></div>`;
+      sk = ['', S(s).sk.select, S(s).sk.close];
+    } else if (s.voice) {
+      const heights = [5, 9, 13, 8, 12, 6, 10, 14, 7, 11, 5, 9];
+      ov = `<div class="ov"><div class="sheet"><div class="grab"></div><div class="voice"><span class="tile">${I.ui('speaker')}</span><div><b>${t(s, 'voice')}</b> <small class="meta">${t(s, 'voiceS')}</small>` +
+        `<div class="wave">${heights.map(h => `<i style="height:${h}px"></i>`).join('')}</div>${z === 'q' ? `<p>${esc(v.speech || '')}</p>` : ''}</div></div></div></div>`;
+      sk = ['', '', S(s).sk.close];
+    }
+    const up = C(s).upIsPos ? 'pos' : 'neg';
+    return `<div class="scr ${z}" lang="${s.lang === 'zh' ? 'zh-Hant' : 'en'}" data-up="${up}" data-sb="${s.sb ? 1 : 0}">` +
+      `<div class="sb">${z === 'q' ? '系統區（待實機確認）' : ''}</div>` +
+      `<header class="hdr"><span class="ttl">${esc(v.title)}</span>${v.hdrKey && z === 'q' ? kc(v.hdrKey) : ''}</header>` +
+      `<main class="bd">${v.html}</main>` +
+      `<footer class="sk"><span class="l">${sk[0] || ''}</span><span class="c">${sk[1] || ''}</span><span class="r">${sk[2] || ''}</span></footer>${ov}</div>`;
+  }
+
+  window.RC = {
+    M, I, esc, L, S, t, nm, C, crop, area, areaName, curAreaId, unit, unitLbl, tone, kc, fmt, pct, dir, glyph, pill, dateStr, TODAY, fresh,
+    tileCrop, modeTag, mktPrice, price, quote, stats, distKm, areaRows, marketRows, chart, spark, sheetItems, shell
+  };
+})();
+</script>
+<script>
+/* ===== render-views.js ===== */
+// 各畫面。每個函式回傳 { title, hdrKey, html, n（可聚焦項目數）, sk（三個軟鍵）, ids, speech }。
+// 按鍵提示的原則：每個按鍵只在一個地方提示，就放在它控制的東西旁邊（* 在批發／零售標籤旁、# 在地區名稱或切換鈕旁、◀ ▶ 在分頁兩側）。
+(function () {
+  const R = window.RC, I = R.I, M = R.M;
+  const { esc, S, t, nm, C, crop, area, areaName, unitLbl, tone, kc, fmt, pct, dir, pill, dateStr, TODAY, fresh, tileCrop, modeTag, quote } = R;
+  const f = (s, i) => (s.focus === i ? ' f' : '');
+  const SK = s => S(s).sk, H = s => S(s).hint;
+  const num = (z, i) => (z === 'q' && i < 9 ? i + 1 : '');
+  const ctx = (left, right, z) => `<div class="ctx"><span>${left}</span>${right && z === 'q' ? `<span>${right}</span>` : ''}</div>`;
+  const stateBox = (icon, title, lines) => `<div class="state"><span class="tile">${I.ui(icon)}</span><span class="big2">${title}</span>${lines.map(l => `<span class="meta">${l}</span>`).join('')}</div>`;
+  const chev = `<span class="go">${I.ui('chev')}</span>`;
+  // * 永遠是批發／零售：鍵帽放在標籤旁
+  const modeCtl = (s, z) => `${z === 'q' ? kc('*') : ''}${modeTag(s)}`;
+  // 地區名稱；這一頁的 # 是「換地區」時才加鍵帽
+  const areaLbl = (s, a, z, hash) => `${I.ui('pin')}<b>${esc(areaName(s, a))}</b>${hash && z === 'q' ? kc('#') : ''}`;
+  // 分頁：兩側的 ◀ ▶ 提示用方向鍵切換
+  const tabsHTML = (z, labels, active) => {
+    const seg = `<div class="tabseg">${labels.map((x, i) => `<span class="${i === active ? 'on' : ''}">${x}</span>`).join('')}</div>`;
+    return z === 'q' ? `<div class="tabwrap"><span class="arr">◀</span>${seg}<span class="arr">▶</span></div>` : seg;
+  };
+  const card = (s, i, icon, label, extra) => `<div class="card${f(s, i)}"><span class="tile">${I.ui(icon)}</span><span class="nm">${label}</span>${extra || chev}</div>`;
+  const speechFor = (s, c, a, q) => (R.L(s) === 'zh'
+    ? `「${nm(s, c)}，${areaName(s, a)}，今天${S(s).mode[s.mode]}價 ${fmt(s, q.p)}，單位${unitLbl(s)}，比前一交易日${q.st.chg >= 0 ? '漲' : '跌'} ${pct(q.st.chg)}。」`
+    : `"${nm(s, c)} in ${areaName(s, a)}: ${S(s).mode[s.mode].toLowerCase()} ${fmt(s, q.p)} ${unitLbl(s)}, ${q.st.chg >= 0 ? 'up' : 'down'} ${pct(q.st.chg)}."`);
+
+  // 作物卡（首頁、作物清單共用）：說明列只放品種，不是今天的資料才加註「昨天」等
+  function cropRow(s, z, c, a, i, o) {
+    const q = quote(s, c, a), fc = o.load ? '' : f(s, i), n = num(z, o.numIdx === undefined ? i : o.numIdx);
+    const noData = q.p === null, fr = fresh(s, q.fresh);
+    const meta = noData ? (s.mode === 'r' ? t(s, 'noRetail') : t(s, 'none'))
+      : esc(nm(s, c.v)) + (!o.err && fr.cls ? ` · <span class="warn">${fr.txt}</span>` : !o.err && q.fresh === 1 ? ` · ${fr.txt}` : '');
+    const tag = noData ? '' : o.err ? `<span class="pill old">${t(s, 'old')}</span>` : z === 'q' ? pill(q.st.chg) : '';
+    const right = o.load ? '<span class="skel" style="width:38px"></span>' : `<span class="pr">${fmt(s, q.p)}</span>${noData ? '' : tag}`;
+    if (z === 'qq') return `<div class="card${fc}${noData ? ' dim' : ''}">${tileCrop(c)}<span class="nm">${esc(nm(s, c))}</span><span class="rt" style="grid-auto-flow:column;gap:2px">${right}${o.load || o.err || noData ? '' : pill(q.st.chg, { noPct: true })}</span></div>`;
+    return `<div class="card sp${fc}${noData ? ' dim' : ''}">${tileCrop(c, n)}<span class="two"><span class="nm">${esc(nm(s, c))}</span><span class="meta">${o.load ? '<span class="skel" style="width:50px"></span>' : meta}</span></span>` +
+      `${o.load || noData ? '<span></span>' : R.spark(q.ser, dir(q.st.chg))}<span class="rt">${right}</span></div>`;
+  }
+
+  // 首頁：「關注｜全部作物」兩個分頁，◀ ▶ 切換
+  function vHome(s, z) {
+    const a = area(s, s.home[s.country]), err = s.sim === 'error', load = s.sim === 'loading';
+    let h = ctx(`${modeCtl(s, z)} ${unitLbl(s)}`, `${I.ui('cal')}${dateStr(s, TODAY)}`, z) + tabsHTML(z, S(s).homeTabs, s.htab);
+    const base = { title: t(s, 'home', { a: areaName(s, a) }), hdrKey: '#' };
+    if (s.htab === 1) { // 全部作物：九宮格，格子位置和實體鍵 1–9 一致
+      h += '<div class="g9">' + M.CATS.map((c, i) => `<div class="cell tn-${c.tone}${f(s, i)}">${kc(i + 1)}${I.crop(c.ic)}<span class="cn">${S(s).cats[i]}</span></div>`).join('') + '</div>';
+      return { ...base, html: h, n: 9, ids: M.CATS.map(c => c.id), sk: [SK(s).menu, SK(s).open, SK(s).exit] };
+    }
+    const w = s.watch[s.country].map(id => crop(s, id));
+    h += '<div class="list">';
+    let off = 0;
+    if (err) {
+      h += `<div class="card alert${f(s, 0)}"><span class="tile">${I.ui('alert')}</span><span class="two"><span class="nm">${t(s, 'errT')}</span><span class="meta">${t(s, 'errSub')}</span></span><span></span></div>`;
+      off = 1;
+    }
+    w.forEach((c, i) => { h += cropRow(s, z, c, a, i + off, { err, load, numIdx: i }); });
+    h += '</div>';
+    if (load) h += `<div class="state"><span class="meta">${t(s, 'loading', { m: areaName(s, a) })}…</span><span class="meta">${t(s, 'loadingNote')}</span></div>`;
+    const fc = w[Math.max(0, Math.min(w.length - 1, s.focus - off))], fq = fc ? quote(s, fc, a) : { p: null };
+    return {
+      ...base, html: h, n: load ? 0 : w.length + off, ids: w.map(c => c.id), off,
+      sk: [SK(s).menu, load ? '' : err && s.focus === 0 ? SK(s).retry : SK(s).open, SK(s).exit],
+      speech: fq.p === null ? '' : speechFor(s, fc, a, fq)
+    };
+  }
+
+  // 作物詳情：三個分頁 走勢｜行情｜比價；本地區各市場從行情頁的卡片進入
+  function vDetail(s, z) {
+    const a = area(s, s.area), c = crop(s, s.crop), q = quote(s, c, a), fr = fresh(s, q.fresh);
+    const when = q.fresh === 0 ? `${TODAY.m}/${TODAY.d} ${C(s).time}` : `<span class="warn">${fr.txt}</span>`;
+    let h = ctx(areaLbl(s, a, z, s.tab === 1), `${modeCtl(s, z)} ${when}`, z) + tabsHTML(z, S(s).tabs, s.tab);
+    const base = { title: nm(s, c), speech: q.p === null ? '' : speechFor(s, c, a, q) };
+
+    if (s.sim === 'loading') return { ...base, html: h + stateBox('refresh', t(s, 'loading', { m: areaName(s, a) }), [t(s, 'loadingNote')]), n: 0, sk: [SK(s).menu, '', SK(s).back] };
+    if (s.sim === 'error') return { ...base, html: h + stateBox('alert', t(s, 'errT'), [t(s, 'errKeep')]) + `<div class="list">${card(s, 0, 'refresh', t(s, 'retry'), '<span></span>')}</div>`, n: 1, sk: [SK(s).menu, SK(s).retry, SK(s).back] };
+
+    // 走勢、行情：這個地區沒有資料
+    if (s.tab !== 2 && (q.p === null || (s.sim === 'empty' && s.tab === 1))) {
+      if (s.mode === 'r' && q.p === null) {
+        const why = c.rt ? t(s, 'retailNote') : t(s, 'noRetailCrop');
+        h += stateBox('scale', t(s, 'noRetail'), z === 'q' ? [why] : []) + `<div class="list">${card(s, 0, 'scale', S(s).modeAct.r)}</div>`;
+        return { ...base, html: h, n: 1, sk: [SK(s).menu, SK(s).select, SK(s).back] };
+      }
+      h += stateBox('store', t(s, 'emptyT', { m: esc(areaName(s, a)) }), z === 'q' ? [t(s, 'emptyNote'), t(s, 'emptyLast', { d: t(s, 'daysAgo', { n: 3 }), p: fmt(s, c.p * 1.04) })] : []);
+      h += `<div class="list">${S(s).emptyA.map((x, i) => card(s, i, i ? 'trend' : 'store', x)).join('')}</div>`;
+      return { ...base, html: h, n: 2, sk: [SK(s).menu, SK(s).select, SK(s).back] };
+    }
+
+    if (s.tab === 1) { // 行情
+      const st = q.st, prev = q.p / (1 + st.chg);
+      const lbl = s.mode === 'r' ? t(s, 'retailLbl') : q.n === 1 ? t(s, 'oneMkt') : t(s, 'medLbl', { n: q.n });
+      h += '<div class="stack">';
+      h += `<div class="box hero">${z === 'q' ? tileCrop(c) : ''}<div><div class="lbl"><span>${lbl} · ${unitLbl(s)}</span>${z === 'q' ? `<span class="lis">${kc('0')}${I.ui('speaker')}</span>` : ''}</div><div class="big">${fmt(s, q.p)}</div>` +
+        `<div class="cl">${pill(st.chg)}<b style="color:var(--ink)">${fmt(s, q.p - prev, true)}</b>${z === 'q' ? ' ' + t(s, 'vsPrev') : ''}</div></div></div>`;
+      let n = 0;
+      if (s.mode === 'w') { // 本地區各市場的入口：按 OK 展開
+        const mr = R.marketRows(s, c.id).filter(r => r.p !== null && r.m.fresh === 0), hi = mr[0], lo = mr[mr.length - 1];
+        h += `<div class="card${f(s, 0)}"><span class="tile">${I.ui('store')}</span><span class="two"><span class="nm">${t(s, 'mktsCard', { n: a.markets.length })}</span>` +
+          (z === 'q' && hi ? `<span class="meta">${t(s, 'mktsSub', { hi: fmt(s, hi.p), lo: fmt(s, lo.p) })}</span>` : '') + `</span><span class="okgo">${z === 'q' ? kc('OK') : ''}${I.ui('chev')}</span></div>`;
+        n = 1;
+      } else if (z === 'q') {
+        h += `<div class="box note">${I.ui('info')} ${t(s, 'retailNote')}</div>`;
+      }
+      if (z === 'q') {
+        const lvl = st.pos30 < 0.34 ? 0 : st.pos30 > 0.66 ? 2 : 1, ad = c.arrR - 1;
+        const k1 = `<div class="kpi"><span class="k">${S(s).ind[0]}</span><span class="v ${dir(st.vsAvg)}">${st.vsAvg >= 0 ? '+' : '−'}${pct(st.vsAvg)}</span></div>`;
+        const k2 = s.mode === 'w'
+          ? `<div class="kpi"><span class="k">${S(s).ind[1]}</span><span class="v">${S(s).arr[st.arrIdx]} ${Math.abs(ad) < 0.05 ? '' : (ad > 0 ? '▲' : '▼') + pct(ad)}</span></div>`
+          : `<div class="kpi"><span class="k">${t(s, 'volT')}</span><span class="v">${S(s).vol[st.volIdx]}</span></div>`;
+        const k3 = `<div class="kpi"><span class="k">${S(s).ind[2]}</span><span class="v">${S(s).lvl[lvl]} ${Math.round(st.pos30 * 100)}%</span><span class="gauge"><i style="width:${Math.round(st.pos30 * 100)}%"></i></span></div>`;
+        h += `<div class="kpis tn-${tone(c)}">${k1}${k2}${k3}</div>`;
+      }
+      h += '</div>';
+      return { ...base, html: h, n, sk: [SK(s).menu, n ? SK(s).markets : SK(s).compare, SK(s).back] };
+    }
+
+    if (s.tab === 0) { // 走勢：# 切 7／30 日，鍵帽就在切換鈕旁
+      const n = s.range === 30 ? 30 : 7, st = q.st, chg = n === 7 ? st.chg7 : st.chg30;
+      h += `<div class="stack"><div class="box"><div class="sumrow"><span><b>${t(s, 'trend', { n })}</b> ${pill(chg)}</span>` +
+        (z === 'q' ? `<span>${kc('#')}<span class="fk${n === 7 ? ' on' : ''}">${H(s).d7}</span><span class="fk${n === 30 ? ' on' : ''}">${H(s).d30}</span></span>` : '') + `</div>${R.chart(s, c, q.ser, n, z)}</div>`;
+      if (z === 'q') {
+        const lo = n === 7 ? st.lo7 : st.lo30, hi = n === 7 ? st.hi7 : st.hi30;
+        h += `<div class="kpis tn-${tone(c)}"><div class="kpi"><span class="k">${t(s, 'hi')}</span><span class="v">${fmt(s, hi)}</span></div>` +
+          `<div class="kpi"><span class="k">${t(s, 'lo')}</span><span class="v">${fmt(s, lo)}</span></div>` +
+          `<div class="kpi"><span class="k">${t(s, 'volT')}</span><span class="v">${S(s).vol[st.volIdx]}</span></div></div>`;
+      }
+      h += '</div>';
+      return { ...base, html: h, n: 0, sk: [SK(s).menu, SK(s).today, SK(s).back] };
+    }
+
+    // 比價：各地區排行；# 打開排序面板，鍵帽就在目前的排序旁
+    const { rows, rank, total } = R.areaRows(s, c.id);
+    h += `<div class="sortbar"><span>${I.ui('sort')}${z === 'q' ? kc('#') : ''}<b>${S(s).sorts[s.sort]}</b></span></div>`;
+    if (z === 'q') h += `<div class="rankline">${rank ? t(s, 'rank', { a: esc(areaName(s, a)), r: rank, n: total }) : t(s, 'rankNone', { a: esc(areaName(s, a)) })}</div>`;
+    h += '<div class="list">';
+    rows.forEach((r, i) => {
+      const fx = fresh(s, r.fresh), noData = r.p === null;
+      const diff = noData ? '' : r.me ? `<span class="pill me">${t(s, 'youS')}</span>` : `<span class="pill ${dir(r.diff)}">${fmt(s, r.diff, true)}</span>`;
+      if (z === 'qq') { h += `<div class="card${f(s, i)}${r.me ? ' me' : ''}${noData ? ' dim' : ''}"><span class="rank">${i + 1}</span><span class="nm">${esc(nm(s, r.a.n))}</span><span class="rt">${noData ? '—' : diff}</span></div>`; return; }
+      const meta = noData ? (s.mode === 'r' ? t(s, 'noRetail') : t(s, 'none'))
+        : [r.me ? '' : t(s, 'dist', { k: r.km }), s.mode === 'w' ? t(s, 'mktsN', { n: r.n }) : '', fx.cls ? `<span class="warn">${fx.txt}</span>` : ''].filter(Boolean).join(' · ');
+      h += `<div class="card${f(s, i)}${r.me ? ' me' : ''}${noData ? ' dim' : ''}"><span class="rank">${i + 1}</span><span class="two"><span class="nm">${esc(areaName(s, r.a))}</span><span class="meta">${meta}</span></span>` +
+        `<span class="rt"><span class="pr">${fmt(s, r.p)}</span>${diff}</span></div>`;
+    });
+    h += '</div>';
+    return { ...base, html: h, n: rows.length, ids: rows.map(r => r.a.id), sk: [SK(s).menu, SK(s).view, SK(s).back] };
+  }
+
+  // 本地區各市場（只有批發）：從行情頁的卡片按 OK 進入
+  function vMkts(s, z) {
+    const a = area(s, s.area), c = crop(s, s.crop);
+    let h = ctx(areaLbl(s, a, z, true), `${modeCtl(s, z)} ${unitLbl(s)}`, z);
+    if (s.mode === 'r') {
+      h += stateBox('store', t(s, 'retailNote'), []) + `<div class="list">${card(s, 0, 'scale', S(s).modeAct.r)}</div>`;
+      return { title: nm(s, c), html: h, n: 1, sk: [SK(s).menu, SK(s).select, SK(s).back] };
+    }
+    const rows = R.marketRows(s, c.id), med = R.price(s, c, a, 'w').p;
+    if (z === 'q' && med !== null) h += `<div class="rankline">${t(s, 'vsMedV', { p: fmt(s, med) })}</div>`;
+    h += '<div class="list">';
+    rows.forEach((r, i) => {
+      const fx = fresh(s, r.fresh), noData = r.p === null;
+      const diff = noData ? '' : `<span class="pill ${dir(r.diff)}">${fmt(s, r.diff, true)}</span>`;
+      h += z === 'q'
+        ? `<div class="card${f(s, i)}${noData ? ' dim' : ''}"><span class="rank">${i + 1}</span><span class="two"><span class="nm">${esc(nm(s, r.m.n))}</span><span class="meta">${r.km} km${fx.cls || r.fresh === 1 ? ` · <span class="${fx.cls ? 'warn' : ''}">${fx.txt}</span>` : ''}</span></span><span class="rt"><span class="pr">${fmt(s, r.p)}</span>${diff}</span></div>`
+        : `<div class="card${f(s, i)}${noData ? ' dim' : ''}"><span class="rank">${i + 1}</span><span class="nm">${esc(nm(s, r.m.n))}</span><span class="rt">${noData ? '—' : fmt(s, r.p)}</span></div>`;
+    });
+    h += '</div>';
+    return { title: nm(s, c), html: h, n: rows.length, ids: rows.map(r => r.m.id), sk: [SK(s).menu, SK(s).open, SK(s).back] };
+  }
+
+  // 單一市場
+  function vMkt1(s, z) {
+    const a = area(s, s.area), c = crop(s, s.crop), m = a.markets.find(x => x.id === s.mkt) || a.markets[0];
+    let h = ctx(`${I.ui('store')}<b>${esc(nm(s, m.n))}</b>`, modeCtl(s, z), z);
+    if (s.mode === 'r') {
+      h += stateBox('store', t(s, 'mktNoRetail'), z === 'q' ? [t(s, 'retailNote')] : []) + `<div class="list">${card(s, 0, 'pin', t(s, 'seeAreaRetail', { a: esc(areaName(s, a)) }))}</div>`;
+      return { title: nm(s, c), html: h, n: 1, sk: ['', SK(s).select, SK(s).back] };
+    }
+    const p = R.mktPrice(s, c, a, m), r = p === null ? 1 : p / c.p;
+    if (p === null) return { title: nm(s, c), html: h + stateBox('store', t(s, 'none'), []), n: 0, sk: ['', '', SK(s).back] };
+    const lo = c.lo * r, hi = c.hi * r, pos = Math.min(96, Math.max(4, ((p - lo) / (hi - lo)) * 100));
+    h += `<div class="stack"><div class="box hero">${z === 'q' ? tileCrop(c) : ''}<div><div class="lbl"><span>${nm(s, C(s).rep)} · ${unitLbl(s)}</span></div><div class="big">${fmt(s, p)}</div>` +
+      `<div class="cl">${pill(c.chg)}${z === 'q' ? ' ' + t(s, 'vsPrev') : ''}</div></div></div>` +
+      `<div class="box rng tn-${tone(c)}"><div class="bar"><span class="fill"></span><span class="mk" style="left:${pos}%"></span></div><div class="ends"><span>${fmt(s, lo)}</span><span>${fmt(s, hi)}</span></div></div>` +
+      (z === 'q' ? `<div class="srcl">${I.ui('shield')}${esc(nm(s, C(s).src))} · ${t(s, 'demo')}</div>` : '') + '</div>';
+    return { title: nm(s, c), html: h, n: 0, sk: ['', '', SK(s).back] };
+  }
+
+  function cropsIn(s) {
+    if (s.cat === 'recent') return s.recent[s.country].map(id => crop(s, id));
+    if (s.cat === 'all') return C(s).crops;
+    return C(s).crops.filter(c => c.cat === s.cat);
+  }
+  function vCrops(s, z) {
+    const a = area(s, s.home[s.country]), list = cropsIn(s), ci = M.CATS.findIndex(c => c.id === s.cat);
+    let h = ctx(areaLbl(s, a, z, true), `${modeCtl(s, z)} ${unitLbl(s)}`, z) + '<div class="list">';
+    h += list.length ? list.map((c, i) => cropRow(s, z, c, a, i, {})).join('') : `<div class="state"><span class="meta">${t(s, 'none')}</span></div>`;
+    h += '</div>';
+    return { title: S(s).cats[ci], html: h, n: list.length, ids: list.map(c => c.id), sk: [SK(s).menu, SK(s).open, SK(s).back] };
+  }
+
+  // 地區清單：最近使用放前面，其他依距離；最後一項是「更改國家…」
+  function areaOrder(s) {
+    const cur = R.curAreaId(s), from = area(s, s.home[s.country]);
+    const rec = [cur, ...s.ra[s.country].filter(id => id !== cur)];
+    const rest = C(s).areas.filter(a => !rec.includes(a.id)).sort((x, y) => R.distKm(from, x) - R.distKm(from, y));
+    return { list: [...rec.map(id => area(s, id)), ...rest], nRec: rec.length, from };
+  }
+  function vAreas(s, z, onb) {
+    const { list, nRec, from } = areaOrder(s);
+    let h = onb ? `<div class="steps"><i></i><i></i><i class="on"></i></div>` : '';
+    h += '<div class="list">';
+    list.forEach((a, i) => {
+      if (z === 'q' && !onb && i === 0) h += `<div class="sec">${t(s, 'recent')}</div>`;
+      if (z === 'q' && !onb && i === nRec) h += `<div class="sec">${t(s, 'allAreas')}</div>`;
+      const fx = fresh(s, a.fresh), tn = a.fresh === null ? 'slate' : fx.cls ? 'amber' : 'green', km = R.distKm(from, a);
+      const status = a.fresh === 0 ? '' : ` <span class="${fx.cls ? 'warn' : ''}">${fx.txt}</span>`;
+      h += `<div class="card${f(s, i)}"><span class="tile tn-${tn}">${I.ui('pin')}${num(z, i) ? kc(num(z, i)) : ''}</span>` +
+        `<span class="two"><span class="nm">${esc(areaName(s, a))}${a.id === R.curAreaId(s) && !onb ? ' ✓' : ''}</span>${z === 'q' ? `<span class="meta">${esc(nm(s, a.st))}${km ? ' · ' + t(s, 'dist', { k: km }) : ''}</span>` : ''}</span>` +
+        `${z === 'q' ? `<span class="rt"><span class="meta"><i class="dot ${fx.cls || (a.fresh === null ? 'none' : '')}"></i>${status}</span></span>` : '<span></span>'}</div>`;
+    });
+    const ids = list.map(a => a.id);
+    if (!onb) { h += card(s, list.length, 'globe', t(s, 'changeCountry')); ids.push('country'); }
+    h += '</div>';
+    return { title: onb ? t(s, 'area0') : t(s, 'pickArea'), html: h, n: ids.length, ids, sk: ['', SK(s).select, SK(s).back] };
+  }
+
+  function vWatch(s, z) {
+    const cs = C(s).crops, w = s.watch[s.country];
+    const h = '<div class="list">' + cs.map((c, i) => `<div class="card${f(s, i)}">${tileCrop(c)}<span class="two"><span class="nm">${esc(nm(s, c))}</span>${z === 'q' ? `<span class="meta">${esc(nm(s, c.v))}</span>` : ''}</span><span class="chk${w.includes(c.id) ? ' on' : ''}">${w.includes(c.id) ? I.ui('check') : ''}</span></div>`).join('') + '</div>';
+    return { title: t(s, 'watch'), html: h, n: cs.length, ids: cs.map(c => c.id), sk: ['', SK(s).toggle, SK(s).back] };
+  }
+
+  function vSettings(s, z) {
+    const rows = S(s).setRows, ics = ['globe', 'pin', 'store', 'scale', 'scale'];
+    const vals = [s.lang === 'zh' ? '繁體中文' : 'English', nm(s, C(s).name), areaName(s, area(s, s.home[s.country])), unitLbl(s, 'w'), unitLbl(s, 'r')];
+    const h = '<div class="list">' + rows.map((r, i) => `<div class="card cmp${f(s, i)}"><span class="tile">${I.ui(ics[i])}${num(z, i) ? kc(num(z, i)) : ''}</span><span class="nm">${r}</span>${z === 'q' ? `<span class="val">${esc(vals[i])}</span>` : '<span></span>'}</div>`).join('') + '</div>';
+    return { title: t(s, 'settings'), html: h, n: rows.length, sk: ['', SK(s).toggle, SK(s).back] };
+  }
+
+  // 關於與資料說明（合併成一頁）
+  function vHelp(s, z) {
+    const A = S(s).aboutL;
+    const h = `<div class="stack" style="padding-top:4px">${S(s).helpL.map(x => `<div class="box meta">${x}</div>`).join('')}` +
+      `<div class="box meta"><b style="color:var(--ink)">${A[0]}</b>：${esc(nm(s, C(s).src))}</div><div class="box meta">${A.slice(2).join(R.L(s) === 'zh' ? '' : ' ')}</div></div>`;
+    return { title: t(s, 'help'), html: h, n: 0, sk: ['', '', SK(s).back] };
+  }
+
+  // 語言：手機語言排第一，再來是另外兩個語言，最後是「More・其他」
+  function langOrder(s) { const L = M.LANGS, sys = L.find(l => l.id === s.sysLang); return sys ? [sys, ...L.filter(l => l !== sys)] : L; }
+  function vLang(s, z) {
+    const list = langOrder(s);
+    let h = `<div class="steps"><i class="on"></i><i></i><i></i></div><div class="list">`;
+    list.forEach((l, i) => {
+      const meta = l.id === s.sysLang ? t(s, 'phoneLang') : !l.ok ? `→ English・${t(s, 'notYet')}` : '';
+      h += `<div class="card cmp${f(s, i)}"><span class="tile tn-${l.tone}" style="font-weight:900">${l.g}</span><span class="two"><span class="nm">${l.name}</span>${z === 'q' && meta ? `<span class="meta">${meta}</span>` : ''}</span><span></span></div>`;
+    });
+    h += `<div class="card cmp${f(s, list.length)}"><span class="tile tn-blue">${I.ui('globe')}</span><span class="two"><span class="nm">${t(s, 'more')}</span>${z === 'q' ? `<span class="meta">${t(s, 'moreSub')}</span>` : ''}</span>${chev}</div></div>`;
+    return { title: t(s, 'langT'), html: h, n: list.length + 1, ids: [...list.map(l => l.id), 'more'], sk: ['', SK(s).select, SK(s).exit] };
+  }
+  function vLangs(s, z) {
+    const per = 4, pages = Math.ceil(M.MORE_LANGS.length / per), pg = Math.min(s.lpage, pages - 1), items = M.MORE_LANGS.slice(pg * per, pg * per + per);
+    let h = `<div class="rankline">◀ ${t(s, 'page', { a: pg + 1, b: pages })} ▶</div><div class="list">`;
+    items.forEach((x, i) => { h += `<div class="card cmp${f(s, i)}"><span class="tile tn-slate">${I.ui('globe')}${num(z, i) ? kc(num(z, i)) : ''}</span><span class="two"><span class="nm" dir="auto">${x}</span>${z === 'q' ? `<span class="meta">→ English・${t(s, 'notYet')}</span>` : ''}</span><span></span></div>`; });
+    h += '</div>';
+    return { title: t(s, 'more'), html: h, n: items.length, ids: items, pages, sk: ['', SK(s).select, SK(s).back] };
+  }
+  function vCountry(s, z) {
+    const ids = ['IN', 'TW'];
+    let h = s.onb ? `<div class="steps"><i></i><i class="on"></i><i></i></div>` : '';
+    h += '<div class="list">' + ids.map((id, i) => `<div class="card${f(s, i)}"><span class="tile tn-${i ? 'red' : 'orange'}">${I.ui('globe')}${num(z, i) ? kc(num(z, i)) : ''}</span><span class="two"><span class="nm">${nm(s, M.COUNTRIES[id].name)}</span>${z === 'q' ? `<span class="meta">${nm(s, M.COUNTRIES[id].cover)}</span>` : ''}</span><span></span></div>`).join('') + '</div>';
+    return { title: t(s, 'countryT'), html: h, n: 2, ids, sk: ['', SK(s).select, SK(s).back] };
+  }
+  // 首次設定：依網路位置（X-Forwarded-For 的 IP）推測地區，讓使用者確認
+  function vLoc(s, z) {
+    const a = area(s, M.IPGUESS[s.ipc].area);
+    let h = `<div class="steps"><i></i><i class="on"></i><i></i></div>`;
+    h += `<div class="state"><span class="tile">${I.ui('pin')}</span><span class="big2 locq">${t(s, 'ipQ', { a: esc(areaName(s, a)) })}</span>${z === 'q' ? `<span class="meta">${esc(nm(s, a.st))} · ${nm(s, C(s).name)}</span><span class="meta">${t(s, 'ipHow')}</span>` : ''}</div>`;
+    h += `<div class="list"><div class="card cmp${f(s, 0)}"><span class="tile tn-green">${I.ui('check')}${z === 'q' ? kc(1) : ''}</span><span class="nm">${t(s, 'ipYes')}</span>${chev}</div>` +
+      `<div class="card cmp${f(s, 1)}"><span class="tile">${I.ui('grid')}${z === 'q' ? kc(2) : ''}</span><span class="nm">${t(s, 'ipNo')}</span>${chev}</div></div>`;
+    return { title: t(s, 'ipT'), html: h, n: 2, ids: ['yes', 'no'], sk: ['', SK(s).select, SK(s).back] };
+  }
+  function vExit(s, z) {
+    const h = `<div class="os"><div class="apps"><span></span>${I.LOGO}<span></span><span></span><span></span><span></span></div><b>${t(s, 'exitT')}</b>${z === 'q' ? `<span class="meta">${t(s, 'exitN')}</span>` : ''}</div>`;
+    return { title: 'Cloud Phone', html: h, n: 0, sk: ['', SK(s).open, ''] };
+  }
+
+  const VIEWS = {
+    home: vHome, detail: vDetail, mkts: vMkts, mkt1: vMkt1, crops: vCrops, areas: (s, z) => vAreas(s, z, false), area0: (s, z) => vAreas(s, z, true),
+    watch: vWatch, settings: vSettings, help: vHelp, lang: vLang, langs: vLangs, country: vCountry, loc: vLoc, exit: vExit
+  };
+  const build = (s, z) => (VIEWS[s.route] || vHome)(s, z);
+  const screen = (s, z) => R.shell(s, z, build(s, z));
+
+  window.Render = { build, screen, sheetItems: R.sheetItems };
+})();
+</script>
+<script>
+/* ===== app.js ===== */
+// 草圖的互動：狀態、按鍵、兩種檢視模式（互動試玩／全部畫面）。
+(function () {
+  const M = window.MOCK, R = window.Render, CO = M.COUNTRIES;
+  const $ = s => document.querySelector(s);
+
+  function freshState(p) {
+    return {
+      lang: p.lang, sysLang: 'zh', country: p.country, sb: p.sb, sim: 'ok', mode: 'w',
+      route: 'home', htab: 0, tab: 1, range: 7, sort: 0, cat: 'veg', lpage: 0, ipc: p.ip,
+      crop: CO[p.country].watch[0], area: CO[p.country].home, mkt: null,
+      home: { IN: CO.IN.home, TW: CO.TW.home },
+      watch: { IN: CO.IN.watch.slice(), TW: CO.TW.watch.slice() },
+      recent: { IN: ['grapes', 'onion', 'garlic'], TW: ['mango', 'cabbage'] },
+      ra: { IN: CO.IN.ra.slice(), TW: CO.TW.ra.slice() },
+      unit: { IN: { ...CO.IN.unitDef }, TW: { ...CO.TW.unitDef } },
+      focus: 0, sheet: null, sheetFocus: 0, voice: false, hist: [], onb: false, exited: null
+    };
+  }
+
+  // 頁面偏好（只是方便，讀寫失敗也照常運作）
+  const prefs = { mode: 'play', lang: 'zh', country: 'IN', ip: 'IN', sb: false, zoom: 1.5 };
+  try { Object.assign(prefs, JSON.parse(localStorage.getItem('ui-mockup-prefs-v4') || '{}')); } catch (e) { /* 忽略 */ }
+  const q = new URLSearchParams(location.search);
+  ['mode', 'lang', 'country', 'ip'].forEach(k => { if (q.get(k)) prefs[k] = q.get(k); });
+  if (q.get('zoom')) prefs.zoom = +q.get('zoom');
+  if (!['play', 'gallery'].includes(prefs.mode)) prefs.mode = 'play';
+  if (!CO[prefs.country]) prefs.country = 'IN';
+  const savePrefs = () => { try { localStorage.setItem('ui-mockup-prefs-v4', JSON.stringify(prefs)); } catch (e) { /* 忽略 */ } };
+
+  let st = freshState(prefs);
+  const scrollMemo = {};
+
+  // ---------- 導覽 ----------
+  const snap = () => ({ route: st.route, htab: st.htab, tab: st.tab, crop: st.crop, area: st.area, mkt: st.mkt, cat: st.cat, focus: st.focus, lpage: st.lpage });
+  function push(route, patch) { st.hist.push(snap()); Object.assign(st, { route, focus: 0 }, patch || {}); }
+  function back() {
+    if (st.hist.length) { Object.assign(st, st.hist.pop()); return; }
+    st.exited = { ...snap(), hist: [] }; st.route = 'exit'; st.focus = 0;
+  }
+  function reopen() { const e = st.exited; st.exited = null; Object.assign(st, e); }
+  function setCountry(id) { st.country = id; st.crop = CO[id].watch[0]; st.area = st.home[id]; prefs.country = id; savePrefs(); }
+  function pushRa(id) { st.ra[st.country] = [id, ...st.ra[st.country].filter(x => x !== id)].slice(0, 3); }
+  function pickHome(id) { st.home[st.country] = id; pushRa(id); }
+  const VIEWING = ['detail', 'mkts', 'mkt1'];
+  // 詳情頁換的是「正在看的地區」，不改首頁的地區
+  function chooseArea(id) { if (VIEWING.includes(st.route)) { st.area = id; pushRa(id); } else pickHome(id); }
+  function recordRecent(id) { const r = st.recent[st.country]; st.recent[st.country] = [id, ...r.filter(x => x !== id)].slice(0, 5); }
+  function openCrop(id, tab) { recordRecent(id); push('detail', { crop: id, area: st.home[st.country], tab }); }
+
+  function activate(i) {
+    const v = R.build(st, 'q');
+    if (i >= v.n) return;
+    st.focus = i;
+    switch (st.route) {
+      case 'home':
+        if (st.htab === 1) { push('crops', { cat: v.ids[i] }); return; } // 全部作物 → 該分類的作物清單
+        if (st.sim === 'error' && i === 0) { st.sim = 'ok'; st.focus = 0; syncToolbar(); return; }
+        openCrop(v.ids[i - v.off], 1); return;
+      case 'detail':
+        if (st.sim === 'error') { st.sim = 'ok'; syncToolbar(); return; }
+        if (st.tab === 2) { push('detail', { area: v.ids[i], tab: 1 }); return; } // 比價 → 開那個地區
+        if (v.n === 2) { st.sim = 'ok'; syncToolbar(); st.tab = i === 0 ? 2 : 0; st.focus = 0; return; } // 今天還沒更新的兩個出口
+        if (st.mode === 'r') { st.mode = 'w'; st.focus = 0; return; } // 沒有零售資料 → 看批發
+        push('mkts'); return; // 行情頁的卡片 → 本地區各市場
+      case 'mkts':
+        if (st.mode === 'r') { st.mode = 'w'; return; }
+        push('mkt1', { mkt: v.ids[i] }); return;
+      case 'mkt1': while (st.route !== 'detail' && st.hist.length) back(); return; // 回到地區的零售價
+      case 'crops': openCrop(v.ids[i], 1); return;
+      case 'areas': { const id = v.ids[i]; if (id === 'country') { push('country'); return; } back(); chooseArea(id); return; }
+      case 'area0': pickHome(v.ids[i]); st.onb = false; st.hist = []; Object.assign(st, { route: 'home', focus: 0, area: v.ids[i] }); return;
+      case 'watch': {
+        const w = st.watch[st.country], id = v.ids[i];
+        st.watch[st.country] = w.includes(id) ? w.filter(x => x !== id) : [...w, id];
+        return;
+      }
+      case 'settings': {
+        const u = st.unit[st.country], n = CO[st.country].units.length;
+        if (i === 0) { st.lang = st.lang === 'zh' ? 'en' : 'zh'; syncToolbar(); }
+        if (i === 1) { setCountry(st.country === 'IN' ? 'TW' : 'IN'); syncToolbar(); }
+        if (i === 2) push('areas');
+        if (i === 3) u.w = (u.w + 1) % n;
+        if (i === 4) u.r = (u.r + 1) % n;
+        return;
+      }
+      case 'lang': {
+        const id = v.ids[i];
+        if (id === 'more') { push('langs', { lpage: 0 }); return; }
+        st.lang = id === 'zh' ? 'zh' : 'en'; syncToolbar(); afterLang(); return; // 印地文尚未翻譯 → 英文
+      }
+      case 'langs': st.lang = 'en'; syncToolbar(); afterLang(); return;
+      case 'loc': // 是 → 用推測的地區；不是 → 自己選國家和地區
+        if (i === 0) { pickHome(M.IPGUESS[st.ipc].area); st.onb = false; st.hist = []; Object.assign(st, { route: 'home', focus: 0, area: st.home[st.country] }); }
+        else push('country');
+        return;
+      case 'country': setCountry(v.ids[i]); syncToolbar(); if (st.onb) push('area0'); else back(); return;
+    }
+  }
+
+  // 選完語言：猜得到位置就先問「是不是這裡」，猜不到就直接選國家
+  function afterLang() {
+    if (st.ipc !== 'none' && M.IPGUESS[st.ipc]) { setCountry(M.IPGUESS[st.ipc].country); syncToolbar(); push('loc'); }
+    else push('country');
+  }
+
+  // ---------- 底部面板：選單、換地區、排序 ----------
+  function openSheet(kind) { st.sheet = kind; st.sheetFocus = kind === 'sort' ? st.sort : 0; }
+  function sheetAct(it) {
+    const [kind, arg] = it.id.split(':');
+    st.sheet = null;
+    if (kind === 'area' && arg) chooseArea(arg);
+    if (kind === 'area' && !arg) openSheet('area');
+    if (kind === 'areas') push('areas');
+    if (kind === 'sort') { st.sort = +arg; st.focus = 0; }
+    if (kind === 'watchToggle') { const w = st.watch[st.country]; st.watch[st.country] = w.includes(st.crop) ? w.filter(x => x !== st.crop) : [...w, st.crop]; }
+    if (kind === 'watch') push('watch');
+    if (kind === 'refresh' && st.sim !== 'ok') { st.sim = 'ok'; syncToolbar(); }
+    if (kind === 'help') push('help');
+    if (kind === 'settings') push('settings');
+  }
+
+  const MENU_ROUTES = ['home', 'detail', 'crops', 'mkts', 'areas'];
+  const PRICE_ROUTES = ['home', 'crops', 'detail', 'mkts', 'mkt1'];
+  function press(k) {
+    showKey(k);
+    if (st.voice) { st.voice = false; if (['0', 'LSK', 'RSK'].includes(k)) return draw(); }
+    if (st.route === 'exit') { if (k === 'Enter') reopen(); return draw(); }
+    if (st.sheet) {
+      const items = R.sheetItems(st), n = items.length;
+      if (k === 'ArrowUp') st.sheetFocus = Math.max(0, st.sheetFocus - 1);
+      else if (k === 'ArrowDown') st.sheetFocus = Math.min(n - 1, st.sheetFocus + 1);
+      else if (k === 'Enter') sheetAct(items[st.sheetFocus]);
+      else if (/^[1-9]$/.test(k) && +k <= n) sheetAct(items[+k - 1]);
+      else if (k === 'LSK' || k === 'RSK') st.sheet = null;
+      return draw();
+    }
+    if (k === 'RSK') { back(); return draw(); }
+    if (k === 'LSK') { if (MENU_ROUTES.includes(st.route)) openSheet('menu'); return draw(); }
+    if (k === '0') { if (st.route === 'detail' && st.tab === 1) st.voice = true; return draw(); } // 語音（加分項）只在行情頁
+    if (k === '*') { // 全站：批發 ⇄ 零售（只在價格畫面有效）
+      if (PRICE_ROUTES.includes(st.route)) { st.mode = st.mode === 'w' ? 'r' : 'w'; if (!['home', 'crops'].includes(st.route)) st.focus = 0; }
+      return draw();
+    }
+    if (k === '#') { // 依頁面：換地區／7↔30 日／排序
+      const d = st.route === 'detail';
+      if (['home', 'crops', 'mkts'].includes(st.route) || (d && st.tab === 1)) openSheet('area');
+      else if (d && st.tab === 0) st.range = st.range === 7 ? 30 : 7;
+      else if (d && st.tab === 2) openSheet('sort');
+      return draw();
+    }
+    const v = R.build(st, 'q');
+    if (st.route === 'home' && (k === 'ArrowLeft' || k === 'ArrowRight')) { // 首頁分頁：關注｜全部作物
+      if (st.htab === 0) { if (k === 'ArrowRight') { st.htab = 1; st.focus = 0; } return draw(); }
+      const col = st.focus % 3; // 九宮格：◀ ▶ 在同一列裡移動，最左欄再按 ◀ 回到「關注」
+      if (k === 'ArrowLeft') { if (col === 0) { st.htab = 0; st.focus = 0; } else st.focus -= 1; }
+      else if (col < 2) st.focus += 1;
+      return draw();
+    }
+    if (st.route === 'detail' && (k === 'ArrowLeft' || k === 'ArrowRight')) {
+      st.tab = Math.max(0, Math.min(2, st.tab + (k === 'ArrowLeft' ? -1 : 1))); st.focus = 0; return draw();
+    }
+    if (st.route === 'langs' && (k === 'ArrowLeft' || k === 'ArrowRight')) {
+      st.lpage = Math.max(0, Math.min(v.pages - 1, st.lpage + (k === 'ArrowLeft' ? -1 : 1))); st.focus = 0; return draw();
+    }
+    if (st.route === 'home' && st.htab === 1) { // 九宮格：上下一次跳一列
+      const d = { ArrowUp: -3, ArrowDown: 3 }[k];
+      if (d) { st.focus = Math.max(0, Math.min(8, st.focus + d)); return draw(); }
+    }
+    if (st.route === 'detail' && k === 'Enter' && v.n === 0) { st.tab = Math.min(2, st.tab + 1); st.focus = 0; return draw(); } // 走勢→行情→比價
+    if (!v.n && (k === 'ArrowUp' || k === 'ArrowDown')) { scrollContent(k === 'ArrowDown' ? 1 : -1); return; } // 沒有可選項目的頁面：上下捲動內容
+    if (k === 'ArrowUp' && v.n) st.focus = Math.max(0, st.focus - 1);
+    else if (k === 'ArrowDown' && v.n) st.focus = Math.min(v.n - 1, st.focus + 1);
+    else if (k === 'Enter') activate(st.focus);
+    else if (/^[1-9]$/.test(k)) activate(+k - 1 + (st.route === 'home' && st.htab === 0 ? v.off || 0 : 0));
+    draw();
+  }
+
+  // ---------- 畫面輸出 ----------
+  function keepFocus(root, key) {
+    const bd = root.querySelector('.bd'); if (!bd) return;
+    const memoKey = root.dataset.slot, prev = scrollMemo[memoKey];
+    bd.scrollTop = prev && prev.key === key ? prev.top : 0;
+    const el = bd.querySelector('.f');
+    if (el) {
+      const top = el.offsetTop, bot = top + el.offsetHeight;
+      if (top < bd.scrollTop + 4) bd.scrollTop = top - 6;
+      else if (bot > bd.scrollTop + bd.clientHeight - 4) bd.scrollTop = bot - bd.clientHeight + 6;
+      if (el === bd.querySelector('.card, .cell') && bot <= bd.clientHeight) bd.scrollTop = 0; // 第一項放得下時，連上方的說明一起露出來
+    }
+    scrollMemo[memoKey] = { key, top: bd.scrollTop };
+  }
+  function scrollContent(d) {
+    ['#dev-q', '#dev-qq'].forEach(sel => {
+      const root = $(sel), bd = root.querySelector('.bd'), memo = scrollMemo[root.dataset.slot];
+      bd.scrollTop += d * Math.round(bd.clientHeight * 0.6);
+      if (memo) memo.top = bd.scrollTop;
+    });
+  }
+  const devHTML = (s, z, slot) => `<div class="device ${z}" data-slot="${slot}">${R.screen(s, z)}</div>`;
+
+  // 畫面旁的按鍵盤：* 和 # 的小字跟著目前的頁面改變
+  function fnLabels() {
+    const F = M.STR.zh, d = st.route === 'detail';
+    if (st.sheet || st.voice || !PRICE_ROUTES.includes(st.route)) return ['—', '—'];
+    const star = F.modeAct[st.mode];
+    if (['home', 'crops', 'mkts'].includes(st.route) || (d && st.tab === 1)) return [star, F.hint.area];
+    if (d && st.tab === 0) return [star, st.range === 7 ? F.hint.d30 : F.hint.d7];
+    if (d && st.tab === 2) return [star, F.hint.sort];
+    return [star, '—'];
+  }
+
+  function drawPlay() {
+    const key = [st.route, st.htab, st.tab, st.crop, st.area, st.mkt, st.cat, st.sort, st.range, st.sim, st.mode, st.lpage].join('|');
+    $('#dev-q').innerHTML = R.screen(st, 'q');
+    $('#dev-qq').innerHTML = R.screen(st, 'qq');
+    keepFocus($('#dev-q'), key); keepFocus($('#dev-qq'), key);
+    $('#route-now').textContent = routeName();
+    const [a, b] = fnLabels();
+    $('.pad-key[data-key="*"] small').textContent = a;
+    $('.pad-key[data-key="#"] small').textContent = b;
+  }
+
+  const noRetailCrop = { IN: 'chilli', TW: 'cauliflower' };
+  const PRESETS = [
+    ['首次設定・選語言', { route: 'lang', onb: true }],
+    ['首次設定・確認位置（網路位置推測）', { route: 'loc', onb: true }],
+    ['語言・More／其他清單', { route: 'langs', onb: true }],
+    ['首頁：地區行情（批發）', { route: 'home' }],
+    ['首頁：按 * 看零售', { route: 'home', mode: 'r' }],
+    ['首頁：連線失敗，先顯示舊資料', { route: 'home', sim: 'error' }],
+    ['行情：批發（本地區各市場的入口卡片）', { route: 'detail', tab: 1 }],
+    ['行情：零售', { route: 'detail', tab: 1, mode: 'r' }],
+    ['行情：這個作物沒有零售資料', s => ({ route: 'detail', tab: 1, mode: 'r', crop: noRetailCrop[s.country] })],
+    ['本地區各市場（卡片按 OK）', { route: 'mkts' }],
+    ['走勢：30 日（# 切換）', { route: 'detail', tab: 0, range: 30 }],
+    ['比價：各地區，價格高→低（預設）', { route: 'detail', tab: 2, sort: 0 }],
+    ['比價：距離近→遠', { route: 'detail', tab: 2, sort: 2 }],
+    ['比價頁按 #：排序面板', { route: 'detail', tab: 2, sheet: 'sort', sheetFocus: 0 }],
+    ['首頁按 #：換地區面板', { route: 'home', sheet: 'area' }],
+    ['選擇地區（全部）', { route: 'areas' }],
+    ['左軟鍵選單', { route: 'home', sheet: 'menu' }],
+    ['關於與資料說明', { route: 'help' }],
+    ['首頁：全部作物（九宮格，◀ ▶ 切換）', { route: 'home', htab: 1 }],
+    ['設定', { route: 'settings' }],
+    ['離開後重開', { route: 'exit' }]
+  ];
+  function drawGallery() {
+    $('#gallery').innerHTML = PRESETS.map((p, i) => {
+      const s = freshState(prefs);
+      Object.assign(s, typeof p[1] === 'function' ? p[1](s) : JSON.parse(JSON.stringify(p[1])));
+      return `<figure class="shot"><figcaption><span class="idx">${String(i + 1).padStart(2, '0')}</span>${p[0]}</figcaption>` +
+        `<div class="pair">${devHTML(s, 'q', 'g' + i + 'q')}${devHTML(s, 'qq', 'g' + i + 'qq')}</div></figure>`;
+    }).join('');
+    document.querySelectorAll('#gallery .device').forEach(d => keepFocus(d, 'g'));
+    if (q.get('audit')) audit();
+  }
+
+  // 版面檢查：列出每個畫面內容超出可視高度多少 px（清單可以捲動，固定畫面應該是 0）
+  function audit() {
+    const rows = [...document.querySelectorAll('#gallery .shot')].flatMap(fig => {
+      const name = fig.querySelector('figcaption').textContent;
+      return [...fig.querySelectorAll('.device')].map(d => {
+        const bd = d.querySelector('.bd'), over = bd.scrollHeight - bd.clientHeight;
+        return `${over > 0 ? 'OVER' : 'ok  '} ${String(over).padStart(4)}px  ${d.classList.contains('qq') ? '128×160' : '240×320'}  ${name}`;
+      });
+    });
+    let pre = document.getElementById('audit');
+    if (!pre) { pre = document.createElement('pre'); pre.id = 'audit'; document.body.appendChild(pre); }
+    pre.textContent = rows.join('\n');
+  }
+
+  function draw() {
+    document.documentElement.style.setProperty('--zoom', prefs.zoom);
+    ['play', 'gallery'].forEach(m => { $('#mode-' + m).hidden = prefs.mode !== m; });
+    if (prefs.mode === 'play') drawPlay(); else drawGallery();
+  }
+
+  const ROUTE_NAMES = { home: '首頁', detail: '作物詳情', loc: '首次設定・確認位置', mkts: '本地區各市場', mkt1: '單一市場', crops: '作物清單', areas: '選擇地區', area0: '首次設定・地區', watch: '編輯關注', settings: '設定', help: '關於與資料說明', lang: '首次設定・語言', langs: '其他語言', country: '選擇國家', exit: '已離開 App' };
+  function routeName() {
+    let n = ROUTE_NAMES[st.route] || st.route;
+    if (st.route === 'detail') n += '・' + ['走勢', '行情', '比價'][st.tab];
+    if (st.route === 'home') n += st.htab ? '・全部作物' : '・關注';
+    n += st.mode === 'w' ? '・批發' : '・零售';
+    if (st.sheet) n += '（面板開啟）';
+    return `${n}　返回堆疊 ${st.hist.length} 層`;
+  }
+  const KEY_TEXT = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Enter: 'OK', LSK: '左軟鍵', RSK: '右軟鍵' };
+  function showKey(k) {
+    $('#last-key').textContent = KEY_TEXT[k] || k;
+    document.querySelectorAll('.pad-key').forEach(b => b.classList.toggle('hit', b.dataset.key === k));
+  }
+
+  // ---------- 工具列 ----------
+  function syncToolbar() {
+    prefs.lang = st.lang; prefs.country = st.country; savePrefs();
+    document.querySelectorAll('[data-set]').forEach(b => {
+      const [k, v] = b.dataset.set.split(':'), on = String(prefs[k]) === v;
+      b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+    });
+    document.querySelectorAll('[data-sim]').forEach(b => { const on = b.dataset.sim === st.sim; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.set) {
+      const [k, v] = b.dataset.set.split(':');
+      const val = v === 'true' ? true : v === 'false' ? false : k === 'zoom' ? +v : v;
+      prefs[k] = val; savePrefs();
+      if (k === 'country') setCountry(val);
+      if (k === 'ip') st.ipc = val;
+      if (['lang', 'sb'].includes(k)) st[k] = val;
+      syncToolbar(); draw(); return;
+    }
+    if (b.dataset.sim) { st.sim = b.dataset.sim; st.focus = 0; syncToolbar(); draw(); return; }
+    if (b.dataset.key) { press(b.dataset.key); return; }
+    if (b.id === 'restart') { st = freshState(prefs); Object.assign(st, { route: 'lang', onb: true }); syncToolbar(); draw(); }
+    if (b.id === 'reset') { st = freshState(prefs); syncToolbar(); draw(); }
+  });
+  const KEYMAP = { Escape: 'LSK', Backspace: 'RSK', ArrowUp: 'ArrowUp', ArrowDown: 'ArrowDown', ArrowLeft: 'ArrowLeft', ArrowRight: 'ArrowRight', Enter: 'Enter', '*': '*', '#': '#' };
+  document.addEventListener('keydown', e => {
+    if (prefs.mode !== 'play' || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.target.closest && e.target.closest('input, select, textarea')) return;
+    let k = KEYMAP[e.key];
+    if (!k && /^[0-9]$/.test(e.key)) k = e.key;
+    if (!k) return;
+    if (k === 'Enter' && e.target.closest && e.target.closest('button') && !e.target.closest('.pad-key')) return;
+    e.preventDefault();
+    if (e.repeat && !k.startsWith('Arrow')) return; // 長按只讓方向鍵連續觸發
+    press(k);
+  });
+
+  syncToolbar();
+  draw();
+})();
+</script>
+</body>
+</html>
