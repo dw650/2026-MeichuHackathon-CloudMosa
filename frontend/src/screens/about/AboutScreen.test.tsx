@@ -1,0 +1,42 @@
+import { screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+
+import { renderApp } from '@/test/renderApp'
+
+describe('AboutScreen', () => {
+  it('shows the notes, the data source and the credits, with nothing to select', async () => {
+    const app = await renderApp('/about', { history: ['/'] })
+    expect(await screen.findByText('Agmarknet・消費者事務部（印度政府）')).toBeInTheDocument()
+    expect(screen.getByRole('heading')).toHaveTextContent('關於與資料說明')
+    for (const text of [
+      '地區價＝該地區各市場代表價的中位數，並標出市場數。',
+      '批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。',
+      '資料來源',
+      '本 App 不會向你要錢、密碼或驗證碼。',
+      'IP Geolocation by DB-IP（CC BY 4.0）',
+    ]) {
+      expect(screen.getByText(text)).toBeInTheDocument()
+    }
+    expect(document.querySelector('[data-focus-id]')).toBeNull()
+    expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
+      '',
+      '',
+      '返回',
+    ])
+
+    // ↑ ↓ scroll the page; OK and the digits do nothing.
+    app.press('ArrowDown')
+    app.press('Enter')
+    app.press('1')
+    expect(app.path()).toBe('/about')
+    await app.back()
+    expect(app.path()).toBe('/')
+  })
+
+  it('names the data source of the chosen country, in English too', async () => {
+    await renderApp('/about', { country: 'TW', lang: 'en' })
+    expect(await screen.findByText('MOA wholesale prices (Govt)')).toBeInTheDocument()
+    expect(screen.getByRole('heading')).toHaveTextContent('About & data')
+    expect(screen.getByText('We never ask for money, PINs or codes.')).toBeInTheDocument()
+  })
+})
