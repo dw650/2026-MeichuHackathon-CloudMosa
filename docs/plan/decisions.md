@@ -687,3 +687,8 @@
   - 測試與 e2e 的例子改成台灣：新北市（台北市較高、桃園市較低）、台北市（自己最高）。
   - 關於頁的「示範資料」說明一併修正：國際參考價是世界銀行的真實資料。
 - 影響：`backend/app/services/nearby.py`、`backend/tests/{unit,api}/test_nearby.py`、`backend/tests/dump_api_fixtures.py`、msw fixtures、`frontend/src/screens/crop-detail/TodayTab.test.tsx`、`frontend/src/i18n/locales/*.json`、`frontend/e2e/{flows,screens}.spec.ts`、docs/02 §5.4、docs/04。
+
+## 2026-09-20 伺服器上的 repo 目錄改名
+- 情況：VM 上的目錄沿用最早手動部署時的 `~/harrykuo1`，和 repo 名稱不同，容易搞混。
+- 決定：改名為 `~/2026-MeichuHackathon-CloudMosa`（使用者要求）。compose 專案名稱跟著目錄改變，所以資料庫改用新的 volume，由 worker 重新匯入；舊的 `harrykuo1_*` volume 保留不刪（不是這次建立的），要刪由人決定。systemd 單元的路徑一併更新。
+- 影響：`infra/deploy/agriprice-deploy.service`、docs/07 §5.2、VM 上的 `/etc/systemd/system/agriprice-deploy.service`。
