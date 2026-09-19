@@ -53,6 +53,12 @@
     padding: 2px var(--gut);
   }
 
+  /* The cards leave the summary out at this size, so the line naming its language goes too;
+     the news detail still shows both. */
+  .langNote {
+    display: none;
+  }
+
   .summary {
     padding: 2px 4px;
   }

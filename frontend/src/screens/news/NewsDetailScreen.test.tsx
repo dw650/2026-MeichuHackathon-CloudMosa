@@ -56,13 +56,31 @@ describe('NewsDetailScreen', () => {
     expect(screen.getByText('香蕉')).toBeInTheDocument()
   })
 
-  it('reads in English', async () => {
+  it('reads in English and names the summary\u2019s language', async () => {
     const app = await renderApp('/news/7', { country: 'IN', lang: 'en' })
     await screen.findByRole('heading', { name: 'Onion prices ease at Lasalgaon as arrivals rise' })
     expect(screen.getByText('Yesterday 23:40')).toBeInTheDocument()
-    expect(screen.getByText('AI summary of the article; may contain errors')).toBeInTheDocument()
+    // India's news is summarised in Hindi, so an English reader is told once.
+    expect(
+      screen.getByText('Summary in Hindi \u00b7 AI summary of the article; may contain errors'),
+    ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'News' })).toBeInTheDocument()
     expect(softKeys(app)).toEqual(['', 'Prices', 'Back'])
+  })
+
+  it('leaves the language line out when the summary is in the interface language', async () => {
+    await renderApp('/news/7', { country: 'IN', lang: 'hi' })
+    await screen.findByRole('heading', { name: 'Onion prices ease at Lasalgaon as arrivals rise' })
+    expect(
+      screen.getByText(
+        '\u0932\u0947\u0916 \u0915\u093e AI \u0938\u093e\u0930\u093e\u0902\u0936; \u0907\u0938\u092e\u0947\u0902 \u0917\u0932\u0924\u0940 \u0939\u094b \u0938\u0915\u0924\u0940 \u0939\u0948',
+      ),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByText(
+        /\u0938\u093e\u0930\u093e\u0902\u0936 \u0939\u093f\u0928\u094d\u0926\u0940 \u092e\u0947\u0902/,
+      ),
+    ).toBeNull()
   })
 
   it('opens a Malaysian crop from a Malay headline', async () => {

@@ -216,6 +216,12 @@
     "emptyNote": "Dikemas kini setiap hari pada 00:00",
     "today": "Hari ini",
     "aiNote": "Ringkasan AI daripada artikel; mungkin ada kesilapan",
+    "summaryIn": {
+      "zh-TW": "Ringkasan dalam bahasa Cina",
+      "en": "Ringkasan dalam bahasa Inggeris",
+      "ms": "Ringkasan dalam bahasa Melayu",
+      "hi": "Ringkasan dalam bahasa Hindi"
+    },
     "related": "Tanaman berkaitan",
     "notFound": "Berita ini sudah tiada dalam senarai",
     "notFoundNote": "Berita disimpan selama 7 hari"

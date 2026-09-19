@@ -229,6 +229,12 @@
     "emptyNote": "每天 00:00 更新",
     "today": "今天",
     "aiNote": "AI 依原文摘要，可能有誤",
+    "summaryIn": {
+      "zh-TW": "摘要為繁體中文",
+      "en": "摘要為英文",
+      "ms": "摘要為馬來文",
+      "hi": "摘要為印地文"
+    },
     "related": "相關作物",
     "notFound": "這則新聞已經不在列表中",
     "notFoundNote": "新聞只保留 7 天"

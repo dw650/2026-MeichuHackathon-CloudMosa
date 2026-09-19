@@ -216,6 +216,12 @@
     "emptyNote": "Updated daily at 00:00",
     "today": "Today",
     "aiNote": "AI summary of the article; may contain errors",
+    "summaryIn": {
+      "zh-TW": "Summary in Chinese",
+      "en": "Summary in English",
+      "ms": "Summary in Malay",
+      "hi": "Summary in Hindi"
+    },
     "related": "Related crops",
     "notFound": "This news item is no longer listed",
     "notFoundNote": "News is kept for 7 days"

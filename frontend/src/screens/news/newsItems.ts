@@ -17,6 +17,25 @@ export function newsIdOf(focusId: string): number | null {
   return Number.isSafeInteger(id) ? id : null
 }
 
+/** Summary languages a locale file names; the news of a country is summarised in that
+ *  country's own language, so any of them can reach a reader of any language. */
+const SUMMARY_LANGS = ['zh-TW', 'en', 'ms', 'hi'] as const
+
+/**
+ * The line naming the language a summary is written in (「摘要為印地文」), or `null` when it is
+ * the interface language and needs no saying. A screen shows it once, beside the summaries it
+ * explains (docs/02 §5.9).
+ */
+export function summaryLangNote(
+  summaryLang: string | null | undefined,
+  uiLang: string,
+  t: Text['t'],
+): string | null {
+  if (!summaryLang || summaryLang === uiLang) return null
+  const known = SUMMARY_LANGS.find((lang) => lang === summaryLang)
+  return known ? t(`news.summaryIn.${known}`) : null
+}
+
 /** 「今天」, 「昨天」, then the date (e.g. 「9/16 週三」); the backend counts the days. */
 export function dayLabel(
   item: { days_ago: number; published_date: string },
