@@ -692,3 +692,56 @@
 - 情況：VM 上的目錄沿用最早手動部署時的 `~/harrykuo1`，和 repo 名稱不同，容易搞混。
 - 決定：改名為 `~/2026-MeichuHackathon-CloudMosa`（使用者要求）。compose 專案名稱跟著目錄改變，所以資料庫改用新的 volume，由 worker 重新匯入；舊的 `harrykuo1_*` volume 保留不刪（不是這次建立的），要刪由人決定。systemd 單元的路徑一併更新。
 - 影響：`infra/deploy/agriprice-deploy.service`、docs/07 §5.2、VM 上的 `/etc/systemd/system/agriprice-deploy.service`。
+## 2026-09-20 N1 新聞頁（使用者決定）
+- 情況：02 §3.3 原本把「AI 摘要」列為不做。使用者 2026-09-20 決定加一個新聞頁：左軟鍵選單 › 新聞 → 清單 → 內容，每則有兩句摘要，按 `1` 看相關作物的行情；不開外部網站。
+- 決定：
+  - 功能編號 N1，規格寫在 02 §3.4、§5.9；02 §3.3 的「AI 摘要」改成「新聞頁的兩句摘要除外」。
+  - 選單位置：和 B5「國際參考價」一樣放在 baseline 各項之後，排在它後面（首頁 `7`、詳情頁 `8`），原本各項的數字鍵都不變。（第一版放在「關於」之前，會讓「設定」從 5 變 6；rebase 到含 B5 的 main 時改成照 B5 的做法。）
+  - 新聞畫面和「關於」一樣沒有左軟鍵選單；右軟鍵返回。資訊列只顯示我的地區與抓取時間，不畫 `#`（換地區走首頁的選單）。
+  - 內容頁沒有可選的項目（↑ ↓ 捲動），相關作物用數字鍵 1–3 打開、OK 等於 1。作物卡片如果做成可選的項目，焦點會把畫面捲到最下面，長的標題與摘要就看不到，也捲不回去。
+  - 摘要下面一律寫「AI 依原文摘要，可能有誤」；「關於與資料說明」多一段說明新聞與摘要的來源。
+- 理由：照使用者與隊友的草圖（Region 列、卡片、只有返回鍵）；按鍵規則和既有畫面一致。
+- 影響：`frontend/src/screens/news/`、`frontend/src/components/NewsCard/`、`MenuSheet.tsx`、`paths.ts`、`routes.ts`、`icons`（新聞圖示）、i18n、About；e2e `news.spec.ts`、`flows.spec.ts`、`states.spec.ts`、`acceptance.spec.ts`；docs 02、03。
+
+## 2026-09-20 N1 新聞的來源、過濾與保存
+- 情況：使用者指定 Google 新聞 RSS（不需金鑰）；每國的搜尋字放在獨立的設定檔，不放 seed（seed 另一條線在改）。實測搜尋結果很雜。
+- 決定：
+  - 設定檔 `backend/app/ingest/news/sources.yaml`：每國的版本（hl、gl、ceid）與搜尋字、`keywords`、`topics`、`price_words`、`exclude`、作物與地區的別名。馬來西亞先寫好（英文與馬來文兩個版本，馬來文要 `ceid=MY:ms`），seed 有馬來西亞之後才會執行。
+  - 只收價格新聞：有 `keywords`，或同時有「作物或 topics」與「price_words」，而且沒有 `exclude`。第一版只要求提到關鍵字或作物，實測留下了加倍券、選舉掃街、車價、美國批發市場報告，所以改成現在的規則。
+  - 作物與地區用名稱比對（seed 的每種語言＋別名）；英文要整個字相符、接受複數；「臺」當「台」；中文地區名另外去掉「市」「縣」。
+  - 去重：同 guid 或標題只差標點空白大小寫。第一次抓 `when:7d`，之後 `when:2d`（重疊一天）；超過 7 天的刪掉，API 也只列 7 天內的。
+  - 只存標題、摘要、發布者、網域、連結（解得開就存發布者網址）、日期、作物與地區標籤；原文不存。
+- 理由：規則簡單、可以在設定檔調整，不需要額外套件；不存原文避免轉載問題。
+- 影響：`backend/app/ingest/news/{sources.yaml,config,match,rss,pipeline}.py`；docs 06 §1.6（rebase 到含馬來西亞與來源登記表的 main 前是 §1.4）。
+
+## 2026-09-20 N1 新聞摘要：模型、原文與額度
+- 情況：使用者先後改了三次做法，最後定案：伺服器自己讀原文；Gemini 免費額度是主要摘要來源（實驗室的自架模型延後，但程式保留）；有原文就用便宜的 Flash 模型不開搜尋，讀不到原文才用 `gemini-2.5-flash` 加 Google 搜尋；每天最多約 30 次模型呼叫；失敗就只顯示標題。
+- 決定：
+  - 讀原文：照 googlenewsdecoder 的做法解 Google 新聞連結（文章頁的 `data-n-a-sg`／`data-n-a-ts` → `batchexecute`）；抓發布者網頁（瀏覽器 UA、逾時、重試一次、最多 3 MB），正文依序取 JSON-LD `articleBody`、`<p>` 段落、`og:description`，最多 3,000 字。不加 trafilatura 等套件。只抓公開網址（轉址也檢查；服務名稱、localhost、內網 IP 不抓），避免 SSRF。2026-09-20 用真實連結試過：台灣 3 則讀到 2 則、印度 3 則讀到 2 則（讀不到的是 Cloudflare 驗證頁與 403）。
+  - 模型順序：`SUMMARY_API_BASE`＋`SUMMARY_MODEL`（OpenAI 相容，有設定才用，逾時 300 秒）→ Gemini `GEMINI_MODEL`（預設 **`gemini-3.5-flash-lite`**：2026-09-20 查 pricing 與 models 頁，穩定版、2026-07-21 發布、未公告停用日期、免費層輸入輸出不收費、免費層沒有 grounding）。沒有原文時用 **`gemini-2.5-flash`** 加 `googleSearch` 工具（免費 grounding 每天 500 次，未公告停用日期）；它不接受 JSON Schema 與工具並用，所以用提示要求 JSON，並要求回答有引用網頁（`groundingChunks`）。
+  - 回答規則：JSON；兩句以內；語言要對（台灣要有中文、印度與馬來西亞是英文）；300 字以內；作物只收該國清單的代號（Gemini 文字模型另外用 JSON Schema 的 enum 限定）。不合規則就丟掉，不重寫、不補。
+  - 額度：最近 24 小時、所有國家合計最多讀 30 篇原文、呼叫模型 30 次；每國每次最多一半（兩國時 15）；Gemini 每 7 秒最多一次。rate-limits 頁已不列免費層數字（只在 AI Studio 顯示），所以取保守的值。額度、429、金鑰錯誤、模型不存在時，這個模型在這次執行不再使用；Google 回 403／429／5xx 時不再解連結。
+  - 一則最多送兩次（`summary_tries`）；先處理提到地區、再來是提到作物的、較新的。每則記下產生摘要的模型（`summary_model`）。
+  - 測試的 Gemini 與 OpenAI 相容回應是照官方文件的格式寫的（沒有金鑰，無法錄真實回應）；無效金鑰的錯誤回應是 2026-09-20 真實錄下的。
+- 理由：原文加便宜模型最省額度；沒有原文時才用搜尋；任何一步失敗都只少一個摘要，不會出現編造的內容。
+- 影響：`backend/app/ingest/news/{gnews,article,reader,summarize,job}.py`、`backend/app/config.py`、`compose.yaml`（worker 的環境變數、`host.docker.internal`）、`.env.example`；docs 04 §2、06 §1.6。
+
+## 2026-09-20 N1 新聞的排程、手動執行與示範資料
+- 情況：使用者要求每國當地 00:00 抓一次、可以手動執行（CLI，不做公開的 HTTP 觸發）、伺服器每次部署都會重啟 worker 但不能每次都重抓；e2e 不能連網。
+- 決定：
+  - worker 為每國排 00:00（當地時區）的工作，另外在啟動時排一次「只補沒有新聞、或最近 24 小時沒有成功抓過的國家」的工作（第一版只看最近一次成功的時間，e2e 發現切換 demo／google 後國家會變成空的，所以加上「沒有新聞」）；同一個程序內用鎖避免兩次新聞執行重疊。價格的 `python -m app.worker --once`（`make seed`）不抓新聞。
+  - 手動：`docker compose exec worker python -m app.news --once [--country TW]`，照樣受每日額度限制。
+  - `NEWS_SOURCE=google｜demo｜off`（預設 google）。`demo` 讀 `backend/app/ingest/news/demo.yaml` 的固定示範新聞（發布者「示範資料」「Demo data」，網域 `demo.example`，自帶示範摘要），走同一條管線；`make e2e` 與 `make screenshots` 用它。每次執行前先刪掉這個國家「其他來源」的新聞，所以示範新聞不會留在正式資料裡。
+  - 每次執行記在 `news_runs`（抓到幾則、新增幾則、請求數、讀了幾篇原文、呼叫幾次模型、幾則摘要、錯誤），額度就從這裡算。
+- 理由：部署頻繁也不會浪費請求與模型額度；e2e 與截圖不依賴網路，結果固定。
+- 影響：`backend/app/news.py`、`backend/app/worker.py`、`backend/app/ingest/news/{demo.py,demo.yaml,job.py}`、`Makefile`（e2e、screenshots）；docs 04、06 §1.6、§8。
+
+## 2026-09-20 N1 新聞的 API 與資料表
+- 情況：04 §6 只有 GET、價格類 API；新聞要一個清單與一則內容。
+- 決定：
+  - `GET /api/v1/news?country=&area=`：最近 7 天最多 9 則，`area_ids` 含這個地區的排前面，其餘新到舊；回傳 `today`、`fetched_at`（最近一次成功執行的結束時間，國家時區）。每則有 `published_date` 與 `days_ago`（後端依國家時區算），前端只顯示「今天／昨天／日期」。`area` 不屬於這個國家時回 404 `area_not_found`。
+  - `GET /api/v1/news/{id}`：同樣的欄位加 `country`、`today`；不存在或超過 7 天回 404 `news_not_found`。內容頁直接用這支，重新開啟 App 時也能還原。
+  - 新表 `news_items`、`news_runs`，migration `23655d2e487a`（down_revision `bec1dda1df2f`），只建立與刪除自己的兩張表，合併時可以直接接到新的 head 後面。
+  - 多列 INSERT 以第一列的欄位為準，欄位不同的列要分組寫入（`repositories/news.insert_items`）。
+- 理由：沿用既有的錯誤格式、快取標頭與型別產生流程；排序在資料庫做，前端不必知道地區的別名。
+- 影響：`backend/app/{api/v1/news.py,schemas/news.py,services/news.py,repositories/news.py,db/models.py}`、migration、`frontend/src/api/{queries.ts,schema.d.ts}`、msw fixtures 與 handlers、`tests/dump_api_fixtures.py`；docs 04 §6、§7。

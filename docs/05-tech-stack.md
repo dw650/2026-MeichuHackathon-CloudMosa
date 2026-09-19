@@ -65,6 +65,7 @@
 | 程式風格 | `ruff`（lint + format）、`mypy` | CI 會檢查 |
 | 套件管理 | `uv` | 產生 `uv.lock`，Docker build 也用它 |
 | 語音（加分項 B8） | 【待確認】伺服器端 TTS | 產生音檔並快取，前端用 `<audio>` 播放 |
+| 新聞（N1，2026-09-20） | 標準函式庫＋`httpx` | RSS 用 `xml.etree`、網頁正文用 `html.parser`；Gemini 與 OpenAI 相容 API 直接用 `httpx` 呼叫。**沒有新增套件**（不用 feedparser、trafilatura、Google 的 SDK） |
 
 **為什麼是 FastAPI**：團隊熟 Python；資料處理（正規化、中位數、統計）用 Python 寫最直接；自動產生的 OpenAPI 可以讓前端直接產生型別，前後端契約不會對不上。
 
