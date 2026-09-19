@@ -133,7 +133,7 @@ export interface paths {
         };
         /**
          * Quote of one crop in one area
-         * @description Area price (wholesale: median of the markets that reported on the latest trade date), market count and range, change, indicators and a daily series with null for days without data. Without a price, `reason` says why.
+         * @description Area price (wholesale: median of the markets that reported on the latest trade date), market count and range, change, indicators and a daily series with null for days without data. Without a price, `reason` says why. `nearby` names the highest and lowest price among this area and the 3 nearest other areas within 300 km that have a price on the same trade date.
          */
         get: operations["quote"];
         put?: never;
@@ -500,6 +500,37 @@ export interface components {
              */
             total: number;
         };
+        /** NearbyAreaOut */
+        NearbyAreaOut: {
+            /** Area Id */
+            area_id: string;
+            /**
+             * Diff Per Kg
+             * @description This area minus the area being viewed (0 for it).
+             */
+            diff_per_kg: number;
+            /**
+             * Distance Km
+             * @description Straight line from the viewed area (0 for it).
+             */
+            distance_km: number;
+            /**
+             * Is Base
+             * @description The viewed area itself: nothing nearby is higher (lower).
+             */
+            is_base: boolean;
+            /** Price Per Kg */
+            price_per_kg: number;
+        };
+        /**
+         * NearbyOut
+         * @description Highest and lowest price among the viewed area and the 3 nearest other areas within
+         *     300 km that have a price on the same trade date; ties go to the viewed area.
+         */
+        NearbyOut: {
+            highest: components["schemas"]["NearbyAreaOut"];
+            lowest: components["schemas"]["NearbyAreaOut"];
+        };
         /** PriceItemOut */
         PriceItemOut: {
             change: components["schemas"]["ChangeOut"] | null;
@@ -557,6 +588,8 @@ export interface components {
             fetched_at: string | null;
             /** @description Wholesale only. */
             markets: components["schemas"]["MarketsSummaryOut"] | null;
+            /** @description Null when the viewed area's price is missing or old, when no nearby area has a price on the same trade date, or when they all have the same price. */
+            nearby: components["schemas"]["NearbyOut"] | null;
             /** Price Per Kg */
             price_per_kg: number | null;
             /** Reason */
@@ -718,6 +751,8 @@ export type SchemaMarketOut = components['schemas']['MarketOut'];
 export type SchemaMarketRowOut = components['schemas']['MarketRowOut'];
 export type SchemaMarketsOut = components['schemas']['MarketsOut'];
 export type SchemaMarketsSummaryOut = components['schemas']['MarketsSummaryOut'];
+export type SchemaNearbyAreaOut = components['schemas']['NearbyAreaOut'];
+export type SchemaNearbyOut = components['schemas']['NearbyOut'];
 export type SchemaPriceItemOut = components['schemas']['PriceItemOut'];
 export type SchemaPricesOut = components['schemas']['PricesOut'];
 export type SchemaQuoteOut = components['schemas']['QuoteOut'];
@@ -1394,6 +1429,22 @@ export interface operations {
                      *         "max_per_kg": 24.9,
                      *         "min_per_kg": 22.8,
                      *         "total": 10
+                     *       },
+                     *       "nearby": {
+                     *         "highest": {
+                     *           "area_id": "pune",
+                     *           "diff_per_kg": 0.8,
+                     *           "distance_km": 165,
+                     *           "is_base": false,
+                     *           "price_per_kg": 24.3
+                     *         },
+                     *         "lowest": {
+                     *           "area_id": "ahmednagar",
+                     *           "diff_per_kg": -0.9,
+                     *           "distance_km": 142,
+                     *           "is_base": false,
+                     *           "price_per_kg": 22.6
+                     *         }
                      *       },
                      *       "price_per_kg": 23.5,
                      *       "series": [

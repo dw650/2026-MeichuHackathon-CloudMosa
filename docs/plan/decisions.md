@@ -590,3 +590,20 @@
   - 單一市場畫面的來源：國家的資料來源與這筆報價的來源相同時只顯示一次。
 - 理由：部署是否成功一眼可以確認；同一段字不重複出現。
 - 影響：`backend/app/{config.py,schemas/health.py,api/v1/health.py}`、`compose.yaml`、`Makefile`、`scripts/deploy.sh`、`frontend/src/api/queries.ts`、`frontend/src/screens/{about,markets}/`、docs/02、docs/04、docs/07。
+
+## 2026-09-20 行情頁的附近最高／最低價
+- 情況：要在行情頁告訴使用者「附近哪個地區今天價格最高、哪個最低」。docs 與草圖都沒有這張卡片，也沒有定義「附近」要多遠、要不要算舊資料、這個地區自己最高時怎麼寫。
+- 決定：
+  - **附近的範圍**：同一個國家內離正在看的地區最近的 **3 個**地區，而且地區中心的直線距離（haversine，和比價頁相同）在 **300 km 以內**。以 seed 的座標：台北市 → 新北市 11、桃園市 27、宜蘭縣 38 km；台中市 → 雲林縣 44、嘉義市 78、花蓮縣 96 km；Nashik → Ahmednagar 142、Pune 165、Jalgaon 215 km；North Delhi 300 km 內只有 Agra（191 km）；Bengaluru Urban 只有 Kolar（61 km；Kurnool 在 322 km 外）。300 km 沿用位置推測「最近的地區超過 300 km 就算推測不到」的上限（06 §6）。
+  - **只比同一天**：這個地區的價格要是新的（今天，或中間只有休市日）；附近地區的最新交易日要和它**相同**才算，比較早（舊資料）或比較晚的都不算。所以卡片不另外標日期，日期看資訊列。
+  - **最高與最低**：在這個地區和符合的附近地區之間取。同價時算這個地區（附近沒有更高的，就說這裡最高）；附近地區之間同價時取近的。價格比較到小數 4 位（和名次相同）。沒有符合的附近地區，或附近都和這裡同價時，不顯示卡片。
+  - **由後端算**：quote 回應多一個 `nearby`（`highest`、`lowest` 兩列，各有 `area_id`、價格、差額、直線距離、`is_base`），手機只下載兩列。純函式在 `services/nearby.py`，SQL 沿用 `repositories/prices.py` 的 `area_daily_rows`。
+  - **畫面**：三個指標下方兩張地區卡片，各自可以選、各自有數字鍵帽，OK 或數字鍵打開那個地區的行情分頁（和比價頁相同）。說明列「附近最高 · 直線 165 km」、右側是價格與差額。這個地區本身就是最高（或最低）時，那一張改成它自己的卡片（定位圖示、「附近最高」、「你」標籤，不顯示價格、不能選），排在另一張前面。
+  - **用語不分角色**：只寫「附近最高／附近最低」（英文「Highest nearby」「Lowest nearby」），不寫「賣到哪裡多賺」「去哪裡買便宜」；兩張都能選，賣方看最高、買方看最低（00：不做賣方／買方角色）。
+  - 英文的說明列在 240×320 放不下「Highest nearby · 165 km (straight)」，距離會被截掉；所以可選卡片的英文寫「Highest · 165 km (straight)」，自己的卡片寫「Highest nearby」。說明列用 `detail.today.nearby.highestAt` 一整句，各語言自己決定怎麼寫。
+  - 關於頁多一行說明附近的範圍。
+- 理由：
+  - 3 個、300 km 兩國都合理：台灣的縣市很近，取最近的 3 個不會跨到島的另一頭；印度的縣相隔 100–250 km，300 km 內通常有 1–3 個，太遠的不算（例：North Delhi 第二近的 Indore 在 676 km 外）。只用半徑的話，300 km 幾乎涵蓋整個台灣；只用個數的話，North Delhi 的「附近」會包含 676、870 km 外的地區。
+  - 只比同一天，差額才有意義，也不會把舊資料當成今天的顯示。
+  - 卡片放在指標下方：焦點從「本地區各市場」往下移時，中間的指標會一起露出來；自己的卡片不能選，排在前面，讓最後一張一定是可選的，捲到最下面時整頁都看得到。零售時第一個焦點就是附近的卡片（在 240×320 不用捲動就看得到），這時中間軟鍵是「查看」；沒有附近卡片時仍然是「比價」。
+- 影響：`backend/app/services/{nearby,freshness,prices}.py`、`backend/app/schemas/prices.py`、`backend/app/api/v1/prices.py`、`backend/tests/{unit/test_nearby.py,api/test_nearby.py}`、`backend/tests/dump_api_fixtures.py`（多存 North Delhi 與 Bengaluru Urban 的洋蔥批發行情）；`frontend/src/screens/crop-detail/{NearbyCards.tsx,nearbyRows.ts,TodayTab.tsx}`、i18n、關於頁、`frontend/src/api/schema.d.ts`、msw fixtures 與 handler（借用別的作物或地區的 fixture 時 `nearby` 設成 `null`）、e2e；docs/02 §3.1、§5.4，docs/04 §6。要改範圍就改 `nearby.py` 的 `NEARBY_COUNT`、`NEARBY_MAX_KM`，以及關於頁的 `about.nearby`。

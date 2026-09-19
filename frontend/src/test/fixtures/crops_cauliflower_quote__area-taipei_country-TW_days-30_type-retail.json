@@ -5,6 +5,7 @@
  "currency": "TWD",
  "fetched_at": null,
  "markets": null,
+ "nearby": null,
  "price_per_kg": null,
  "reason": "no_retail_crop",
  "series": [

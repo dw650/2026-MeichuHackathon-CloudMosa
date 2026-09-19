@@ -23,6 +23,9 @@ async function step(page: Page, errors: string[], path: RegExp) {
   await expectCleanScreen(page, errors)
 }
 
+const focusedId = (page: Page) =>
+  page.evaluate(() => document.activeElement?.getAttribute('data-focus-id') ?? null)
+
 test('first-run setup with the location guess, then home', async ({ page, errors }) => {
   await seed(page, { setupDone: false, locate: 'IN:nashik' })
   await page.goto('/')
@@ -108,3 +111,28 @@ for (const [country, lang, crop] of combos) {
     await step(page, errors, /^\/$/)
   })
 }
+
+test('nearby prices: ↓ reaches both cards and a digit opens that area', async ({
+  page,
+  errors,
+}) => {
+  await seed(page, { country: 'IN' })
+  await page.goto('/crop/onion/today')
+  await step(page, errors, /^\/crop\/onion\/today$/)
+  expect(await focusedId(page)).toBe('markets')
+
+  // Each nearby card scrolls into view with the focus, fonts and layout intact.
+  await press(page, 'ArrowDown')
+  expect(await focusedId(page)).toBe('nearby-high')
+  await expectCleanScreen(page, errors)
+  await press(page, 'ArrowDown')
+  expect(await focusedId(page)).toBe('nearby-low')
+  await expectCleanScreen(page, errors)
+
+  // 2 opens the highest nearby area (Pune) on its 行情 tab, like the compare tab does.
+  await press(page, '2')
+  await step(page, errors, /^\/crop\/onion\/today\?area=pune$/)
+  await page.goBack()
+  await step(page, errors, /^\/crop\/onion\/today$/)
+  await expect.poll(() => focusedId(page)).toBe('nearby-high')
+})

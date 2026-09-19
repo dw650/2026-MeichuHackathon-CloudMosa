@@ -1,8 +1,9 @@
-import { act, screen } from '@testing-library/react'
+import { act, screen, within } from '@testing-library/react'
 import { delay, http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 
 import { useSettings } from '@/store/settings'
+import nashikRetail from '@/test/fixtures/crops_onion_quote__area-nashik_country-IN_days-30_type-retail.json'
 import { server } from '@/test/msw/server'
 import { renderApp } from '@/test/renderApp'
 
@@ -55,7 +56,7 @@ describe('crop detail · 行情 tab (T27)', () => {
     expect(app.path()).toBe('/crop/onion/trend?area=pune')
   })
 
-  it('turns every label, number and unit to retail with * and then goes on to 比價', async () => {
+  it('turns every label, number and unit to retail with *', async () => {
     const app = await renderApp('/crop/onion/today')
     await screen.findByText('2,395')
     await press(app, '*')
@@ -66,6 +67,20 @@ describe('crop detail · 行情 tab (T27)', () => {
     expect(screen.getByText('波動')).toBeInTheDocument()
     expect(screen.getByText('普通')).toBeInTheDocument()
     expect(screen.queryByText('本地區 10 個市場')).not.toBeInTheDocument()
+  })
+
+  it('goes on to 比價 on OK when retail has nothing to select', async () => {
+    server.use(
+      http.get(QUOTE, ({ request }) =>
+        new URL(request.url).searchParams.get('type') === 'retail'
+          ? HttpResponse.json({ ...nashikRetail, nearby: null })
+          : undefined,
+      ),
+    )
+    const app = await renderApp('/crop/onion/today')
+    await screen.findByText('2,395')
+    await press(app, '*')
+    expect(await screen.findByText('38.1')).toBeInTheDocument()
     expect(app.focusedId()).toBeNull()
     expect(app.softKey('center')).toBe('比價')
 
@@ -129,5 +144,126 @@ describe('crop detail · 行情 tab (T27)', () => {
     server.resetHandlers()
     await press(app, 'Enter')
     expect(await screen.findByText('2,395')).toBeInTheDocument()
+  })
+})
+
+/** A nearby card by its focus id, or the viewed area's own (not selectable) row by its label. */
+const nearbyCard = (id: string) =>
+  document.querySelector<HTMLElement>(`[data-focus-id="${id}"]`) ?? document.body
+const ownRow = (label: string) =>
+  screen.getByText(label).closest<HTMLElement>('[data-fixed]') ?? document.body
+
+describe('crop detail · 行情 tab · nearby prices', () => {
+  it('names the highest and the lowest nearby area and opens one on OK', async () => {
+    const app = await renderApp('/crop/onion/today', { history: ['/'] })
+    await screen.findByText('2,395')
+    const high = within(nearbyCard('nearby-high'))
+    expect(high.getByText('Pune')).toBeInTheDocument()
+    expect(high.getByText('附近最高 · 直線 165 km')).toBeInTheDocument()
+    expect(high.getByText('2,471')).toBeInTheDocument()
+    expect(high.getByText('+76')).toBeInTheDocument()
+    expect(high.getByText('2')).toBeInTheDocument() // digit key cap
+    const low = within(nearbyCard('nearby-low'))
+    expect(low.getByText('Ahmednagar')).toBeInTheDocument()
+    expect(low.getByText('附近最低 · 直線 142 km')).toBeInTheDocument()
+    expect(low.getByText('2,267')).toBeInTheDocument()
+    expect(low.getByText('−128')).toBeInTheDocument()
+    expect(low.getByText('3')).toBeInTheDocument()
+
+    // The markets card stays first; ↓ reaches the nearby cards.
+    expect(app.focusedId()).toBe('markets')
+    await press(app, 'ArrowDown')
+    expect(app.focusedId()).toBe('nearby-high')
+    expect(app.softKey('center')).toBe('查看')
+    await press(app, 'Enter')
+    expect(app.path()).toBe('/crop/onion/today?area=pune')
+
+    // Back returns to the same card.
+    await app.back()
+    expect(app.path()).toBe('/crop/onion/today')
+    expect(app.focusedId()).toBe('nearby-high')
+  })
+
+  it('opens a nearby area with its digit key', async () => {
+    const app = await renderApp('/crop/onion/today')
+    await screen.findByText('2,395')
+    await press(app, '3')
+    expect(app.path()).toBe('/crop/onion/today?area=ahmednagar')
+  })
+
+  it('says so when the viewed area itself is the highest', async () => {
+    const app = await renderApp('/crop/onion/today?area=delhi')
+    await screen.findByText('2,954')
+    const own = within(ownRow('附近最高'))
+    expect(own.getByText('North Delhi')).toBeInTheDocument()
+    expect(own.getByText('你')).toBeInTheDocument()
+    expect(ownRow('附近最高')).not.toHaveAttribute('data-focus-id')
+    const low = within(nearbyCard('nearby-low'))
+    expect(low.getByText('Agra')).toBeInTheDocument()
+    expect(low.getByText('附近最低 · 直線 191 km')).toBeInTheDocument()
+    expect(low.getByText('2,607')).toBeInTheDocument()
+    expect(low.getByText('−347')).toBeInTheDocument()
+    // The own row cannot be opened, so the lowest one comes right after the markets card.
+    expect(low.getByText('2')).toBeInTheDocument()
+    await press(app, 'ArrowDown')
+    expect(app.focusedId()).toBe('nearby-low')
+    await press(app, 'ArrowDown')
+    expect(app.focusedId()).toBe('nearby-low')
+  })
+
+  it('follows * to retail prices, where the viewed area is the lowest', async () => {
+    const app = await renderApp('/crop/onion/today')
+    await screen.findByText('2,395')
+    await press(app, '*')
+    await screen.findByText('38.1')
+    const high = within(nearbyCard('nearby-high'))
+    expect(high.getByText('Pune')).toBeInTheDocument()
+    expect(high.getByText('41.0')).toBeInTheDocument()
+    expect(high.getByText('+2.9')).toBeInTheDocument()
+    expect(high.getByText('1')).toBeInTheDocument()
+    expect(within(ownRow('附近最低')).getByText('Nashik')).toBeInTheDocument()
+    expect(screen.queryByText('Ahmednagar')).not.toBeInTheDocument()
+    // The own row comes first, so the last row is the one that takes the focus.
+    expect(
+      ownRow('附近最低').compareDocumentPosition(nearbyCard('nearby-high')) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+    // The only thing to select: OK now opens Pune instead of 比價.
+    expect(app.focusedId()).toBe('nearby-high')
+    expect(app.softKey('center')).toBe('查看')
+    await press(app, '1')
+    expect(app.path()).toBe('/crop/onion/today?area=pune')
+  })
+
+  it('is left out when no nearby area has a price today', async () => {
+    const app = await renderApp('/crop/onion/today?area=bengaluru')
+    await screen.findByText('2,785')
+    expect(screen.queryByText(/附近最/)).not.toBeInTheDocument()
+    expect(app.focusedId()).toBe('markets')
+    await press(app, 'ArrowDown')
+    expect(app.focusedId()).toBe('markets')
+  })
+
+  it('is left out while the area has not updated today', async () => {
+    await renderApp('/crop/onion/today?area=kolar')
+    await screen.findByText('Kolar 縣 今天還沒更新')
+    expect(screen.queryByText(/附近最/)).not.toBeInTheDocument()
+  })
+
+  it('speaks English', async () => {
+    const app = await renderApp('/crop/cabbage/today', { country: 'TW', lang: 'en' })
+    await screen.findByText('38.3')
+    const own = within(ownRow('Highest nearby'))
+    expect(own.getByText('Taipei')).toBeInTheDocument()
+    expect(own.getByText('You')).toBeInTheDocument()
+    const low = within(nearbyCard('nearby-low'))
+    expect(low.getByText('Taoyuan')).toBeInTheDocument()
+    expect(low.getByText('Lowest · 27 km (straight)')).toBeInTheDocument()
+    expect(low.getByText('36.9')).toBeInTheDocument()
+    expect(low.getByText('−1.4')).toBeInTheDocument()
+    await press(app, 'ArrowDown')
+    expect(app.softKey('center')).toBe('View')
+    await press(app, 'Enter')
+    expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
   })
 })

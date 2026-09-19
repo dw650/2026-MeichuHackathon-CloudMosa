@@ -15,6 +15,22 @@
   "min_per_kg": 38.0,
   "total": 2
  },
+ "nearby": {
+  "highest": {
+   "area_id": "taipei",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
+   "price_per_kg": 38.25
+  },
+  "lowest": {
+   "area_id": "taoyuan",
+   "diff_per_kg": -1.35,
+   "distance_km": 27,
+   "is_base": false,
+   "price_per_kg": 36.9
+  }
+ },
  "price_per_kg": 38.25,
  "reason": null,
  "series": [

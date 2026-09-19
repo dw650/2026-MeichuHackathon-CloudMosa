@@ -72,6 +72,22 @@ class SeriesPointOut(BaseModel):
     price_per_kg: float | None
 
 
+class NearbyAreaOut(BaseModel):
+    area_id: str
+    price_per_kg: float
+    diff_per_kg: float = Field(description="This area minus the area being viewed (0 for it).")
+    distance_km: int = Field(description="Straight line from the viewed area (0 for it).")
+    is_base: bool = Field(description="The viewed area itself: nothing nearby is higher (lower).")
+
+
+class NearbyOut(BaseModel):
+    """Highest and lowest price among the viewed area and the 3 nearest other areas within
+    300 km that have a price on the same trade date; ties go to the viewed area."""
+
+    highest: NearbyAreaOut
+    lowest: NearbyAreaOut
+
+
 class QuoteOut(BaseModel):
     crop_id: str
     area_id: str
@@ -88,6 +104,10 @@ class QuoteOut(BaseModel):
     stats: StatsOut
     series: list[SeriesPointOut]
     source: SourceOut | None
+    nearby: NearbyOut | None = Field(
+        description="Null when the viewed area's price is missing or old, when no nearby area"
+        " has a price on the same trade date, or when they all have the same price."
+    )
 
 
 class RankOut(BaseModel):

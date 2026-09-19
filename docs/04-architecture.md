@@ -194,7 +194,7 @@ class PriceProvider(Protocol):
 | `GET /countries/{cc}/areas` | 地區清單 | 名稱、區域、座標、有無零售、最新交易日與新舊 |
 | `GET /countries/{cc}/crops` | 作物清單 | 名稱、分類、品種、有無零售 |
 | `GET /prices?country=&area=&type=&crops=` | 首頁與作物清單 | 每個作物的地區價、漲跌、7 日迷你走勢、新舊 |
-| `GET /crops/{crop}/quote?country=&area=&type=&days=30` | 行情頁與走勢頁 | 地區價、市場數、市場最高與最低、漲跌、指標、30 日序列 |
+| `GET /crops/{crop}/quote?country=&area=&type=&days=30` | 行情頁與走勢頁 | 地區價、市場數、市場最高與最低、漲跌、指標、30 日序列、附近最高與最低（`nearby`） |
 | `GET /crops/{crop}/compare?country=&area=&type=` | 比價頁 | 各地區的價格、市場數、直線距離、差額、新舊、名次；目前地區的名次與總數 |
 | `GET /crops/{crop}/markets?country=&area=` | 本地區各市場（只有批發） | 各市場代表價、距離、新舊、與中位數的差額 |
 | `GET /crops/{crop}/markets/{market}?country=` | 單一市場 | 代表價、漲跌、當日區間、來源 |
@@ -220,12 +220,21 @@ class PriceProvider(Protocol):
   "stats": { "vs_avg7_pct": 0.031, "arrivals": "high", "pos30": 0.82, "volatility": "mid",
              "high7_per_kg": 23.5, "low7_per_kg": 21.9 },
   "series": [ { "date": "2026-08-21", "price_per_kg": 21.2 }, { "date": "2026-08-23", "price_per_kg": null } ],
-  "source": { "id": "mock", "name": { "zh-TW": "示範資料", "en": "Demo data" } }
+  "source": { "id": "mock", "name": { "zh-TW": "示範資料", "en": "Demo data" } },
+  "nearby": {
+    "highest": { "area_id": "pune", "price_per_kg": 24.3, "diff_per_kg": 0.8, "distance_km": 165, "is_base": false },
+    "lowest": { "area_id": "ahmednagar", "price_per_kg": 22.6, "diff_per_kg": -0.9, "distance_km": 142, "is_base": false }
+  }
 }
 ```
 
 - 沒有資料時 `price_per_kg` 為 `null`，並附 `reason`：`no_retail_area`、`no_retail_crop`、`no_data`，讓前端顯示對應說明。
 - `staleness.state`：`today`、`closed`（中間只有休市日）、`stale`、`none`（[06](06-data.md) §3.5）。
+- `nearby`（2026-09-20 追加，行情頁的「附近最高／最低」，[02](02-product-spec.md) §5.4）：在這個地區和附近地區之間，價格最高與最低的各一列，手機只要下載兩列，不必下載所有地區。
+  - 附近＝同一個國家內離這個地區最近的 3 個地區，而且直線距離 300 km 以內；只算最新交易日和這個地區相同的。這個地區的價格要是新的（`staleness.state` 是 `today` 或 `closed`）。
+  - 每列：`area_id`、`price_per_kg`、`diff_per_kg`（那個地區減這個地區）、`distance_km`（直線）、`is_base`（這個地區本身就是最高或最低；這時差額與距離都是 0）。同價時算這個地區，附近地區之間同價時取近的。
+  - 這個地區沒有價格或是舊資料、沒有符合的附近地區、或附近都和這裡同價時為 `null`。
+  - 走勢頁也會收到這個欄位（同一個端點），不使用。
 
 ### 6.1 錯誤格式
 

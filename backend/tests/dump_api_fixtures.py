@@ -30,6 +30,8 @@ QUOTES = [
     ("IN", "onion", "ahmednagar", "retail"),
     ("IN", "onion", "kolar", "wholesale"),
     ("IN", "onion", "kurnool", "wholesale"),
+    ("IN", "onion", "delhi", "wholesale"),  # the highest of its nearby areas
+    ("IN", "onion", "bengaluru", "wholesale"),  # no nearby area with today's price
     ("TW", "cabbage", "taipei", "wholesale"),
     ("TW", "cabbage", "taipei", "retail"),
     ("TW", "cauliflower", "taipei", "retail"),

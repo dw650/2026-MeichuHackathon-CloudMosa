@@ -29,6 +29,9 @@ const IN_SCREENS = [
   '/about',
   '/cat/recent',
   '/crop/onion/today?area=jalgaon',
+  // Nearby prices: the viewed area is the highest itself / no nearby area qualifies.
+  '/crop/onion/today?area=delhi',
+  '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',
   '/crop/onion/markets?area=kurnool',
 ]

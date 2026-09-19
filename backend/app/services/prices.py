@@ -1,7 +1,7 @@
 """Price views: home list, quote, comparison and markets (docs/04 §6, docs/06 §3–§4).
 
-Every view is built from the aggregate tables; the arithmetic lives in `stats`, `freshness`
-and `compare`. Missing prices stay None with a reason; nothing is filled in."""
+Every view is built from the aggregate tables; the arithmetic lives in `stats`, `freshness`,
+`compare` and `nearby`. Missing prices stay None with a reason; nothing is filled in."""
 
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -18,7 +18,8 @@ from app.services import stats
 from app.services.catalog import require_country
 from app.services.compare import competition_ranks, diff, haversine_km, market_rows
 from app.services.demo import NO_DEMO, Demo
-from app.services.freshness import WINDOW_DAYS, Staleness, staleness
+from app.services.freshness import WINDOW_DAYS, Staleness, is_fresh, staleness
+from app.services.nearby import Candidate, Extreme, Place, extremes, nearest
 from app.services.sources import source_info
 from app.services.stats import Point
 from app.timeutil import country_tz, local_today
@@ -243,7 +244,62 @@ async def quote(
             {"date": d, "price_per_kg": v} for d, v in stats.daily_series(points, today, days)
         ],
         "source": source_info(source_id),
+        "nearby": await _nearby(session, country, area, crop, price_type, today, demo, latest),
     }
+
+
+def _extreme_out(e: Extreme) -> dict[str, Any]:
+    return {
+        "area_id": e.area_id,
+        "price_per_kg": e.price,
+        "diff_per_kg": round(e.diff, 4),
+        "distance_km": e.distance_km,
+        "is_base": e.is_base,
+    }
+
+
+async def _nearby(
+    session: AsyncSession,
+    country: Country,
+    area: Area,
+    crop: Crop,
+    price_type: str,
+    today: date,
+    demo: Demo,
+    latest: _Latest,
+) -> dict[str, Any] | None:
+    """Highest and lowest price around the viewed area on its latest trade date (docs/02 §5.4).
+
+    Only a fresh price of the viewed area is compared, and only with nearby areas whose latest
+    trade date is the same day, so the card needs no date of its own."""
+    point = latest.point
+    if point is None or not is_fresh(latest.staleness):
+        return None
+    areas = await catalog_repo.get_areas(session, country.code)
+    places = [Place(a.id, a.lat, a.lon) for a in areas]
+    close = nearest(Place(area.id, area.lat, area.lon), places)
+    rows = await repo.area_daily_rows(
+        session,
+        country=country.code,
+        price_type=price_type,
+        start=point.day,
+        end=today,
+        area_ids=[area_id for area_id, _ in close],
+        crop_ids=[crop.id],
+    )
+    latest_row: dict[str, AreaDaily] = {}
+    for row in rows:  # ordered by date, so the last one per area wins
+        if row.trade_date <= demo.until(row.area_id, today):
+            latest_row[row.area_id] = row
+    neighbours = [
+        Candidate(area_id, _money(latest_row[area_id].price), km)
+        for area_id, km in close
+        if area_id in latest_row and latest_row[area_id].trade_date == point.day
+    ]
+    found = extremes(area.id, point.price, neighbours)
+    if found is None:
+        return None
+    return {"highest": _extreme_out(found.highest), "lowest": _extreme_out(found.lowest)}
 
 
 def _stats(

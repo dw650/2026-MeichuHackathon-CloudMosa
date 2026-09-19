@@ -10,6 +10,22 @@
  "currency": "INR",
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": null,
+ "nearby": {
+  "highest": {
+   "area_id": "pune",
+   "diff_per_kg": 2.92,
+   "distance_km": 165,
+   "is_base": false,
+   "price_per_kg": 41.03
+  },
+  "lowest": {
+   "area_id": "nashik",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
+   "price_per_kg": 38.11
+  }
+ },
  "price_per_kg": 38.11,
  "reason": null,
  "series": [
