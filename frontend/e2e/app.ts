@@ -70,6 +70,18 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
           },
           version: 1,
         }
+  // Counts API requests in flight so `settled` can wait for client-side navigations too.
+  // Plain JavaScript: injected as-is into every document before the app runs.
+  await page.addInitScript({
+    content: `(() => {
+      window.__inflight = 0
+      const original = window.fetch.bind(window)
+      window.fetch = (...args) => {
+        window.__inflight += 1
+        return original(...args).finally(() => { window.__inflight -= 1 })
+      }
+    })()`,
+  })
   await page.addInitScript(
     (value) => {
       if (sessionStorage.getItem('e2e-seeded')) return
@@ -81,8 +93,20 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
   )
 }
 
-/** Waits until the screen has rendered its data (no skeletons left). */
-export async function settled(page: Page): Promise<void> {
+/**
+ * Waits until the screen has rendered its data: a title, no API request in flight and no
+ * skeleton left (client-side navigations never reset Playwright's `networkidle`).
+ */
+export async function settled(page: Page, options: { skeletons?: boolean } = {}): Promise<void> {
   await page.locator('h1').first().waitFor()
-  await page.waitForLoadState('networkidle')
+  await page.waitForFunction(
+    (skeletonsAllowed) =>
+      (window as unknown as { __inflight?: number }).__inflight === 0 &&
+      (skeletonsAllowed || !document.querySelector('[data-skeleton]')),
+    options.skeletons ?? false,
+    { polling: 50, timeout: 15_000 },
+  )
+  await page.evaluate(
+    () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))),
+  )
 }

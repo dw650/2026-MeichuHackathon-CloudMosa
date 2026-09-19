@@ -95,7 +95,7 @@ for (const [country, lang, crop] of combos) {
     await press(page, '#')
     await step(page, errors, /sheet=area/)
     await press(page, '2')
-    await step(page, errors, new RegExp(`^/crop/${crop}/today\\?area=`))
+    await step(page, errors, new RegExp(`^/crop/${crop}/today\\?(.*&)?area=`))
 
     // Back to home, then the menu → settings, and back
     await page.goBack()
