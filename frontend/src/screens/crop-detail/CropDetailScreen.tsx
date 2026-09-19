@@ -4,6 +4,7 @@ import { PlaceholderScreen } from '@/screens/placeholder/PlaceholderScreen'
 import { useSession } from '@/store/session'
 
 import { TodayTab } from './TodayTab'
+import { TrendTab } from './TrendTab'
 import { useDetail } from './useDetail'
 
 /**
@@ -21,7 +22,8 @@ export default function CropDetailScreen() {
     if (known) useSession.getState().viewCrop(cropId)
   }, [cropId, known])
 
-  // Placeholder until T28 and T29 build the other tabs.
-  if (detail.tab !== 'today') return <PlaceholderScreen name="crop-detail" />
+  if (detail.tab === 'trend') return <TrendTab detail={detail} />
+  // Placeholder until T29 builds the compare tab.
+  if (detail.tab === 'compare') return <PlaceholderScreen name="crop-detail" />
   return <TodayTab detail={detail} />
 }
