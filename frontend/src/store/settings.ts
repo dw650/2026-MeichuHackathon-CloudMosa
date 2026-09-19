@@ -63,6 +63,8 @@ export interface CountryDefaults {
   readonly default_area_id: string
   readonly default_recent_area_ids: readonly string[]
   readonly default_watch: readonly string[]
+  /** The price type a new user starts on: retail where the source has retail prices only. */
+  readonly default_price_type: PriceType
 }
 
 export interface SettingsData {
@@ -87,9 +89,9 @@ export interface SettingsData {
 export interface SettingsActions {
   chooseLanguage(language: LanguageId): void
   /**
-   * Switches country. A different country replaces my area, the recent areas and the
-   * watchlist with its defaults, returns the units to its defaults and clears the recently
-   * viewed crops; choosing the current country again changes nothing.
+   * Switches country. A different country replaces my area, the recent areas, the watchlist
+   * and the price type with its defaults, returns the units to its defaults and clears the
+   * recently viewed crops; choosing the current country again changes nothing.
    */
   chooseCountry(country: CountryCode, defaults: CountryDefaults): void
   /** Sets my area (home, crop lists) and finishes first-run setup; needs a country first. */
@@ -162,6 +164,7 @@ export const useSettings = create<SettingsState>()(
           areaId: defaults.default_area_id,
           recentAreaIds: unique(defaults.default_recent_area_ids).slice(0, RECENT_AREAS_MAX),
           watchlist: unique(defaults.default_watch),
+          priceType: defaults.default_price_type,
           units: DEFAULT_SETTINGS.units,
         })
         useSession.getState().clearRecentCrops()

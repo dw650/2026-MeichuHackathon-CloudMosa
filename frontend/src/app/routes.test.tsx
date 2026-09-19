@@ -28,6 +28,7 @@ function resetStores(setupDone: boolean) {
       default_area_id: 'nashik',
       default_recent_area_ids: ['nashik', 'pune', 'ahmednagar'],
       default_watch: ['onion'],
+      default_price_type: 'wholesale',
     })
     useSettings.getState().chooseArea('nashik')
   }

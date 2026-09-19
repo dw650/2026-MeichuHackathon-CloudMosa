@@ -15,23 +15,34 @@ import { appRoutes } from '@/app/routes'
 import { setLanguage } from '@/i18n'
 import type { LanguageId } from '@/i18n/languages'
 import { useSession } from '@/store/session'
+import type { PriceType } from '@/lib/units'
 import { type CountryCode, useSettings } from '@/store/settings'
 
-const DEFAULTS: Record<CountryCode, { area: string; recent: string[]; watch: string[] }> = {
+interface Defaults {
+  area: string
+  recent: string[]
+  watch: string[]
+  priceType: PriceType
+}
+
+const DEFAULTS: Record<CountryCode, Defaults> = {
   IN: {
     area: 'nashik',
     recent: ['nashik', 'pune', 'ahmednagar'],
     watch: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat'],
+    priceType: 'wholesale',
   },
   TW: {
     area: 'taipei',
     recent: ['taipei', 'newtaipei', 'taichung'],
     watch: ['cabbage', 'bokchoy', 'banana', 'sweetpotato', 'scallion', 'cauliflower'],
+    priceType: 'wholesale',
   },
   MY: {
     area: 'kualalumpur',
     recent: ['kualalumpur', 'klang', 'seremban'],
     watch: ['tomato', 'cabbage', 'chilli', 'onion', 'cucumber', 'bokchoy', 'garlic'],
+    priceType: 'retail',
   },
 }
 
@@ -61,6 +72,7 @@ export function resetApp(options: RenderAppOptions = {}): void {
       default_area_id: d.area,
       default_recent_area_ids: d.recent,
       default_watch: d.watch,
+      default_price_type: d.priceType,
     })
     useSettings.getState().chooseArea(options.area ?? d.area)
   }

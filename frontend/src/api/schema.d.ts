@@ -401,6 +401,11 @@ export interface components {
             currency: string;
             /** Default Area Id */
             default_area_id: string;
+            /**
+             * Default Price Type
+             * @enum {string}
+             */
+            default_price_type: "wholesale" | "retail";
             /** Default Recent Area Ids */
             default_recent_area_ids: string[];
             /** Default Watch */
