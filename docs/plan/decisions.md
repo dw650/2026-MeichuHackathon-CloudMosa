@@ -837,7 +837,7 @@
 ## 2026-09-20 國家可以宣告預設的價格類型
 - 情況：馬來西亞的真實資料只有零售，新使用者選了馬來西亞卻先看到批發的「—」。之前記為【待確認】（見「PriceCatcher：零售取濕巴剎的中位數、沒有批發價」），使用者決定馬來西亞預設零售。
 - 決定：
-  - seed 的國家設定加 `default_price_type`（`wholesale` 或 `retail`，不寫就是 `wholesale`），同步到 `countries.default_price_type`（migration `5c1e7a9d2b40`，down_revision `74f6aadac0c6`），`GET /countries` 回傳。只有 `MY.yaml` 寫 `retail`，印度、台灣不改。
+  - seed 的國家設定加 `default_price_type`（`wholesale` 或 `retail`，不寫就是 `wholesale`），同步到 `countries.default_price_type`（migration `5c1e7a9d2b40`，down_revision `23655d2e487a`（新聞的 migration）），`GET /countries` 回傳。只有 `MY.yaml` 寫 `retail`，印度、台灣不改。
   - 前端選國家時（首次設定、接受推測的位置、之後在設定更改國家）把價格類型換成那個國家的預設；再選同一個國家不變；之後照樣用 `*` 切換，每次切換都存起來。
 - 理由：新使用者第一眼就看到有資料的價格；已經在用的人不受影響（只有換國家時才套用）。
 - 影響：`backend/app/seed/schema.py`、`backend/app/db/models.py` 與 migration、`backend/app/ingest/seed.py`、`backend/app/services/catalog.py`、`backend/app/schemas/catalog.py`、`frontend/src/store/settings.ts`、`frontend/src/api/schema.d.ts`、docs/02 §1、docs/04 §5、§7。

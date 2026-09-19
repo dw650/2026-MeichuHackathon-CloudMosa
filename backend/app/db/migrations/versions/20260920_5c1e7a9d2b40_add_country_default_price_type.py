@@ -1,7 +1,7 @@
 """add country default price type
 
 Revision ID: 5c1e7a9d2b40
-Revises: 74f6aadac0c6
+Revises: 23655d2e487a
 Create Date: 2026-09-20 05:10:00.000000
 """
 
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 from alembic import op
 
 revision: str = '5c1e7a9d2b40'
-down_revision: str | Sequence[str] | None = '74f6aadac0c6'
+down_revision: str | Sequence[str] | None = '23655d2e487a'
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
