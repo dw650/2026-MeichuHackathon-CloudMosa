@@ -26,8 +26,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Heavy rain cut tomato supply in Johor and retail prices rose. Farmers say the next harvest should bring prices down.",
-   "summary_lang": "en",
+   "summary": "Hujan lebat mengurangkan bekalan tomato di Johor dan harga runcit naik. Petani berkata tuaian seterusnya sepatutnya menurunkan harga.",
+   "summary_lang": "ms",
    "title": "Tomato prices rise in Johor after heavy rain",
    "url": "https://demo.example/my/2"
   },
@@ -47,8 +47,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.",
-   "summary_lang": "en",
+   "summary": "Bekalan cili di pasar borong Kuala Lumpur bertambah minggu ini dan harga turun. Peniaga menjangkakan harga stabil sehingga akhir bulan.",
+   "summary_lang": "ms",
    "title": "Chilli prices ease at the Kuala Lumpur wholesale market",
    "url": "https://demo.example/my/1"
   },
@@ -97,8 +97,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Carrot and potato prices in Penang stayed close to last week's level. Supply from Cameron Highlands was normal.",
-   "summary_lang": "en",
+   "summary": "Harga lobak merah dan kentang di Pulau Pinang kekal hampir sama seperti minggu lalu. Bekalan dari Cameron Highlands adalah normal.",
+   "summary_lang": "ms",
    "title": "Carrot and potato prices steady in Penang",
    "url": "https://demo.example/my/4"
   }

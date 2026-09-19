@@ -34,9 +34,11 @@ class Settings(BaseSettings):
     summary_api_base: str = ""
     summary_model: str = ""
     summary_api_key: str = ""
-    # Daily budgets for the news job (rolling 24 hours, all countries together).
-    news_daily_articles: int = 30
-    news_daily_model_calls: int = 30
+    # Daily budgets for the news job (rolling 24 hours, all countries together). They are a
+    # guard against a bug burning the day's free quota, not a ration: the list is nine items
+    # per country, so a normal day needs about 27 of each (docs/06 §1.6).
+    news_daily_articles: int = 60
+    news_daily_model_calls: int = 60
 
     @property
     def provider_ids(self) -> list[str]:

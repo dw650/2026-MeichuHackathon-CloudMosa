@@ -19,8 +19,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Heavy rain cut tomato arrivals at the Pune wholesale market and prices climbed. Traders say supply should recover within a week.",
-   "summary_lang": "en",
+   "summary": "भारी बारिश से पुणे थोक मंडी में टमाटर की आवक घटी और भाव चढ़े। व्यापारियों के मुताबिक आपूर्ति एक हम़्ते में सुधर जानी चाहिए।",
+   "summary_lang": "hi",
    "title": "Tomato prices climb in Pune wholesale market after heavy rain",
    "url": "https://demo.example/in/2"
   },
@@ -40,8 +40,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.",
-   "summary_lang": "en",
+   "summary": "लासलगाँव मंडी में प्याज़ की आवक इस हम़्ते बढ़ी और मॉडल भाव नरम पड़े। व्यापारियों को नई फसल आने तक भाव स्थिर रहने की उम्मीद है।",
+   "summary_lang": "hi",
    "title": "Onion prices ease at Lasalgaon as arrivals rise",
    "url": "https://demo.example/in/1"
   },
@@ -80,8 +80,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Chilli growers in Kurnool are getting better rates than last season. Demand from traders in other states has increased.",
-   "summary_lang": "en",
+   "summary": "कुरनूल के मिर्च किसानों को पिछले सीज़न से बेहतर भाव मिल रहे हैं। दूसरे राज्यों के व्यापारियों की मांग बढ़ गई है।",
+   "summary_lang": "hi",
    "title": "Kurnool chilli growers see better rates this season",
    "url": "https://demo.example/in/4"
   },
@@ -99,8 +99,8 @@
     "domain": "demo.example",
     "name": "Demo data"
    },
-   "summary": "Wheat prices in the mandis stayed firm this week. Farmers are holding stocks before the sowing season.",
-   "summary_lang": "en",
+   "summary": "इस हम़्ते मंडियों में गेहूँ के भाव मज़बूत रहे। किसान बुवाई के मोसम से पहले स्टॉक रोक रहे हैं।",
+   "summary_lang": "hi",
    "title": "Mandi prices of wheat stay firm ahead of sowing",
    "url": "https://demo.example/in/5"
   }

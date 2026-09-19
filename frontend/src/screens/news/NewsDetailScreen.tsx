@@ -19,7 +19,7 @@ import { useCountryData } from '@/screens/shared/useCountryData'
 import { useText } from '@/screens/shared/useText'
 
 import styles from './news.module.css'
-import { dayLabel, RETRY_ID } from './newsItems'
+import { dayLabel, RETRY_ID, summaryLangNote } from './newsItems'
 
 const NO_ITEMS: readonly string[] = []
 /** Related crops shown; 1, 2, 3 open them. */
@@ -36,11 +36,12 @@ export default function NewsDetailScreen() {
 /**
  * The headline, its date, publisher and domain (the app never opens the publisher's site: data
  * costs), the summary marked as written by AI (none when there is no summary), and the related
- * crops. Nothing to select: ↑ ↓ scroll the page; 1–3 open a related crop's prices and OK the
+ * crops, and the summary's language when it is not the interface language. Nothing to
+ * select: ↑ ↓ scroll the page; 1–3 open a related crop's prices and OK the
  * first one.
  */
 function NewsDetail({ id }: { id: number }) {
-  const { t, pick, dates } = useText()
+  const { t, pick, lang, dates } = useText()
   const data = useCountryData()
   const query = useNewsItem(id)
   const openCrop = useOpenCrop()
@@ -86,7 +87,11 @@ function NewsDetail({ id }: { id: number }) {
         {item.summary && (
           <div className={styles.summary}>
             <p lang={item.summary_lang ?? undefined}>{item.summary}</p>
-            <p className={styles.note}>{t('news.aiNote')}</p>
+            <p className={styles.note}>
+              {[summaryLangNote(item.summary_lang, lang, t), t('news.aiNote')]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
           </div>
         )}
         {crops.length > 0 && (

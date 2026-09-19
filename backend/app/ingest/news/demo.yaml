@@ -2,7 +2,8 @@
 # no network. They go through the same pipeline as real headlines. The publisher is always
 # 示範資料 / Demo data, and switching back to NEWS_SOURCE=google removes them.
 #   hours_ago: published this many hours before the run
-#   summary: optional (items without one show the title only, like real items)
+#   summary: optional (items without one show the title only, like real items); written in
+#          the country's summary language (sources.yaml: TW zh-TW, IN hi, MY ms)
 #   crops: optional extra crop tags, as a summariser would add them
 TW:
   source: 示範資料
@@ -33,18 +34,18 @@ IN:
   items:
     - hours_ago: 12
       title: Onion prices ease at Lasalgaon as arrivals rise
-      summary: Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.
+      summary: लासलगाँव मंडी में प्याज़ की आवक इस हम़्ते बढ़ी और मॉडल भाव नरम पड़े। व्यापारियों को नई फसल आने तक भाव स्थिर रहने की उम्मीद है।
     - hours_ago: 2
       title: Tomato prices climb in Pune wholesale market after heavy rain
-      summary: Heavy rain cut tomato arrivals at the Pune wholesale market and prices climbed. Traders say supply should recover within a week.
+      summary: भारी बारिश से पुणे थोक मंडी में टमाटर की आवक घटी और भाव चढ़े। व्यापारियों के मुताबिक आपूर्ति एक हम़्ते में सुधर जानी चाहिए।
     - hours_ago: 26
       title: Government buffer sales keep potato prices steady across India
     - hours_ago: 40
       title: Kurnool chilli growers see better rates this season
-      summary: Chilli growers in Kurnool are getting better rates than last season. Demand from traders in other states has increased.
+      summary: कुरनूल के मिर्च किसानों को पिछले सीज़न से बेहतर भाव मिल रहे हैं। दूसरे राज्यों के व्यापारियों की मांग बढ़ गई है।
     - hours_ago: 70
       title: Mandi prices of wheat stay firm ahead of sowing
-      summary: Wheat prices in the mandis stayed firm this week. Farmers are holding stocks before the sowing season.
+      summary: इस हम़्ते मंडियों में गेहूँ के भाव मज़बूत रहे। किसान बुवाई के मोसम से पहले स्टॉक रोक रहे हैं।
 
 MY:
   source: Demo data
@@ -52,13 +53,13 @@ MY:
   items:
     - hours_ago: 12
       title: Chilli prices ease at the Kuala Lumpur wholesale market
-      summary: Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.
+      summary: Bekalan cili di pasar borong Kuala Lumpur bertambah minggu ini dan harga turun. Peniaga menjangkakan harga stabil sehingga akhir bulan.
     - hours_ago: 3
       title: Tomato prices rise in Johor after heavy rain
-      summary: Heavy rain cut tomato supply in Johor and retail prices rose. Farmers say the next harvest should bring prices down.
+      summary: Hujan lebat mengurangkan bekalan tomato di Johor dan harga runcit naik. Petani berkata tuaian seterusnya sepatutnya menurunkan harga.
     - hours_ago: 30
       lang: ms
       title: Harga kubis dan sawi turun di Pahang
     - hours_ago: 60
       title: Carrot and potato prices steady in Penang
-      summary: Carrot and potato prices in Penang stayed close to last week's level. Supply from Cameron Highlands was normal.
+      summary: Harga lobak merah dan kentang di Pulau Pinang kekal hampir sama seperti minggu lalu. Bekalan dari Cameron Highlands adalah normal.

@@ -7,6 +7,7 @@ import { Card, CardList } from '@/components/Card/Card'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { NewsCard } from '@/components/NewsCard/NewsCard'
+import { Note } from '@/components/Note/Note'
 import { Shell } from '@/components/Shell/Shell'
 import { Skeleton } from '@/components/Skeleton/Skeleton'
 import { StatusBox } from '@/components/StatusBox/StatusBox'
@@ -22,7 +23,8 @@ import { useCountryData } from '@/screens/shared/useCountryData'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
 
-import { dayLabel, newsFocusId, newsIdOf, RETRY_ID } from './newsItems'
+import styles from './news.module.css'
+import { dayLabel, newsFocusId, newsIdOf, RETRY_ID, summaryLangNote } from './newsItems'
 
 /** Digit key caps go on the first nine cards, which is all of them (docs/02 §4). */
 const DIGIT_KEYS = 9
@@ -78,6 +80,8 @@ export default function NewsListScreen() {
     focus.focusedId === null
       ? ''
       : t(focus.focusedId === RETRY_ID ? 'softkeys.retry' : 'softkeys.open')
+  // Every item of a country is summarised in the same language, so one line covers the list.
+  const langNote = summaryLangNote(items.find((item) => item.summary)?.summary_lang, lang, t)
 
   let content
   if (loading) {
@@ -111,34 +115,41 @@ export default function NewsListScreen() {
     content = <StatusBox icon="news" title={t('news.empty')} lines={[t('news.emptyNote')]} />
   } else {
     content = (
-      <CardList>
-        {old && (
-          <Card
-            focusId={RETRY_ID}
-            variant="alert"
-            lead={
-              <Tile>
-                <UiIcon name="alert" />
-              </Tile>
-            }
-            name={t('states.error')}
-            meta={t('states.showingOld', { time: formatTime(list?.fetched_at) })}
-          />
+      <>
+        {langNote && (
+          <div className={styles.langNote}>
+            <Note text={langNote} />
+          </div>
         )}
-        {items.map((item, index) => (
-          <NewsCard
-            key={item.id}
-            focusId={newsFocusId(item.id)}
-            keyCap={index < DIGIT_KEYS ? index + 1 : undefined}
-            title={item.title}
-            titleLang={item.lang}
-            summary={item.summary}
-            summaryLang={item.summary_lang}
-            meta={metaOf(item)}
-            source={item.source.name}
-          />
-        ))}
-      </CardList>
+        <CardList>
+          {old && (
+            <Card
+              focusId={RETRY_ID}
+              variant="alert"
+              lead={
+                <Tile>
+                  <UiIcon name="alert" />
+                </Tile>
+              }
+              name={t('states.error')}
+              meta={t('states.showingOld', { time: formatTime(list?.fetched_at) })}
+            />
+          )}
+          {items.map((item, index) => (
+            <NewsCard
+              key={item.id}
+              focusId={newsFocusId(item.id)}
+              keyCap={index < DIGIT_KEYS ? index + 1 : undefined}
+              title={item.title}
+              titleLang={item.lang}
+              summary={item.summary}
+              summaryLang={item.summary_lang}
+              meta={metaOf(item)}
+              source={item.source.name}
+            />
+          ))}
+        </CardList>
+      </>
     )
   }
 

@@ -65,6 +65,22 @@ describe('NewsListScreen', () => {
     expect(card('news:7')).toHaveTextContent('Onion · Yesterday')
     expect(card('news:8')).toHaveTextContent('Tomato · Today')
     expect(focusIds()[0]).toBe('news:8') // the newest, although 7 mentions Nashik (my area)
+    // India's news is summarised in Hindi: one line says so for the whole list.
+    expect(screen.getAllByText('Summary in Hindi')).toHaveLength(1)
+  })
+
+  it('names the summary language once, and not when it is the interface language', async () => {
+    await renderApp('/news', { country: 'MY', lang: 'en' })
+    await screen.findByText('Chilli prices ease at the Kuala Lumpur wholesale market', {
+      exact: false,
+    })
+    expect(screen.getAllByText('Summary in Malay')).toHaveLength(1)
+    const malay = await renderApp('/news', { country: 'MY', lang: 'ms' })
+    await screen.findByText('Chilli prices ease at the Kuala Lumpur wholesale market', {
+      exact: false,
+    })
+    expect(screen.queryByText('Ringkasan dalam bahasa Melayu')).toBeNull()
+    expect(malay.softKey('center')).toBe('Buka')
   })
 
   it('lists Malaysia with its Malay headlines marked as Malay', async () => {
