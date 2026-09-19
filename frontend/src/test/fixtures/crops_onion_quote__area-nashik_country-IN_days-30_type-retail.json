@@ -10,7 +10,22 @@
  "currency": "INR",
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": null,
- "nearby": null,
+ "nearby": {
+  "highest": {
+   "area_id": "thane",
+   "diff_per_kg": 5.82,
+   "distance_km": 122,
+   "is_base": false,
+   "price_per_kg": 70.69
+  },
+  "lowest": {
+   "area_id": "sambhajinagar",
+   "diff_per_kg": -5.3,
+   "distance_km": 112,
+   "is_base": false,
+   "price_per_kg": 59.57
+  }
+ },
  "price_per_kg": 64.87,
  "reason": null,
  "series": [

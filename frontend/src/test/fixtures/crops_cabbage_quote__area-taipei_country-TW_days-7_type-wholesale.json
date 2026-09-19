@@ -24,11 +24,11 @@
    "price_per_kg": 32.4
   },
   "lowest": {
-   "area_id": "taoyuan",
-   "diff_per_kg": -1.1,
-   "distance_km": 27,
+   "area_id": "changhua",
+   "diff_per_kg": -4.0,
+   "distance_km": 148,
    "is_base": false,
-   "price_per_kg": 31.3
+   "price_per_kg": 28.4
   }
  },
  "price_per_kg": 32.4,

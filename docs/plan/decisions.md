@@ -948,3 +948,8 @@
 - 情況：使用者覺得繁體中文的「₹/公擔」看不懂（公擔是 100 公斤）。
 - 決定：印度批發的公擔單位在繁中顯示「₹/100公斤」，英文仍是「₹/qtl」。
 - 影響：`backend/app/seed/IN.yaml`、`backend/app/api/v1/catalog.py` 的範例、前端測試與 msw fixture、docs/03 §8、docs/06 §5。
+
+## 2026-09-20 「附近」的距離再改成 150 km
+- 情況：同一天稍早才把「附近」定成 100 km 內的所有地區。接上 Agmarknet 的真實資料後，印度的地區變成三個邦的 64 個縣，但縣與縣之間多半超過 100 km（Nashik 最近的 Dhule 是 108 km、Chh. Sambhajinagar 112 km、Palghar 118 km），所以印度幾乎看不到「附近最高／最低」的卡片。
+- 決定（使用者）：`NEARBY_MAX_KM` 改成 **150 km**，約貨車 2–3 小時的距離，各國仍然統一、不限個數。印度多數的縣因此有 1–4 個鄰居；德里（整個 NCT 只有一個縣）仍然沒有。台灣的縣市距離沒變（最近的仍在 50 km 內），只是鄰居數會多一點。
+- 影響：`backend/app/services/nearby.py`、`backend/tests/{unit,api}/test_nearby.py`、msw fixtures、`frontend/src/screens/crop-detail/TodayTab.test.tsx`、`frontend/src/screens/about/AboutScreen.test.tsx`、四種語言的 `about.nearby`、docs/02 §5.4、docs/04 §6。

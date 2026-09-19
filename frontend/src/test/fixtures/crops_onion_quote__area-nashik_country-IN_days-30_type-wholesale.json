@@ -15,7 +15,22 @@
   "min_per_kg": 38.71,
   "total": 24
  },
- "nearby": null,
+ "nearby": {
+  "highest": {
+   "area_id": "palghar",
+   "diff_per_kg": 10.56,
+   "distance_km": 118,
+   "is_base": false,
+   "price_per_kg": 50.25
+  },
+  "lowest": {
+   "area_id": "nandurbar",
+   "diff_per_kg": -5.05,
+   "distance_km": 149,
+   "is_base": false,
+   "price_per_kg": 34.64
+  }
+ },
  "price_per_kg": 39.69,
  "reason": null,
  "series": [

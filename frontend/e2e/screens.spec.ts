@@ -28,7 +28,7 @@ const IN_SCREENS = [
   '/about',
   '/cat/recent',
   '/crop/onion/today?area=jalgaon',
-  // Nearby prices: no other district within 100 km / districts of Karnataka nearby.
+  // Nearby prices: no other district within 150 km / districts of Karnataka nearby.
   '/crop/onion/today?area=delhi',
   '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',

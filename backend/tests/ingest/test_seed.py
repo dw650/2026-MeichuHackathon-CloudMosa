@@ -250,7 +250,7 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     assert first["countries"] == 3
     assert first["areas"] == 152  # India 64, Taiwan 13, Malaysia 75
     assert first["crops"] == 72
-    assert first["markets"] == 458
+    assert first["markets"] == 455  # India 429, Taiwan 19, Malaysia 7
 
 
 async def test_every_market_belongs_to_an_existing_area(session: AsyncSession) -> None:
@@ -286,7 +286,8 @@ async def test_sync_stores_categories_and_market_distances(session: AsyncSession
     km = await session.execute(
         text("SELECT id, km_from_center FROM markets WHERE id IN ('tp2', 'lasalgaon')")
     )
-    assert dict(km.tuples().all()) == {"tp2": 4, "lasalgaon": 32}
+    # Agmarknet gives no market coordinates, so India's markets carry no distance.
+    assert dict(km.tuples().all()) == {"tp2": 4, "lasalgaon": None}
 
 
 async def test_sync_removes_entities_dropped_from_the_seed(

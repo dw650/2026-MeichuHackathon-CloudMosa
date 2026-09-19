@@ -1,7 +1,7 @@
 """Nearby prices (docs/02 §5.4): the highest and lowest price around the area being viewed.
 
 Nearby areas are every other area of the country within NEARBY_MAX_KM of the viewed area in a
-straight line: about two hours by truck, the same distance in every country. The caller keeps
+straight line: about two to three hours by truck, the same distance in every country. The caller keeps
 only those whose latest trade date is the viewed area's, so every price compared is from the
 same day."""
 
@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 from app.services.compare import PRICE_DECIMALS, haversine_km
 
-NEARBY_MAX_KM = 100
+NEARBY_MAX_KM = 150
 
 
 @dataclass(frozen=True)

@@ -41,7 +41,7 @@ QUOTES = [
     ("IN", "onion", "kolar", "wholesale"),
     ("IN", "onion", "dakshinakannada", "wholesale"),
     ("IN", "onion", "bengaluru", "wholesale"),  # nearby districts of Karnataka
-    ("IN", "onion", "delhi", "wholesale"),  # no other area within 100 km
+    ("IN", "onion", "delhi", "wholesale"),  # no other area within 150 km
     ("TW", "cabbage", "newtaipei", "wholesale"),  # nearby areas on both sides
     ("TW", "cabbage", "newtaipei", "retail"),
     ("TW", "cabbage", "taipei", "wholesale"),

@@ -47,9 +47,9 @@ countries:
       garlic: 1.5
       ginger: 1.5
 
-  # India: the Agmarknet source (bonus B3, not registered yet) publishes mandi (wholesale)
-  # prices only (docs/06 §1.1); until it is enabled India stays on mock data and estimates
-  # nothing, because the mock reports both price types.
+  # India: the Agmarknet source (bonus B3, docs/06 §1.6) publishes mandi (wholesale) prices
+  # only; while India stays on mock data nothing is estimated, because the mock reports both
+  # price types.
   IN:
     from: wholesale
     to: retail
@@ -69,6 +69,16 @@ countries:
       potato: 1.5
       onion: 1.5
       garlic: 1.5
+      carrot: 1.5
+      # Rhizome: keeps for weeks, whatever category it is filed under.
+      ginger: 1.5
+      # Fresh green chilli is sold like a vegetable, not like a dry spice.
+      chilli: 1.7
+      # Jaggery blocks keep like a grain and sell by the kilo.
+      jaggery: 1.3
+      # Seed cotton never reaches a consumer stall; it goes to a ginning mill, so the
+      # estimate stays close to the mandi price instead of carrying a retail margin.
+      cotton: 1.15
 
   # Malaysia: PriceCatcher surveys retail points only, the wet markets' wholesale reporting
   # stopped in 2026 (docs/06 §1.5), so the wholesale price is the retail price divided back.

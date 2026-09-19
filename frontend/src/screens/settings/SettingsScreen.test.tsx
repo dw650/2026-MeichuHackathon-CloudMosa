@@ -101,8 +101,8 @@ describe('SettingsScreen', () => {
     expect(app.focusedId()).toBe('currency')
 
     await app.back()
-    // ₹23.95/kg at 95.989567 to the dollar is US$24.95 per quintal, the unit being kept.
-    expect(await screen.findByText('24.95')).toBeInTheDocument()
+    // ₹39.69/kg at 95.989567 to the dollar is US$41.35 per quintal, the unit being kept.
+    expect(await screen.findByText('41.35')).toBeInTheDocument()
     expect(screen.getByText('US$/公擔')).toBeInTheDocument()
     expect(screen.getAllByText('以 9/19 匯率換算')).toHaveLength(1)
     expect(screen.queryByText('₹/100公斤')).toBeNull()

@@ -16,8 +16,8 @@ JALGAON = Place("jalgaon", 21.0, 75.56)
 SOLAPUR = Place("solapur", 17.66, 75.91)
 
 
-def test_the_rule_is_every_area_within_100_km() -> None:
-    assert NEARBY_MAX_KM == 100
+def test_the_rule_is_every_area_within_150_km() -> None:
+    assert NEARBY_MAX_KM == 150
 
 
 def test_nearest_areas_come_nearest_first_without_the_area_itself() -> None:
@@ -26,14 +26,15 @@ def test_nearest_areas_come_nearest_first_without_the_area_itself() -> None:
 
 
 def test_every_area_within_the_distance_counts_however_many() -> None:
-    # Five areas around Nashik, all within 100 km: no cap on the number.
+    # Five areas around Nashik, all within 150 km: no cap on the number.
     close = [Place(f"p{i}", 20.0 + i * 0.1, 73.79) for i in range(1, 6)]
     assert [area for area, _ in nearest(NASHIK, close)] == ["p1", "p2", "p3", "p4", "p5"]
 
 
 def test_nearest_areas_stop_at_the_distance() -> None:
     assert nearest(NASHIK, [SOLAPUR, PUNE, JALGAON], max_km=200) == [("pune", 165)]
-    assert nearest(NASHIK, [SOLAPUR, PUNE, AHMEDNAGAR]) == []  # all beyond 100 km
+    # Ahmednagar (142 km) is inside the radius, Pune (165) and Solapur (343) are not.
+    assert nearest(NASHIK, [SOLAPUR, PUNE, AHMEDNAGAR]) == [("ahmednagar", 142)]
 
 
 def test_the_distance_limit_is_inclusive() -> None:

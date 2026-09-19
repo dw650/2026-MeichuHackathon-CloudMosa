@@ -396,14 +396,27 @@ async def test_india_switches_between_demo_and_real_prices(
         )
         return int(result.scalar_one())
 
+    async def estimated() -> list[str]:
+        result = await session.execute(
+            text("SELECT estimated_price_types FROM countries WHERE code = 'IN'")
+        )
+        return list(result.scalar_one())
+
     await worker.run_once(demo, lambda: NOW)
     assert ("IN", "mock") in await sources()
-    assert await retail_rows() > 0  # the demo keeps its retail prices
+    assert await retail_rows() > 0  # the demo reports retail itself
+    assert await estimated() == []
 
     summaries = await worker.run_once(real, lambda: NOW, startup=True)
     assert [(s.source, s.status) for s in summaries] == [("mock", "ok"), (agm.SOURCE, "ok")]
     assert await sources() == [("IN", agm.SOURCE), ("MY", "mock"), ("TW", "mock")]
-    assert await retail_rows() == 0  # no retail source for India: "—" with its reason
+    # No retail source for India: retail is estimated from wholesale and marked (docs/06 §3.6).
+    assert await estimated() == ["retail"]
+    assert await retail_rows() > 0
+    quotes = await session.execute(
+        text("SELECT count(*) FROM quotes WHERE country = 'IN' AND price_type = 'retail'")
+    )
+    assert quotes.scalar_one() == 0  # nothing estimated is stored as a reported price
 
     # A restart right after: nothing is asked.
     sent = len(server.requests)
