@@ -18,12 +18,12 @@ describe('crop detail · 走勢 tab (T28)', () => {
   it('draws 7 days, switches to 30 days with # and goes to 行情 on OK', async () => {
     const app = await renderApp('/crop/onion/trend')
     expect(await screen.findByText('7 日走勢')).toBeInTheDocument()
-    expect(screen.getByText('7.2%')).toBeInTheDocument()
+    expect(screen.getByText('5.3%')).toBeInTheDocument()
     // Sunday 9/13 has no price: the line breaks there and the axis says 休.
     expect(screen.getByText('休')).toBeInTheDocument()
     expect(screen.getByText('六')).toBeInTheDocument()
     expect(metric('高')).toBe('3,969')
-    expect(metric('低')).toBe('3,704')
+    expect(metric('低')).toBe('3,768')
     expect(metric('波動')).toBe('普通')
     expect(app.focusedId()).toBeNull()
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
@@ -35,8 +35,8 @@ describe('crop detail · 走勢 tab (T28)', () => {
     await press(app, '#')
     expect(app.path()).toBe('/crop/onion/trend?days=30')
     expect(await screen.findByText('30 日走勢')).toBeInTheDocument()
-    expect(screen.getByText('9.2%')).toBeInTheDocument()
-    expect(metric('低')).toBe('3,635')
+    expect(screen.getByText('8.9%')).toBeInTheDocument()
+    expect(metric('低')).toBe('3,644')
     expect(screen.getByText('8/21')).toBeInTheDocument()
 
     await press(app, 'Enter')

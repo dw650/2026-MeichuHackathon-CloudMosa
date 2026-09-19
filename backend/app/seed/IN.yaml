@@ -48,9 +48,9 @@ areas:
     lat: 19.16
     lon: 74.86
     retail: false
-    mock: { k: 0.89, lag: 0 }
+    mock: { k: 0.91, lag: 0 }
     markets:
-      - { id: ahm, name: { zh-TW: Ahilyanagar, en: Ahilyanagar }, mock: { k: 1.032 } }
+      - { id: ahm, name: { zh-TW: Ahilyanagar, en: Ahilyanagar }, mock: { k: 1.054 } }
       - { id: akole, name: { zh-TW: Akole, en: Akole }, mock: { k: 1.1 } }
       - { id: jamkhed, name: { zh-TW: Jamkhed, en: Jamkhed }, mock: { k: 0.951 } }
       - { id: karjat, name: { zh-TW: Karjat, en: Karjat }, mock: { k: 0.911 } }
@@ -62,15 +62,15 @@ areas:
       - { id: parner, name: { zh-TW: Parner, en: Parner }, mock: { k: 1.082 } }
       - { id: pathardi, name: { zh-TW: Pathardi, en: Pathardi }, mock: { k: 0.923 } }
       - { id: prasannakrushimarket, name: { zh-TW: Prasanna Krushi Market, en: Prasanna Krushi Market }, mock: { k: 0.9 } }
-      - { id: rahata, name: { zh-TW: Rahata, en: Rahata }, mock: { k: 0.978 } }
+      - { id: rahata, name: { zh-TW: Rahata, en: Rahata }, mock: { k: 0.956 } }
       - { id: rahuri, name: { zh-TW: Rahuri, en: Rahuri }, mock: { k: 1.003 } }
       - { id: rahurivambori, name: { zh-TW: "Rahuri(Vambori)", en: "Rahuri(Vambori)" }, mock: { k: 1.05 } }
-      - { id: sangamner, name: { zh-TW: Sangamner, en: Sangamner }, mock: { k: 0.955 } }
+      - { id: sangamner, name: { zh-TW: Sangamner, en: Sangamner }, mock: { k: 1.07 } }
       - { id: shevgaon, name: { zh-TW: Shevgaon, en: Shevgaon }, mock: { k: 0.978 } }
       - { id: shevgaonbodhegaon, name: { zh-TW: "Shevgaon(Bodhegaon)", en: "Shevgaon(Bodhegaon)" }, mock: { k: 0.97 } }
       - { id: shreesairajkrushimarket, name: { zh-TW: Shree Sairaj Krushi Market, en: Shree Sairaj Krushi Market }, mock: { k: 0.9 } }
       - { id: shrigonda, name: { zh-TW: Shrigonda, en: Shrigonda }, mock: { k: 1.0 } }
-      - { id: shrirampur, name: { zh-TW: Shrirampur, en: Shrirampur }, mock: { k: 0.909 } }
+      - { id: shrirampur, name: { zh-TW: Shrirampur, en: Shrirampur }, mock: { k: 0.9 } }
       - { id: shrirampurbelapur, name: { zh-TW: "Shrirampur(Belapur)", en: "Shrirampur(Belapur)" }, mock: { k: 0.9 } }
   - id: akola
     name: { zh-TW: Akola, en: Akola }
@@ -78,7 +78,7 @@ areas:
     lat: 20.76
     lon: 77.19
     retail: false
-    mock: { k: 0.89, lag: 0 }
+    mock: { k: 0.94, lag: 0 }
     markets:
       - { id: akola, name: { zh-TW: Akola, en: Akola }, mock: { k: 1.0 } }
       - { id: akot, name: { zh-TW: Akot, en: Akot }, mock: { k: 1.031 } }
@@ -97,7 +97,7 @@ areas:
       - { id: achalpur, name: { zh-TW: Achalpur, en: Achalpur }, mock: { k: 0.942 } }
       - { id: amarawati, name: { zh-TW: Amarawati, en: Amarawati }, mock: { k: 1.0 } }
       - { id: amrawatifruivegmarket, name: { zh-TW: "Amrawati(Frui & Veg. Market)", en: "Amrawati(Frui & Veg. Market)" }, mock: { k: 1.0 } }
-      - { id: anajngaon, name: { zh-TW: Anajngaon, en: Anajngaon }, mock: { k: 0.927 } }
+      - { id: anajngaon, name: { zh-TW: Anajngaon, en: Anajngaon }, mock: { k: 0.964 } }
       - { id: chandurbazar, name: { zh-TW: Chandur Bazar, en: Chandur Bazar }, mock: { k: 1.012 } }
       - { id: chandurrailway, name: { zh-TW: Chandur Railway, en: Chandur Railway }, mock: { k: 0.96 } }
       - { id: daryapur, name: { zh-TW: Daryapur, en: Daryapur }, mock: { k: 1.01 } }
@@ -168,7 +168,7 @@ areas:
     lat: 20.1
     lon: 79.5
     retail: false
-    mock: { k: 0.99, lag: 0 }
+    mock: { k: 1.0, lag: 0 }
     markets:
       - { id: chandrapur, name: { zh-TW: Chandrapur, en: Chandrapur }, mock: { k: 1.0 } }
       - { id: chandrapurganjwad, name: { zh-TW: "Chandrapur(Ganjwad)", en: "Chandrapur(Ganjwad)" }, mock: { k: 1.0 } }
@@ -238,7 +238,7 @@ areas:
     lat: 20.84
     lon: 75.53
     retail: true
-    mock: { k: 0.96, lag: 1 }
+    mock: { k: 0.95, lag: 1 }
     markets:
       - { id: amalner, name: { zh-TW: Amalner, en: Amalner }, mock: { k: 1.027 } }
       - { id: bhusaval, name: { zh-TW: Bhusaval, en: Bhusaval }, mock: { k: 1.0 } }
@@ -275,7 +275,7 @@ areas:
     lat: 16.46
     lon: 74.09
     retail: true
-    mock: { k: 0.97, lag: 0 }
+    mock: { k: 0.99, lag: 0 }
     markets:
       - { id: kolhapur, name: { zh-TW: Kolhapur, en: Kolhapur }, mock: { k: 1.0 } }
       - { id: kolhapurlaxmipuri, name: { zh-TW: "Kolhapur(Laxmipuri)", en: "Kolhapur(Laxmipuri)" }, mock: { k: 1.0 } }
@@ -303,7 +303,7 @@ areas:
     lat: 18.97
     lon: 72.83
     retail: true
-    mock: { k: 1.16, lag: 0 }
+    mock: { k: 1.24, lag: 0 }
     markets:
       - { id: mumbai, name: { zh-TW: Mumbai, en: Mumbai }, mock: { k: 1.0 } }
       - { id: mumbaifruitmarket, name: { zh-TW: Mumbai- Fruit Market, en: Mumbai- Fruit Market }, mock: { k: 1.0 } }
@@ -314,10 +314,10 @@ areas:
     lat: 21.15
     lon: 79.01
     retail: true
-    mock: { k: 1.01, lag: 0 }
+    mock: { k: 1.02, lag: 0 }
     markets:
       - { id: bhiwapur, name: { zh-TW: Bhiwapur, en: Bhiwapur }, mock: { k: 1.0 } }
-      - { id: hingna, name: { zh-TW: Hingna, en: Hingna }, mock: { k: 1.029 } }
+      - { id: hingna, name: { zh-TW: Hingna, en: Hingna }, mock: { k: 1.031 } }
       - { id: kalmeshwar, name: { zh-TW: Kalmeshwar, en: Kalmeshwar }, mock: { k: 0.9 } }
       - { id: kamthi, name: { zh-TW: Kamthi, en: Kamthi }, mock: { k: 1.1 } }
       - { id: katol, name: { zh-TW: Katol, en: Katol }, mock: { k: 1.017 } }
@@ -352,7 +352,7 @@ areas:
     lat: 21.51
     lon: 74.54
     retail: false
-    mock: { k: 0.92, lag: 0 }
+    mock: { k: 0.9, lag: 0 }
     markets:
       - { id: dhadgaon, name: { zh-TW: Dhadgaon, en: Dhadgaon }, mock: { k: 0.9 } }
       - { id: nandurbar, name: { zh-TW: Nandurbar, en: Nandurbar }, mock: { k: 0.974 } }
@@ -370,7 +370,7 @@ areas:
       - { id: devala, name: { zh-TW: Devala, en: Devala }, mock: { k: 1.003 } }
       - { id: dindori, name: { zh-TW: Dindori, en: Dindori }, mock: { k: 1.023 } }
       - { id: dindorivani, name: { zh-TW: "Dindori(Vani)", en: "Dindori(Vani)" }, mock: { k: 1.058 } }
-      - { id: ghoti, name: { zh-TW: Ghoti, en: Ghoti }, mock: { k: 1.053 } }
+      - { id: ghoti, name: { zh-TW: Ghoti, en: Ghoti }, mock: { k: 1.026 } }
       - { id: kalvan, name: { zh-TW: Kalvan, en: Kalvan }, mock: { k: 1.034 } }
       - { id: lasalgaon, name: { zh-TW: Lasalgaon, en: Lasalgaon }, mock: { k: 1.017 } }
       - { id: niphad, name: { zh-TW: "Lasalgaon(Niphad)", en: "Lasalgaon(Niphad)" }, mock: { k: 1.002 } }
@@ -380,12 +380,11 @@ areas:
       - { id: manmad, name: { zh-TW: Manmad, en: Manmad }, mock: { k: 0.989, lag: null } }
       - { id: nampur, name: { zh-TW: Nampur, en: Nampur }, mock: { k: 0.989 } }
       - { id: nandgaon, name: { zh-TW: Nandgaon, en: Nandgaon }, mock: { k: 0.991 } }
-      - { id: nashikm, name: { zh-TW: Nasik, en: Nasik }, mock: { k: 0.983 } }
-      - { id: perfectkrishimarketyard, name: { zh-TW: Perfect Krishi Market Yard, en: Perfect Krishi Market Yard }, mock: { k: 1.009 } }
-      - { id: pimpalgaon, name: { zh-TW: Pimpalgaon Baswant, en: Pimpalgaon Baswant }, mock: { k: 1.081 } }
+      - { id: nashikm, name: { zh-TW: Nasik, en: Nasik }, mock: { k: 1.0 } }
+      - { id: pimpalgaon, name: { zh-TW: Pimpalgaon Baswant, en: Pimpalgaon Baswant }, mock: { k: 1.1 } }
       - { id: pimpalgaonbaswantsaykhed, name: { zh-TW: "Pimpalgaon Baswant(Saykheda)", en: "Pimpalgaon Baswant(Saykheda)" }, mock: { k: 0.9 } }
-      - { id: premiumkrushiutpannabaza, name: { zh-TW: Premium Krushi Utpanna Bazar, en: Premium Krushi Utpanna Bazar }, mock: { k: 0.9 } }
-      - { id: satana, name: { zh-TW: Satana, en: Satana }, mock: { k: 0.972 } }
+      - { id: premiumkrushiutpannabaza, name: { zh-TW: Premium Krushi Utpanna Bazar, en: Premium Krushi Utpanna Bazar }, mock: { k: 1.0 } }
+      - { id: satana, name: { zh-TW: Satana, en: Satana }, mock: { k: 0.977 } }
       - { id: shivsiddhagovindproducer, name: { zh-TW: "Shivsiddha Govind (Abhona)", en: "Shivsiddha Govind (Abhona)" }, mock: { k: 1.023 } }
       - { id: shrirameshwarkrushimarke, name: { zh-TW: Shri Rameshwar Krushi Market, en: Shri Rameshwar Krushi Market }, mock: { k: 0.919 } }
       - { id: sinnar, name: { zh-TW: Sinner, en: Sinner }, mock: { k: 0.993 } }
@@ -424,7 +423,7 @@ areas:
     lat: 18.64
     lon: 73.92
     retail: true
-    mock: { k: 0.97, lag: 0 }
+    mock: { k: 0.98, lag: 0 }
     markets:
       - { id: baramati, name: { zh-TW: Baramati, en: Baramati }, mock: { k: 0.972 } }
       - { id: dound, name: { zh-TW: Dound, en: Dound }, mock: { k: 0.9 } }
@@ -433,16 +432,16 @@ areas:
       - { id: junnar, name: { zh-TW: Junnar, en: Junnar }, mock: { k: 1.1 } }
       - { id: junnaralephata, name: { zh-TW: "Junnar(Alephata)", en: "Junnar(Alephata)" }, mock: { k: 1.1 } }
       - { id: junnarnarayangaon, name: { zh-TW: "Junnar(Narayangaon)", en: "Junnar(Narayangaon)" }, mock: { k: 0.9 } }
-      - { id: junnarotur, name: { zh-TW: "Junnar(Otur)", en: "Junnar(Otur)" }, mock: { k: 0.95 } }
-      - { id: khed2, name: { zh-TW: Khed, en: Khed }, mock: { k: 1.022 } }
-      - { id: khed, name: { zh-TW: "Khed(Chakan)", en: "Khed(Chakan)" }, mock: { k: 1.022 } }
-      - { id: manchar, name: { zh-TW: Manchar, en: Manchar }, mock: { k: 0.954 } }
+      - { id: junnarotur, name: { zh-TW: "Junnar(Otur)", en: "Junnar(Otur)" }, mock: { k: 0.9 } }
+      - { id: khed2, name: { zh-TW: Khed, en: Khed }, mock: { k: 1.0 } }
+      - { id: khed, name: { zh-TW: "Khed(Chakan)", en: "Khed(Chakan)" }, mock: { k: 1.0 } }
+      - { id: manchar, name: { zh-TW: Manchar, en: Manchar }, mock: { k: 0.9 } }
       - { id: nira, name: { zh-TW: Nira, en: Nira }, mock: { k: 1.033 } }
       - { id: nirasaswad, name: { zh-TW: "Nira(Saswad)", en: "Nira(Saswad)" }, mock: { k: 0.958 } }
       - { id: pune1, name: { zh-TW: Pune, en: Pune }, mock: { k: 1.0 } }
-      - { id: punekhadiki, name: { zh-TW: "Pune(Khadiki)", en: "Pune(Khadiki)" }, mock: { k: 0.9 } }
+      - { id: punekhadiki, name: { zh-TW: "Pune(Khadiki)", en: "Pune(Khadiki)" }, mock: { k: 0.93 } }
       - { id: punemanjri, name: { zh-TW: "Pune(Manjri)", en: "Pune(Manjri)" }, mock: { k: 1.1 } }
-      - { id: punemoshi, name: { zh-TW: "Pune(Moshi)", en: "Pune(Moshi)" }, mock: { k: 1.035 } }
+      - { id: punemoshi, name: { zh-TW: "Pune(Moshi)", en: "Pune(Moshi)" }, mock: { k: 1.007 } }
       - { id: punepimpri, name: { zh-TW: "Pune(Pimpri)", en: "Pune(Pimpri)" }, mock: { k: 1.1 } }
       - { id: shirur, name: { zh-TW: Shirur, en: Shirur }, mock: { k: 0.9 } }
   - id: raigad
@@ -461,7 +460,7 @@ areas:
     lat: 17.28
     lon: 73.46
     retail: false
-    mock: { k: 1.14, lag: 0 }
+    mock: { k: 1.09, lag: 0 }
     markets:
       - { id: ratnagirinachane, name: { zh-TW: "Ratnagiri (Nachane)", en: "Ratnagiri (Nachane)" }, mock: { k: 1.0 } }
   - id: sangli
@@ -472,12 +471,11 @@ areas:
     retail: false
     mock: { k: 1.03, lag: 0 }
     markets:
-      - { id: aatpadi, name: { zh-TW: Aatpadi, en: Aatpadi }, mock: { k: 1.1 } }
-      - { id: islampur, name: { zh-TW: Islampur, en: Islampur }, mock: { k: 1.0 } }
-      - { id: palus, name: { zh-TW: Palus, en: Palus }, mock: { k: 0.981 } }
+      - { id: islampur, name: { zh-TW: Islampur, en: Islampur }, mock: { k: 0.986 } }
+      - { id: palus, name: { zh-TW: Palus, en: Palus }, mock: { k: 0.962 } }
       - { id: sangli, name: { zh-TW: Sangli, en: Sangli }, mock: { k: 1.0 } }
       - { id: sanglimiraj, name: { zh-TW: "Sangli(Miraj)", en: "Sangli(Miraj)" }, mock: { k: 1.02 } }
-      - { id: sangliphale, name: { zh-TW: "Sangli(Phale", en: "Sangli(Phale" }, mock: { k: 0.962 } }
+      - { id: sangliphale, name: { zh-TW: "Sangli(Phale", en: "Sangli(Phale" }, mock: { k: 0.981 } }
       - { id: tasgaon, name: { zh-TW: Tasgaon, en: Tasgaon }, mock: { k: 0.924 } }
       - { id: vita, name: { zh-TW: Vita, en: Vita }, mock: { k: 1.1 } }
   - id: satara
@@ -486,9 +484,9 @@ areas:
     lat: 17.64
     lon: 74.3
     retail: false
-    mock: { k: 1.07, lag: 0 }
+    mock: { k: 1.04, lag: 0 }
     markets:
-      - { id: karad, name: { zh-TW: Karad, en: Karad }, mock: { k: 1.04 } }
+      - { id: karad, name: { zh-TW: Karad, en: Karad }, mock: { k: 1.091 } }
       - { id: lonand, name: { zh-TW: Lonand, en: Lonand }, mock: { k: 0.972 } }
       - { id: patan, name: { zh-TW: Patan, en: Patan }, mock: { k: 1.068 } }
       - { id: phaltan, name: { zh-TW: Phaltan, en: Phaltan }, mock: { k: 0.9 } }
@@ -503,8 +501,8 @@ areas:
     retail: true
     mock: { k: 1.0, lag: 0 }
     markets:
-      - { id: akluj, name: { zh-TW: Akluj, en: Akluj }, mock: { k: 1.019 } }
-      - { id: barshi, name: { zh-TW: Barshi, en: Barshi }, mock: { k: 0.989 } }
+      - { id: akluj, name: { zh-TW: Akluj, en: Akluj }, mock: { k: 1.0 } }
+      - { id: barshi, name: { zh-TW: Barshi, en: Barshi }, mock: { k: 0.994 } }
       - { id: barshivairag, name: { zh-TW: "Barshi(Vairag)", en: "Barshi(Vairag)" }, mock: { k: 1.042 } }
       - { id: dudhani, name: { zh-TW: Dudhani, en: Dudhani }, mock: { k: 0.979 } }
       - { id: karmala, name: { zh-TW: Karmala, en: Karmala }, mock: { k: 0.991 } }
@@ -514,8 +512,6 @@ areas:
       - { id: mangalwedha, name: { zh-TW: Mangal Wedha, en: Mangal Wedha }, mock: { k: 1.093 } }
       - { id: mohol, name: { zh-TW: Mohol, en: Mohol }, mock: { k: 0.9 } }
       - { id: pandharpur, name: { zh-TW: Pandharpur, en: Pandharpur }, mock: { k: 1.0 } }
-      - { id: perfectkrushimarketyard, name: { zh-TW: Perfect Krushi Market Yard, en: Perfect Krushi Market Yard }, mock: { k: 1.1 } }
-      - { id: sangola, name: { zh-TW: Sangola, en: Sangola }, mock: { k: 0.915 } }
       - { id: sol, name: { zh-TW: Solapur, en: Solapur }, mock: { k: 1.0 } }
   - id: thane
     name: { zh-TW: Thane, en: Thane }
@@ -523,7 +519,7 @@ areas:
     lat: 19.37
     lon: 73.37
     retail: true
-    mock: { k: 1.12, lag: 0 }
+    mock: { k: 1.11, lag: 0 }
     markets:
       - { id: kalyan, name: { zh-TW: Kalyan, en: Kalyan }, mock: { k: 1.0 } }
       - { id: murbad, name: { zh-TW: Murbad, en: Murbad }, mock: { k: 1.1 } }
@@ -615,7 +611,7 @@ areas:
     lat: 16.16
     lon: 74.89
     retail: true
-    mock: { k: 1.09, lag: 0 }
+    mock: { k: 1.08, lag: 0 }
     markets:
       - { id: athani, name: { zh-TW: Athani, en: Athani }, mock: { k: 0.9 } }
       - { id: bailahongal, name: { zh-TW: Bailahongal, en: Bailahongal }, mock: { k: 0.989 } }
@@ -636,7 +632,7 @@ areas:
     mock: { k: 1.25, lag: 0 }
     markets:
       - { id: doddaballapur, name: { zh-TW: Doddaballapur, en: Doddaballapur }, mock: { k: 1.0 } }
-      - { id: hoskote, name: { zh-TW: Hoskote, en: Hoskote }, mock: { k: 1.0 } }
+      - { id: hoskote, name: { zh-TW: Hoskote, en: Hoskote }, mock: { k: 0.952 } }
   - id: bengalurusouth
     name: { zh-TW: Bengaluru South, en: Bengaluru South }
     region: { zh-TW: Karnataka, en: Karnataka }
@@ -645,7 +641,7 @@ areas:
     retail: false
     mock: { k: 1.25, lag: 0 }
     markets:
-      - { id: channapatna, name: { zh-TW: Channapatna, en: Channapatna }, mock: { k: 0.938 } }
+      - { id: channapatna, name: { zh-TW: Channapatna, en: Channapatna }, mock: { k: 0.95 } }
       - { id: kanakapura, name: { zh-TW: Kanakapura, en: Kanakapura }, mock: { k: 1.033 } }
       - { id: ramanagara, name: { zh-TW: Ramanagara, en: Ramanagara }, mock: { k: 1.0 } }
   - id: bengaluru
@@ -689,9 +685,9 @@ areas:
     lat: 13.59
     lon: 77.78
     retail: false
-    mock: { k: 0.9, lag: 0 }
+    mock: { k: 0.94, lag: 0 }
     markets:
-      - { id: bagepalli, name: { zh-TW: Bagepalli, en: Bagepalli }, mock: { k: 0.974 } }
+      - { id: bagepalli, name: { zh-TW: Bagepalli, en: Bagepalli }, mock: { k: 0.987 } }
       - { id: chickkaballapura, name: { zh-TW: Chickkaballapura, en: Chickkaballapura }, mock: { k: 1.0 } }
       - { id: chintamani, name: { zh-TW: Chintamani, en: Chintamani }, mock: { k: 1.036 } }
       - { id: gauribidanur, name: { zh-TW: Gauribidanur, en: Gauribidanur }, mock: { k: 1.0 } }
@@ -701,7 +697,7 @@ areas:
     lat: 13.41
     lon: 75.64
     retail: false
-    mock: { k: 1.08, lag: 0 }
+    mock: { k: 1.07, lag: 0 }
     markets:
       - { id: chikkamagaluru, name: { zh-TW: Chikkamagaluru, en: Chikkamagaluru }, mock: { k: 1.0 } }
       - { id: kadur, name: { zh-TW: Kadur, en: Kadur }, mock: { k: 1.0 } }
@@ -737,13 +733,13 @@ areas:
     lat: 14.26
     lon: 75.83
     retail: false
-    mock: { k: 0.98, lag: 0 }
+    mock: { k: 1.0, lag: 0 }
     markets:
       - { id: channagiri, name: { zh-TW: Channagiri, en: Channagiri }, mock: { k: 0.9 } }
       - { id: davangere, name: { zh-TW: Davangere, en: Davangere }, mock: { k: 1.0 } }
       - { id: harappanahalli, name: { zh-TW: HarappanaHalli, en: HarappanaHalli }, mock: { k: 0.95 } }
       - { id: harihara, name: { zh-TW: Harihara, en: Harihara }, mock: { k: 0.919 } }
-      - { id: honnali, name: { zh-TW: Honnali, en: Honnali }, mock: { k: 1.0 } }
+      - { id: honnali, name: { zh-TW: Honnali, en: Honnali }, mock: { k: 0.992 } }
       - { id: jagalur, name: { zh-TW: Jagalur, en: Jagalur }, mock: { k: 0.959 } }
   - id: dharwad
     name: { zh-TW: Dharwad, en: Dharwad }
@@ -777,7 +773,7 @@ areas:
     lat: 13.03
     lon: 76.17
     retail: false
-    mock: { k: 1.16, lag: 0 }
+    mock: { k: 1.09, lag: 0 }
     markets:
       - { id: arakalgud, name: { zh-TW: Arakalgud, en: Arakalgud }, mock: { k: 0.98 } }
       - { id: arasikere, name: { zh-TW: Arasikere, en: Arasikere }, mock: { k: 0.9 } }
@@ -792,7 +788,7 @@ areas:
     lat: 14.72
     lon: 75.37
     retail: false
-    mock: { k: 0.97, lag: 0 }
+    mock: { k: 0.96, lag: 0 }
     markets:
       - { id: byadagi, name: { zh-TW: Byadagi, en: Byadagi }, mock: { k: 0.9 } }
       - { id: hanagal, name: { zh-TW: Hanagal, en: Hanagal }, mock: { k: 1.029 } }
@@ -807,7 +803,7 @@ areas:
     lat: 17.24
     lon: 76.77
     retail: true
-    mock: { k: 0.88, lag: 0 }
+    mock: { k: 0.89, lag: 0 }
     markets:
       - { id: afzalpur, name: { zh-TW: Afzalpur, en: Afzalpur }, mock: { k: 1.0 } }
       - { id: alanda, name: { zh-TW: Alanda, en: Alanda }, mock: { k: 0.915 } }
@@ -831,10 +827,10 @@ areas:
     lat: 13.18
     lon: 78.27
     retail: false
-    mock: { k: 0.85, lag: 3 }
+    mock: { k: 0.86, lag: 3 }
     markets:
-      - { id: bangarpet, name: { zh-TW: Bangarpet, en: Bangarpet }, mock: { k: 0.956 } }
-      - { id: kol, name: { zh-TW: Kolar, en: Kolar }, mock: { k: 1.0 } }
+      - { id: bangarpet, name: { zh-TW: Bangarpet, en: Bangarpet }, mock: { k: 0.994 } }
+      - { id: kol, name: { zh-TW: Kolar, en: Kolar }, mock: { k: 1.033 } }
       - { id: malur, name: { zh-TW: Malur, en: Malur }, mock: { k: 1.042 } }
       - { id: mulbagal, name: { zh-TW: Mulbagal, en: Mulbagal }, mock: { k: 1.0 } }
       - { id: srinivasapur, name: { zh-TW: Srinivasapur, en: Srinivasapur }, mock: { k: 1.0 } }
@@ -872,15 +868,15 @@ areas:
     lat: 12.2
     lon: 76.61
     retail: true
-    mock: { k: 1.19, lag: 0 }
+    mock: { k: 1.13, lag: 0 }
     markets:
-      - { id: hunsur, name: { zh-TW: Hunsur, en: Hunsur }, mock: { k: 0.939 } }
+      - { id: hunsur, name: { zh-TW: Hunsur, en: Hunsur }, mock: { k: 0.969 } }
       - { id: krnagar, name: { zh-TW: K.R.Nagar, en: K.R.Nagar }, mock: { k: 1.0 } }
       - { id: mysuru, name: { zh-TW: Mysuru, en: Mysuru }, mock: { k: 1.0 } }
       - { id: nanjangud, name: { zh-TW: Nanjangud, en: Nanjangud }, mock: { k: 1.1 } }
       - { id: periyapatna, name: { zh-TW: Periyapatna, en: Periyapatna }, mock: { k: 0.9 } }
       - { id: santhesargur, name: { zh-TW: Santhesargur, en: Santhesargur }, mock: { k: 1.0 } }
-      - { id: tnarasipura, name: { zh-TW: T. Narasipura, en: T. Narasipura }, mock: { k: 1.075 } }
+      - { id: tnarasipura, name: { zh-TW: T. Narasipura, en: T. Narasipura }, mock: { k: 1.038 } }
   - id: raichur
     name: { zh-TW: Raichur, en: Raichur }
     region: { zh-TW: Karnataka, en: Karnataka }
@@ -900,7 +896,7 @@ areas:
     lat: 14.06
     lon: 75.24
     retail: false
-    mock: { k: 1.03, lag: 0 }
+    mock: { k: 1.04, lag: 0 }
     markets:
       - { id: bhadravathi, name: { zh-TW: Bhadravathi, en: Bhadravathi }, mock: { k: 0.9 } }
       - { id: shikaripura, name: { zh-TW: Shikaripura, en: Shikaripura }, mock: { k: 0.986 } }
@@ -915,6 +911,7 @@ areas:
     retail: false
     mock: { k: 0.99, lag: 0 }
     markets:
+      - { id: kunigal, name: { zh-TW: Kunigal, en: Kunigal }, mock: { k: 1.0 } }
       - { id: madhugiri, name: { zh-TW: Madhugiri, en: Madhugiri }, mock: { k: 1.0 } }
       - { id: sira, name: { zh-TW: Sira, en: Sira }, mock: { k: 1.022 } }
       - { id: tumakuru, name: { zh-TW: Tumakuru, en: Tumakuru }, mock: { k: 1.0 } }
@@ -924,7 +921,7 @@ areas:
     lat: 13.53
     lon: 74.87
     retail: false
-    mock: { k: 1.16, lag: 0 }
+    mock: { k: 1.12, lag: 0 }
     markets:
       - { id: udupi, name: { zh-TW: Udupi, en: Udupi }, mock: { k: 1.0 } }
   - id: uttarakannada
@@ -945,7 +942,7 @@ areas:
     lat: 14.94
     lon: 76.04
     retail: false
-    mock: { k: 1.06, lag: 0 }
+    mock: { k: 1.03, lag: 0 }
     markets:
       - { id: hbhalli, name: { zh-TW: H.B. Halli, en: H.B. Halli }, mock: { k: 0.99 } }
       - { id: hoovinahadagali, name: { zh-TW: Hoovinahadagali, en: Hoovinahadagali }, mock: { k: 0.949 } }
@@ -981,11 +978,11 @@ areas:
     retail: true
     mock: { k: 1.04, lag: 0 }
     markets:
-      - { id: azadpur, name: { zh-TW: Azadpur, en: Azadpur }, mock: { k: 0.975 } }
+      - { id: azadpur, name: { zh-TW: Azadpur, en: Azadpur }, mock: { k: 1.0 } }
       - { id: keshopur, name: { zh-TW: Keshopur, en: Keshopur }, mock: { k: 1.1 } }
       - { id: najafgarh, name: { zh-TW: Najafgarh, en: Najafgarh }, mock: { k: 1.0 } }
       - { id: narela, name: { zh-TW: Narela, en: Narela }, mock: { k: 0.962 } }
-      - { id: shahdara, name: { zh-TW: Shahdara, en: Shahdara }, mock: { k: 0.952 } }
+      - { id: shahdara, name: { zh-TW: Shahdara, en: Shahdara }, mock: { k: 0.948 } }
 
 # Categories: cereal, veg, fruit, pulse, spice, oil, other. `watch` = default watchlist.
 # Mock p / lo / hi: September 2026 medians of the modal, minimum and maximum prices
@@ -1052,12 +1049,24 @@ crops:
     variety: { zh-TW: 圓茄, en: Round }
     retail: true
     mock: { p: 1800, lo: 1200, hi: 2400, chg: 0.046, arr: 4.5, arrR: 0.91, rt: 1.9 }
-  - id: pomegranate
-    name: { zh-TW: 石榴, en: Pomegranate }
+  - id: banana
+    name: { zh-TW: 香蕉, en: Banana }
     category: fruit
-    variety: { zh-TW: 巴格瓦, en: Bhagwa }
+    variety: { zh-TW: 本地種, en: Local }
     retail: true
-    mock: { p: 7500, lo: 2000, hi: 12000, chg: 0.012, arr: 54.0, arrR: 1.08, rt: 1.45 }
+    mock: { p: 2100, lo: 1300, hi: 3000, chg: -0.041, arr: 12.9, arrR: 1.05, rt: 1.5 }
+  - id: garlic
+    name: { zh-TW: 大蒜, en: Garlic }
+    category: spice
+    variety: { zh-TW: 本地種, en: Local }
+    retail: true
+    mock: { p: 14000, lo: 9000, hi: 17000, chg: -0.021, arr: 2.4, arrR: 0.88, rt: 1.4 }
+  - id: mango
+    name: { zh-TW: 芒果, en: Mango }
+    category: fruit
+    variety: { zh-TW: 托塔普里, en: Totapuri }
+    retail: true
+    mock: { p: 9290, lo: 6430, hi: 15000, chg: 0.1, arr: 31.7, arrR: 0.84, rt: 1.8 }
   - id: peanut
     name: { zh-TW: 花生, en: Groundnut }
     category: oil
@@ -1082,12 +1091,6 @@ crops:
     variety: { zh-TW: 本地種, en: Local }
     retail: true
     mock: { p: 1700, lo: 1200, hi: 2000, chg: -0.009, arr: 5.4, arrR: 0.94, rt: 1.9 }
-  - id: cauliflower
-    name: { zh-TW: 花椰菜, en: Cauliflower }
-    category: veg
-    variety: { zh-TW: 本地種, en: Local }
-    retail: true
-    mock: { p: 1550, lo: 1000, hi: 2000, chg: -0.046, arr: 5.8, arrR: 1.06, rt: 2.0 }
   - id: carrot
     name: { zh-TW: 胡蘿蔔, en: Carrot }
     category: veg
@@ -1106,12 +1109,6 @@ crops:
     variety: { zh-TW: 鮮薑, en: Green }
     retail: true
     mock: { p: 8500, lo: 5600, hi: 11000, chg: 0.014, arr: 3.2, arrR: 0.96, rt: 1.6 }
-  - id: apple
-    name: { zh-TW: 蘋果, en: Apple }
-    category: fruit
-    variety: { zh-TW: 各品種, en: Mixed }
-    retail: true
-    mock: { p: 12500, lo: 8000, hi: 15000, chg: 0.013, arr: 13.4, arrR: 1.12, rt: 1.5 }
   - id: sesame
     name: { zh-TW: 芝麻, en: Sesame }
     category: oil
@@ -1142,16 +1139,16 @@ source_maps:
       - { source_name: "1", crop: wheat } # Wheat
       - { source_name: "126", crop: cabbage } # Cabbage
       - { source_name: "32", crop: eggplant } # Brinjal
-      - { source_name: "160", crop: pomegranate } # Pomegranate
+      - { source_name: "19", crop: banana } # Banana
+      - { source_name: "25", crop: garlic } # Garlic
+      - { source_name: "20", crop: mango } # Mango
       - { source_name: "10", crop: peanut } # Groundnut
       - { source_name: "15", crop: cotton } # Cotton
       - { source_name: "5", crop: jowar } # Jowar(Sorghum)
       - { source_name: "131", crop: cucumber } # Cucumbar(Kheera)
-      - { source_name: "31", crop: cauliflower } # Cauliflower
       - { source_name: "125", crop: carrot } # Carrot
       - { source_name: "9", crop: mungbean } # Green Gram(Moong)(Whole)
       - { source_name: "87", crop: ginger } # Ginger(Green)
-      - { source_name: "17", crop: apple } # Apple
       - { source_name: "11", crop: sesame } # Sesamum(Sesame,Gingelly,Til)
       - { source_name: "61", crop: jaggery } # Gur(Jaggery)
     markets:
@@ -1334,7 +1331,6 @@ source_maps:
       - { source_market: "20|APMC Nampur", market: nampur }
       - { source_market: "20|APMC Nandgaon", market: nandgaon }
       - { source_market: "20|APMC Nasik", market: nashikm }
-      - { source_market: "20|Perfect Krishi Market Yard Pvt Ltd, Dist Nashik", market: perfectkrishimarketyard }
       - { source_market: "20|APMC Pimpalgaon Baswant", market: pimpalgaon }
       - { source_market: "20|Pimpalgaon Baswant(Saykheda)", market: pimpalgaonbaswantsaykhed }
       - { source_market: "20|Premium Krushi Utpanna Bazar, Nashik", market: premiumkrushiutpannabaza }
@@ -1377,7 +1373,6 @@ source_maps:
       - { source_market: "20|APMC Panvel", market: panvel }
       - { source_market: "20|APMC Pen", market: pen }
       - { source_market: "20|APMC Ratnagiri (Nachane)", market: ratnagirinachane }
-      - { source_market: "20|APMC Aatpadi", market: aatpadi }
       - { source_market: "20|APMC Islampur", market: islampur }
       - { source_market: "20|APMC Palus", market: palus }
       - { source_market: "20|APMC Sangli", market: sangli }
@@ -1403,8 +1398,6 @@ source_maps:
       - { source_market: "20|APMC Mangal Wedha", market: mangalwedha }
       - { source_market: "20|APMC Mohol", market: mohol }
       - { source_market: "20|APMC Pandharpur", market: pandharpur }
-      - { source_market: "20|Perfect Krushi Market Yard, Tal Madha, Dist Solapur", market: perfectkrushimarketyard }
-      - { source_market: "20|APMC Sangola", market: sangola }
       - { source_market: "20|APMC Solapur", market: sol }
       - { source_market: "20|APMC Kalyan", market: kalyan }
       - { source_market: "20|APMC Murbad", market: murbad }
@@ -1564,6 +1557,7 @@ source_maps:
       - { source_market: "16|Shimoga APMC", market: shimoga }
       - { source_market: "16|Sorabha APMC", market: sorabha }
       - { source_market: "16|APMC THIRTHAHALLI", market: thirthahalli }
+      - { source_market: "16|Kunigal APMC", market: kunigal }
       - { source_market: "16|Madhugiri APMC", market: madhugiri }
       - { source_market: "16|Sira APMC", market: sira }
       - { source_market: "16|Tumakuru APMC", market: tumakuru }
@@ -1606,7 +1600,7 @@ source_maps:
       - { source_market: "20|APMC Chalisgaon", market: chalisgaon }
       - { source_market: "20|APMC Jalgaon", market: jal }
       - { source_market: "20|APMC Jalana", market: jalana }
-      - { source_market: "20|APMC Kolhapur", market: kolhapur }
+      - { source_market: "20|APMC Vadgaonpeth", market: vadgaonpeth }
       - { source_market: "20|APMC Ahmedpur", market: ahmedpur }
       - { source_market: "20|APMC Mumbai", market: mumbai }
       - { source_market: "20|APMC Nagpur", market: nagpur }

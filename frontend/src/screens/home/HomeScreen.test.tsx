@@ -48,8 +48,8 @@ describe('HomeScreen · watchlist', () => {
       'crop:wheat',
     ])
     expect(card('crop:onion')).toHaveTextContent('3,969')
-    expect(card('crop:onion')).toHaveTextContent('▲2.8%')
-    expect(card('crop:tomato')).toHaveTextContent('▲3.4%')
+    expect(card('crop:onion')).toHaveTextContent('▲2.4%')
+    expect(card('crop:tomato')).toHaveTextContent('▲3.6%')
 
     expect(app.focusedId()).toBe('crop:onion')
     expect(softKeys(app)).toEqual(['選單', '開啟', '離開'])

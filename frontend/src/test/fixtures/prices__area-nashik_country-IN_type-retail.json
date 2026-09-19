@@ -221,22 +221,72 @@
   },
   {
    "change": {
-    "diff_per_kg": 1.81,
-    "direction": "up",
-    "pct": 0.016717,
+    "diff_per_kg": -0.4,
+    "direction": "down",
+    "pct": -0.012422,
     "prev_trade_date": "2026-09-18"
    },
-   "crop_id": "pomegranate",
-   "price_per_kg": 110.08,
+   "crop_id": "banana",
+   "price_per_kg": 31.8,
    "reason": null,
    "spark": [
     null,
-    104.7,
-    107.56,
-    107.85,
-    109.0,
-    108.27,
-    110.08
+    32.14,
+    32.03,
+    31.75,
+    32.0,
+    32.2,
+    31.8
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -2.92,
+    "direction": "down",
+    "pct": -0.014818,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "garlic",
+   "price_per_kg": 194.14,
+   "reason": null,
+   "spark": [
+    null,
+    199.83,
+    196.08,
+    195.84,
+    200.43,
+    197.06,
+    194.14
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 4.43,
+    "direction": "up",
+    "pct": 0.027156,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "mango",
+   "price_per_kg": 167.56,
+   "reason": null,
+   "spark": [
+    null,
+    156.16,
+    154.34,
+    157.16,
+    155.74,
+    163.13,
+    167.56
    ],
    "staleness": {
     "days": 0,
@@ -336,31 +386,6 @@
   },
   {
    "change": {
-    "diff_per_kg": -0.09,
-    "direction": "down",
-    "pct": -0.002846,
-    "prev_trade_date": "2026-09-18"
-   },
-   "crop_id": "cauliflower",
-   "price_per_kg": 31.53,
-   "reason": null,
-   "spark": [
-    null,
-    30.39,
-    30.35,
-    30.97,
-    31.98,
-    31.62,
-    31.53
-   ],
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "change": {
     "diff_per_kg": 0.12,
     "direction": "up",
     "pct": 0.002686,
@@ -427,31 +452,6 @@
     134.58,
     135.79,
     135.72
-   ],
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "change": {
-    "diff_per_kg": 1.99,
-    "direction": "up",
-    "pct": 0.010903,
-    "prev_trade_date": "2026-09-18"
-   },
-   "crop_id": "apple",
-   "price_per_kg": 184.51,
-   "reason": null,
-   "spark": [
-    null,
-    174.13,
-    180.75,
-    181.41,
-    188.12,
-    182.52,
-    184.51
    ],
    "staleness": {
     "days": 0,

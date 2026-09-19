@@ -30,7 +30,7 @@
   "world": null
  },
  "rank": {
-  "position": 38,
+  "position": 39,
   "total": 63
  },
  "rows": [
@@ -105,41 +105,13 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "mysuru",
-   "diff_per_kg": 7.81,
-   "distance_km": 932,
+   "area_id": "mumbai",
+   "diff_per_kg": 9.23,
+   "distance_km": 193,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 47.5,
+   "price_per_kg": 48.92,
    "rank": 6,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "hassan",
-   "diff_per_kg": 7.12,
-   "distance_km": 830,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 46.81,
-   "rank": 7,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "udupi",
-   "diff_per_kg": 6.88,
-   "distance_km": 749,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 46.57,
-   "rank": 8,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -153,35 +125,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 46.15,
-   "rank": 9,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "mumbai",
-   "diff_per_kg": 6.08,
-   "distance_km": 193,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 45.77,
-   "rank": 10,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "ratnagiri",
-   "diff_per_kg": 5.82,
-   "distance_km": 335,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 45.51,
-   "rank": 11,
+   "rank": 7,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -195,7 +139,35 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 45.51,
-   "rank": 11,
+   "rank": 8,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "mysuru",
+   "diff_per_kg": 5.41,
+   "distance_km": 932,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 45.1,
+   "rank": 9,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "udupi",
+   "diff_per_kg": 5.28,
+   "distance_km": 749,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 44.97,
+   "rank": 10,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -204,11 +176,39 @@
   },
   {
    "area_id": "thane",
-   "diff_per_kg": 5.48,
+   "diff_per_kg": 5.07,
    "distance_km": 122,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 45.17,
+   "price_per_kg": 44.76,
+   "rank": 11,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "hassan",
+   "diff_per_kg": 4.29,
+   "distance_km": 830,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 43.98,
+   "rank": 12,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "ratnagiri",
+   "diff_per_kg": 3.82,
+   "distance_km": 335,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 43.51,
    "rank": 13,
    "staleness": {
     "days": 0,
@@ -246,11 +246,11 @@
   },
   {
    "area_id": "belagavi",
-   "diff_per_kg": 3.16,
+   "diff_per_kg": 2.77,
    "distance_km": 460,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 42.85,
+   "price_per_kg": 42.46,
    "rank": 16,
    "staleness": {
     "days": 0,
@@ -259,12 +259,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "satara",
-   "diff_per_kg": 3.1,
-   "distance_km": 289,
+   "area_id": "chikkamagaluru",
+   "diff_per_kg": 2.42,
+   "distance_km": 776,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 42.79,
+   "price_per_kg": 42.11,
    "rank": 17,
    "staleness": {
     "days": 0,
@@ -273,12 +273,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "chikkamagaluru",
-   "diff_per_kg": 2.81,
-   "distance_km": 776,
+   "area_id": "satara",
+   "diff_per_kg": 1.9,
+   "distance_km": 289,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 42.5,
+   "price_per_kg": 41.59,
    "rank": 18,
    "staleness": {
     "days": 0,
@@ -287,13 +287,41 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "vijayanagara",
-   "diff_per_kg": 2.05,
-   "distance_km": 623,
+   "area_id": "nagpur",
+   "diff_per_kg": 1.82,
+   "distance_km": 521,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 41.74,
+   "price_per_kg": 41.51,
    "rank": 19,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "shivamogga",
+   "diff_per_kg": 1.6,
+   "distance_km": 697,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 41.29,
+   "rank": 20,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "delhi",
+   "diff_per_kg": 1.55,
+   "distance_km": 986,
+   "is_base": false,
+   "n_markets": 2,
+   "price_per_kg": 41.24,
+   "rank": 21,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -307,21 +335,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 41.15,
-   "rank": 20,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "nagpur",
-   "diff_per_kg": 1.42,
-   "distance_km": 521,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 41.11,
-   "rank": 21,
+   "rank": 22,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -335,7 +349,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 41.06,
-   "rank": 22,
+   "rank": 23,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -349,20 +363,6 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 40.98,
-   "rank": 23,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "shivamogga",
-   "diff_per_kg": 1.2,
-   "distance_km": 697,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 40.89,
    "rank": 24,
    "staleness": {
     "days": 0,
@@ -399,12 +399,12 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "delhi",
-   "diff_per_kg": 1.03,
-   "distance_km": 986,
+   "area_id": "bagalkot",
+   "diff_per_kg": 0.96,
+   "distance_km": 465,
    "is_base": false,
-   "n_markets": 2,
-   "price_per_kg": 40.72,
+   "n_markets": 1,
+   "price_per_kg": 40.65,
    "rank": 27,
    "staleness": {
     "days": 0,
@@ -413,13 +413,13 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "bagalkot",
+   "area_id": "davangere",
    "diff_per_kg": 0.96,
-   "distance_km": 465,
+   "distance_km": 689,
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 40.65,
-   "rank": 28,
+   "rank": 27,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -455,13 +455,27 @@
    "trade_date": "2026-09-19"
   },
   {
+   "area_id": "vijayanagara",
+   "diff_per_kg": 0.86,
+   "distance_km": 623,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 40.55,
+   "rank": 31,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
    "area_id": "gadag",
    "diff_per_kg": 0.84,
    "distance_km": 560,
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 40.53,
-   "rank": 31,
+   "rank": 32,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -475,7 +489,7 @@
    "is_base": false,
    "n_markets": 2,
    "price_per_kg": 40.425,
-   "rank": 32,
+   "rank": 33,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -489,7 +503,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 40.4,
-   "rank": 33,
+   "rank": 34,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -503,7 +517,21 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 40.28,
-   "rank": 34,
+   "rank": 35,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "chandrapur",
+   "diff_per_kg": 0.23,
+   "distance_km": 564,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 39.92,
+   "rank": 36,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -517,7 +545,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 39.9,
-   "rank": 35,
+   "rank": 37,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -531,21 +559,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 39.86,
-   "rank": 36,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "davangere",
-   "diff_per_kg": 0.14,
-   "distance_km": 689,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 39.83,
-   "rank": 37,
+   "rank": 38,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -559,7 +573,7 @@
    "is_base": true,
    "n_markets": 7,
    "price_per_kg": 39.69,
-   "rank": 38,
+   "rank": 39,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -573,20 +587,6 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 39.59,
-   "rank": 39,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "chandrapur",
-   "diff_per_kg": -0.17,
-   "distance_km": 564,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 39.52,
    "rank": 40,
    "staleness": {
     "days": 0,
@@ -609,13 +609,41 @@
    "trade_date": "2026-09-19"
   },
   {
+   "area_id": "kolhapur",
+   "diff_per_kg": -0.38,
+   "distance_km": 419,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 39.31,
+   "rank": 42,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
    "area_id": "raichur",
    "diff_per_kg": -0.51,
    "distance_km": 551,
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 39.18,
-   "rank": 42,
+   "rank": 43,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "pune",
+   "diff_per_kg": -0.54,
+   "distance_km": 178,
+   "is_base": false,
+   "n_markets": 3,
+   "price_per_kg": 39.15,
+   "rank": 44,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -629,7 +657,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 39.08,
-   "rank": 43,
+   "rank": 45,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -643,7 +671,21 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 38.97,
-   "rank": 44,
+   "rank": 46,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "chikkaballapur",
+   "diff_per_kg": -0.82,
+   "distance_km": 836,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 38.87,
+   "rank": 47,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -657,7 +699,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 38.85,
-   "rank": 45,
+   "rank": 48,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -671,48 +713,6 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 38.83,
-   "rank": 46,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "pune",
-   "diff_per_kg": -0.94,
-   "distance_km": 178,
-   "is_base": false,
-   "n_markets": 3,
-   "price_per_kg": 38.75,
-   "rank": 47,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "haveri",
-   "diff_per_kg": -1.14,
-   "distance_km": 627,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 38.55,
-   "rank": 48,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "kolhapur",
-   "diff_per_kg": -1.18,
-   "distance_km": 419,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 38.51,
    "rank": 49,
    "staleness": {
     "days": 0,
@@ -721,26 +721,26 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "jalgaon",
-   "diff_per_kg": -1.63,
-   "distance_km": 164,
-   "is_base": false,
-   "n_markets": 2,
-   "price_per_kg": 38.06,
-   "rank": 50,
-   "staleness": {
-    "days": 1,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-18"
-  },
-  {
-   "area_id": "chikkaballapur",
-   "diff_per_kg": -2.48,
-   "distance_km": 836,
+   "area_id": "akola",
+   "diff_per_kg": -1.5,
+   "distance_km": 327,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 37.21,
+   "price_per_kg": 38.19,
+   "rank": 50,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "haveri",
+   "diff_per_kg": -1.53,
+   "distance_km": 627,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 38.16,
    "rank": 51,
    "staleness": {
     "days": 0,
@@ -749,13 +749,41 @@
    "trade_date": "2026-09-19"
   },
   {
+   "area_id": "ahmednagar",
+   "diff_per_kg": -1.54,
+   "distance_km": 143,
+   "is_base": false,
+   "n_markets": 3,
+   "price_per_kg": 38.15,
+   "rank": 52,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "jalgaon",
+   "diff_per_kg": -2.025,
+   "distance_km": 164,
+   "is_base": false,
+   "n_markets": 2,
+   "price_per_kg": 37.665,
+   "rank": 53,
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
    "area_id": "dhule",
    "diff_per_kg": -2.66,
    "distance_km": 108,
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 37.03,
-   "rank": 52,
+   "rank": 54,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -769,7 +797,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 37.01,
-   "rank": 53,
+   "rank": 55,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -783,49 +811,7 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 36.36,
-   "rank": 54,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "akola",
-   "diff_per_kg": -3.53,
-   "distance_km": 327,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 36.16,
-   "rank": 55,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "ahmednagar",
-   "diff_per_kg": -4.09,
-   "distance_km": 143,
-   "is_base": false,
-   "n_markets": 3,
-   "price_per_kg": 35.6,
    "rank": 56,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "nandurbar",
-   "diff_per_kg": -4.28,
-   "distance_km": 149,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 35.41,
-   "rank": 57,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -839,6 +825,20 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 35.03,
+   "rank": 57,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "kalaburagi",
+   "diff_per_kg": -4.8,
+   "distance_km": 435,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 34.89,
    "rank": 58,
    "staleness": {
     "days": 0,
@@ -861,13 +861,27 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "yadgir",
-   "diff_per_kg": -5.16,
-   "distance_km": 505,
+   "area_id": "kolar",
+   "diff_per_kg": -5.02,
+   "distance_km": 901,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 34.53,
+   "price_per_kg": 34.67,
    "rank": 60,
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "area_id": "nandurbar",
+   "diff_per_kg": -5.05,
+   "distance_km": 149,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 34.64,
+   "rank": 61,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -875,13 +889,13 @@
    "trade_date": "2026-09-19"
   },
   {
-   "area_id": "kalaburagi",
-   "diff_per_kg": -5.19,
-   "distance_km": 435,
+   "area_id": "yadgir",
+   "diff_per_kg": -5.16,
+   "distance_km": 505,
    "is_base": false,
    "n_markets": 1,
-   "price_per_kg": 34.5,
-   "rank": 61,
+   "price_per_kg": 34.53,
+   "rank": 62,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -895,26 +909,12 @@
    "is_base": false,
    "n_markets": 1,
    "price_per_kg": 34.22,
-   "rank": 62,
+   "rank": 63,
    "staleness": {
     "days": 0,
     "state": "today"
    },
    "trade_date": "2026-09-19"
-  },
-  {
-   "area_id": "kolar",
-   "diff_per_kg": -6.51,
-   "distance_km": 901,
-   "is_base": false,
-   "n_markets": 1,
-   "price_per_kg": 33.18,
-   "rank": 63,
-   "staleness": {
-    "days": 3,
-    "state": "stale"
-   },
-   "trade_date": "2026-09-16"
   },
   {
    "area_id": "dakshinakannada",

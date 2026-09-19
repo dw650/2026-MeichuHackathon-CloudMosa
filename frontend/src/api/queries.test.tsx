@@ -61,7 +61,7 @@ describe('query hooks', () => {
     expect(r.prices.data?.items.map((i) => i.crop_id)).toEqual(['onion'])
     expect(r.quote.data?.series).toHaveLength(30)
     expect(r.compare.data?.rows).toHaveLength(64)
-    expect(r.markets.data?.rows).toHaveLength(25)
+    expect(r.markets.data?.rows).toHaveLength(24)
     expect(r.market.data?.market_id).toBe('lasalgaon')
     expect(r.news.data?.area_id).toBe('taichung')
     expect(r.news.data?.items).toHaveLength(6)

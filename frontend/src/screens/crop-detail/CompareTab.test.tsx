@@ -21,7 +21,7 @@ const softKeys = (app: App) => [app.softKey('left'), app.softKey('center'), app.
 describe('crop detail · 比價 tab (T29)', () => {
   it('ranks every area by price, marks the viewed one 你 and opens an area on OK', async () => {
     const app = await renderApp('/crop/onion/compare', { history: ['/'] })
-    expect(await screen.findByText('Nashik 縣 價格排第 38／63')).toBeInTheDocument()
+    expect(await screen.findByText('Nashik 縣 價格排第 39／63')).toBeInTheDocument()
     expect(screen.getByText('價格 高→低')).toBeInTheDocument()
     expect(listed()).toHaveLength(64)
     expect(listed().slice(0, 3)).toEqual(['area:palghar', 'area:bengaluru', 'area:raigad'])
@@ -45,7 +45,7 @@ describe('crop detail · 比價 tab (T29)', () => {
 
   it('sorts with the # panel, keeping areas without data last', async () => {
     const app = await renderApp('/crop/onion/compare')
-    await screen.findByText('Nashik 縣 價格排第 38／63')
+    await screen.findByText('Nashik 縣 價格排第 39／63')
     await press(app, '#')
     expect(app.path()).toBe('/crop/onion/compare?sheet=sort')
     expect(screen.getByRole('dialog', { name: '排序方式' })).toBeInTheDocument()
@@ -65,7 +65,7 @@ describe('crop detail · 比價 tab (T29)', () => {
     expect(listed().at(-1)).toBe('area:dakshinakannada')
     expect(app.focusedId()).toBe('area:nashik')
     // The number is the price rank, whatever the order.
-    expect(within(card('nashik')).getByText('38')).toBeInTheDocument()
+    expect(within(card('nashik')).getByText('39')).toBeInTheDocument()
 
     await press(app, '2')
     expect(app.path()).toBe('/crop/onion/today?area=dhule')
@@ -73,7 +73,7 @@ describe('crop detail · 比價 tab (T29)', () => {
 
   it('returns to the first area when * switches the price type', async () => {
     const app = await renderApp('/crop/onion/compare')
-    await screen.findByText('Nashik 縣 價格排第 38／63')
+    await screen.findByText('Nashik 縣 價格排第 39／63')
     await press(app, 'ArrowDown')
     await press(app, 'ArrowDown')
     expect(app.focusedId()).toBe('area:raigad')

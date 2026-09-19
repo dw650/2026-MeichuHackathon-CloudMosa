@@ -37,7 +37,7 @@ async def test_quote_matches_the_documented_shape(api: httpx.AsyncClient) -> Non
     assert q["fetched_at"] == "2026-09-19T11:40:00+05:30"
     assert q["price_per_kg"] == pytest.approx(39.7, rel=0.03)
     assert q["reason"] is None
-    assert (q["markets"]["count"], q["markets"]["total"]) == (7, 25)
+    assert (q["markets"]["count"], q["markets"]["total"]) == (7, 24)
     assert q["markets"]["min_per_kg"] <= q["price_per_kg"] <= q["markets"]["max_per_kg"]
     assert q["change"]["direction"] == "up"
     assert q["change"]["pct"] == pytest.approx(0.021, abs=0.03)
@@ -213,7 +213,7 @@ async def test_markets_of_an_area_with_their_difference_from_the_median(
     quote = (await api.get("/api/v1/crops/onion/quote", params=IN_NASHIK)).json()
     assert body["median_per_kg"] == quote["price_per_kg"]
     rows = {r["market_id"]: r for r in body["rows"]}
-    assert len(rows) == 25
+    assert len(rows) == 24
     assert rows["yeola"]["staleness"] == {"days": 3, "state": "stale"}
     assert rows["malegaon"]["staleness"] == {"days": 1, "state": "stale"}
     assert (rows["manmad"]["price_per_kg"], rows["manmad"]["staleness"]["state"]) == (None, "none")

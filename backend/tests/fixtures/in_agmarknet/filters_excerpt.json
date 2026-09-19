@@ -356,12 +356,6 @@
 "district_id": 374
 },
 {
-"id": 1901,
-"mkt_name": "APMC Aatpadi ",
-"state_id": 20,
-"district_id": 367
-},
-{
 "id": 570,
 "mkt_name": "APMC Achalpur ",
 "state_id": 20,
@@ -1400,12 +1394,6 @@
 "district_id": 367
 },
 {
-"id": 556,
-"mkt_name": "APMC Sangola ",
-"state_id": 20,
-"district_id": 369
-},
-{
 "id": 1633,
 "mkt_name": "APMC Satana ",
 "state_id": 20,
@@ -2330,6 +2318,12 @@
 "district_id": 257
 },
 {
+"id": 759,
+"mkt_name": "Kunigal APMC",
+"state_id": 16,
+"district_id": 267
+},
+{
 "id": 2152,
 "mkt_name": "Kurdwadi(Modnimb) ",
 "state_id": 20,
@@ -2550,18 +2544,6 @@
 "mkt_name": "Pandavapura APMC",
 "state_id": 16,
 "district_id": 261
-},
-{
-"id": 3993,
-"mkt_name": "Perfect Krishi Market Yard Pvt Ltd, Dist Nashik",
-"state_id": 20,
-"district_id": 361
-},
-{
-"id": 4028,
-"mkt_name": "Perfect Krushi Market Yard, Tal Madha, Dist Solapur",
-"state_id": 20,
-"district_id": 369
 },
 {
 "id": 119,
@@ -2932,8 +2914,8 @@
 ],
 "cmdt_data": [
 {
-"cmdt_id": 17,
-"cmdt_name": "Apple",
+"cmdt_id": 19,
+"cmdt_name": "Banana",
 "cmdt_group_id": 5
 },
 {
@@ -2957,11 +2939,6 @@
 "cmdt_group_id": 6
 },
 {
-"cmdt_id": 31,
-"cmdt_name": "Cauliflower",
-"cmdt_group_id": 6
-},
-{
 "cmdt_id": 15,
 "cmdt_name": "Cotton",
 "cmdt_group_id": 4
@@ -2969,6 +2946,11 @@
 {
 "cmdt_id": 131,
 "cmdt_name": "Cucumbar(Kheera)",
+"cmdt_group_id": 6
+},
+{
+"cmdt_id": 25,
+"cmdt_name": "Garlic",
 "cmdt_group_id": 6
 },
 {
@@ -3007,14 +2989,14 @@
 "cmdt_group_id": 1
 },
 {
+"cmdt_id": 20,
+"cmdt_name": "Mango",
+"cmdt_group_id": 5
+},
+{
 "cmdt_id": 23,
 "cmdt_name": "Onion",
 "cmdt_group_id": 6
-},
-{
-"cmdt_id": 160,
-"cmdt_name": "Pomegranate",
-"cmdt_group_id": 5
 },
 {
 "cmdt_id": 24,

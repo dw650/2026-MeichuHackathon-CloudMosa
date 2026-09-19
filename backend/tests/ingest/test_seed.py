@@ -27,8 +27,8 @@ def test_seed_files_have_the_expected_areas_and_crops() -> None:
     assert len(seeds["TW"].crops) == 30
     assert len(seeds["MY"].crops) == 21
     nashik = next(a for a in seeds["IN"].areas if a.id == "nashik")
-    assert len(nashik.markets) == 25
-    assert sum(len(a.markets) for a in seeds["IN"].areas) == 432
+    assert len(nashik.markets) == 24
+    assert sum(len(a.markets) for a in seeds["IN"].areas) == 429
 
 
 def test_countries_without_their_own_categories_get_the_default_seven() -> None:

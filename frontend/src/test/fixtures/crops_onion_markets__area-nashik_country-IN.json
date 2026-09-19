@@ -5,14 +5,29 @@
  "median_per_kg": 39.69,
  "rows": [
   {
-   "diff_per_kg": 4.3,
+   "diff_per_kg": 5.07,
    "km_from_center": null,
    "market_id": "pimpalgaon",
    "name": {
     "en": "Pimpalgaon Baswant",
     "zh-TW": "Pimpalgaon Baswant"
    },
-   "price_per_kg": 43.99,
+   "price_per_kg": 44.76,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": 0.91,
+   "km_from_center": null,
+   "market_id": "nashikm",
+   "name": {
+    "en": "Nasik",
+    "zh-TW": "Nasik"
+   },
+   "price_per_kg": 40.6,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -28,21 +43,6 @@
     "zh-TW": "Lasalgaon"
    },
    "price_per_kg": 40.09,
-   "staleness": {
-    "days": 0,
-    "state": "today"
-   },
-   "trade_date": "2026-09-19"
-  },
-  {
-   "diff_per_kg": 0.22,
-   "km_from_center": null,
-   "market_id": "nashikm",
-   "name": {
-    "en": "Nasik",
-    "zh-TW": "Nasik"
-   },
-   "price_per_kg": 39.91,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -95,14 +95,14 @@
    "trade_date": "2026-09-19"
   },
   {
-   "diff_per_kg": -1.18,
+   "diff_per_kg": -0.98,
    "km_from_center": null,
    "market_id": "satana",
    "name": {
     "en": "Satana",
     "zh-TW": "Satana"
    },
-   "price_per_kg": 38.51,
+   "price_per_kg": 38.71,
    "staleness": {
     "days": 0,
     "state": "today"
@@ -281,21 +281,6 @@
    "name": {
     "en": "Nandgaon",
     "zh-TW": "Nandgaon"
-   },
-   "price_per_kg": null,
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "diff_per_kg": null,
-   "km_from_center": null,
-   "market_id": "perfectkrishimarketyard",
-   "name": {
-    "en": "Perfect Krishi Market Yard",
-    "zh-TW": "Perfect Krishi Market Yard"
    },
    "price_per_kg": null,
    "staleness": {

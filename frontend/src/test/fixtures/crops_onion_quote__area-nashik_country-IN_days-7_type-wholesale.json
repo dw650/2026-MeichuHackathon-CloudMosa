@@ -1,9 +1,9 @@
 {
  "area_id": "nashik",
  "change": {
-  "diff_per_kg": 1.07,
+  "diff_per_kg": 0.925,
   "direction": "up",
-  "pct": 0.027706,
+  "pct": 0.023862,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "onion",
@@ -11,9 +11,9 @@
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": {
   "count": 7,
-  "max_per_kg": 43.99,
-  "min_per_kg": 38.51,
-  "total": 25
+  "max_per_kg": 44.76,
+  "min_per_kg": 38.71,
+  "total": 24
  },
  "nearby": {
   "highest": {
@@ -40,23 +40,23 @@
   },
   {
    "date": "2026-09-14",
-   "price_per_kg": 37.04
+   "price_per_kg": 37.68
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 38.15
+   "price_per_kg": 38.76
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 37.67
+   "price_per_kg": 37.88
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 37.415
+   "price_per_kg": 37.765
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 38.62
+   "price_per_kg": 38.765
   },
   {
    "date": "2026-09-19",
@@ -76,17 +76,17 @@
  },
  "stats": {
   "arrivals": "high",
-  "arrivals_ratio": 1.179979,
-  "change30_pct": 0.091884,
-  "change7_pct": 0.071544,
-  "high30_per_kg": 39.69,
+  "arrivals_ratio": 1.179873,
+  "change30_pct": 0.089188,
+  "change7_pct": 0.053344,
+  "high30_per_kg": 40.16,
   "high7_per_kg": 39.69,
-  "low30_per_kg": 36.35,
-  "low7_per_kg": 37.04,
-  "pos30": 1.0,
+  "low30_per_kg": 36.44,
+  "low7_per_kg": 37.68,
+  "pos30": 0.873656,
   "volatility": "mid",
-  "volatility_pct": 0.021846,
-  "vs_avg7_pct": 0.041801
+  "volatility_pct": 0.020949,
+  "vs_avg7_pct": 0.032966
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

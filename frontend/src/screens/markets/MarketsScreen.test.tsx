@@ -44,7 +44,7 @@ describe('MarketsScreen', () => {
 
     // Rank, price and the difference with the median; freshness only when not today.
     // Agmarknet gives no market coordinates, so no Indian market shows a distance.
-    expect(row('pimpalgaon')).toBe('1Pimpalgaon Baswant4,399▲+430')
+    expect(row('pimpalgaon')).toBe('1Pimpalgaon Baswant4,476▲+507')
     expect(row('malegaon')).toContain('昨天')
     expect(row('yeola')).toContain('3 天前')
     // Markets without a price come last, with 「—」 and the reason.
@@ -53,15 +53,15 @@ describe('MarketsScreen', () => {
     expect(row('manmad')).toBe('17Manmad無資料—')
 
     app.press('ArrowDown')
-    expect(app.focusedId()).toBe('market:lasalgaon')
+    expect(app.focusedId()).toBe('market:nashikm')
     app.press('Enter')
-    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/lasalgaon?area=nashik'))
+    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/nashikm?area=nashik'))
 
     await app.back()
     await screen.findByText('Pimpalgaon Baswant')
-    expect(app.focusedId()).toBe('market:lasalgaon')
+    expect(app.focusedId()).toBe('market:nashikm')
     app.press('3')
-    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/nashikm?area=nashik'))
+    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/lasalgaon?area=nashik'))
   })
 
   it('opens the area panel with #, the menu with the left soft key, and toggles retail with *', async () => {

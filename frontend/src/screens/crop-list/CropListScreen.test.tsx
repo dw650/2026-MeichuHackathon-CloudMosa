@@ -32,7 +32,6 @@ describe('CropListScreen', () => {
       'crop:cabbage',
       'crop:eggplant',
       'crop:cucumber',
-      'crop:cauliflower',
       'crop:carrot',
     ])
     expect(card('crop:onion')).toHaveTextContent('3,969')
@@ -76,12 +75,12 @@ describe('CropListScreen', () => {
   it('lists the recently viewed crops, newest first', async () => {
     const app = await renderApp('/cat/recent')
     act(() => {
-      useSession.getState().viewCrop('pomegranate')
+      useSession.getState().viewCrop('banana')
       useSession.getState().viewCrop('onion')
     })
-    await screen.findByText('石榴')
+    await screen.findByText('香蕉')
     expect(screen.getByRole('heading', { name: '最近' })).toBeInTheDocument()
-    expect(focusIds()).toEqual(['crop:onion', 'crop:pomegranate'])
+    expect(focusIds()).toEqual(['crop:onion', 'crop:banana'])
     expect(app.focusedId()).toBe('crop:onion')
   })
 

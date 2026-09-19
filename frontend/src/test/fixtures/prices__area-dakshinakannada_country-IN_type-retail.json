@@ -186,7 +186,47 @@
   },
   {
    "change": null,
-   "crop_id": "pomegranate",
+   "crop_id": "banana",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "garlic",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mango",
    "price_per_kg": null,
    "reason": "no_retail_area",
    "spark": [
@@ -286,26 +326,6 @@
   },
   {
    "change": null,
-   "crop_id": "cauliflower",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
    "crop_id": "carrot",
    "price_per_kg": null,
    "reason": "no_retail_area",
@@ -347,26 +367,6 @@
   {
    "change": null,
    "crop_id": "ginger",
-   "price_per_kg": null,
-   "reason": "no_retail_area",
-   "spark": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
-   ],
-   "staleness": {
-    "days": null,
-    "state": "none"
-   },
-   "trade_date": null
-  },
-  {
-   "change": null,
-   "crop_id": "apple",
    "price_per_kg": null,
    "reason": "no_retail_area",
    "spark": [
