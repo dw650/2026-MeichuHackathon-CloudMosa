@@ -10,6 +10,8 @@ from app.ingest.providers.base import NormalizedQuote, PriceProvider, RawRow, So
 from app.timeutil import from_roc
 
 KG_PER_QUINTAL = 100
+KG_PER_TONNE = 1000
+SOURCE_KEY_MAX = 80  # width of source_market_map.source_market; longer keys are cut there
 
 
 class RowError(ValueError):
@@ -58,13 +60,18 @@ def _iso(text: Any) -> date:
         raise RowError(f"bad ISO date {text!r}") from exc
 
 
-def datagov_mandi(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
-    """data.gov.in mandi prices: ₹ per quintal; modal price is the representative price."""
-    market = maps.market("IN", raw.get("market", ""))
-    crop = maps.crop("IN", raw.get("commodity", ""), raw.get("variety", ""))
+def agmarknet(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
+    """India Agmarknet 2.0: ₹ per quintal and arrivals in tonnes; the modal price is the
+    representative price. A market is "<state id>|<market name>" (the source pads some names
+    with spaces, collapsed here; cut to SOURCE_KEY_MAX like in the seed); a crop is a commodity
+    id, any variety unless the map names one."""
+    name = " ".join(str(raw.get("marketName", "")).split())
+    market = maps.market("IN", f"{raw.get('stateId', '')}|{name}"[:SOURCE_KEY_MAX])
+    variety = str(raw.get("variety", "")).strip()
+    crop = maps.crop("IN", str(raw.get("commodityId", "")), variety)
     if market is None or crop is None or market not in maps.market_area:
         return None
-    arrivals_qtl = number(raw.get("arrival_qtl"))
+    tonnes = number(raw.get("arrivals"))
     return NormalizedQuote(
         source=source,
         country="IN",
@@ -72,12 +79,12 @@ def datagov_mandi(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote
         area_id=maps.market_area[market],
         market_id=market,
         crop_id=crop,
-        variety=str(raw.get("variety", "")).strip(),
-        trade_date=_dmy(raw.get("arrival_date")),
-        rep_price=_per_kg(number(raw.get("modal_price")), KG_PER_QUINTAL),
-        low_price=_per_kg(number(raw.get("min_price")), KG_PER_QUINTAL),
-        high_price=_per_kg(number(raw.get("max_price")), KG_PER_QUINTAL),
-        volume_kg=None if arrivals_qtl is None else arrivals_qtl * KG_PER_QUINTAL,
+        variety=variety,
+        trade_date=_dmy(raw.get("arrivalDate")),
+        rep_price=_per_kg(number(raw.get("modalPrice")), KG_PER_QUINTAL),
+        low_price=_per_kg(number(raw.get("minimumPrice")), KG_PER_QUINTAL),
+        high_price=_per_kg(number(raw.get("maximumPrice")), KG_PER_QUINTAL),
+        volume_kg=None if tonnes is None or tonnes <= 0 else tonnes * KG_PER_TONNE,
     )
 
 
