@@ -32,6 +32,8 @@ export const paths = {
   settings: () => '/settings',
   settingsItem: (item: string) => `/settings/${item}`,
   about: () => '/about',
+  intl: () => '/intl',
+  intlSeries: (seriesId: string) => `/intl/${seriesId}`,
   setup: (step: SetupStep) => `/setup/${step}`,
 }
 

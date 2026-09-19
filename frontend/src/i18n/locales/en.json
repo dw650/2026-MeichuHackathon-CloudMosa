@@ -32,7 +32,10 @@
   "date": {
     "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     "short": "{{w}} {{d}}/{{m}}",
-    "dataTime": "{{m}}/{{d}} {{time}}"
+    "dataTime": "{{m}}/{{d}} {{time}}",
+    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "day": "{{d}}/{{m}}",
+    "withYear": "{{month}} {{y}}"
   },
   "freshness": {
     "today": "Today",
@@ -78,7 +81,8 @@
     "about": "About & data",
     "settings": "Settings",
     "addWatch": "Add to watchlist",
-    "removeWatch": "Remove from list"
+    "removeWatch": "Remove from list",
+    "intl": "International prices"
   },
   "categories": {
     "cereal": "Cereals",
@@ -207,6 +211,36 @@
   "watch": {
     "title": "Watchlist"
   },
+  "intl": {
+    "title": "International prices",
+    "note": "World Bank Pink Sheet monthly averages, updated early each month. Rates By Exchange Rate API",
+    "loading": "Loading international prices",
+    "average": "Monthly avg",
+    "rateDate": "At the {{date}} rate",
+    "rateShort": "Rate {{date}}",
+    "rateLine": "At the {{date}} rate: {{rate}}",
+    "perKg": "{{currency}}/kg",
+    "monthAverage": "{{month}} average",
+    "noData": "No data yet",
+    "noRate": "No exchange rate yet",
+    "showingOld": "Showing the prices from before",
+    "vsPrevMonth": "vs last month",
+    "trend": "Last 12 months",
+    "high": "12-mo high",
+    "low": "12-mo low",
+    "vsAverage": "vs 12-mo avg",
+    "published": "Published {{price}}",
+    "usd": "US${{price}}/{{unit}}",
+    "units": {
+      "mt": "t",
+      "kg": "kg"
+    },
+    "rate": "US$1 = {{rate}} {{currency}}",
+    "series": "Series: {{name}}",
+    "source": "Source: World Bank Pink Sheet (updated {{date}})",
+    "sourceUndated": "Source: World Bank Pink Sheet",
+    "credit": "Rates By Exchange Rate API"
+  },
   "settings": {
     "title": "Settings",
     "rows": {
@@ -245,7 +279,8 @@
     "source": "Data source",
     "noMoney": "We never ask for money, PINs or codes.",
     "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
-    "version": "Version {{version}}"
+    "version": "Version {{version}}",
+    "intlCredit": "International prices: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API"
   },
   "errors": {
     "screen": {

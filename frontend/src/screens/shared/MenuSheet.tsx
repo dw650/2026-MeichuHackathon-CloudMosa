@@ -103,6 +103,13 @@ export function MenuSheet({ cropId }: MenuSheetProps) {
       label: t('menu.settings'),
       run: () => nav.leaveSheet(paths.settings()),
     },
+    // Bonus B5, after the baseline rows so their number keys stay the same.
+    {
+      focusId: 'intl',
+      icon: 'globe',
+      label: t('menu.intl'),
+      run: () => nav.leaveSheet(paths.intl()),
+    },
   ]
 
   const list = useFocusList(

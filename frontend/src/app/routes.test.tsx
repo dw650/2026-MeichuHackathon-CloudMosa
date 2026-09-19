@@ -61,6 +61,8 @@ describe('route table', () => {
     [paths.settings(), 'settings'],
     [paths.settingsItem('language'), 'settings-item'],
     [paths.about(), 'about'],
+    [paths.intl(), 'intl'],
+    [paths.intlSeries('rice'), 'intl-series'],
     [paths.setup('lang'), 'setup-lang'],
     [paths.setup('langs'), 'setup-langs'],
     [paths.setup('locate'), 'setup-locate'],

@@ -140,5 +140,17 @@ export const handlers = [
     return HttpResponse.json(data)
   }),
 
+  http.get('*/api/v1/intl', ({ request }) => {
+    const data = find('/intl', { country: queryOf(request).get('country') ?? '' })
+    return data ? HttpResponse.json(data) : notFound('country_not_found')
+  }),
+
+  http.get('*/api/v1/intl/:series', ({ request, params }) => {
+    const country = queryOf(request).get('country') ?? ''
+    const data = find(`/intl/${String(params.series)}`, { country })
+    if (data) return HttpResponse.json(data)
+    return notFound(find('/intl', { country }) ? 'series_not_found' : 'country_not_found')
+  }),
+
   http.get('*/api/v1/locate', () => HttpResponse.json(find('/locate', {}))),
 ]

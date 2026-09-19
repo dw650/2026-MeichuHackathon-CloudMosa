@@ -12,6 +12,8 @@ import {
   useCompare,
   useCountries,
   useCrops,
+  useIntlPrices,
+  useIntlSeries,
   useLocate,
   useMarket,
   useMarkets,
@@ -42,6 +44,8 @@ describe('query hooks', () => {
         markets: useMarkets({ country: 'IN', area: 'nashik', crop: 'onion' }),
         market: useMarket({ country: 'IN', crop: 'onion', market: 'lasalgaon' }),
         locate: useLocate(),
+        intl: useIntlPrices('TW'),
+        intlSeries: useIntlSeries('IN', 'sugar'),
       }),
       { wrapper: Wrapper },
     )
@@ -56,12 +60,40 @@ describe('query hooks', () => {
     expect(r.markets.data?.rows).toHaveLength(10)
     expect(r.market.data?.market_id).toBe('lasalgaon')
     expect(r.locate.data).toEqual({ country: 'IN', area_id: 'nashik' })
+    expect(r.intl.data?.items.map((i) => i.id)).toEqual([
+      'rice',
+      'wheat',
+      'maize',
+      'soybeans',
+      'sugar',
+      'palm_oil',
+    ])
+    expect(r.intl.data?.fx?.currency).toBe('TWD')
+    expect([r.intlSeries.data?.id, r.intlSeries.data?.usd_unit]).toEqual(['sugar', 'kg'])
+    expect(r.intlSeries.data?.series).toHaveLength(12)
   })
 
   it('do not run without their required parameters', () => {
     const { Wrapper } = wrapper()
-    const { result } = renderHook(() => useAreas(null), { wrapper: Wrapper })
-    expect(result.current.fetchStatus).toBe('idle')
+    const { result } = renderHook(
+      () => [useAreas(null), useIntlPrices(null), useIntlSeries('TW', '')],
+      { wrapper: Wrapper },
+    )
+    expect(result.current.map((q) => q.fetchStatus)).toEqual(['idle', 'idle', 'idle'])
+  })
+
+  it('tell a missing series from a missing country', async () => {
+    const { Wrapper } = wrapper()
+    const { result } = renderHook(
+      () => [useIntlSeries('TW', 'coffee'), useIntlSeries('XX', 'rice'), useIntlPrices('XX')],
+      { wrapper: Wrapper },
+    )
+    await waitFor(() => expect(result.current.every((q) => q.isError)).toBe(true))
+    expect(result.current.map((q) => (q.error as ApiError).code)).toEqual([
+      'series_not_found',
+      'country_not_found',
+      'country_not_found',
+    ])
   })
 
   it('keep the previous data when a refetch fails with 503', async () => {
