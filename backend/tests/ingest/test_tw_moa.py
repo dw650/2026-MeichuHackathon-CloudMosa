@@ -375,5 +375,9 @@ async def test_a_country_never_mixes_demo_and_real_prices(
     assert await count("trade_date < :d") == 0
     assert await count("price_type = 'wholesale'") > 0
 
+    # The hourly refresh runs the real source alone.
+    refreshed = await worker.run_once(real, clock, refresh="tw_moa")
+    assert [(s.source, s.status) for s in refreshed] == [("tw_moa", "ok")]
+
     await worker.run_once(demo, clock)
     assert await sources() == [("IN", "mock"), ("TW", "mock")]
