@@ -357,3 +357,16 @@
   - CI 另有 `.github/workflows/e2e.yml`：手動觸發或 push 到 `main` 時跑 `make e2e`，失敗時上傳截圖。
 - 理由：一個指令跑完、輸出精簡；之後 T34、T39 的全部畫面檢查沿用同一套。
 - 影響：`frontend/playwright.config.ts`、`frontend/e2e/`、`frontend/tsconfig.e2e.json`、`Makefile`、`.github/workflows/e2e.yml`。
+
+## 2026-09-19 T31 換地區面板與地區清單的細節
+- 情況：02 §5.6 與草圖沒寫：面板打開時畫面的軟鍵標籤由誰給；`for=view` 沒有 `back` 時選完要回哪裡；距離從哪裡算；「更改國家…」落在前 9 列時要不要鍵帽；狀態點用哪個門檻；清單載入中與失敗的樣子；清單的左軟鍵。
+- 決定：
+  - `screens/shared/AreaSheet.tsx` 匯出 `sheetSoftKeys(t)`（空／選取／關閉），畫面在 `nav.sheet` 有值時改用它；面板開著時左軟鍵（Escape）也關閉面板（同草圖）。
+  - `for=view` 沒有 `back`（或不是站內路徑）時，目前地區當成我的地區；選了只記進最近使用，然後返回上一頁。
+  - 距離一律從「我的地區」算（`for=view` 也一樣）；距離是 0 的列只寫所屬區域。
+  - 前 9 列都畫數字鍵帽，包括「更改國家…」（地區少於 9 個時），數字鍵只作用在有鍵帽的列。
+  - 狀態顏色照 `describeFreshness`：`warn`（3 天以上）琥珀色、無資料灰色、其他（今天、昨天、休市）綠色；草圖把 2 天前也標成琥珀色，這裡以程式的門檻為準。
+  - 載入中：4 張靜態骨架卡片，中間軟鍵空白。沒有資料又失敗：「連線失敗／你的設定都還在」加一張「重試」卡片，中間軟鍵「重試」。
+  - 地區清單左軟鍵空白，不開選單（草圖標籤也是空白）。
+- 理由：照草圖與現有元件，選最簡單、不會走進死路的做法。
+- 影響：`frontend/src/screens/shared/AreaSheet.tsx`、`frontend/src/screens/areas/`。
