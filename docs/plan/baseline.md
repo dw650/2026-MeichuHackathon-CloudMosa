@@ -223,7 +223,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - quote 回應和 §6 的範例欄位一致。
   - 完成條件：測試通過；重新產生前端型別。
 
-- [ ] **T15 位置推測與 demo 標頭**
+- [x] **T15 位置推測與 demo 標頭**
   - 參考：[04](../04-architecture.md) §3、§6.2；[06](../06-data.md) §6
   - 內容：
     - 從 `X-Client-Forwarded-For` 取最左邊的公開 IP。

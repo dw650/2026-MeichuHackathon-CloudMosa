@@ -18,3 +18,4 @@
 - 2026-09-19 T12 完成：純函式：資料新舊（today／closed／stale／none）、漲跌與持平門檻、比 7 日均價、30 日位置、波動、到貨量、30 天序列（缺值 null）、比價名次與 haversine、市場差額；開啟後端覆蓋率門檻（services+ingest ≥ 90%，目前 97%）（ef6a230）
 - 2026-09-19 T13 完成：GET /countries（含當地 today、單位表、預設關注）、/countries/{cc}/areas（座標、最新交易日與新舊）、/countries/{cc}/crops；每個端點有 summary 與範例、Swagger 在 /api/docs；scripts/gen-api-types.sh、make types、CI contract job（34c25a5）
 - 2026-09-19 T14 完成：GET /prices、/crops/{crop}/quote（含 markets、change、stats、30 天序列、source）、/compare（名次、距離、差額）、/markets、/markets/{market}；沒有價格時附 reason；Cache-Control；前端型別已重新產生（a0cee3e）
+- 2026-09-19 T15 完成：GET /locate（X-Client-Forwarded-For 最左邊的公開 IP → mmdb → 300 km 內最近地區）、可替換查詢介面與缺檔時照常運作、make geoip 與 infra/geoip/README.md；X-Demo-Fail／Stale／IP／Locate 只在 DEMO_MODE 生效（bab0e23）
