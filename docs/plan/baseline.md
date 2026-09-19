@@ -100,7 +100,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：`/health` 回傳 ok；不存在的路徑回傳統一錯誤格式；回應帶 `X-Request-ID`。資料庫測試用 `127.0.0.1:${DB_PORT}` 連 compose 的 `db`，並使用獨立的測試資料庫。
   - 完成條件：`make test`、`make lint` 通過；`make up` 後 api 容器 healthy。
 
-- [ ] **T03 前端骨架與 web 服務**
+- [x] **T03 前端骨架與 web 服務**
   - 參考：[03](../03-ux-ui.md) §2–§3；[04](../04-architecture.md) §3、§4.6；[05](../05-tech-stack.md) §2
   - 內容：
     - Vite + React + TS strict；ESLint + Prettier；Vitest + Testing Library。
