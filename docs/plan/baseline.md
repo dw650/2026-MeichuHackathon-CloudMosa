@@ -192,7 +192,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-B：服務與 API
 
-- [ ] **T12 計算服務**
+- [x] **T12 計算服務**
   - 參考：[06](../06-data.md) §3.4、§3.5、§4
   - 內容（純函式）：
     - 資料新舊判斷：today、closed、stale、none。
