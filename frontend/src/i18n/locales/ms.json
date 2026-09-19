@@ -88,14 +88,6 @@
     "news": "Berita"
   },
   "categories": {
-    "cereal": "Bijirin",
-    "veg": "Sayur",
-    "fruit": "Buah",
-    "pulse": "Kacang",
-    "spice": "Rempah",
-    "oil": "Biji minyak",
-    "other": "Lain",
-    "all": "Semua",
     "recent": "Terkini"
   },
   "setup": {
