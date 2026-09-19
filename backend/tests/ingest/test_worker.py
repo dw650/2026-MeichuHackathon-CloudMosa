@@ -87,6 +87,7 @@ def test_daily_jobs_run_at_five_past_midnight_local_time() -> None:
     for seed in seeds:
         job = scheduler.get_job(f"daily-{seed.country.code}")
         assert job is not None
+        assert job.kwargs == {"daily": seed.country.code}
         fire = job.trigger.get_next_fire_time(None, now)
         local = fire.astimezone(country_tz(seed.country.utc_offset_min))
         assert (local.hour, local.minute) == (0, 5)
@@ -215,3 +216,14 @@ async def test_a_network_source_without_prices_fetches_everything_again(
     again = await run_once(net, lambda: now + timedelta(minutes=5), startup=True)
     assert [(s.source, s.status, s.rows_ok) for s in again] == [(NET, "ok", 60)]
     assert fake_net[1].files == {}
+
+
+async def test_a_daily_job_leaves_other_countries_network_sources_alone(
+    settings: Settings, session: AsyncSession, fake_net: list[FakeNet]
+) -> None:
+    # Taiwan's and Malaysia's daily jobs run at 00:05 UTC+8; India's source waits for India's.
+    net = settings.model_copy(update={"providers": NET})
+    assert await run_once(net, lambda: NET_NOW, daily="TW") == []
+    assert fake_net == []
+    ran = await run_once(net, lambda: NET_NOW, daily="IN")
+    assert [(s.source, s.status) for s in ran] == [(NET, "ok")]
