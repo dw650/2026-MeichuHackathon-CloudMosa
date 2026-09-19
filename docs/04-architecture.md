@@ -202,7 +202,7 @@ class PriceProvider(Protocol):
 |---|---|---|
 | `GET /health` | 健康檢查 | 資料庫狀態、各來源最近一次成功抓取的時間、執行中的版本（commit，`APP_VERSION`） |
 | `GET /locate` | IP 推測位置（F17） | `country`、`area_id`，推測不到時為 `null` |
-| `GET /countries` | 國家清單與設定 | 幣別、locale、單位、休市日、漲跌顏色、預設地區、預設關注 |
+| `GET /countries` | 國家清單與設定 | 幣別、locale、單位、休市日、漲跌顏色、預設地區、預設關注、預設價格類型（`default_price_type`） |
 | `GET /countries/{cc}/areas` | 地區清單 | 名稱、區域、座標、有無零售、最新交易日與新舊 |
 | `GET /countries/{cc}/crops` | 作物清單 | 名稱、分類、品種、有無零售 |
 | `GET /prices?country=&area=&type=&crops=` | 首頁與作物清單 | 每個作物的地區價、漲跌、7 日迷你走勢、新舊 |
@@ -287,7 +287,7 @@ class PriceProvider(Protocol):
 
 | 資料表 | 主要欄位 | 說明 |
 |---|---|---|
-| `countries` | `code` PK、`currency`、`locale`、`utc_offset_min`、`up_is_pos`、`closed_weekdays`、`default_area_id` | 國家設定 |
+| `countries` | `code` PK、`currency`、`locale`、`utc_offset_min`、`up_is_pos`、`closed_weekdays`、`default_area_id`、`default_price_type` | 國家設定；`default_price_type` 是新使用者選這個國家時的價格類型（seed 的 `country.default_price_type`，預設 `wholesale`） |
 | `areas` | `id` PK、`country`、`name` jsonb、`region` jsonb、`lat`、`lon`、`has_retail`、`sort` | 地區 |
 | `markets` | `id` PK、`area_id` FK、`name` jsonb、`km_from_center` | 市場 |
 | `crops` | `(country, id)` PK、`name` jsonb、`category`、`variety` jsonb、`sort`、`default_watch` | 作物 |

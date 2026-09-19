@@ -18,7 +18,7 @@
 
 - **baseline（T01–T39）已完成**：前後端、資料管線、全部畫面與狀態、兩種尺寸、兩國兩語，`make lint`、`make test`、`make audit`、`make e2e` 都通過。完成摘要在 [`plan/progress.md`](plan/progress.md) 最後；實作時自行決定的事項在 [`plan/decisions.md`](plan/decisions.md)。
 - 下一步是 **Phase 2**（部署到公開 HTTPS、在官方 Simulator 測試，並回填 [08 §12](08-platform-constraints.md)），由人接手；通過後再做加分項。
-- **2026-09-20 追加**（使用者同意）：資料來源定下共同介面（每個來源宣告 `SourceInfo`、登記在 `registry.py`、共用抓取原則與契約測試，見 [06](06-data.md) §1.4）；新增第三個國家**馬來西亞**，可接官方 PriceCatcher 的真實零售價（`PROVIDERS` 加上 `my_pricecatcher`，見 [06](06-data.md) §1.5）。PriceCatcher 的批發市場 2026 年起沒有回報，所以馬來西亞只有零售價，批發是「—」。
+- **2026-09-20 追加**（使用者同意）：資料來源定下共同介面（每個來源宣告 `SourceInfo`、登記在 `registry.py`、共用抓取原則與契約測試，見 [06](06-data.md) §1.4）；新增第三個國家**馬來西亞**，可接官方 PriceCatcher 的真實零售價（`PROVIDERS` 加上 `my_pricecatcher`，見 [06](06-data.md) §1.5）。PriceCatcher 的批發市場 2026 年起沒有回報，所以馬來西亞只有零售價，批發是「—」。同日擴充到**濕巴剎回報足夠的 75 個縣**（規則見 [06](06-data.md) §1.5），濕巴剎改在執行時從 PriceCatcher 的回報點對照表找；國家可以在 seed 宣告預設的價格類型，馬來西亞預設零售（使用者決定）。
 - **CD 已提前完成**（加分項 B1，使用者要求）：dw650/2026-MeichuHackathon-CloudMosa 的 `main` CI 通過後，自動部署到 `http://203.116.30.131:3001`。這台 VM 的 80／443 被擋，還沒有 HTTPS，見 [07 §5.2](07-dev-workflow.md)。
 
 ## 關鍵決定
@@ -77,7 +77,7 @@
 | 名詞 | 意思 |
 |---|---|
 | 國家 | 資料、幣別、單位的最大範圍；比價只在同一個國家內 |
-| 地區 | App 的基本單位。台灣＝縣市（例：台北市）；印度＝縣（district，例：Nashik 縣）；馬來西亞＝縣（daerah，例：Klang；吉隆坡是整個直轄區） |
+| 地區 | App 的基本單位。台灣＝縣市（例：台北市）；印度＝縣（district，例：Nashik 縣）；馬來西亞＝縣（daerah，例：Klang；吉隆坡、布城各是整個直轄區） |
 | 市場 | 批發市場（印度 APMC mandi、台灣果菜批發市場、馬來西亞 PriceCatcher 的 Borong），屬於某一個地區 |
 | 代表價 | 單一市場某天的批發價。印度用常見價（modal price），台灣用平均價，馬來西亞用查報價 |
 | 地區價（批發） | 地區內當天有報價的各市場代表價的中位數 |

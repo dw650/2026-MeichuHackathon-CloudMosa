@@ -1,5 +1,5 @@
-# Malaysia seed data (docs/06 §1.5, §7). Areas are districts (Kuala Lumpur: the whole federal
-# territory); names stay in English, as in India. Prices come from KPDN PriceCatcher
+# Malaysia seed data (docs/06 §1.5, §7). Areas are districts (Kuala Lumpur and Putrajaya: the
+# whole federal territory); names stay in English, as in India. Prices come from KPDN PriceCatcher
 # (data.gov.my, CC BY 4.0), which reports one price per premise, item and day.
 # The worker syncs everything except the `mock` blocks into the database; the mock provider
 # reads `mock` directly. Mock prices are in the source's unit: RM per kg.
