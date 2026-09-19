@@ -158,7 +158,8 @@ def test_replies_that_break_the_rules_are_dropped() -> None:
 
 def test_the_prompt_names_malay_and_hindi_with_their_own_length() -> None:
     hindi = build_prompt(HI_REQUEST, grounded=False)
-    assert "Hindi" in hindi and "Devanagari" in hindi
+    assert "Hindi" in hindi
+    assert "Devanagari script" in hindi
     assert "at most 160 Devanagari characters in total" in hindi
     malay = build_prompt(MS_REQUEST, grounded=False)
     assert "Bahasa Melayu" in malay
@@ -232,6 +233,29 @@ async def test_gemini_text_call_uses_a_schema_limited_to_the_crop_list() -> None
     assert crops["enum"] == ["cabbage", "bokchoy"]
     assert "tools" not in body
     assert body["systemInstruction"]["parts"][0]["text"].startswith("You summarise")
+
+
+async def test_gemini_tag_only_call_asks_for_crops_and_never_a_summary() -> None:
+    """No article text: the model is asked which crops the headline is about, with the same
+    enum-limited schema and no summary field (docs/06 §1.6)."""
+    answer = {"candidates": [{"content": {"parts": [{"text": '{"crops": ["potato"]}'}]}}]}
+    script = Script({TEXT_URL: [httpx.Response(200, json=answer)]})
+    ask = SummaryRequest(**{**IN_REQUEST.__dict__, "text": None, "tags_only": True})
+    summary = await gemini(script, grounded=False).summarize(ask)
+    assert summary is not None
+    assert summary.text == ""  # nothing to store as a summary
+    assert summary.crop_ids == ("potato",)
+    body = body_of(script.requests[0])
+    schema = body["generationConfig"]["responseJsonSchema"]
+    assert schema["required"] == ["crops"]
+    assert "summary" not in schema["properties"]
+    assert schema["properties"]["crops"]["items"]["enum"] == ["onion", "potato", "tomato"]
+    prompt = body["contents"][0]["parts"][0]["text"]
+    assert prompt.startswith("Do not write a summary.")
+    assert "Article text" not in prompt
+    # A model that writes a summary anyway has it thrown away.
+    wrote = {"summary": "Potato prices fell in Agra. Traders expect more arrivals.", "crops": []}
+    assert parse_reply(json.dumps(wrote), ask) == ("", ())
 
 
 async def test_gemini_text_model_needs_the_article_text() -> None:

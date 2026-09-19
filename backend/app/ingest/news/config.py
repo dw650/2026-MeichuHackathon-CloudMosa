@@ -37,6 +37,9 @@ class CountryNews(_Model):
     topics: list[str] = []
     price_words: list[str] = []
     exclude: list[str] = []
+    # Longer phrases that contain a crop name but mean something else: a crop matched inside
+    # one of these does not count (香蕉葡萄 is a grape, kelapa sawit is oil palm).
+    confusable: list[str] = []
     crop_aliases: dict[str, list[str]] = {}
     area_aliases: dict[str, list[str]] = {}
 

@@ -82,8 +82,11 @@ class FakeModel:
 
     async def summarize(self, request: SummaryRequest) -> Summary | None:
         self.requests.append(request)
+        # A tag-only request never gets a summary, like the real models (docs/06 §1.6).
         return Summary(
-            text=f"摘要{len(self.requests)}：台中菜價上漲三成，農業部增加供應。預計兩週內回穩。",
+            text=""
+            if request.tags_only
+            else f"摘要{len(self.requests)}：台中菜價上漲三成，農業部增加供應。預計兩週內回穩。",
             crop_ids=self.crops,
             model=self.name,
         )
@@ -226,6 +229,89 @@ async def test_malay_headlines_of_malaysia(seeded: AsyncSession) -> None:
     assert all("harga sayur" in t.lower() for t in titles)
 
 
+BANANA = RawNews(
+    guid="banana-1",
+    title="不是香蕉芒果，1水果大降價！產地價格暴跌68.6%",
+    url="https://x.test/banana",
+    published_at=NOW - timedelta(hours=1),
+    source_name="S",
+    source_domain="x.test",
+    lang="zh-TW",
+)
+
+
+async def test_a_crop_the_headline_says_it_is_not_about_is_never_tagged(
+    seeded: AsyncSession,
+) -> None:
+    """The real 2026-09-20 miss: pressing 1 opened banana prices for an article about Korean
+    grapes. Without a model the keyword matcher tags the item, so it must not tag banana."""
+    await run_country(seeded, "TW", TW, FakeSource([BANANA]), clock=clock)
+    [item] = [i for i in await items(seeded) if i.guid == "banana-1"]
+    assert item.crop_ids == []  # kept as price news, but with no crop
+
+
+async def test_the_model_replaces_the_matchers_crop_tags(seeded: AsyncSession) -> None:
+    """The model reads the article and its ids are limited to the crop list, so they replace
+    the matcher's guesses instead of piling on top of them."""
+    raw = RawNews(**{**BANANA.__dict__, "guid": "b2", "title": "香蕉盛產 產地價格暴跌"})
+    await run_country(seeded, "TW", TW, FakeSource([raw]), clock=clock)
+    [before] = [i for i in await items(seeded) if i.guid == "b2"]
+    assert before.crop_ids == ["banana"]  # what the matcher saw in the headline
+    run = await run_country(
+        seeded,
+        "TW",
+        TW,
+        FakeSource([]),
+        reader=FakeReader(),
+        summaries=Summaries([FakeModel("flash", crops=("cabbage",))], None, calls=2),
+        articles=2,
+        clock=clock,
+    )
+    assert run.summaries == 1
+    [after] = [i for i in await items(seeded) if i.guid == "b2"]
+    assert after.crop_ids == ["cabbage"]  # the earlier tag is corrected, not added to
+
+
+async def test_an_unreadable_article_still_gets_its_crops_from_the_model(
+    seeded: AsyncSession,
+) -> None:
+    """No article text means no summary, but the model can still say which crops the headline
+    is about, which the keyword matcher gets wrong on a negation."""
+    await run_country(seeded, "TW", TW, FakeSource([BANANA]), clock=clock)
+    model = FakeModel("flash", crops=("guava",))
+    run = await run_country(
+        seeded,
+        "TW",
+        TW,
+        FakeSource([]),
+        reader=FakeReader(None),  # the page has no usable text
+        summaries=Summaries([model], None, calls=2),
+        articles=2,
+        clock=clock,
+    )
+    assert run.summaries == 0  # nothing made up
+    assert (run.model_calls, run.articles) == (1, 1)
+    [request] = model.requests
+    assert request.tags_only
+    assert request.text is None
+    [item] = await items(seeded)
+    assert item.summary is None
+    assert item.summary_lang is None
+    assert item.crop_ids == ["guava"]
+    assert item.summary_tries == 1
+
+
+async def test_without_a_model_a_title_only_item_keeps_the_matchers_tags(
+    seeded: AsyncSession,
+) -> None:
+    """No GEMINI_API_KEY: the keyword matcher is the only tagger, and its tags stay."""
+    raw = RawNews(**{**BANANA.__dict__, "guid": "b3", "title": "甘藍產地價格暴跌，農民搶收"})
+    await run_country(seeded, "TW", TW, FakeSource([raw]), clock=clock)
+    [item] = await items(seeded)
+    assert item.crop_ids == ["cabbage"]
+    assert item.summary_tries == 0
+
+
 # ---------- summaries ----------
 
 
@@ -351,21 +437,26 @@ async def test_without_article_text_only_a_grounded_model_is_asked(seeded: Async
 
 
 async def test_no_text_and_no_grounded_model_leaves_items_title_only(seeded: AsyncSession) -> None:
+    """A page without usable text means no summary; the model is asked for the crops only."""
     await run_country(seeded, "TW", TW, FakeSource(TW_RAW[:2]), clock=clock)
     reader = FakeReader(text=None)
+    model = FakeModel("flash")
     run = await run_country(
         seeded,
         "TW",
         TW,
         FakeSource([]),
         reader=reader,
-        summaries=Summaries([FakeModel("flash")], None, calls=10),
+        summaries=Summaries([model], None, calls=10),
         articles=10,
         clock=clock,
     )
-    assert run.model_calls == 0
+    assert run.summaries == 0
+    assert run.model_calls == 2  # one tag-only call per item
+    assert all(r.tags_only for r in model.requests)
     stored = await items(seeded)
     assert all(i.summary is None and i.summary_tries == 1 for i in stored)
+    assert all(i.summary_lang is None and i.summary_model is None for i in stored)
     assert all(i.url == PUBLISHER for i in stored)  # the resolved link is kept
 
 

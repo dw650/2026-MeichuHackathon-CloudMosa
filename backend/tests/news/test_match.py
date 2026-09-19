@@ -14,6 +14,10 @@ TW_CROPS = [
     ("cabbage", {"zh-TW": "甘藍", "en": "Cabbage"}),
     ("sweetpotato", {"zh-TW": "甘藷", "en": "Sweet potato"}),
     ("guava", {"zh-TW": "芭樂", "en": "Guava"}),
+    ("banana", {"zh-TW": "香蕉", "en": "Banana"}),
+    ("mango", {"zh-TW": "芒果", "en": "Mango"}),
+    ("ginger", {"zh-TW": "薑", "en": "Ginger"}),
+    ("turmeric", {"zh-TW": "薑黃", "en": "Turmeric"}),
 ]
 TW_AREAS = [
     ("taipei", {"zh-TW": "台北市", "en": "Taipei"}),
@@ -76,6 +80,66 @@ def test_find_returns_ids_in_order_of_first_mention_without_repeats() -> None:
 
 def test_empty_terms_are_ignored() -> None:
     assert TermIndex({"a": ["", "  "]}).find("anything") == []
+
+
+def tw_matcher(confusable: list[str] | None = None) -> Matcher:
+    return Matcher.build(
+        crops=TW_CROPS,
+        areas=TW_AREAS,
+        crop_aliases={"cabbage": ["高麗菜"]},
+        area_aliases={},
+        keywords=["菜價"],
+        topics=["水果", "蔬菜"],
+        price_words=["價", "漲", "跌"],
+        confusable=confusable or [],
+    )
+
+
+def test_a_crop_the_headline_says_it_is_not_about_is_not_tagged() -> None:
+    """The real 2026-09-20 miss: 「不是香蕉芒果」 was tagged as banana, and pressing 1 opened
+    banana prices for an article about Korean grapes."""
+    title = "不是香蕉芒果，1水果大降價！產地價格暴跌68.6%"
+    matcher = tw_matcher()
+    assert matcher.crop_ids(title) == []
+    assert matcher.relevant(title)  # still price news: a topic word and a price word
+    # A negation only covers what follows it closely.
+    assert matcher.crop_ids("不是香蕉！甘藍價格連三週下跌，產地到貨增加") == ["cabbage"]
+    assert matcher.crop_ids("除了芭樂，其他水果都漲價") == []
+    assert matcher.crop_ids("香蕉價格不是最高") == ["banana"]  # the negation comes after
+
+
+def test_a_negated_crop_in_an_english_headline_is_not_tagged() -> None:
+    matcher = Matcher.build(
+        crops=IN_CROPS,
+        areas=IN_AREAS,
+        crop_aliases={},
+        area_aliases={},
+        keywords=["mandi price"],
+        topics=["vegetable"],
+        price_words=["price"],
+    )
+    assert matcher.crop_ids("Not onions this time: tomato prices double in Nashik") == ["tomato"]
+    assert matcher.crop_ids("No tomatoes left as prices double") == []
+    assert matcher.crop_ids("Onion prices are not falling") == ["onion"]
+
+
+def test_the_longer_of_two_matched_terms_wins() -> None:
+    matcher = tw_matcher()
+    assert matcher.crop_ids("薑黃價格上漲") == ["turmeric"]  # not ginger as well
+    # A plain mention next to the longer term still counts.
+    assert matcher.crop_ids("薑黃與薑的產地價齊漲") == ["turmeric", "ginger"]
+    latin = TermIndex({"cabbage": ["kubis"], "cauliflower": ["kubis bunga"]}, guard=True)
+    assert latin.find("Harga kubis bunga naik") == ["cauliflower"]
+    assert latin.find("Harga kubis dan kubis bunga naik") == ["cabbage", "cauliflower"]
+
+
+def test_configured_confusable_terms_are_not_crops() -> None:
+    """「香蕉葡萄」 is a Korean grape, not a banana; the phrase is listed per country."""
+    plain = tw_matcher()
+    assert plain.crop_ids("韓國香蕉葡萄產地價格暴跌") == ["banana"]
+    guarded = tw_matcher(["香蕉葡萄"])
+    assert guarded.crop_ids("韓國香蕉葡萄產地價格暴跌") == []
+    assert guarded.crop_ids("香蕉葡萄大降價，香蕉價格也跌") == ["banana"]
 
 
 def test_crop_terms_use_every_language_and_the_aliases() -> None:

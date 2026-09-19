@@ -90,6 +90,7 @@ def matcher_for(catalog: CountryCatalog, config: CountryNews) -> Matcher:
         topics=config.topics,
         price_words=config.price_words,
         exclude=config.exclude,
+        confusable=config.confusable,
     )
 
 
@@ -99,6 +100,7 @@ def crop_choices(catalog: CountryCatalog, config: CountryNews) -> tuple[CropChoi
 
 
 def _merge(*groups: Iterable[str]) -> list[str]:
+    """Crop ids of several sources, in order, without repeats."""
     return list(dict.fromkeys(cid for group in groups for cid in group))
 
 
@@ -173,7 +175,12 @@ async def summarize_pending(
     The candidates are exactly the items the API returns (`repo.list_items`, the same order and
     limit), so the budget goes to what people see; items stored by an earlier run that still
     have no summary are in there too, until the retry cap. Anything below the list waits for
-    its turn (docs/06 §1.6)."""
+    its turn (docs/06 §1.6).
+
+    The crop tags of an item that gets a summary come from the model alone: it read the article
+    and its ids are limited to the country's crop list, while the keyword matcher cannot tell
+    that 「不是香蕉苒果」 is not about bananas. When the article cannot be read there is no
+    summary, and the model is asked for the crops of the headline alone instead."""
     calls_before = summaries.calls
     choices = crop_choices(catalog, config)
     known_crops = {c.id for c in choices}
@@ -184,7 +191,11 @@ async def summarize_pending(
     try:
         for item in items:
             read = budget.left > 0 and not reader.google_refused
-            if not summaries.available or not (read or summaries.reads_headlines):
+            # A tag-only call is worth a model call only when this run cannot read the article
+            # at all; when the page budget is merely spent the item waits for the next run,
+            # which may still get it a real summary.
+            tag_only = reader.google_refused and summaries.tags_crops
+            if not summaries.available or not (read or summaries.reads_headlines or tag_only):
                 break  # nothing more this run can do; the items keep their chances
             url, text = None, None
             if read:
@@ -194,26 +205,30 @@ async def summarize_pending(
             fields: dict[str, object] = {"summary_tries": item.summary_tries + 1}
             if url:
                 fields["url"] = url
-            if text is not None or summaries.reads_headlines:
-                result = await summaries.summarize(
-                    SummaryRequest(
-                        title=item.title,
-                        source=item.source_name,
-                        published=item.published_at.astimezone(tz).date(),
-                        lang=config.summary_lang,
-                        crops=choices,
-                        text=text,
-                    )
-                )
-                if result is not None:
+            ask = SummaryRequest(
+                title=item.title,
+                source=item.source_name,
+                published=item.published_at.astimezone(tz).date(),
+                lang=config.summary_lang,
+                crops=choices,
+                text=text,
+                # No article text and no model that can find one: ask for the crops only.
+                tags_only=text is None and not summaries.reads_headlines,
+            )
+            # No model that fits this request answers at all, and none is charged for.
+            result = await summaries.summarize(ask)
+            if result is not None:
+                crops = [c for c in result.crop_ids if c in known_crops]
+                if ask.tags_only:
+                    # A tag-only answer has no summary, and none is ever made up.
+                    fields["crop_ids"] = crops
+                elif result.text:
                     run.summaries += 1
                     fields |= {
                         "summary": result.text,
                         "summary_lang": config.summary_lang,
                         "summary_model": result.model[:80],
-                        "crop_ids": _merge(
-                            item.crop_ids, [c for c in result.crop_ids if c in known_crops]
-                        ),
+                        "crop_ids": crops,
                         "area_ids": matcher.area_ids(f"{item.title} {result.text}"),
                     }
             await repo.update_item(session, item.id, **fields)

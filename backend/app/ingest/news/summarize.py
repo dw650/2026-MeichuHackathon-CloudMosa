@@ -112,6 +112,14 @@ class SummaryRequest:
     crops: tuple[CropChoice, ...]
     # The article's main text; None when only the headline is known.
     text: str | None = None
+    # True: ask only which crops the headline is about. The answer never becomes a summary
+    # (docs/06 §1.6), so a model that cannot read the article can still tag the crops.
+    tags_only: bool = False
+
+    @property
+    def headline_only(self) -> bool:
+        """Nothing to condense: a model without web access cannot answer this one."""
+        return self.text is None and not self.tags_only
 
 
 @dataclass(frozen=True)
@@ -133,9 +141,24 @@ class Model(Protocol):
     async def summarize(self, request: SummaryRequest) -> Summary | None: ...
 
 
+CROP_RULE = (
+    "the crops whose price, harvest or supply this reports on, using only ids from this list"
+    " (id: names). Do not pick a crop that is only mentioned in passing, and never one the"
+    " headline says the news is not about; if unsure, pick none"
+)
+
+
 def build_prompt(request: SummaryRequest, *, grounded: bool) -> str:
     crops = "\n".join(f"{c.id}: {', '.join(c.names)}" for c in request.crops)
     lang = request.lang if request.lang in LANG_NAMES else "en"
+    if request.tags_only:
+        return (
+            f"Do not write a summary. Pick {CROP_RULE}:\n"
+            f"{crops}\n"
+            'Answer as JSON: {"crops": ["id"]}.\n\n'
+            f"Headline: {request.title}\n"
+            f"Publisher: {request.source}, {request.published.isoformat()}\n"
+        )
     task = (
         "Use Google Search to find this news article and read it. If you cannot find this exact"
         ' article, answer {"summary": "", "crops": []}.\n'
@@ -145,8 +168,7 @@ def build_prompt(request: SummaryRequest, *, grounded: bool) -> str:
     rules = (
         f"{task}Write the summary in {LANG_NAMES[lang]}: exactly two short sentences,"
         f" {LENGTH[lang]}.\n"
-        "Also pick the crops the article is mainly about, using only ids from this list"
-        " (id: names); if unsure, pick none:\n"
+        f"Also pick {CROP_RULE}:\n"
         f"{crops}\n"
         'Answer as JSON: {"summary": "...", "crops": ["id"]}.\n'
         "If the article is not about farm produce, or the text below is not the article of"
@@ -204,14 +226,21 @@ def _two_sentences(text: str) -> str:
 
 
 def parse_reply(reply: str, request: SummaryRequest) -> tuple[str, tuple[str, ...]] | None:
-    """(summary, crop ids) from a model's answer; None when it breaks a rule."""
+    """(summary, crop ids) from a model's answer; None when it breaks a rule. A tags-only
+    answer always has an empty summary: whatever it wrote there is thrown away."""
     value = _json_object(reply)
     if value is None:
         return None
-    raw = value.get("summary")
-    summary = _two_sentences(" ".join(raw.split())) if isinstance(raw, str) else ""
-    if not summary or len(summary) > MAX_SUMMARY_CHARS or not _language_ok(summary, request.lang):
-        return None
+    summary = ""
+    if not request.tags_only:
+        raw = value.get("summary")
+        summary = _two_sentences(" ".join(raw.split())) if isinstance(raw, str) else ""
+        if (
+            not summary
+            or len(summary) > MAX_SUMMARY_CHARS
+            or not _language_ok(summary, request.lang)
+        ):
+            return None
     allowed = {c.id for c in request.crops}
     picked = value.get("crops")
     crops = (
@@ -241,7 +270,7 @@ class OpenAICompatModel:
         self._transport = transport
 
     async def summarize(self, request: SummaryRequest) -> Summary | None:
-        if request.text is None:
+        if request.headline_only:
             return None  # it cannot read the web: no text, no summary
         body = {
             "model": self.name,
@@ -323,21 +352,23 @@ class GeminiModel:
             items: dict[str, Any] = {"type": "string"}
             if crop_ids:
                 items["enum"] = crop_ids
+            properties: dict[str, Any] = {"crops": {"type": "array", "items": items}}
+            required = ["crops"]
+            if not request.tags_only:
+                properties["summary"] = {"type": "string"}
+                required.insert(0, "summary")
             body["generationConfig"] |= {
                 "responseMimeType": "application/json",
                 "responseJsonSchema": {
                     "type": "object",
-                    "properties": {
-                        "summary": {"type": "string"},
-                        "crops": {"type": "array", "items": items},
-                    },
-                    "required": ["summary", "crops"],
+                    "properties": properties,
+                    "required": required,
                 },
             }
         return body
 
     async def summarize(self, request: SummaryRequest) -> Summary | None:
-        if request.text is None and not self.grounded:
+        if request.headline_only and not self.grounded:
             return None
         await self._pacer.wait()
         async with httpx.AsyncClient(transport=self._transport, timeout=GEMINI_TIMEOUT) as client:
@@ -402,11 +433,16 @@ class Summaries:
         return self.calls_left > 0 and bool(self._up([self.headline_model]))
 
     @property
+    def tags_crops(self) -> bool:
+        """A model can still say which crops a headline is about, without a summary."""
+        return self.calls_left > 0 and bool(self._up(self.text_models))
+
+    @property
     def available(self) -> bool:
         return self.calls_left > 0 and bool(self._up([*self.text_models, self.headline_model]))
 
     async def summarize(self, request: SummaryRequest) -> Summary | None:
-        models = self.text_models if request.text is not None else [self.headline_model]
+        models = [self.headline_model] if request.headline_only else self.text_models
         for model in self._up(models):
             if self.calls_left <= 0:
                 break

@@ -8,6 +8,10 @@
 #   topics / price_words: otherwise a headline needs a crop or a topic word AND a price word
 #          (「果菜市場發加倍券」 has a topic but no price word, so it is left out)
 #   exclude: headlines with one of these are left out (other countries' market reports)
+#   confusable: longer phrases that contain a crop name but are not that crop
+#          (香蕉葡萄 is a Korean grape, kelapa sawit is oil palm); a crop matched inside one
+#          of them does not count. Crop names inside other crop names (薜 in 薜黃, kubis in
+#          kubis bunga) need no entry: the longer term always wins
 #   crop_aliases / area_aliases: other names used in headlines, on top of every name in the
 #          seed (all languages); unknown ids are ignored
 countries:
@@ -22,6 +26,7 @@ countries:
     topics: [蔬菜, 蔬果, 果菜, 青菜, 葉菜, 水果, 農產品, 菜農, 果農, 農損]
     price_words: [價, 漲, 跌, 貴, 便宜]
     exclude: [裝運點, 終端市場, 美股]
+    confusable: [香蕉葡萄]  # a Korean grape variety, not 香蕉
     crop_aliases:
       cabbage: [高麗菜]
       sweetpotato: [地瓜, 番薯]
@@ -119,6 +124,7 @@ countries:
     topics: [sayur, sayur-sayuran, buah, buah-buahan, petani, fama, pasar borong, vegetable, fruit, farmer]
     price_words: [harga, naik, turun, mahal, murah, price, rate, cost, rm, kg]
     exclude: [usda, terminal market, shipping point]
+    confusable: [kelapa sawit, minyak sawit]  # oil palm, not the coconut alias kelapa
     crop_aliases:
       cabbage: [kubis]
       chilli: [cili, chili]
