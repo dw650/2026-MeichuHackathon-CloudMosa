@@ -206,6 +206,7 @@ export default function MarketScreen() {
     <Shell title={pick(cropInfo?.name)} softKeys={{ left: '', center, right: t('softkeys.back') }}>
       <div ref={root}>
         <InfoBar
+          small={<PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />}
           left={
             <>
               <UiIcon name="store" />

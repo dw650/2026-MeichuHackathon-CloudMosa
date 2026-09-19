@@ -59,6 +59,7 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
   return (
     <Shell title={pick(detail.crop?.name) || t('app.name')} softKeys={keys} overlay={overlay}>
       <InfoBar
+        small={<PriceTypeTag type={type} label={t(`priceType.${type}`)} />}
         left={
           <>
             <UiIcon name="pin" />

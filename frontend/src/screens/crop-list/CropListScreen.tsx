@@ -108,6 +108,7 @@ function CropList({ category }: { category: CategoryId }) {
       overlay={overlay}
     >
       <InfoBar
+        small={<PriceTypeTag type={format.type} label={t(`priceType.${format.type}`)} />}
         left={
           <>
             <UiIcon name="pin" />
