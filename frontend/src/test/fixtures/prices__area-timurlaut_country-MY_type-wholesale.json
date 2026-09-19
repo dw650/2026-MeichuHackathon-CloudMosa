@@ -386,6 +386,26 @@
   },
   {
    "change": null,
+   "crop_id": "eggplant",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
    "crop_id": "wheat",
    "price_per_kg": null,
    "reason": "no_data",

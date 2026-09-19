@@ -324,7 +324,7 @@ def test_what_to_keep_comes_from_the_seed_maps() -> None:
     assert {"W.P. Kuala Lumpur", "Selangor/Klang", "Perak/Larut, Matang & Selama"} <= (
         wanted.districts
     )
-    assert len(wanted.items) == 20
+    assert len(wanted.items) == 21
     assert {"114", "1458", "917"} <= wanted.items
 
 

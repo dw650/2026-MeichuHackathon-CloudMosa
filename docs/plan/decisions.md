@@ -842,3 +842,8 @@
   - 前端選國家時（首次設定、接受推測的位置、之後在設定更改國家）把價格類型換成那個國家的預設；再選同一個國家不變；之後照樣用 `*` 切換，每次切換都存起來。
 - 理由：新使用者第一眼就看到有資料的價格；已經在用的人不受影響（只有換國家時才套用）。
 - 影響：`backend/app/seed/schema.py`、`backend/app/db/models.py` 與 migration、`backend/app/ingest/seed.py`、`backend/app/services/catalog.py`、`backend/app/schemas/catalog.py`、`frontend/src/store/settings.ts`、`frontend/src/api/schema.d.ts`、docs/02 §1、docs/04 §5、§7。
+
+## 2026-09-20 馬來西亞加上茄子；香蕉與芒果加不了
+- 情況：跨國比同一種作物的功能要求三國的作物清單有交集，還缺香蕉、芒果、茄子（協調者要求）。
+- 決定：只加**茄子**（`eggplant`，PriceCatcher 的 TERUNG BULAT `1923`，以 1 公斤計價，52 個縣有報價，60 天裡 17 天有資料≈每週兩次，中位數 RM 9.00；示範資料 `p: 6.2`、`rt: 1.45`、`lag: 2`，和印度共用圖示）。**香蕉與芒果不加**：香蕉（PISANG BERANGAN 18、PISANG EMAS 19）以公斤計價，但 7/23–9/20 濕巴剎一列都沒有（只有超市、迷你市場、雜貨店報）；`lookup_item.csv` 裡沒有生鮮芒果（只有芒果汁 `1340`）。要有這兩種就得收超市價，和「零售＝濕巴剎的中位數」的決定衝突，交給團隊決定。
+- 影響：`backend/app/seed/MY.yaml`、`backend/tests/fixtures/my_pricecatcher/lookup_item.csv`（多一列 1923）、`backend/tests/ingest/test_{seed,my_pricecatcher}.py`、`frontend/src/test/fixtures/`、docs/06 §7.3。

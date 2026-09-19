@@ -784,6 +784,13 @@ crops:
     variety: { zh-TW: 椰絲, en: Grated }
     retail: true
     mock: { p: 8.2, chg: 0.02, rt: 1.45 }
+  - id: eggplant
+    name: { zh-TW: 茄子, en: Brinjal }
+    category: veg
+    variety: { zh-TW: 圓茄, en: Round }
+    retail: true
+    # The wet markets report it about twice a week, so the demo keeps it two days behind.
+    mock: { p: 6.2, chg: 0.03, rt: 1.45, lag: 2 }
   - id: wheat
     name: { zh-TW: 麵粉, en: Wheat flour }
     category: cereal
@@ -817,6 +824,7 @@ source_maps:
       - { source_name: "1928", crop: calamansi } # LIMAU KASTURI
       - { source_name: "368", crop: peanut } # KACANG TANAH (IMPORT)
       - { source_name: "102", crop: coconut } # KELAPA PARUT (BIASA)
+      - { source_name: "1923", crop: eggplant } # TERUNG BULAT
       - { source_name: "917", crop: wheat } # TEPUNG GANDUM NGP (BERBUNGKUS, CAP SAUH)
     markets: &borong_premises
       - { source_market: "18147", market: klborong } # Pasar Borong Kuala Lumpur
