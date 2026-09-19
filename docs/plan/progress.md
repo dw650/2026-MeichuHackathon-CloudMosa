@@ -25,3 +25,4 @@
 - 2026-09-19 T19 完成：src/keys——keyScope（window 上唯一的 keydown 監聽器，只依 event.key 分派給最上層範圍；screen／overlay 兩層，面板打開時不穿透；長按只有方向鍵；處理的鍵與 Enter 一律 preventDefault；略過 Ctrl／Meta／Alt 與輸入法組字）與 useKeys（handler 永遠最新、重新 render 不改順序）；ESLint 擋 keys/ import screens/（2680565）
 - 2026-09-19 T20 完成：src/focus——useFocusList（↑↓ 到兩端停住、OK 與 1–9 直接開啟並可略過沒有鍵帽的警示卡、真正的 DOM focus、捲到可見範圍留 6px、第一項放得下時捲到最上面、沒有項目時捲 60%）、useGrid（↑↓ 跳一列、◀▶ 同一列、最左欄呼叫 onLeftEdge）、restore（依 location.key 記進 session store、依 ID 還原、清單變動時留在原項目或原位置、面板打開時不搶焦點）；開啟前端覆蓋率門檻（lib＋keys＋focus＋store 合計 ≥ 90%，目前 99%）（67e55ed）
 - 2026-09-19 T21 完成：一次登記全部路由（佔位畫面）、useNav（面板 push／關閉 back、分頁 replace、面板項目 replace）、啟動時先換成首頁再 push 上次畫面並帶回焦點、未完成設定導向首次設定、未知路徑回首頁（836367a）
+- 2026-09-19 同步點 1（第一段）完成：track/frontend（T16–T21）合併進 main，make lint、make test 通過；T23、T24 完成後再合併並跑 make e2e（5478422）
