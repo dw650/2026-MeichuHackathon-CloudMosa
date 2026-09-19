@@ -1,4 +1,4 @@
-"""News job entry point (docs/06 §1.4). The worker runs it at 00:00 local time of each country
+"""News job entry point (docs/06 §1.6). The worker runs it at 00:00 local time of each country
 and once at start-up (only for countries whose news is missing or older than a day); run it by
 hand with
 

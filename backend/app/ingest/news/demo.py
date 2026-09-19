@@ -1,4 +1,4 @@
-"""Demo news (NEWS_SOURCE=demo, docs/06 §1.4): fixed items dated relative to the run, for the
+"""Demo news (NEWS_SOURCE=demo, docs/06 §1.6): fixed items dated relative to the run, for the
 e2e checks and screenshots without network. They carry their own demo summaries."""
 
 from collections.abc import Callable

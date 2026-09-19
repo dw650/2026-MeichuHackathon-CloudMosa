@@ -1,4 +1,4 @@
-"""One news run of one country (docs/06 §1.4):
+"""One news run of one country (docs/06 §1.6):
 
 search → keep on-topic headlines of the last 7 days → drop duplicates (guid or title) → tag
 crops and areas → store → summarise the pending items within the day's budget (read the

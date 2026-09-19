@@ -6,7 +6,7 @@ In order of preference:
    headers, footers, forms and scripts, and without paragraphs that are mostly links;
 3. the `og:description` / `description` meta tag.
 
-The text is only passed to the summariser and is never stored (docs/06 §1.4)."""
+The text is only passed to the summariser and is never stored (docs/06 §1.6)."""
 
 import json
 import re

@@ -29,7 +29,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 I18n = dict[str, str]
 PRICE = Numeric(12, 4)
 PRICE_TYPES = ("wholesale", "retail")
-# News items older than this are deleted and never listed (docs/06 §1.4).
+# News items older than this are deleted and never listed (docs/06 §1.6).
 NEWS_KEEP_DAYS = 7
 
 
@@ -350,7 +350,7 @@ INTL_TABLES = ("intl_prices", "intl_series", "fx_rates", "intl_sources")
 
 class NewsItem(Base):
     """A news headline of a country for the 新聞 page. Only the headline, a short summary, the
-    source, the link and the tags are stored, never the article text (docs/06 §1.4)."""
+    source, the link and the tags are stored, never the article text (docs/06 §1.6)."""
 
     __tablename__ = "news_items"
 

@@ -1,4 +1,4 @@
-"""Two-sentence summaries of news articles (docs/06 §1.4), in the country's UI language, with
+"""Two-sentence summaries of news articles (docs/06 §1.6), in the country's UI language, with
 the related crops picked only from the country's crop list.
 
 Models, tried in this order:

@@ -1,4 +1,4 @@
-"""Headline matching (docs/06 §1.4): normalised text, duplicate keys, and the crops, areas and
+"""Headline matching (docs/06 §1.6): normalised text, duplicate keys, and the crops, areas and
 topic keywords a headline mentions.
 
 Chinese terms match anywhere in the text (Chinese has no spaces between words). Latin terms

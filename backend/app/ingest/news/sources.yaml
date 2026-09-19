@@ -1,4 +1,4 @@
-# News searches per country for the 新聞 page (docs/06 §1.4). Countries listed here but not in
+# News searches per country for the 新聞 page (docs/06 §1.6). Countries listed here but not in
 # the seed (app/seed/*.yaml) are skipped until their seed exists.
 #   summary_lang: language of the summaries (the country's UI language)
 #   feeds: Google News RSS editions (hl, gl, ceid) and the searches run in each; the worker

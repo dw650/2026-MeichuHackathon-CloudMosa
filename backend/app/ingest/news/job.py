@@ -1,4 +1,4 @@
-"""The news job over every country (docs/06 §1.4, §8): which countries run, the daily budgets,
+"""The news job over every country (docs/06 §1.6, §8): which countries run, the daily budgets,
 and the start-up rule. The worker and the `python -m app.news` command call `run_news`.
 
 Budgets (rolling 24 hours, all countries together): at most DAILY_ARTICLES pages read and

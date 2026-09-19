@@ -1,4 +1,4 @@
-"""Google News RSS searches (docs/06 §1.4): no key needed; one request per search.
+"""Google News RSS searches (docs/06 §1.6): no key needed; one request per search.
 
 Each item carries the headline with " - {publisher}" appended, a news.google.com link (a
 JavaScript redirect, see gnews.py), the publication time (RFC 822, GMT) and the publisher with
