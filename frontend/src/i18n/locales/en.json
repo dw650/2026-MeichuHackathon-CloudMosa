@@ -142,7 +142,11 @@
       "vsPrev": "vs last trading day",
       "markets_one": "{{count}} market in this area",
       "markets_other": "{{count}} markets in this area",
-      "marketsRange": "High {{high}} · Low {{low}}"
+      "marketsRange": "High {{high}} · Low {{low}}",
+      "nearby": {
+        "highest": "Highest nearby",
+        "lowest": "Lowest nearby"
+      }
     },
     "stats": {
       "vsAvg7": "vs 7-day avg",

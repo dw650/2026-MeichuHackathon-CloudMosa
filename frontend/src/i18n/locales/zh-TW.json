@@ -142,7 +142,11 @@
       "vsPrev": "較前一交易日",
       "markets_one": "本地區 {{count}} 個市場",
       "markets_other": "本地區 {{count}} 個市場",
-      "marketsRange": "最高 {{high}}・最低 {{low}}"
+      "marketsRange": "最高 {{high}}・最低 {{low}}",
+      "nearby": {
+        "highest": "附近最高",
+        "lowest": "附近最低"
+      }
     },
     "stats": {
       "vsAvg7": "比 7 日均價",

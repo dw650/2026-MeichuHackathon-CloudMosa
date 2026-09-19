@@ -95,6 +95,8 @@ export const handlers = [
     if (!data) return notFound('crop_not_found')
     Object.assign(data, { crop_id: crop, area_id: area })
     data.series = (data.series as Json[]).slice(-Number(days))
+    // Nearby prices belong to the fixture's own crop and area: none for a borrowed one.
+    if (!exact) data.nearby = null
     return HttpResponse.json(data)
   }),
 

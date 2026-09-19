@@ -24,6 +24,8 @@ import { useSettings } from '@/store/settings'
 
 import styles from './CropDetailScreen.module.css'
 import { DetailFrame } from './DetailFrame'
+import { NearbyCards } from './NearbyCards'
+import { type NearbyTarget, nearbyTargets } from './nearbyRows'
 import { ExitCard, FailedState, LoadingState, NoRetailState, StaleDataCard } from './states'
 import { type Detail, isNoRetail, RETRY, stageOf, useDetailQuote, WHOLESALE } from './useDetail'
 
@@ -84,6 +86,11 @@ interface ContentProps {
   fmt: PriceFormat
 }
 
+interface ReadyProps extends ContentProps {
+  /** Digit key cap of a selectable nearby row. */
+  keyCapOf(focusId: string): number | undefined
+}
+
 /** The big price card: crop tile, what the price is, the price and its change. */
 function Hero({ detail, quote, fmt }: ContentProps) {
   const { t } = useText()
@@ -125,8 +132,12 @@ function Hero({ detail, quote, fmt }: ContentProps) {
   )
 }
 
-/** Normal content: hero, the markets card (wholesale) or the retail note, three metrics. */
-function Ready({ detail, quote, fmt }: ContentProps) {
+/**
+ * Normal content: hero, the markets card (wholesale) or the retail note, three metrics, then
+ * the highest and lowest nearby prices. The nearby rows come last so that everything above
+ * them shows on the way down to them.
+ */
+function Ready({ detail, quote, fmt, keyCapOf }: ReadyProps) {
   const { t } = useText()
   const { markets } = quote
   return (
@@ -161,6 +172,7 @@ function Ready({ detail, quote, fmt }: ContentProps) {
       {quote.price_per_kg !== null && (
         <MetricGrid items={metricsOf(quote, fmt, t)} tone={toneOf(detail.crop?.category)} />
       )}
+      {quote.nearby && <NearbyCards nearby={quote.nearby} fmt={fmt} keyCapOf={keyCapOf} />}
     </div>
   )
 }
@@ -218,22 +230,36 @@ export function TodayTab({ detail }: { detail: Detail }) {
           ? 'notUpdated'
           : 'ready'
   const withMarkets = data?.type === 'wholesale' && (data.markets?.total ?? 0) > 0
+  const nearby: NearbyTarget[] = view === 'ready' ? nearbyTargets(data?.nearby) : []
   // Old data after a failed refresh: an alert card on top retries (docs/02 §6).
   const oldData = stage === 'ready' && quote.error !== null
-  const ids = [...(oldData ? [RETRY] : []), ...ITEMS[view](withMarkets)]
+  const digitOffset = oldData ? 1 : 0
+  const ids = [
+    ...(oldData ? [RETRY] : []),
+    ...ITEMS[view](withMarkets),
+    ...nearby.map((n) => n.focusId),
+  ]
+  const nearbyArea = (id: string) => nearby.find((n) => n.focusId === id)?.areaId
+  const keyCapOf = (id: string) => {
+    const digit = ids.indexOf(id) + 1 - digitOffset
+    return digit >= 1 && digit <= 9 ? digit : undefined
+  }
 
   const root = useRef<HTMLDivElement>(null)
   const goCompare = () => nav.switchTab(detail.tabUrl('compare'))
   const list = useFocusList(ids, {
     root,
-    digitOffset: oldData ? 1 : 0,
+    digitOffset,
     active: !nav.sheet,
     onActivate: (id) => {
+      const area = nearbyArea(id)
       if (id === RETRY) quote.refresh()
       else if (id === WHOLESALE) setPriceType('wholesale')
       else if (id === OTHER_AREAS) goCompare()
       else if (id === TREND) nav.switchTab(detail.tabUrl('trend'))
       else if (id === MARKETS) nav.open(paths.markets(detail.cropId, detail.areaId))
+      // The same as picking an area on the compare tab.
+      else if (area) nav.open(paths.crop(detail.cropId, 'today', area))
     },
   })
   const keys: KeyHandlers = {
@@ -254,7 +280,9 @@ export function TodayTab({ detail }: { detail: Detail }) {
         ? t('softkeys.markets')
         : list.focusedId === RETRY
           ? t('softkeys.retry')
-          : t('softkeys.select')
+          : nearbyArea(list.focusedId)
+            ? t('softkeys.view')
+            : t('softkeys.select')
 
   return (
     <DetailFrame
@@ -274,7 +302,9 @@ export function TodayTab({ detail }: { detail: Detail }) {
           <NoRetailState reason={data.reason} />
         )}
         {view === 'notUpdated' && data && <NotUpdated detail={detail} quote={data} fmt={fmt} />}
-        {view === 'ready' && data && <Ready detail={detail} quote={data} fmt={fmt} />}
+        {view === 'ready' && data && (
+          <Ready detail={detail} quote={data} fmt={fmt} keyCapOf={keyCapOf} />
+        )}
       </div>
     </DetailFrame>
   )
