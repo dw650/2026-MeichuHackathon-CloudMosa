@@ -361,7 +361,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 內容：左軟鍵選單（詳情頁多「加入／取消關注」）；設定五列；demo 建置時多一列「Demo」（F18）；「關於與資料說明」的文字照草圖。
   - 完成條件：測試通過。
 
-- [ ] **T34 🔍 大段落檢查 B**
+- [x] **T34 🔍 大段落檢查 B**
   - 參考：[07](../07-dev-workflow.md) §4；[02](../02-product-spec.md) §7
   - 內容：
     - Playwright 對完整服務跑主要流程，只用按鍵。

@@ -9,6 +9,8 @@ export interface TrendPoint {
   value: number | null
   /** The day's X-axis label, already formatted: a weekday (`六`, `Sa`) for 7 days, `9/19` for 30. */
   label: string
+  /** The markets were closed that day (a country holiday): the 7-day axis shows `closedLabel`. */
+  closed?: boolean
 }
 
 export interface TrendChartProps {
@@ -18,7 +20,7 @@ export interface TrendChartProps {
   tone: Tone
   /** Formats the reference values and the latest price, e.g. `(v) => formatPrice(v, unit, locale)`. */
   formatValue: (value: number) => string
-  /** X-axis label of a day without a price in the 7-day chart (`休`). */
+  /** X-axis label of a closed day in the 7-day chart (`休`); other days without data keep theirs. */
   closedLabel: string
 }
 
@@ -199,7 +201,7 @@ function ChartSvg({ points, formatValue, closedLabel, frame, className }: ChartS
         ticks.map((i) => {
           const point = points[i]
           if (!point) return null
-          const closed = !isFiniteNumber(point.value)
+          const closed = point.closed === true && !isFiniteNumber(point.value)
           const anchor = weekly ? 'middle' : i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'
           return (
             <text
