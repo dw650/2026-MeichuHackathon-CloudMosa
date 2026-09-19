@@ -11,7 +11,7 @@ COMPOSE ?= docker compose
 TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(DB_PORT)/agri_test
 export TEST_DATABASE_URL
 
-.PHONY: up dev down logs db-up test test-frontend test-backend lint lint-frontend lint-backend \
+.PHONY: up dev down logs seed db-up test test-frontend test-backend lint lint-frontend lint-backend \
 	audit audit-frontend audit-backend build-frontend
 
 ## Start all services (production build) and wait until they are healthy.
@@ -28,9 +28,13 @@ dev: .env
 down:
 	$(COMPOSE) down --remove-orphans
 
-## Follow service logs.
+## Follow the api and worker logs.
 logs:
-	$(COMPOSE) logs -f --tail=200
+	$(COMPOSE) logs -f --tail=200 api worker
+
+## Re-sync the seed files and regenerate the mock data (one worker pass).
+seed: .env
+	$(COMPOSE) run --rm worker python -m app.worker --once
 
 ## Start only the database (used by the backend tests).
 db-up: .env

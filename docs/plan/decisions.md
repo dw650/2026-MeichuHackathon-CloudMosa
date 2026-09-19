@@ -99,3 +99,16 @@
   - 讀不懂的列（例如日期格式錯）記為 `malformed`，對照不到的記為 `unmapped`，和其他丟棄原因一起記數。
 - 理由：少丟資料、不讓零售價被當成批發價的離群值；去重後再算中位數，重複列不會影響判斷。
 - 影響：`backend/app/ingest/validate.py`、`backend/app/ingest/normalize.py`。
+
+## 2026-09-19 T11 管線與 worker 的細節
+- 情況：06 §8 只寫 mock「啟動時一次、每天 00:05（當地）」，但 mock 同時涵蓋兩個時區；04 §7 沒寫零售列的市場數、同市場多筆時的交易量怎麼算。
+- 決定：
+  - 每次執行都同步 seed 並跑全部已啟用的 provider，各國用自己的「今天」；排程是兩個 job，分別在印度與台灣當地 00:05 執行（結果相同，只是讓兩國都在自己換日後更新）。
+  - 彙整只重算這次受影響的日期：先刪掉該國那些日期的 `market_daily`、`area_daily`，再從 `quotes` 重算，所以重跑結果相同。同市場同天多筆時，價格取中位數、交易量取總和；零售列的 `n_markets` 記 0。
+  - `quotes` 用 COPY 寫進暫存表，再一次 `INSERT … ON CONFLICT` 合併（2.6 萬列從約 6 秒降到 0.6 秒）。
+  - `rows_in = rows_ok + rows_dropped`；重複列也算進 `rows_dropped`，並在 `drop_reasons` 記為 `duplicate`。
+  - 抓取失敗時整批 rollback（舊資料不動），`ingest_runs` 記 `failed` 與錯誤訊息；`/api/v1/health` 列出各來源最近一次成功的時間。
+  - `PROVIDERS` 裡還沒實作的來源（`tw_moa`、`in_datagov`）只記警告並略過。
+  - worker 等 api healthy（已經 migrate）才啟動；`make seed` 用 `docker compose run --rm worker python -m app.worker --once`。
+- 理由：一條管線、重跑結果相同、失敗不影響舊資料。
+- 影響：`backend/app/ingest/pipeline.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`compose.yaml`、`Makefile`。

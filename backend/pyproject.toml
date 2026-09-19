@@ -5,6 +5,7 @@ description = "Agricultural price API and ingest worker"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.0",
+    "apscheduler>=3.11,<4",
     "fastapi>=0.141.1",
     "httpx>=0.28.1",
     "psycopg[binary]>=3.3.6",
@@ -46,6 +47,11 @@ strict = true
 plugins = ["pydantic.mypy"]
 files = ["app", "tests"]
 exclude = ["app/db/migrations/versions/"]
+
+[[tool.mypy.overrides]]
+# APScheduler 3 ships no type information.
+module = ["apscheduler.*"]
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = ["tests.*"]
