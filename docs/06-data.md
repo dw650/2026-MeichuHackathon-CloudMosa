@@ -245,6 +245,7 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
 - 零售 → 批發（馬來西亞）：批發要有市場細項，所以由**地區零售價 ÷ 倍率**寫成該地區**每個市場一列** `market_daily`，每列再乘上一個由市場代號雜湊決定的固定係數（±4% 以內；同一地區的係數中位數校正成 1，所以地區價正好等於零售 ÷ 倍率）。這樣市場清單與「最高 X・最低 Y」不會完全一樣，也不會每次執行跳來跳去。地區批發價再照 §3.2 由這些列算出來，`n_markets` 就是這些列的數目。seed 裡沒有市場的地區（Kuching、Kinta 等）沒有批發價，仍然是「—」。
 - 每次執行時 worker 把結果記在 `countries.estimated_price_types`（`/countries` 回傳），`/crops` 的 `estimate_ratio` 給出每個作物用的倍率，前端照這兩個欄位標示（見 [02](02-product-spec.md) §2、[03](03-ux-ui.md) §4）。
 - 推估的程式：純邏輯在 `backend/app/ingest/derive.py`，SQL 在 `backend/app/repositories/ingest.py` 的 `aggregate()`。
+- 改了倍率之後，只有下次執行重新彙整到的日期會換成新倍率（排程每次抓最近幾天，§8）；要整段換掉就清掉該國的報價讓來源重抓（`PROVIDERS` 關掉再開）。
 
 **倍率與依據**。這些是有依據的預設值，不是實測的毛利：批發到零售之間要負擔運費、損耗、整理、包裝與攤位成本，愈快壞的價差愈大。接上真實零售來源（B4）時應該換掉整段推估，而不是微調數字。
 
