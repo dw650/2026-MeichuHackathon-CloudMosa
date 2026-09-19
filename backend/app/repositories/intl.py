@@ -103,6 +103,16 @@ async def get_rate(session: AsyncSession, currency: str) -> FxRate | None:
     return await session.get(FxRate, currency)
 
 
+async def get_rates(session: AsyncSession, currencies: Sequence[str]) -> list[FxRate]:
+    """The rates we hold for `currencies`, in currency order; missing ones are left out."""
+    if not currencies:
+        return []
+    result = await session.execute(
+        select(FxRate).where(FxRate.currency.in_(list(currencies))).order_by(FxRate.currency)
+    )
+    return list(result.scalars().all())
+
+
 async def has_rates(session: AsyncSession) -> bool:
     return bool(await session.scalar(select(exists().where(FxRate.per_usd > 0))))
 

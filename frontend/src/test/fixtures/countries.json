@@ -279,5 +279,27 @@
    "up_is_pos": true,
    "utc_offset_min": 480
   }
+ ],
+ "fx": [
+  {
+   "currency": "INR",
+   "per_usd": 95.989567,
+   "rate_date": "2026-09-19"
+  },
+  {
+   "currency": "MYR",
+   "per_usd": 4.081091,
+   "rate_date": "2026-09-19"
+  },
+  {
+   "currency": "TWD",
+   "per_usd": 31.834145,
+   "rate_date": "2026-09-19"
+  },
+  {
+   "currency": "USD",
+   "per_usd": 1.0,
+   "rate_date": "2026-09-19"
+  }
  ]
 }

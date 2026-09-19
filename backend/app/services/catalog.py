@@ -8,9 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Country
 from app.errors import ApiError
 from app.repositories import catalog as repo
+from app.repositories import intl as fx_repo
 from app.services.demo import NO_DEMO, Demo
 from app.services.freshness import WINDOW_DAYS, staleness
 from app.timeutil import local_today
+
+#: Base of the exchange rates (bonus B5); also a display currency of its own.
+USD = "USD"
 
 
 async def require_country(session: AsyncSession, code: str) -> Country:
@@ -43,6 +47,23 @@ async def list_countries(session: AsyncSession, now: datetime) -> list[dict[str,
         }
         for c in await repo.get_countries(session)
     ]
+
+
+async def countries_payload(session: AsyncSession, now: datetime) -> dict[str, Any]:
+    """The countries with their settings, plus the rates the app shows prices in another
+    currency with (F19, docs/02 §5.7): one row per currency of a listed country and US
+    dollars. A price moves from currency A to B as `price / per_usd_A * per_usd_B`; a
+    currency we hold no rate for is left out, and the app then keeps the local currency."""
+    countries = await list_countries(session, now)
+    wanted = sorted({str(c["currency"]) for c in countries} | {USD})
+    rates = await fx_repo.get_rates(session, wanted)
+    return {
+        "countries": countries,
+        "fx": [
+            {"currency": r.currency, "per_usd": float(r.per_usd), "rate_date": r.rate_date}
+            for r in rates
+        ],
+    }
 
 
 async def list_areas(

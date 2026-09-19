@@ -43,8 +43,18 @@ class CountryOut(BaseModel):
     units: UnitsOut
 
 
+class FxRateOut(BaseModel):
+    """Units of the currency for one US dollar, on the provider's day (bonus B5)."""
+
+    currency: str
+    per_usd: float
+    rate_date: date
+
+
 class CountriesOut(BaseModel):
     countries: list[CountryOut]
+    #: Rates for the display currencies (F19); a currency without one keeps its local prices.
+    fx: list[FxRateOut]
 
 
 class AreaOut(BaseModel):
