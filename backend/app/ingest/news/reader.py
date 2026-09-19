@@ -8,6 +8,7 @@ import asyncio
 import logging
 import time
 from dataclasses import dataclass
+from typing import Protocol
 
 import httpx
 
@@ -40,6 +41,14 @@ class Article:
 
     url: str | None
     text: str | None
+
+
+class Reader(Protocol):
+    requests: int
+    # Google refused a link request: no more links are resolved this run.
+    google_refused: bool
+
+    async def read(self, link: str, lang: str) -> Article: ...
 
 
 class ArticleReader:

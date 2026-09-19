@@ -1,0 +1,47 @@
+# Demo news (NEWS_SOURCE=demo): fixed items for the e2e checks and screenshots, so they need
+# no network. They go through the same pipeline as real headlines. The publisher is always
+# 示範資料 / Demo data, and switching back to NEWS_SOURCE=google removes them.
+#   hours_ago: published this many hours before the run
+#   summary: optional (items without one show the title only, like real items)
+#   crops: optional extra crop tags, as a summariser would add them
+TW:
+  source: 示範資料
+  lang: zh-TW
+  items:
+    - hours_ago: 12
+      title: 颱風前搶收 台北市場甘藍到貨減少 批發價走高
+      summary: 颱風接近，產地提前搶收，台北果菜市場的甘藍到貨量比上週少。盤商預估颱風過後幾天價格仍會偏高。
+    - hours_ago: 2
+      title: 芭樂盛產 屏東產地價格回落
+      summary: 屏東芭樂進入盛產期，產地收購價比上個月低。農會建議農民分批採收，避免價格繼續下跌。
+    - hours_ago: 20
+      title: 香蕉外銷訂單增加 高雄蕉農收入提升
+    - hours_ago: 30
+      title: 連日豪雨重創中南部產區 葉菜類價格一週內上漲三成，市場預估兩週後才會逐步回穩
+      summary: 中南部連日豪雨，葉菜類產區受損，批發價一週內上漲約三成。市場預估要兩週後新的葉菜上市，價格才會回穩。
+      crops: [bokchoy, waterspinach]
+    - hours_ago: 50
+      title: 空心菜、小白菜價格回穩 新北市場到貨恢復
+      summary: 新北市果菜市場的空心菜與小白菜到貨量恢復正常，批發價回到颱風前的水準。
+    - hours_ago: 80
+      title: 中秋前青蔥需求增 宜蘭三星蔥價格看漲
+      summary: 中秋節前烤肉需求增加，宜蘭三星蔥的批發價上漲。農民表示今年產量與去年差不多。
+
+IN:
+  source: Demo data
+  lang: en
+  items:
+    - hours_ago: 12
+      title: Onion prices ease at Lasalgaon as arrivals rise
+      summary: Onion arrivals at the Lasalgaon market rose this week and the modal price eased. Traders expect prices to stay steady until the new crop arrives.
+    - hours_ago: 2
+      title: Tomato prices climb in Pune wholesale market after heavy rain
+      summary: Heavy rain cut tomato arrivals at the Pune wholesale market and prices climbed. Traders say supply should recover within a week.
+    - hours_ago: 26
+      title: Government buffer sales keep potato prices steady across India
+    - hours_ago: 40
+      title: Kurnool chilli growers see better rates this season
+      summary: Chilli growers in Kurnool are getting better rates than last season. Demand from traders in other states has increased.
+    - hours_ago: 70
+      title: Mandi prices of wheat stay firm ahead of sowing
+      summary: Wheat prices in the mandis stayed firm this week. Farmers are holding stocks before the sowing season.
