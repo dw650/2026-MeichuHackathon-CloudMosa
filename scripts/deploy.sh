@@ -19,7 +19,8 @@ exec 9>.git/deploy.lock
 flock -w 900 9
 
 docker=(docker)
-docker info >/dev/null 2>&1 || docker=(sudo -n docker)
+# sudo resets the environment; keep the commit that deploy() exports for the About page.
+docker info >/dev/null 2>&1 || docker=(sudo -n --preserve-env=APP_VERSION docker)
 compose=("${docker[@]}" compose)
 
 [[ -f .env ]] || { echo "deploy: .env is missing (start from .env.example)" >&2; exit 2; }
