@@ -1,5 +1,9 @@
 import httpx
 
+from app.config import Settings
+from app.db.session import create_engine, create_sessionmaker
+from app.repositories import catalog as catalog_repo
+
 
 async def test_countries_lists_every_country_with_its_settings(api: httpx.AsyncClient) -> None:
     res = await api.get("/api/v1/countries")
@@ -116,3 +120,45 @@ async def test_openapi_and_docs_are_published(api: httpx.AsyncClient) -> None:
     docs = await api.get("/api/docs")
     assert docs.status_code == 200
     assert "swagger" in docs.text.lower()
+
+
+async def test_mock_data_estimates_nothing(api: httpx.AsyncClient) -> None:
+    """Every country on demo data reports both price types, so no screen labels an estimate."""
+    countries = (await api.get("/api/v1/countries")).json()["countries"]
+    assert [c["estimated_price_types"] for c in countries] == [[], [], []]
+    crops = (await api.get("/api/v1/countries/TW/crops")).json()["crops"]
+    assert {c["estimate_ratio"] for c in crops} == {None}
+
+
+async def test_an_estimated_price_type_carries_a_ratio_per_crop(
+    api: httpx.AsyncClient, settings: Settings
+) -> None:
+    """With a real source that only reports wholesale, Taiwan's retail is an estimate: the
+    country says so and every crop carries the ratio the screens name (docs/06 §4)."""
+    engine = create_engine(settings)
+    try:
+        async with create_sessionmaker(engine)() as s:
+            await catalog_repo.set_estimated_price_types(s, {"TW": ["retail"]})
+            await s.commit()
+        taiwan = next(
+            c
+            for c in (await api.get("/api/v1/countries")).json()["countries"]
+            if c["code"] == "TW"
+        )
+        assert taiwan["estimated_price_types"] == ["retail"]
+        crops = {c["id"]: c for c in (await api.get("/api/v1/countries/TW/crops")).json()["crops"]}
+        assert crops["bokchoy"]["estimate_ratio"] == 1.8  # leafy
+        assert crops["cabbage"]["estimate_ratio"] == 1.7  # other vegetables
+        assert crops["rice"]["estimate_ratio"] == 1.3  # cereals
+        assert crops["mushroom"]["estimate_ratio"] == 1.6  # the default
+        india = next(
+            c
+            for c in (await api.get("/api/v1/countries")).json()["countries"]
+            if c["code"] == "IN"
+        )
+        assert india["estimated_price_types"] == []
+    finally:
+        async with create_sessionmaker(engine)() as s:
+            await catalog_repo.set_estimated_price_types(s, {"TW": []})
+            await s.commit()
+        await engine.dispose()

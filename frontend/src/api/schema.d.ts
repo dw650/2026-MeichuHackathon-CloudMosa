@@ -405,6 +405,11 @@ export interface components {
             default_recent_area_ids: string[];
             /** Default Watch */
             default_watch: string[];
+            /**
+             * Estimated Price Types
+             * @description Price types no source of this country reports, estimated from the other one (docs/06 §4). Every screen showing such a price must say it is an estimate.
+             */
+            estimated_price_types: string[];
             /** Locale */
             locale: string;
             name: components["schemas"]["I18nText"];
@@ -427,6 +432,11 @@ export interface components {
             category: string;
             /** Default Watch */
             default_watch: boolean;
+            /**
+             * Estimate Ratio
+             * @description What the estimated price type of this country is multiplied by for this crop (null when nothing is estimated), so a screen can name the ratio it shows.
+             */
+            estimate_ratio: number | null;
             /** Has Retail */
             has_retail: boolean;
             /** Id */

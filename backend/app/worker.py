@@ -21,7 +21,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 from app.config import Settings, get_settings
 from app.db.session import create_engine, create_sessionmaker
-from app.ingest import registry
+from app.ingest import derive, registry
 from app.ingest.intl.pink_sheet import KNOWN_MONTHLY_URL
 from app.ingest.intl.refresh import IntlConfig, refresh_intl, sync_series
 from app.ingest.news.job import NEWS_SOURCES
@@ -30,7 +30,8 @@ from app.ingest.providers.base import BuildContext, PriceProvider
 from app.ingest.seed import sync_seed
 from app.middleware import configure_logging
 from app.news import news_options, run_news_once
-from app.seed.loader import load_intl_series, load_seed_files
+from app.repositories import catalog as catalog_repo
+from app.seed.loader import load_derive_seed, load_intl_series, load_seed_files
 from app.seed.schema import SeedFile
 from app.timeutil import country_tz, local_today
 
@@ -97,8 +98,14 @@ async def run_once(
         today = {s.country.code: local_today(s.country.utc_offset_min, clock()) for s in seeds}
         infos = registry.enabled(settings.provider_ids)
         cover = registry.coverage(infos, seeds)
+        # A country whose source reports one price type only gets the other estimated from it
+        # (docs/06 §4); the screens read `estimated_price_types` to label it as an estimate.
+        estimates = derive.plan(load_derive_seed(), infos, cover)
         async with maker() as session:
-            await retire_sources(session, registry.owners(cover, seeds))
+            await catalog_repo.set_estimated_price_types(
+                session, derive.estimated_price_types(estimates, seeds)
+            )
+            await retire_sources(session, registry.owners(cover, seeds), estimates)
         today_of = _today_of(seeds, clock)
         summaries = []
         for info in infos:
@@ -124,7 +131,9 @@ async def run_once(
                 context = replace(context, days=plan.days, files=plan.files)
             provider = info.build(context)
             async with maker() as session:
-                summaries.append(await run_provider(session, provider, today, clock=clock))
+                summaries.append(
+                    await run_provider(session, provider, today, clock=clock, estimates=estimates)
+                )
         return summaries
     finally:
         await engine.dispose()

@@ -56,6 +56,11 @@ class Country(Base):
     rep_price_label: Mapped[I18n]
     # The real-world source named on the About page, e.g. "Agmarknet".
     source_label: Mapped[I18n]
+    # Price types this country has no source for, estimated from the other one (docs/06 §4).
+    # Written by the worker each run; every screen showing such a price says it is an estimate.
+    estimated_price_types: Mapped[list[str]] = mapped_column(
+        ARRAY(String(10)), server_default=text("'{}'")
+    )
     # Per price type: {"default": "qtl", "options": [{"id", "per_kg", "decimals", "label"}]}.
     units: Mapped[dict[str, Any]]
 

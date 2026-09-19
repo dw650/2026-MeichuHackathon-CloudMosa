@@ -6,6 +6,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 LANGS = ("zh-TW", "en")
 Category = Literal["cereal", "veg", "fruit", "pulse", "spice", "oil", "other"]
+# Kept here and not imported from app.ingest, which imports this module.
+PriceTypeName = Literal["wholesale", "retail"]
 I18n = dict[str, str]
 
 
@@ -196,6 +198,47 @@ class SeedFile(_Model):
                 if area_map.area not in area_ids:
                     raise ValueError(f"{source}: unknown area {area_map.area!r}")
         return self
+
+
+# ---------- estimated prices (app/seed/derive.yaml, docs/06 §4) ----------
+
+MAX_RATIO = 5.0
+
+
+class CountryDerive(_Model):
+    """How one country's missing price type is estimated from the one its source reports:
+    `to` = `from` × ratio when estimating retail, `from` ÷ ratio the other way round."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True)
+
+    from_type: PriceTypeName = Field(alias="from")
+    to_type: PriceTypeName = Field(alias="to")
+    default: float = Field(gt=0, le=MAX_RATIO)
+    categories: dict[Category, float] = {}
+    crops: dict[str, float] = {}
+    # Retail → wholesale only: how far a derived market price may sit from the area price.
+    market_spread: float = Field(default=0.0, ge=0, lt=1)
+
+    @model_validator(mode="after")
+    def _sane(self) -> Self:
+        if self.from_type == self.to_type:
+            raise ValueError("`from` and `to` must be different price types")
+        bad = [r for r in [*self.categories.values(), *self.crops.values()] if not 0 < r <= MAX_RATIO]
+        if bad:
+            raise ValueError(f"ratios must be > 0 and <= {MAX_RATIO}: {bad}")
+        return self
+
+
+class DeriveSeedFile(_Model):
+    countries: dict[str, CountryDerive] = {}
+
+    @field_validator("countries")
+    @classmethod
+    def _country_codes(cls, value: dict[str, CountryDerive]) -> dict[str, CountryDerive]:
+        bad = [code for code in value if len(code) != 2 or not code.isupper()]
+        if bad:
+            raise ValueError(f"not country codes: {bad}")
+        return value
 
 
 # ---------- international reference prices (bonus B5, app/seed/intl/series.yaml) ----------

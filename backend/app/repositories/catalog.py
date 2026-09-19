@@ -1,10 +1,10 @@
 """Catalog tables: countries, areas, markets, crops and the source name maps."""
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import date
 from typing import Any
 
-from sqlalchemy import Table, delete, func, select
+from sqlalchemy import Table, delete, func, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,12 +28,26 @@ async def _upsert(
     if not rows:
         return
     stmt = insert(table).values(list(rows))
-    updates = {c.name: stmt.excluded[c.name] for c in table.columns if c.name not in keys}
+    # Only the columns the caller passes: a column written elsewhere (a country's
+    # estimated_price_types, which the worker sets) must survive a seed sync.
+    updates = {name: stmt.excluded[name] for name in rows[0] if name not in keys}
     await session.execute(stmt.on_conflict_do_update(index_elements=keys, set_=updates))
 
 
 async def upsert_country(session: AsyncSession, row: Row) -> None:
     await _upsert(session, Country.__table__, [row], ["code"])  # type: ignore[arg-type]
+
+
+async def set_estimated_price_types(
+    session: AsyncSession, by_country: Mapping[str, Sequence[str]]
+) -> None:
+    """Records which of a country's price types are estimated from the other one (docs/06 §4),
+    as the enabled sources leave them. Written by the worker each run and read by every screen
+    that has to say a price is an estimate."""
+    for code, types in sorted(by_country.items()):
+        await session.execute(
+            update(Country).where(Country.code == code).values(estimated_price_types=list(types))
+        )
 
 
 async def upsert_areas(session: AsyncSession, rows: Sequence[Row]) -> None:

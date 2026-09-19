@@ -365,6 +365,12 @@ async def test_a_country_never_mixes_demo_and_real_prices(
         )
         return [(c, s) for c, s in result.tuples().all()]
 
+    async def estimated() -> list[str]:
+        result = await session.execute(
+            text("SELECT estimated_price_types FROM countries WHERE code = 'TW'")
+        )
+        return list(result.scalar_one())
+
     async def count(where: str) -> int:
         result = await session.execute(
             text(f"SELECT count(*) FROM area_daily WHERE country = 'TW' AND {where}"),
@@ -378,18 +384,24 @@ async def test_a_country_never_mixes_demo_and_real_prices(
 
     await worker.run_once(demo, clock)
     assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "mock")]
+    # The demo reports both price types, so nothing is estimated.
+    assert await estimated() == []
 
     summaries = await worker.run_once(real, clock)
     assert [(s.source, s.status) for s in summaries] == [("mock", "ok"), ("tw_moa", "ok")]
     assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "tw_moa")]
-    # Nothing of the demo is left in Taiwan: no retail, no days before the real sample.
-    assert await count("price_type = 'retail'") == 0
+    # Nothing of the demo is left in Taiwan: no days before the real sample. tw_moa has no
+    # retail, so the retail prices are now estimated from the real wholesale ones (docs/06 §4).
     assert await count("trade_date < :d") == 0
     assert await count("price_type = 'wholesale'") > 0
+    assert await estimated() == ["retail"]
+    assert await count("price_type = 'retail' AND n_markets = 0") > 0
 
     # The hourly refresh runs the real source alone.
     refreshed = await worker.run_once(real, clock, refresh="tw_moa")
     assert [(s.source, s.status) for s in refreshed] == [("tw_moa", "ok")]
 
+    # Back on the demo: both price types are reported again, so nothing is estimated.
     await worker.run_once(demo, clock)
     assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "mock")]
+    assert await estimated() == []
