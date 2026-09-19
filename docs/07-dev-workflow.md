@@ -107,12 +107,14 @@
 
 | job | 步驟 |
 |---|---|
-| frontend | `npm ci` → ESLint → `tsc --noEmit` → Vitest（含覆蓋率門檻）→ `npm audit --omit=dev --audit-level=high` → `vite build` |
+| frontend | `npm ci` → ESLint → `tsc --noEmit` → Vitest（含覆蓋率門檻）→ npm audit（正式依賴，high 以上就失敗）→ `vite build` |
 | backend | `uv sync` → ruff → mypy → pytest（含覆蓋率門檻，用 GitHub Actions 的 PostgreSQL service）→ `pip-audit` |
 | contract | 由後端產生 OpenAPI → 產生前端型別 → `git diff --exit-code`（型別過期就失敗） |
 | images | `docker compose build` |
 
 `e2e.yml`：手動觸發，以及 push 到 `main` 時跑 Playwright。
+
+兩個依賴檢查（npm audit、pip-audit）都經過 `scripts/audit.py`。找到漏洞，或出現不是網路／服務造成的錯誤，一律失敗。漏洞資料庫連不上時重試 3 次，還是不行就只顯示警告、不算失敗，下一次執行會再檢查。例：2026-09-20 npm 的 audit 服務維修，CI 因此失敗，擋住了部署。
 
 ### 5.2 部署：`scripts/deploy.sh`
 

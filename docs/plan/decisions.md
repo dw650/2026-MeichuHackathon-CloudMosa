@@ -542,3 +542,13 @@
   - 使用者同意停掉同一台 VM 上佔用 3000 port 的 `agriprice` 容器（只停止，沒有刪除）。
 - 理由：手動部署與 CD 共用一支腳本；私有 repo 不必把 GitHub 權杖放在伺服器上；CI 用的金鑰外洩時最多只能觸發部署。
 - 影響：`scripts/deploy.sh`、`.github/workflows/deploy.yml`、docs/07 §5.2–5.3、docs/00 目前狀態、README。
+
+## 2026-09-20 依賴檢查遇到外部服務中斷時只警告
+- 情況：npm 的 audit 服務維修（503），CI 的 `npm audit` 失敗，整個 CI 算失敗，Deploy 就被跳過。使用者希望避免外部服務的問題擋住部署。
+- 決定：`make audit-frontend`、`make audit-backend` 改用 `scripts/audit.py`：
+  - 找到漏洞一定失敗：npm 是 high 以上，pip 是任何一個，和原本相同。
+  - 輸出看不出是網路或服務錯誤時也算失敗，不會默默跳過。
+  - 明確是連不上（503、逾時、DNS 等）時重試 3 次；還是不行就顯示警告（GitHub Actions 的 `::warning::`），不算失敗。
+  - 子程序不帶 `FORCE_COLOR`，`uv export` 加 `--color never`，避免 requirements 檔被寫進顏色控制碼。
+- 理由：沒有執行的檢查不等於找到漏洞；依賴只在 lockfile 改變時才會變，下一次執行就會補檢查。
+- 影響：`scripts/audit.py`、`Makefile`、docs/07 §5.1。

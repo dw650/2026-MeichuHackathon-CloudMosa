@@ -69,13 +69,12 @@ lint-backend:
 ## Dependency vulnerability checks (runtime dependencies only).
 audit: audit-frontend audit-backend
 
+# Known vulnerabilities fail; an unreachable advisory service only warns (scripts/audit.py).
 audit-frontend: frontend/node_modules/.package-lock.json
-	cd frontend && npm audit --omit=dev --audit-level=high
+	cd frontend && python3 ../scripts/audit.py npm
 
 audit-backend:
-	cd backend && uv export --frozen --no-dev --no-emit-project --quiet > .audit-requirements.txt
-	cd backend && uvx pip-audit -r .audit-requirements.txt --disable-pip --progress-spinner off; \
-		status=$$?; rm -f .audit-requirements.txt; exit $$status
+	cd backend && python3 ../scripts/audit.py pip
 
 ## Playwright UI checks (milestones only): full stack in demo mode, JSON summary output.
 E2E_BASE_URL ?= http://localhost:$(WEB_PORT)
