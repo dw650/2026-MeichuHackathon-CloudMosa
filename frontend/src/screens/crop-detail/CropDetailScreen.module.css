@@ -1,0 +1,206 @@
+/* Crop detail (F04): layout from the mockup's vDetail (docs/ui-mockup), tokens only. */
+
+/* Boxes and cards below the tabs, in one column. */
+.stack {
+  display: grid;
+  gap: var(--gap);
+  padding: 0 var(--gut) 4px;
+}
+
+.box {
+  padding: 5px 7px;
+  border-radius: var(--rad);
+  background: var(--card);
+}
+
+.warn {
+  color: var(--warn);
+}
+
+/* ---------- 行情: big price card ---------- */
+
+.hero {
+  --tile: 36px;
+
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 7px;
+  align-items: center;
+}
+
+.heroTile {
+  display: flex;
+}
+
+.heroBody {
+  min-width: 0;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  font-weight: 700;
+}
+
+.labelText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listen {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.listen > svg {
+  width: 13px;
+  height: 13px;
+}
+
+.big {
+  font-size: var(--fs-hero);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  white-space: nowrap;
+}
+
+.vsPrev {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.change b {
+  color: var(--ink);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+}
+
+.note > svg {
+  flex: none;
+  color: var(--brand);
+}
+
+/* ---------- 走勢 ---------- */
+
+.sumrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  white-space: nowrap;
+}
+
+.sumrow b {
+  color: var(--ink);
+}
+
+.summary,
+.range {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.range {
+  gap: 2px;
+}
+
+.option {
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--ink2);
+}
+
+.current {
+  background: var(--brand);
+  color: var(--brand-ink);
+  font-weight: 900;
+}
+
+/* ---------- 比價 ---------- */
+
+.sortbar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin: 0 var(--gut);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink2);
+  font-size: var(--fs-3);
+  white-space: nowrap;
+}
+
+.sortbar b {
+  overflow: hidden;
+  color: var(--ink);
+  text-overflow: ellipsis;
+}
+
+.sortbar > svg {
+  flex: none;
+  color: var(--brand);
+}
+
+.rankline {
+  overflow: hidden;
+  padding: 3px var(--gut) 0;
+  color: var(--ink2);
+  font-size: var(--fs-3);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 128×160 (docs/03 §6): no crop tile, key caps, extra explanations or area suffix. */
+@media (max-width: 176px) {
+  .stack {
+    padding-bottom: 2px;
+  }
+
+  .box {
+    padding: 2px 4px;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .heroTile,
+  .listen,
+  .vsPrev,
+  .note,
+  .range,
+  .rankline,
+  .suffix,
+  .sortbar kbd {
+    display: none;
+  }
+}
