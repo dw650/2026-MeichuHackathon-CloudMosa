@@ -208,8 +208,18 @@ async def test_a_failed_search_keeps_the_stored_items(seeded: AsyncSession) -> N
 
 
 async def test_a_country_missing_from_the_catalog_fails_its_run(seeded: AsyncSession) -> None:
-    run = await run_country(seeded, "MY", CONFIG.countries["MY"], FakeSource([]), clock=clock)
+    run = await run_country(seeded, "ZZ", TW, FakeSource([]), clock=clock)
     assert run.status == "failed"
+
+
+async def test_malay_headlines_of_malaysia(seeded: AsyncSession) -> None:
+    raw = [r for i in parse_rss(fixture_bytes("gnews_rss_MY.xml")) if (r := to_raw(i, "ms"))]
+    run = await run_country(seeded, "MY", CONFIG.countries["MY"], FakeSource(raw), clock=clock)
+    assert run.status == "ok"
+    titles = [i.title for i in await items(seeded, "MY")]
+    # 「harga sayur」 is price news; wet-market and sugar stories are not about Malaysia's crops.
+    assert len(titles) == 2
+    assert all("harga sayur" in t.lower() for t in titles)
 
 
 # ---------- summaries ----------
@@ -379,7 +389,7 @@ async def test_run_news_end_to_end_with_gemini(maker: async_sessionmaker[AsyncSe
     )
     assert run.status == "ok"
     assert run.items_new == 10  # 12 headlines, two off topic
-    assert run.articles == run.model_calls == run.summaries == 10  # within TW's share of 15
+    assert run.articles == run.model_calls == run.summaries == 10  # TW's share: 30 / 3 countries
     async with maker() as session:
         stored = await items(session)
     assert all(i.summary and i.summary_model == "gemini-3.5-flash-lite" for i in stored)
@@ -399,7 +409,7 @@ async def test_run_news_end_to_end_with_gemini(maker: async_sessionmaker[AsyncSe
         sleep=time.sleep,
         monotonic=time.clock,
     )
-    assert [r.country for r in skipped] == ["IN"]  # TW is fresh; IN has never run
+    assert [r.country for r in skipped] == ["IN", "MY"]  # TW is fresh; the others never ran
     again = await run_news(
         maker,
         options,
@@ -418,12 +428,12 @@ async def test_start_up_runs_only_countries_without_fresh_news(
 ) -> None:
     demo = NewsOptions(source="demo")
     first = await run_news(maker, demo, startup=True, clock=clock)
-    assert [r.country for r in first] == ["TW", "IN"]  # the configuration's order
+    assert [r.country for r in first] == ["TW", "IN", "MY"]  # the configuration's order
     assert await run_news(maker, demo, startup=True, clock=clock) == []
     later = await run_news(
         maker, demo, startup=True, clock=lambda: NOW + timedelta(days=1, minutes=1)
     )
-    assert [r.country for r in later] == ["TW", "IN"]
+    assert [r.country for r in later] == ["TW", "IN", "MY"]
 
 
 async def test_start_up_refetches_a_country_whose_news_is_missing(
@@ -437,6 +447,21 @@ async def test_start_up_refetches_a_country_whose_news_is_missing(
     # Fetched within the day, but TW has no news any more (e.g. a switch to google and back).
     again = await run_news(maker, demo, startup=True, clock=clock)
     assert [r.country for r in again] == ["TW"]
+
+
+async def test_malaysia_demo_news_uses_the_malay_aliases(
+    maker: async_sessionmaker[AsyncSession],
+) -> None:
+    [run] = await run_news(maker, NewsOptions(source="demo"), countries=["MY"], clock=clock)
+    assert run.items_new == 4
+    async with maker() as session:
+        stored = await items(session, "MY")
+    malay = next(i for i in stored if i.title.startswith("Harga kubis"))
+    assert (malay.lang, malay.summary) == ("ms", None)
+    assert malay.crop_ids == ["cabbage", "bokchoy"]  # kubis, sawi
+    assert malay.area_ids == ["kuantan"]  # Pahang
+    kl = next(i for i in stored if "Kuala Lumpur" in i.title)
+    assert (kl.crop_ids, kl.area_ids) == (["chilli"], ["kualalumpur"])
 
 
 async def test_demo_and_real_items_never_mix(maker: async_sessionmaker[AsyncSession]) -> None:
@@ -494,7 +519,7 @@ async def test_budgets_are_shared_by_the_day(maker: async_sessionmaker[AsyncSess
 
 async def test_off_unknown_and_unseeded_countries(maker: async_sessionmaker[AsyncSession]) -> None:
     assert await run_news(maker, NewsOptions(source="off"), clock=clock) == []
-    assert await run_news(maker, NewsOptions(source="demo"), countries=["MY"], clock=clock) == []
+    assert await run_news(maker, NewsOptions(source="demo"), countries=["ZZ"], clock=clock) == []
 
 
 def test_allowance_is_a_share_of_what_is_left() -> None:

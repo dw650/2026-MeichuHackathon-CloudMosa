@@ -67,6 +67,18 @@ describe('NewsListScreen', () => {
     expect(focusIds()[0]).toBe('news:7') // Lasalgaon is in Nashik
   })
 
+  it('lists Malaysia with its Malay headlines marked as Malay', async () => {
+    await renderApp('/news', { country: 'MY', lang: 'en' })
+    await screen.findByText('Chilli prices ease at the Kuala Lumpur wholesale market', {
+      exact: false,
+    })
+    expect(focusIds()[0]).toBe('news:12') // Kuala Lumpur first
+    expect(card('news:14')).toHaveTextContent('Cabbage · Yesterday')
+    expect(card('news:14').querySelector('[lang="ms"]')).toHaveTextContent(
+      'Harga kubis dan sawi turun di Pahang',
+    )
+  })
+
   it('says when there is no news yet', async () => {
     server.use(
       http.get('*/api/v1/news', () =>

@@ -26,6 +26,8 @@ const cases: { name: string; state: AppState; area: string }[] = [
   { name: 'TW en', state: { country: 'TW', lang: 'en' }, area: 'taipei' },
   { name: 'IN zh-TW', state: { country: 'IN', lang: 'zh-TW' }, area: 'nashik' },
   { name: 'IN en', state: { country: 'IN', lang: 'en' }, area: 'nashik' },
+  { name: 'MY en', state: { country: 'MY', lang: 'en' }, area: 'kualalumpur' },
+  { name: 'MY zh-TW', state: { country: 'MY', lang: 'zh-TW' }, area: 'kualalumpur' },
 ]
 
 for (const c of cases) {

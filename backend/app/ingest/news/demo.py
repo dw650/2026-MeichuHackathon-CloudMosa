@@ -24,6 +24,7 @@ class DemoItem(_Model):
     title: str
     summary: str | None = None
     crops: list[str] = []
+    lang: str | None = None  # the title's language when it is not the country's
 
 
 class DemoCountry(_Model):
@@ -62,7 +63,7 @@ class DemoNewsSource:
                 published_at=now - timedelta(hours=item.hours_ago),
                 source_name=demo.source,
                 source_domain=DEMO_DOMAIN,
-                lang=demo.lang,
+                lang=item.lang or demo.lang,
                 summary=item.summary,
                 summary_lang=config.summary_lang if item.summary else None,
                 crop_ids=tuple(item.crops),

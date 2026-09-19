@@ -99,7 +99,8 @@ countries:
       bengaluru: [Bengaluru, Bangalore]
       delhi: [Delhi, Azadpur]
 
-  # Malaysia: used once its seed exists (another track adds it).
+  # Malaysia: English and Malay editions; the seed names crops in English, so the Malay names
+  # headlines use are aliases here.
   MY:
     summary_lang: en
     feeds:
@@ -115,3 +116,36 @@ countries:
     topics: [sayur, sayur-sayuran, buah, buah-buahan, petani, fama, pasar borong, vegetable, fruit, farmer]
     price_words: [harga, naik, turun, mahal, murah, price, rate, cost, rm, kg]
     exclude: [usda, terminal market, shipping point]
+    crop_aliases:
+      cabbage: [kubis]
+      chilli: [cili, chili]
+      onion: [bawang besar]
+      cucumber: [timun]
+      bokchoy: [sawi]
+      garlic: [bawang putih]
+      ginger: [halia]
+      carrot: [lobak merah]
+      cauliflower: [kubis bunga]
+      waterspinach: [kangkung]
+      potato: [kentang]
+      longbean: [kacang panjang]
+      frenchbean: [kacang buncis, buncis]
+      turmeric: [kunyit]
+      lime: [limau nipis]
+      calamansi: [limau kasturi]
+      peanut: [kacang tanah]
+      coconut: [kelapa]
+      wheat: [tepung gandum]
+    area_aliases:
+      # One area per state or territory (MY.yaml): headlines name the state.
+      kualalumpur: [KL, Selayang]
+      klang: [Selangor]
+      johorbahru: [Johor]
+      timurlaut: [Pulau Pinang, Penang, George Town]
+      kinta: [Perak, Ipoh]
+      kotabharu: [Kelantan]
+      kuantan: [Pahang]
+      kualaterengganu: [Terengganu]
+      seremban: [Negeri Sembilan]
+      kulim: [Kedah]
+      kuching: [Sarawak]

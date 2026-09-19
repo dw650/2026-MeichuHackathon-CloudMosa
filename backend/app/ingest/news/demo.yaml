@@ -45,3 +45,20 @@ IN:
     - hours_ago: 70
       title: Mandi prices of wheat stay firm ahead of sowing
       summary: Wheat prices in the mandis stayed firm this week. Farmers are holding stocks before the sowing season.
+
+MY:
+  source: Demo data
+  lang: en
+  items:
+    - hours_ago: 12
+      title: Chilli prices ease at the Kuala Lumpur wholesale market
+      summary: Chilli arrivals at the wholesale market in Kuala Lumpur rose this week and prices eased. Traders expect steady prices until the end of the month.
+    - hours_ago: 3
+      title: Tomato prices rise in Johor after heavy rain
+      summary: Heavy rain cut tomato supply in Johor and retail prices rose. Farmers say the next harvest should bring prices down.
+    - hours_ago: 30
+      lang: ms
+      title: Harga kubis dan sawi turun di Pahang
+    - hours_ago: 60
+      title: Carrot and potato prices steady in Penang
+      summary: Carrot and potato prices in Penang stayed close to last week's level. Supply from Cameron Highlands was normal.

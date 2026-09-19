@@ -65,6 +65,18 @@ describe('NewsDetailScreen', () => {
     expect(softKeys(app)).toEqual(['', 'Prices', 'Back'])
   })
 
+  it('opens a Malaysian crop from a Malay headline', async () => {
+    const app = await renderApp('/news/14', { country: 'MY', lang: 'en' })
+    await screen.findByRole('heading', { name: 'Harga kubis dan sawi turun di Pahang' })
+    expect(
+      screen.getByRole('heading', { name: 'Harga kubis dan sawi turun di Pahang' }),
+    ).toHaveAttribute('lang', 'ms')
+    expect(screen.getByText('Cabbage')).toBeInTheDocument()
+    expect(screen.getByText('Pak choy')).toBeInTheDocument()
+    app.press('2')
+    await waitFor(() => expect(app.path()).toBe('/crop/bokchoy/today'))
+  })
+
   it('says when the item is gone, and sends bad ids back to the list', async () => {
     const app = await renderApp('/news/99', { country: 'TW' })
     await screen.findByText('這則新聞已經不在列表中')

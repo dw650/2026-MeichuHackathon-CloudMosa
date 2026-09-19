@@ -56,7 +56,7 @@ INTL_SERIES = ["rice", "wheat", "maize", "soybeans", "sugar", "palm_oil"]
 
 
 # The 新聞 list of each country's default area, from the demo news (NEWS_SOURCE=demo).
-NEWS = [("TW", "taipei"), ("IN", "nashik")]
+NEWS = [("TW", "taipei"), ("IN", "nashik"), ("MY", "kualalumpur")]
 
 
 async def _load_demo_news(settings: Settings) -> None:
