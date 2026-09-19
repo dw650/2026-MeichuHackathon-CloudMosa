@@ -126,4 +126,23 @@ describe('AreaSheet (#, F07)', () => {
     await app.back()
     expect(app.path()).toBe('/')
   })
+
+  it('opens the full list for the viewed area from 「其他地區…」 and comes back to the screen', async () => {
+    const app = await renderHarness('/crop/onion/today?area=kolar', ['/'])
+    app.press('#')
+    app.press('4')
+    expect(app.path()).toBe(
+      `/areas?for=view&back=${encodeURIComponent('/crop/onion/today?area=kolar')}`,
+    )
+    await screen.findByText('Kolar 縣 ✓')
+    expect(app.focusedId()).toBe('area:kolar')
+    app.press('ArrowDown')
+    app.press('ArrowDown')
+    app.press('Enter')
+    await screen.findByRole('heading', { name: 'Pune 縣' })
+    expect(app.path()).toBe('/crop/onion/today?area=pune')
+    expect(useSettings.getState().areaId).toBe('nashik')
+    await app.back()
+    expect(app.path()).toBe('/')
+  })
 })
