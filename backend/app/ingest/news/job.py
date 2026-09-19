@@ -77,8 +77,8 @@ async def run_news(
     monotonic: Monotonic = time.monotonic,
 ) -> list[NewsRunSummary]:
     """One run per country (all, or the ones asked for). At start-up a country is skipped when
-    its last successful run from the same source is less than a day old, so redeploys do not
-    fetch again. Items of another source (demo ⇄ google) are removed first."""
+    it has news from this source and its last successful run is less than a day old, so
+    redeploys do not fetch again. Items of another source (demo ⇄ google) are removed first."""
     if options.source not in NEWS_SOURCES:
         logger.info("news: NEWS_SOURCE=%r, nothing to do", options.source)
         return []
@@ -101,7 +101,8 @@ async def run_news(
                 logger.info("news %s: removed %d items of other sources", cc, removed)
             if startup:
                 last = await repo.last_success(session, cc, source.id)
-                if last is not None and clock() - last < FRESH_FOR:
+                fresh = last is not None and clock() - last < FRESH_FOR
+                if fresh and await repo.count_items(session, cc, source.id) > 0:
                     logger.info("news %s: fetched at %s, not again at start-up", cc, last)
                     continue
             reader = None

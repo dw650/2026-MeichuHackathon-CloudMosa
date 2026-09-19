@@ -426,6 +426,19 @@ async def test_start_up_runs_only_countries_without_fresh_news(
     assert [r.country for r in later] == ["TW", "IN"]
 
 
+async def test_start_up_refetches_a_country_whose_news_is_missing(
+    maker: async_sessionmaker[AsyncSession],
+) -> None:
+    demo = NewsOptions(source="demo")
+    await run_news(maker, demo, clock=clock)
+    async with maker() as session:
+        await session.execute(text("DELETE FROM news_items WHERE country = 'TW'"))
+        await session.commit()
+    # Fetched within the day, but TW has no news any more (e.g. a switch to google and back).
+    again = await run_news(maker, demo, startup=True, clock=clock)
+    assert [r.country for r in again] == ["TW"]
+
+
 async def test_demo_and_real_items_never_mix(maker: async_sessionmaker[AsyncSession]) -> None:
     await run_news(maker, NewsOptions(source="demo"), clock=clock)
     async with maker() as session:
