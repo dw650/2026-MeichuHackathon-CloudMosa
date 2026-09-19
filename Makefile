@@ -11,16 +11,21 @@ COMPOSE ?= docker compose
 TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(DB_PORT)/agri_test
 export TEST_DATABASE_URL
 
-.PHONY: up down logs db-up test test-frontend test-backend lint lint-frontend lint-backend
+.PHONY: up dev down logs db-up test test-frontend test-backend lint lint-frontend lint-backend
 
 ## Start all services (production build) and wait until they are healthy.
 up: .env
 	$(COMPOSE) up -d --build --wait
 	@echo "Ready: http://localhost:$(WEB_PORT)"
 
-## Stop all services.
+## Development mode: Vite HMR and api --reload behind the same Caddy origin.
+dev: .env
+	$(COMPOSE) -f compose.yaml -f compose.dev.yaml up -d --build --wait
+	@echo "Dev server: http://localhost:$(WEB_PORT)"
+
+## Stop all services (production or development).
 down:
-	$(COMPOSE) down
+	$(COMPOSE) down --remove-orphans
 
 ## Follow service logs.
 logs:

@@ -1,0 +1,13 @@
+# Development Caddyfile: same origin as production, but "/" goes to the Vite dev server.
+# No CSP here: Vite HMR needs inline scripts and a WebSocket.
+:8080 {
+	handle /api/* {
+		reverse_proxy api:8000 {
+			header_up X-Client-Forwarded-For {http.request.header.X-Forwarded-For}
+		}
+	}
+
+	handle {
+		reverse_proxy frontend-dev:5173
+	}
+}
