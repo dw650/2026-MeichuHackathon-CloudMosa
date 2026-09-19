@@ -203,6 +203,226 @@
     "state": "none"
    },
    "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "rice",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cabbage",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "eggplant",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mango",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "pomegranate",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "chickpea",
+   "price_per_kg": null,
+   "reason": "no_retail_area",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "turmeric",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "peanut",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mustard",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cotton",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "sugarcane",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
   }
  ],
  "today": "2026-09-19",

@@ -203,6 +203,226 @@
     "state": "none"
    },
    "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "maize",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "rice",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "guava",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "soybean",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "adzuki",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "garlic",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "chilli",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "peanut",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "sesame",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "sugarcane",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mushroom",
+   "price_per_kg": null,
+   "reason": "no_data",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
   }
  ],
  "today": "2026-09-19",
