@@ -288,3 +288,19 @@
 - 決定：在 `frontend/vite.config.ts` 的 `coverage.thresholds` 用一個 glob `src/{lib,keys,focus,store}/**`，四個資料夾合計的 statements、branches、functions、lines 都要 ≥ 90%，不逐檔檢查。低於門檻時 `npm run coverage` 失敗；`make test` 與 CI 的前端 job 都跑這個指令。已確認暫時把門檻調到 100% 時確實會失敗。
 - 理由：四項都看，最不容易漏；照計畫寫的「合計」，和後端（services＋ingest 合計）一致。
 - 影響：`frontend/vite.config.ts`。之後有新的核心資料夾就加進 glob。
+## 2026-09-19 T21 路由表與歷史的做法
+- 情況：04 §4.3 定了路徑與「面板 push、分頁 replace、啟動時先換成首頁再 push」，但沒寫面板中的項目開啟另一個畫面、已經有面板時再開面板、從網址直接進入面板時要怎麼處理，也沒寫路由表怎麼讓各畫面平行開發。
+- 決定：
+  - 路由表由 `buildRoutes(screens)` 產生，每個畫面一個檔案（`src/screens/<畫面>/<名稱>Screen.tsx`），先放佔位元件；畫面任務只改自己的檔案。路由測試傳入替身元件，真的畫面換上來也不會壞。
+  - 畫面一律用 `useNav()`：`open`（push）、`back`、`switchTab`（replace）、`openSheet`（push；已經有面板時改成 replace，不疊兩層）、`closeSheet`（back；如果面板是這一頁的第一筆歷史，就改成拿掉參數）、`leaveSheet`（面板裡的項目開啟其他畫面時，用 replace 取代面板那一筆，返回時回到原畫面而不是面板）。
+  - 啟動還原（F13）只在「從首頁網址開啟 App」時做：歷史換成首頁、再 push 上次的畫面，並把上次的焦點帶到新的歷史 key；上次是首頁時直接開首頁（例如「全部作物」分頁）。其他網址（重新整理、直接連結）照原樣開。`?sheet=`、首次設定、除錯頁都不還原。
+  - 首次設定沒完成時，除了 `/setup/*` 與 `/debug/*`，所有路徑都導向 `/setup/lang`；作物詳情的分頁不是 trend／today／compare 時導向 today；其他未知路徑導回首頁。
+  - `RouterProvider` 從 `react-router` 匯入，不用 `react-router/dom`：測試環境會把兩者載入成兩份，context 對不上。
+- 理由：讓右軟鍵的 `history.back()` 在任何情況下都照「關面板 → 上一頁 → 首頁離開」運作。
+- 影響：`frontend/src/app/`（`paths.ts`、`navigation.ts`、`routes.ts`、`RootLayout.tsx`、`DetailTabGuard.tsx`、`router.ts`）、`frontend/src/screens/*` 的佔位元件。
+
+## 2026-09-19 排程改成多線平行（使用者同意）
+- 情況：baseline.md 的「平行開發」規定一次只派一個子 agent、前端線依序做；使用者在 21:20 左右要求加速，並同意偏離原排程。
+- 決定：前端基礎改成 T20、T23（子 agent，各自的 worktree）與 T21（主 session）同時做；同步點 1 分兩段（先合併 T16–T21，T23／T24 完成後再合併並跑 `make e2e`）；畫面階段由多個子 agent 各用一個 worktree 同時做，主 session 先做共用的畫面工具與首頁當範本，再負責合併。品質關卡不變（lint、型別、測試、覆蓋率門檻、大段落 Playwright）；畫面測試只寫計畫要求的核心情境。
+- 理由：縮短等待時間，品質底線不變。
+- 影響：只影響執行順序，不影響規格。

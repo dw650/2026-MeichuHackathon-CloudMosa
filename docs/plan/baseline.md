@@ -280,7 +280,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：以上每一條規則各一個測試。
   - 完成條件：測試通過。開啟前端覆蓋率門檻：`src/lib`、`src/keys`、`src/focus`、`src/store` 合計 ≥ 90%，`make test` 與 CI 都檢查。
 
-- [ ] **T21 路由與歷史**
+- [x] **T21 路由與歷史**
   - 參考：[04](../04-architecture.md) §4.3
   - 內容：路由表，**一次登記全部路由**，還沒做的畫面先放佔位元件，之後各畫面任務只改自己的檔案，平行開發時比較不會衝突；面板用 `?sheet=`，打開時 push、關閉時 back；分頁用 replace；啟動時還原上次的畫面（先換成首頁再 push）；未知路徑導回首頁。
   - 測試：用 memory router 測 push 與 replace 的次數、還原後按返回會回到首頁。
