@@ -1,0 +1,196 @@
+{
+ "areas": [
+  {
+   "has_retail": true,
+   "id": "taipei",
+   "lat": 25.04,
+   "latest_trade_date": "2026-09-19",
+   "lon": 121.56,
+   "name": {
+    "en": "Taipei",
+    "zh-TW": "台北市"
+   },
+   "region": {
+    "en": "North",
+    "zh-TW": "北部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "newtaipei",
+   "lat": 25.01,
+   "latest_trade_date": "2026-09-19",
+   "lon": 121.46,
+   "name": {
+    "en": "New Taipei",
+    "zh-TW": "新北市"
+   },
+   "region": {
+    "en": "North",
+    "zh-TW": "北部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "taoyuan",
+   "lat": 24.99,
+   "latest_trade_date": "2026-09-19",
+   "lon": 121.3,
+   "name": {
+    "en": "Taoyuan",
+    "zh-TW": "桃園市"
+   },
+   "region": {
+    "en": "North",
+    "zh-TW": "北部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "taichung",
+   "lat": 24.15,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.67,
+   "name": {
+    "en": "Taichung",
+    "zh-TW": "台中市"
+   },
+   "region": {
+    "en": "Central",
+    "zh-TW": "中部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "yunlin",
+   "lat": 23.8,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.46,
+   "name": {
+    "en": "Yunlin",
+    "zh-TW": "雲林縣"
+   },
+   "region": {
+    "en": "Central",
+    "zh-TW": "中部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "chiayi",
+   "lat": 23.48,
+   "latest_trade_date": "2026-09-18",
+   "lon": 120.45,
+   "name": {
+    "en": "Chiayi",
+    "zh-TW": "嘉義市"
+   },
+   "region": {
+    "en": "South",
+    "zh-TW": "南部"
+   },
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kaohsiung",
+   "lat": 22.63,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.3,
+   "name": {
+    "en": "Kaohsiung",
+    "zh-TW": "高雄市"
+   },
+   "region": {
+    "en": "South",
+    "zh-TW": "南部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "pingtung",
+   "lat": 22.67,
+   "latest_trade_date": "2026-09-19",
+   "lon": 120.49,
+   "name": {
+    "en": "Pingtung",
+    "zh-TW": "屏東縣"
+   },
+   "region": {
+    "en": "South",
+    "zh-TW": "南部"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "yilan",
+   "lat": 24.75,
+   "latest_trade_date": "2026-09-16",
+   "lon": 121.75,
+   "name": {
+    "en": "Yilan",
+    "zh-TW": "宜蘭縣"
+   },
+   "region": {
+    "en": "East",
+    "zh-TW": "東部"
+   },
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "hualien",
+   "lat": 23.99,
+   "latest_trade_date": null,
+   "lon": 121.6,
+   "name": {
+    "en": "Hualien",
+    "zh-TW": "花蓮縣"
+   },
+   "region": {
+    "en": "East",
+    "zh-TW": "東部"
+   },
+   "staleness": {
+    "days": null,
+    "state": "none"
+   }
+  }
+ ],
+ "country": "TW",
+ "today": "2026-09-19"
+}

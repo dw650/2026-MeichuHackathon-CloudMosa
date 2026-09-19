@@ -1,0 +1,153 @@
+{
+ "area_id": "taipei",
+ "crop_id": "cabbage",
+ "currency": "TWD",
+ "rank": {
+  "position": 1,
+  "total": 9
+ },
+ "rows": [
+  {
+   "area_id": "taipei",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
+   "n_markets": 2,
+   "price_per_kg": 38.25,
+   "rank": 1,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "newtaipei",
+   "diff_per_kg": -0.7,
+   "distance_km": 11,
+   "is_base": false,
+   "n_markets": 2,
+   "price_per_kg": 37.55,
+   "rank": 2,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "taoyuan",
+   "diff_per_kg": -1.35,
+   "distance_km": 27,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 36.9,
+   "rank": 3,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "kaohsiung",
+   "diff_per_kg": -2.55,
+   "distance_km": 297,
+   "is_base": false,
+   "n_markets": 2,
+   "price_per_kg": 35.7,
+   "rank": 4,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "taichung",
+   "diff_per_kg": -3.35,
+   "distance_km": 134,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 34.9,
+   "rank": 5,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "pingtung",
+   "diff_per_kg": -4.25,
+   "distance_km": 285,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 34.0,
+   "rank": 6,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "yunlin",
+   "diff_per_kg": -5.65,
+   "distance_km": 177,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 32.6,
+   "rank": 7,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "area_id": "yilan",
+   "diff_per_kg": -10.55,
+   "distance_km": 38,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 27.7,
+   "rank": 8,
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "area_id": "chiayi",
+   "diff_per_kg": -14.25,
+   "distance_km": 207,
+   "is_base": false,
+   "n_markets": 1,
+   "price_per_kg": 24.0,
+   "rank": 9,
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
+   "area_id": "hualien",
+   "diff_per_kg": null,
+   "distance_km": 117,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  }
+ ],
+ "today": "2026-09-19",
+ "type": "wholesale"
+}

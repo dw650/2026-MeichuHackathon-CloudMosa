@@ -1,0 +1,35 @@
+{
+ "area_id": "taipei",
+ "change": {
+  "diff_per_kg": 10.7,
+  "direction": "up",
+  "pct": 0.391941,
+  "prev_trade_date": "2026-09-18"
+ },
+ "crop_id": "cabbage",
+ "currency": "TWD",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "high_per_kg": 51.4,
+ "km_from_center": 4,
+ "low_per_kg": 23.7,
+ "market_id": "tp1",
+ "name": {
+  "en": "Taipei 1",
+  "zh-TW": "台北一"
+ },
+ "price_per_kg": 38.0,
+ "reason": null,
+ "source": {
+  "id": "mock",
+  "name": {
+   "en": "Demo data",
+   "zh-TW": "示範資料"
+  }
+ },
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19"
+}

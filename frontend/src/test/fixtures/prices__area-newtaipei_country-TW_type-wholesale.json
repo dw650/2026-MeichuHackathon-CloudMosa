@@ -1,0 +1,260 @@
+{
+ "area_id": "newtaipei",
+ "country": "TW",
+ "currency": "TWD",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "items": [
+  {
+   "change": {
+    "diff_per_kg": 11.55,
+    "direction": "up",
+    "pct": 0.444231,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "cabbage",
+   "price_per_kg": 37.55,
+   "reason": null,
+   "spark": [
+    24.35,
+    null,
+    25.4,
+    25.6,
+    25.9,
+    26.0,
+    37.55
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 16.7,
+    "direction": "up",
+    "pct": 0.613971,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "bokchoy",
+   "price_per_kg": 43.9,
+   "reason": null,
+   "spark": [
+    27.6,
+    null,
+    28.95,
+    28.35,
+    27.7,
+    27.2,
+    43.9
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.85,
+    "direction": "down",
+    "pct": -0.031423,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "banana",
+   "price_per_kg": 26.2,
+   "reason": null,
+   "spark": [
+    27.2,
+    null,
+    27.55,
+    26.25,
+    25.85,
+    27.05,
+    26.2
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.15,
+    "direction": "down",
+    "pct": -0.006849,
+    "prev_trade_date": "2026-09-17"
+   },
+   "crop_id": "sweetpotato",
+   "price_per_kg": 21.75,
+   "reason": null,
+   "spark": [
+    22.6,
+    null,
+    22.85,
+    22.55,
+    21.9,
+    21.75,
+    null
+   ],
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
+   "change": {
+    "diff_per_kg": 9.15,
+    "direction": "up",
+    "pct": 0.125085,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "scallion",
+   "price_per_kg": 82.3,
+   "reason": null,
+   "spark": [
+    70.75,
+    null,
+    72.15,
+    73.35,
+    74.65,
+    73.15,
+    82.3
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 1.5,
+    "direction": "up",
+    "pct": 0.03871,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "tomato",
+   "price_per_kg": 40.25,
+   "reason": null,
+   "spark": [
+    39.8,
+    null,
+    39.6,
+    40.65,
+    39.9,
+    38.75,
+    40.25
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -4.05,
+    "direction": "down",
+    "pct": -0.070804,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "mango",
+   "price_per_kg": 53.15,
+   "reason": null,
+   "spark": [
+    59.65,
+    null,
+    60.4,
+    61.05,
+    58.3,
+    57.2,
+    53.15
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.75,
+    "direction": "up",
+    "pct": 0.03178,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "pineapple",
+   "price_per_kg": 24.35,
+   "reason": null,
+   "spark": [
+    23.5,
+    null,
+    22.7,
+    23.3,
+    23.35,
+    23.6,
+    24.35
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 7.55,
+    "direction": "up",
+    "pct": 0.188045,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "cauliflower",
+   "price_per_kg": 47.7,
+   "reason": null,
+   "spark": [
+    41.3,
+    null,
+    41.55,
+    40.75,
+    41.1,
+    40.15,
+    47.7
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.05,
+    "direction": "down",
+    "pct": -0.001767,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "waterspinach",
+   "price_per_kg": 28.25,
+   "reason": null,
+   "spark": [
+    28.9,
+    null,
+    28.3,
+    28.25,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  }
+ ],
+ "today": "2026-09-19",
+ "type": "wholesale"
+}

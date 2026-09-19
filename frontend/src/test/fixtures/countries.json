@@ -1,0 +1,191 @@
+{
+ "countries": [
+  {
+   "area_suffix": {
+    "en": " district",
+    "zh-TW": " 縣"
+   },
+   "closed_weekdays": [
+    7
+   ],
+   "code": "IN",
+   "coverage": {
+    "en": "6 states, 11 districts",
+    "zh-TW": "6 個邦、11 個縣"
+   },
+   "currency": "INR",
+   "default_area_id": "nashik",
+   "default_recent_area_ids": [
+    "nashik",
+    "pune",
+    "ahmednagar"
+   ],
+   "default_watch": [
+    "onion",
+    "tomato",
+    "potato",
+    "chilli",
+    "soybean",
+    "maize",
+    "wheat"
+   ],
+   "locale": "en-IN",
+   "name": {
+    "en": "India",
+    "zh-TW": "印度"
+   },
+   "rep_price_label": {
+    "en": "Modal price",
+    "zh-TW": "常見價"
+   },
+   "source_label": {
+    "en": "Agmarknet · Dept of Consumer Affairs",
+    "zh-TW": "Agmarknet・消費者事務部（印度政府）"
+   },
+   "today": "2026-09-19",
+   "units": {
+    "retail": {
+     "default": "kg",
+     "options": [
+      {
+       "decimals": 1,
+       "id": "kg",
+       "label": {
+        "en": "₹/kg",
+        "zh-TW": "₹/公斤"
+       },
+       "per_kg": 1.0
+      },
+      {
+       "decimals": 0,
+       "id": "qtl",
+       "label": {
+        "en": "₹/qtl",
+        "zh-TW": "₹/公擔"
+       },
+       "per_kg": 100.0
+      }
+     ]
+    },
+    "wholesale": {
+     "default": "qtl",
+     "options": [
+      {
+       "decimals": 0,
+       "id": "qtl",
+       "label": {
+        "en": "₹/qtl",
+        "zh-TW": "₹/公擔"
+       },
+       "per_kg": 100.0
+      },
+      {
+       "decimals": 1,
+       "id": "kg",
+       "label": {
+        "en": "₹/kg",
+        "zh-TW": "₹/公斤"
+       },
+       "per_kg": 1.0
+      }
+     ]
+    }
+   },
+   "up_is_pos": true,
+   "utc_offset_min": 330
+  },
+  {
+   "area_suffix": {
+    "en": "",
+    "zh-TW": ""
+   },
+   "closed_weekdays": [
+    1
+   ],
+   "code": "TW",
+   "coverage": {
+    "en": "10 cities/counties",
+    "zh-TW": "10 個縣市"
+   },
+   "currency": "TWD",
+   "default_area_id": "taipei",
+   "default_recent_area_ids": [
+    "taipei",
+    "newtaipei",
+    "taichung"
+   ],
+   "default_watch": [
+    "cabbage",
+    "bokchoy",
+    "banana",
+    "sweetpotato",
+    "scallion",
+    "cauliflower"
+   ],
+   "locale": "zh-TW",
+   "name": {
+    "en": "Taiwan",
+    "zh-TW": "台灣"
+   },
+   "rep_price_label": {
+    "en": "Average price",
+    "zh-TW": "平均價"
+   },
+   "source_label": {
+    "en": "MOA wholesale prices (Govt)",
+    "zh-TW": "農業部 農產品交易行情"
+   },
+   "today": "2026-09-19",
+   "units": {
+    "retail": {
+     "default": "kg",
+     "options": [
+      {
+       "decimals": 1,
+       "id": "kg",
+       "label": {
+        "en": "NT$/kg",
+        "zh-TW": "元/公斤"
+       },
+       "per_kg": 1.0
+      },
+      {
+       "decimals": 1,
+       "id": "catty",
+       "label": {
+        "en": "NT$/catty",
+        "zh-TW": "元/台斤"
+       },
+       "per_kg": 0.6
+      }
+     ]
+    },
+    "wholesale": {
+     "default": "kg",
+     "options": [
+      {
+       "decimals": 1,
+       "id": "kg",
+       "label": {
+        "en": "NT$/kg",
+        "zh-TW": "元/公斤"
+       },
+       "per_kg": 1.0
+      },
+      {
+       "decimals": 1,
+       "id": "catty",
+       "label": {
+        "en": "NT$/catty",
+        "zh-TW": "元/台斤"
+       },
+       "per_kg": 0.6
+      }
+     ]
+    }
+   },
+   "up_is_pos": false,
+   "utc_offset_min": 480
+  }
+ ]
+}

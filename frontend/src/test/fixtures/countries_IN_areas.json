@@ -1,0 +1,215 @@
+{
+ "areas": [
+  {
+   "has_retail": true,
+   "id": "nashik",
+   "lat": 20.0,
+   "latest_trade_date": "2026-09-19",
+   "lon": 73.79,
+   "name": {
+    "en": "Nashik",
+    "zh-TW": "Nashik"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "pune",
+   "lat": 18.52,
+   "latest_trade_date": "2026-09-19",
+   "lon": 73.86,
+   "name": {
+    "en": "Pune",
+    "zh-TW": "Pune"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "ahmednagar",
+   "lat": 19.09,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.74,
+   "name": {
+    "en": "Ahmednagar",
+    "zh-TW": "Ahmednagar"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "jalgaon",
+   "lat": 21.0,
+   "latest_trade_date": "2026-09-18",
+   "lon": 75.56,
+   "name": {
+    "en": "Jalgaon",
+    "zh-TW": "Jalgaon"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "solapur",
+   "lat": 17.66,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.91,
+   "name": {
+    "en": "Solapur",
+    "zh-TW": "Solapur"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "indore",
+   "lat": 22.72,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.86,
+   "name": {
+    "en": "Indore",
+    "zh-TW": "Indore"
+   },
+   "region": {
+    "en": "Madhya Pradesh",
+    "zh-TW": "Madhya Pradesh"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "bengaluru",
+   "lat": 12.97,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.59,
+   "name": {
+    "en": "Bengaluru Urban",
+    "zh-TW": "Bengaluru Urban"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "kolar",
+   "lat": 13.14,
+   "latest_trade_date": "2026-09-16",
+   "lon": 78.13,
+   "name": {
+    "en": "Kolar",
+    "zh-TW": "Kolar"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "delhi",
+   "lat": 28.7,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.1,
+   "name": {
+    "en": "North Delhi",
+    "zh-TW": "North Delhi"
+   },
+   "region": {
+    "en": "Delhi",
+    "zh-TW": "Delhi"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "kurnool",
+   "lat": 15.83,
+   "latest_trade_date": null,
+   "lon": 78.04,
+   "name": {
+    "en": "Kurnool",
+    "zh-TW": "Kurnool"
+   },
+   "region": {
+    "en": "Andhra Pradesh",
+    "zh-TW": "Andhra Pradesh"
+   },
+   "staleness": {
+    "days": null,
+    "state": "none"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "agra",
+   "lat": 27.18,
+   "latest_trade_date": "2026-09-19",
+   "lon": 78.01,
+   "name": {
+    "en": "Agra",
+    "zh-TW": "Agra"
+   },
+   "region": {
+    "en": "Uttar Pradesh",
+    "zh-TW": "Uttar Pradesh"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  }
+ ],
+ "country": "IN",
+ "today": "2026-09-19"
+}

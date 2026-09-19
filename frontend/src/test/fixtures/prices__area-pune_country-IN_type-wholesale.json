@@ -1,0 +1,260 @@
+{
+ "area_id": "pune",
+ "country": "IN",
+ "currency": "INR",
+ "fetched_at": "2026-09-19T11:40:00+05:30",
+ "items": [
+  {
+   "change": {
+    "diff_per_kg": 0.34,
+    "direction": "up",
+    "pct": 0.013952,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "onion",
+   "price_per_kg": 24.71,
+   "reason": null,
+   "spark": [
+    null,
+    23.11,
+    23.81,
+    23.83,
+    23.75,
+    24.37,
+    24.71
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -1.89,
+    "direction": "down",
+    "pct": -0.131799,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "tomato",
+   "price_per_kg": 12.45,
+   "reason": null,
+   "spark": [
+    null,
+    14.22,
+    14.57,
+    14.21,
+    14.33,
+    14.34,
+    12.45
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.58,
+    "direction": "down",
+    "pct": -0.03699,
+    "prev_trade_date": "2026-09-17"
+   },
+   "crop_id": "potato",
+   "price_per_kg": 15.1,
+   "reason": null,
+   "spark": [
+    null,
+    15.39,
+    15.72,
+    15.07,
+    15.68,
+    15.1,
+    null
+   ],
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
+   "change": {
+    "diff_per_kg": 2.35,
+    "direction": "up",
+    "pct": 0.061777,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "chilli",
+   "price_per_kg": 40.39,
+   "reason": null,
+   "spark": [
+    null,
+    36.92,
+    38.25,
+    38.75,
+    38.72,
+    38.04,
+    40.39
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.11,
+    "direction": "down",
+    "pct": -0.002214,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "soybean",
+   "price_per_kg": 49.58,
+   "reason": null,
+   "spark": [
+    null,
+    46.78,
+    48.63,
+    49.01,
+    49.37,
+    49.69,
+    49.58
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.3,
+    "direction": "down",
+    "pct": -0.013581,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "maize",
+   "price_per_kg": 21.79,
+   "reason": null,
+   "spark": [
+    null,
+    23.16,
+    24.35,
+    23.71,
+    23.23,
+    22.09,
+    21.79
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.27,
+    "direction": "up",
+    "pct": 0.010685,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "wheat",
+   "price_per_kg": 25.54,
+   "reason": null,
+   "spark": [
+    null,
+    24.71,
+    25.27,
+    25.54,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": {
+    "diff_per_kg": 5.17,
+    "direction": "up",
+    "pct": 0.101353,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "grapes",
+   "price_per_kg": 56.18,
+   "reason": null,
+   "spark": [
+    null,
+    55.71,
+    52.6,
+    53.5,
+    51.82,
+    51.01,
+    56.18
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.72,
+    "direction": "down",
+    "pct": -0.040724,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "banana",
+   "price_per_kg": 16.96,
+   "reason": null,
+   "spark": [
+    null,
+    17.19,
+    16.87,
+    17.63,
+    17.29,
+    17.68,
+    16.96
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 1.15,
+    "direction": "up",
+    "pct": 0.011641,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "garlic",
+   "price_per_kg": 99.94,
+   "reason": null,
+   "spark": [
+    null,
+    97.83,
+    101.61,
+    99.89,
+    99.67,
+    98.79,
+    99.94
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  }
+ ],
+ "today": "2026-09-19",
+ "type": "wholesale"
+}

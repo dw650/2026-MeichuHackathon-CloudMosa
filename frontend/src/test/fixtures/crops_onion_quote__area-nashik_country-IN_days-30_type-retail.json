@@ -1,0 +1,165 @@
+{
+ "area_id": "nashik",
+ "change": {
+  "diff_per_kg": 2.1,
+  "direction": "up",
+  "pct": 0.058317,
+  "prev_trade_date": "2026-09-18"
+ },
+ "crop_id": "onion",
+ "currency": "INR",
+ "fetched_at": "2026-09-19T11:40:00+05:30",
+ "markets": null,
+ "price_per_kg": 38.11,
+ "reason": null,
+ "series": [
+  {
+   "date": "2026-08-21",
+   "price_per_kg": 35.01
+  },
+  {
+   "date": "2026-08-22",
+   "price_per_kg": 36.18
+  },
+  {
+   "date": "2026-08-23",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-24",
+   "price_per_kg": 37.63
+  },
+  {
+   "date": "2026-08-25",
+   "price_per_kg": 36.3
+  },
+  {
+   "date": "2026-08-26",
+   "price_per_kg": 36.75
+  },
+  {
+   "date": "2026-08-27",
+   "price_per_kg": 35.75
+  },
+  {
+   "date": "2026-08-28",
+   "price_per_kg": 37.57
+  },
+  {
+   "date": "2026-08-29",
+   "price_per_kg": 37.01
+  },
+  {
+   "date": "2026-08-30",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-31",
+   "price_per_kg": 36.86
+  },
+  {
+   "date": "2026-09-01",
+   "price_per_kg": 36.47
+  },
+  {
+   "date": "2026-09-02",
+   "price_per_kg": 36.68
+  },
+  {
+   "date": "2026-09-03",
+   "price_per_kg": 36.4
+  },
+  {
+   "date": "2026-09-04",
+   "price_per_kg": 38.05
+  },
+  {
+   "date": "2026-09-05",
+   "price_per_kg": 36.21
+  },
+  {
+   "date": "2026-09-06",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-07",
+   "price_per_kg": 36.28
+  },
+  {
+   "date": "2026-09-08",
+   "price_per_kg": 37.46
+  },
+  {
+   "date": "2026-09-09",
+   "price_per_kg": 36.25
+  },
+  {
+   "date": "2026-09-10",
+   "price_per_kg": 35.77
+  },
+  {
+   "date": "2026-09-11",
+   "price_per_kg": 35.82
+  },
+  {
+   "date": "2026-09-12",
+   "price_per_kg": 35.71
+  },
+  {
+   "date": "2026-09-13",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-14",
+   "price_per_kg": 36.8
+  },
+  {
+   "date": "2026-09-15",
+   "price_per_kg": 36.72
+  },
+  {
+   "date": "2026-09-16",
+   "price_per_kg": 37.37
+  },
+  {
+   "date": "2026-09-17",
+   "price_per_kg": 36.82
+  },
+  {
+   "date": "2026-09-18",
+   "price_per_kg": 36.01
+  },
+  {
+   "date": "2026-09-19",
+   "price_per_kg": 38.11
+  }
+ ],
+ "source": {
+  "id": "mock",
+  "name": {
+   "en": "Demo data",
+   "zh-TW": "示範資料"
+  }
+ },
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "stats": {
+  "arrivals": null,
+  "arrivals_ratio": null,
+  "change30_pct": 0.088546,
+  "change7_pct": 0.035598,
+  "high30_per_kg": 38.11,
+  "high7_per_kg": 38.11,
+  "low30_per_kg": 35.01,
+  "low7_per_kg": 36.01,
+  "pos30": 1.0,
+  "volatility": "mid",
+  "volatility_pct": 0.022982,
+  "vs_avg7_pct": 0.030789
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19",
+ "type": "retail"
+}
