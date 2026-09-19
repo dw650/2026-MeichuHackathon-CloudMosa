@@ -1,8 +1,8 @@
-"""Nearby prices (docs/06 §4.1): the highest and lowest price around the area being viewed.
+"""Nearby prices (docs/02 §5.4): the highest and lowest price around the area being viewed.
 
 Nearby areas are the NEARBY_COUNT other areas of the country closest to the viewed area, at
-most NEARBY_MAX_KM away in a straight line. The caller keeps only those with a price on the
-viewed area's latest trade date, so every price compared is from the same day."""
+most NEARBY_MAX_KM away in a straight line. The caller keeps only those whose latest trade
+date is the viewed area's, so every price compared is from the same day."""
 
 from collections.abc import Sequence
 from dataclasses import dataclass

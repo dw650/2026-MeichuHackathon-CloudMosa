@@ -268,7 +268,7 @@ async def _nearby(
     demo: Demo,
     latest: _Latest,
 ) -> dict[str, Any] | None:
-    """Highest and lowest price around the viewed area on its latest trade date (docs/06 §4.1).
+    """Highest and lowest price around the viewed area on its latest trade date (docs/02 §5.4).
 
     Only a fresh price of the viewed area is compared, and only with nearby areas whose latest
     trade date is the same day, so the card needs no date of its own."""
@@ -278,8 +278,6 @@ async def _nearby(
     areas = await catalog_repo.get_areas(session, country.code)
     places = [Place(a.id, a.lat, a.lon) for a in areas]
     close = nearest(Place(area.id, area.lat, area.lon), places)
-    if not close:
-        return None
     rows = await repo.area_daily_rows(
         session,
         country=country.code,

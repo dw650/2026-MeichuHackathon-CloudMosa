@@ -1,4 +1,4 @@
-"""`nearby` on the quote: the highest and lowest price around the viewed area (docs/06 §4.1)."""
+"""`nearby` on the quote: the highest and lowest price around the viewed area (docs/02 §5.4)."""
 
 from collections.abc import AsyncIterator
 from datetime import datetime, timedelta
