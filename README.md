@@ -102,6 +102,11 @@ flowchart TB
 - 開發方式是 TDD；覆蓋率門檻：後端 `services` ＋ `ingest` ≥ 90%，前端 `lib`、`keys`、`focus`、`store` ≥ 90%，`make test` 與 CI 都會檢查。
 - CI（[`.github/workflows/ci.yml`](.github/workflows/ci.yml)）：frontend、backend（PostgreSQL service）、contract、images 四個 job，每一步都呼叫同一個 `make` 目標；Playwright 另外在 [`e2e.yml`](.github/workflows/e2e.yml)（手動觸發或 push 到 `main`）。
 
+## 部署
+
+- `main` 的 CI 通過後，GitHub Actions 自動部署到 <http://203.116.30.131:3001>：[`deploy.yml`](.github/workflows/deploy.yml) 透過 SSH 執行伺服器上的 [`scripts/deploy.sh`](scripts/deploy.sh)。健康檢查失敗時，會自動回到上一個成功的版本。
+- 手動部署或回復：在 GitHub 的 Actions 頁面手動執行 Deploy 並填入 ref，或 SSH 到伺服器執行 `scripts/deploy.sh <ref>`。細節見 [07 §5.2–5.3](docs/07-dev-workflow.md)。
+
 ## 專案結構
 
 ```

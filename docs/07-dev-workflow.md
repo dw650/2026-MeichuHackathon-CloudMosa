@@ -116,20 +116,29 @@
 
 ### 5.2 部署：`scripts/deploy.sh`
 
-Phase 2 開始使用，手動執行：
+在伺服器上的 repo 目錄執行，手動部署與 CD 都用它：
 
-1. SSH 到 VM，拉取指定的 Git ref（預設 `main`）。
-2. `docker compose build && docker compose up -d`（`api` 啟動時自動跑 migration）。
-3. 等 `/api/v1/health` 回傳正常，印出網址；失敗就印出最近的日誌並回傳非 0。
-4. 要回復時：`scripts/deploy.sh <上一個 commit>`。
+1. `git fetch`，把指定的 ref（分支、tag 或 commit，預設 `main`）checkout 成 detached HEAD。伺服器上不要改追蹤的檔案，部署時會被覆蓋。
+2. `docker compose up -d --build --wait`（`api` 啟動時自動跑 migration），等所有服務都健康。
+3. 經過 web（Caddy）打 `/api/v1/health`；成功就把這個 commit 記成上一個成功的版本（`.git/deploy-last-good`）。
+4. 失敗時印出最近的日誌、自動部署上一個成功的版本，並回傳非 0。
+5. 回復就是部署較舊的 commit：`scripts/deploy.sh <commit>`。同一時間只會有一個部署在跑。
 
-- VM 上的 `.env` 手動建立，不進 Git。
-- 還沒有 VM 時，用 tunnel（Cloudflare Tunnel 或 ngrok）把本機的 Caddy 暴露成公開 HTTPS 網址給 Simulator。
+目前的伺服器【查核 2026-09-20】：
+
+- 主辦單位的 VM `203.116.30.131`（Ubuntu 24.04，Docker 已裝）。repo 在 `~/harrykuo1`，是 dw650/harrykuo1 的 clone。同一台 VM 上還有組員的其他專案，部署只動這個目錄。
+- 伺服器用唯讀的 deploy key（`~/.ssh/github_deploy_harrykuo1`）拉程式，只設定在這個 repo 的 `core.sshCommand`。
+- `.env` 手動建立、不進 Git：`WEB_PORT=3001`、`SITE_ADDRESS=:8080`、`DEMO_MODE=false`、`VITE_DEMO=false`，`POSTGRES_PASSWORD` 已換掉。
+- 對外只開 22、3000、3001，80／443 被擋，所以網址是 `http://203.116.30.131:3001`（沒有 HTTPS）。Cloud Phone 需要 HTTPS 時，請主辦單位開 80／443，在 `.env` 加上 `SITE_ADDRESS=<網域>`（沒有網域可以用 `203-116-30-131.sslip.io`）與 `COMPOSE_FILE=compose.yaml:compose.prod.yaml`，Caddy 會自己取得憑證；或改用 Cloudflare Tunnel。
+- 手動部署：`ssh -i ~/.ssh/cloudphone -o IdentitiesOnly=yes ubuntu@203.116.30.131 '~/harrykuo1/scripts/deploy.sh main'`。
+- 還沒有伺服器，或想即時分享開發中的畫面時，用 tunnel（Cloudflare Tunnel 或 ngrok）把本機的 Caddy 暴露成公開 HTTPS 網址。
 
 ### 5.3 CD：`.github/workflows/deploy.yml`（加分項 B1）
 
-- `main` 的 CI 通過後，GitHub Actions 用 repository secret 裡的 SSH 金鑰呼叫同一支 `scripts/deploy.sh`。
-- 部署後檢查 `/health`，失敗就自動部署上一個成功的 commit。
+- dw650/harrykuo1 的 `main` CI 通過後（`workflow_run`），GitHub Actions 用 secret `DEPLOY_SSH_KEY` 連到伺服器，把這個 commit 交給 `scripts/deploy.sh`。也可以在 Actions 頁面手動執行 Deploy 並指定 ref，用來回復。
+- 這把金鑰在伺服器的 `authorized_keys` 設了 `command=` 與 `restrict`：只能執行 `deploy.sh`，送過去的字串只會被當成 ref，格式不對就拒絕。
+- 沒有設定 `DEPLOY_SSH_KEY` 的 repo（例如 origin）會跳過部署，不會失敗。
+- 主機、使用者、主機金鑰與網址都有預設值，可以用 repository variables 覆寫：`DEPLOY_HOST`、`DEPLOY_USER`、`DEPLOY_HOST_KEY`、`DEPLOY_URL`。
 
 ## 6. 常用指令
 
