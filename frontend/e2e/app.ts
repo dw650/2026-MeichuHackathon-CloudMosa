@@ -23,15 +23,32 @@ export interface AppState {
   priceType?: 'wholesale' | 'retail'
   /** false = a brand-new user (first-run setup). */
   setupDone?: boolean
+  /** Demo switch for the location guess (F18); a new user can have it set too. */
+  locate?: 'auto' | 'none' | 'IN:nashik' | 'TW:taipei'
 }
 
 /** Seeds the stores (same format as src/store) so the next navigation starts in that state. */
 export async function seed(page: Page, state: AppState = {}): Promise<void> {
   const country = state.country ?? 'IN'
   const d = DEFAULTS[country]
+  const demo = { fail: false, stale: false, locate: state.locate ?? 'auto' }
+  const fresh = {
+    state: {
+      language: null,
+      country: null,
+      areaId: null,
+      recentAreaIds: [],
+      watchlist: [],
+      priceType: 'wholesale',
+      units: { wholesale: null, retail: null },
+      setupDone: false,
+      demo,
+    },
+    version: 1,
+  }
   const settings =
     state.setupDone === false
-      ? null
+      ? fresh
       : {
           state: {
             language: state.lang ?? 'zh-TW',
@@ -42,7 +59,7 @@ export async function seed(page: Page, state: AppState = {}): Promise<void> {
             priceType: state.priceType ?? 'wholesale',
             units: { wholesale: null, retail: null },
             setupDone: true,
-            demo: { fail: false, stale: false, locate: 'auto' },
+            demo,
           },
           version: 1,
         }
