@@ -91,10 +91,10 @@ async def test_the_viewed_area_itself_can_be_the_highest_or_lowest(
 @pytest.mark.parametrize(
     ("area", "why"),
     [
-        ("nashik", "no other area within 100 km"),
-        ("bengaluru", "Kolar (61 km) is 3 days old"),
+        ("nashik", "no other district within 100 km (Dhule, the nearest, is 108 km away)"),
+        ("delhi", "the whole NCT is one district and no other is within 100 km"),
         ("kolar", "the viewed area itself is 3 days old"),
-        ("kurnool", "the viewed area has no price at all"),
+        ("dakshinakannada", "the viewed area has no price at all"),
     ],
 )
 async def test_nothing_nearby_when_no_area_qualifies(

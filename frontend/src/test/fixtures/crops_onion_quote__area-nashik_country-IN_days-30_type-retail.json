@@ -10,22 +10,7 @@
  "currency": "INR",
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": null,
- "nearby": {
-  "highest": {
-   "area_id": "nashik",
-   "diff_per_kg": 0.0,
-   "distance_km": 0,
-   "is_base": true,
-   "price_per_kg": 64.87
-  },
-  "lowest": {
-   "area_id": "sambhajinagar",
-   "diff_per_kg": -5.3,
-   "distance_km": 112,
-   "is_base": false,
-   "price_per_kg": 59.57
-  }
- },
+ "nearby": null,
  "price_per_kg": 64.87,
  "reason": null,
  "series": [

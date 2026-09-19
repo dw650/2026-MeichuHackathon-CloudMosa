@@ -65,9 +65,7 @@
    "url": "https://demo.example/in/3"
   },
   {
-   "area_ids": [
-    "kurnool"
-   ],
+   "area_ids": [],
    "crop_ids": [
     "chilli"
    ],

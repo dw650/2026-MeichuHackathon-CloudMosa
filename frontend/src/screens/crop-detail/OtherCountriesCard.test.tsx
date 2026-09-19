@@ -29,8 +29,8 @@ describe('crop detail · 比價 tab · 各國參考價', () => {
     await screen.findByText('台北市 價格排第 2／12')
     expect(screen.getByText('各國參考價')).toBeInTheDocument()
     // Converted into the viewer's currency and unit (TWD per kg), never the country's own.
-    expect(within(row('印度')).getByText('4.3')).toBeInTheDocument()
-    expect(within(row('印度')).getByText('批發 · 8 個地區中位數 · 9/19')).toBeInTheDocument()
+    expect(within(row('印度')).getByText('3.3')).toBeInTheDocument()
+    expect(within(row('印度')).getByText('批發 · 61 個地區中位數 · 9/19')).toBeInTheDocument()
     expect(within(row('馬來西亞')).getByText('26.6')).toBeInTheDocument()
     expect(screen.getByText('以 9/19 匯率換算')).toBeInTheDocument()
     expect(
@@ -43,7 +43,7 @@ describe('crop detail · 比價 tab · 各國參考價', () => {
 
   it('shows the same card in English', async () => {
     await renderApp('/crop/onion/compare', { lang: 'en' })
-    await screen.findByText('Nashik district: price rank 7/10')
+    await screen.findByText('Nashik district: price rank 39/63')
     expect(screen.getByText('Other countries')).toBeInTheDocument()
     expect(
       within(row('Malaysia')).getByText('Wholesale · median of 6 areas · 19/9'),

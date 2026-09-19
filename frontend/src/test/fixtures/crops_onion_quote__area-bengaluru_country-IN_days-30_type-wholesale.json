@@ -24,11 +24,11 @@
    "price_per_kg": 50.215
   },
   "lowest": {
-   "area_id": "chikkaballapur",
-   "diff_per_kg": -11.345,
-   "distance_km": 75,
+   "area_id": "tumakuru",
+   "diff_per_kg": -11.385,
+   "distance_km": 89,
    "is_base": false,
-   "price_per_kg": 38.87
+   "price_per_kg": 38.83
   }
  },
  "price_per_kg": 50.215,

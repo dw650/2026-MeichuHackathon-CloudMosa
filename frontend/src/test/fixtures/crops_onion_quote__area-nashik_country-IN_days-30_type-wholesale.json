@@ -15,22 +15,7 @@
   "min_per_kg": 38.71,
   "total": 24
  },
- "nearby": {
-  "highest": {
-   "area_id": "palghar",
-   "diff_per_kg": 10.56,
-   "distance_km": 118,
-   "is_base": false,
-   "price_per_kg": 50.25
-  },
-  "lowest": {
-   "area_id": "sambhajinagar",
-   "diff_per_kg": -2.68,
-   "distance_km": 112,
-   "is_base": false,
-   "price_per_kg": 37.01
-  }
- },
+ "nearby": null,
  "price_per_kg": 39.69,
  "reason": null,
  "series": [

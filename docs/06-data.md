@@ -159,7 +159,7 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
   - 清單：`GET /v1/daily-price-arrival/filters` — 邦（37）、縣（751）、市場（4,171，每個市場帶 `state_id` 與 `district_id`）、品項（605）。只在整理 seed 時用，執行時不下載；裁切過的樣本存成 `filters_excerpt.json`，測試用它檢查對照表。
   - 行情：`GET /v1/prices-and-arrivals/date-wise/specific-commodity?year=&month=&stateId=&commodityId=&includeExcel=false` — 一個邦 × 一個品項 × 一個月，回應是 `markets[] → dates[] → data[]`：`marketName`、`arrivalDate`（dd/mm/yyyy）、`variety`、`minimumPrice`、`maximumPrice`、`modalPrice`（₹／quintal）、`arrivals`（公噸）。當月回到今天為止，之後補報的資料再抓一次同一個月就會補上；歷史可回溯到 2021 年。
   - 沒有資料時 `markets` 是空陣列（不是錯誤）。`columns` 會寫出單位（`Rs./Quintal`、`Metric Tonnes`）；欄位或單位改了就讓那次執行失敗，舊資料不動。
-- **地區與市場**：馬哈拉施特拉邦、卡納塔卡邦與德里（NCT）中，60 天內至少有一個市場回報這 21 種作物的**縣**（64 個），以及這些縣裡有回報的**全部市場**（429 個）。縣的中心座標取自 OpenStreetMap Nominatim（2026-09-20，一次性查詢，每秒 1 個請求），德里用整個 NCT 的中心。Agmarknet 沒有市場座標，所以市場不顯示「距地區中心 N km」。
+- **地區與市場**：馬哈拉施特拉邦、卡納塔卡邦與德里（NCT）中，60 天內至少有一個市場回報這 21 種作物的**縣**（64 個），以及這些縣裡**在這 60 天內回報過的全部市場**（429 個）。Agmarknet 的清單裡還有其他市場，但它們這段期間沒有回報我們選的作物（有的只交易別的品項、有的已經不回報），放進去只會讓每個作物的市場清單多出永遠「無資料」的列，所以不列入；之後重新整理 seed 時，開始回報的市場就會加進來。縣的中心座標取自 OpenStreetMap Nominatim（2026-09-20，一次性查詢，每秒 1 個請求），德里用整個 NCT 的中心。Agmarknet 沒有市場座標，所以市場不顯示「距地區中心 N km」。
 - **對照**（`backend/app/seed/IN.yaml` 的 `source_maps.in_agmarknet`）：作物用**品項代號**（`commodityId`）完全比對，品種不分（同一市場同一天有多個品種時取中位數，§2）；市場用 `"<邦代號>|<市場名稱>"`（市場名稱只在同一個邦內唯一；來源的名稱前後有多餘空白，正規化時併掉；超過 80 字的名稱截到 80 字，和 `source_market` 欄位一樣長）。沒對照到的市場或品項記為 `unmapped`。
 - **沒有零售價**：印度沒有免金鑰的零售來源（消費者事務部的價格監測沒有公開 API），所以開啟真實資料後印度的零售價全部是「—」與原因（`no_data`）；示範資料（`PROVIDERS=mock`）仍然有零售價。
 - **抓法**：照 §1.4 的抓取原則。一次執行送出「邦 × 品項 × 月份」個請求（3 × 21 = 63 個請求／月），依序送出、間隔 1 秒，逾時 60 秒；429、5xx 與網路錯誤最多試 3 次。只留下排定日期的列。這個來源沒有 ETag／Last-Modified，也就沒有 304。

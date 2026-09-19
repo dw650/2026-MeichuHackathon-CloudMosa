@@ -233,9 +233,9 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
   })
 
-  it('is left out when no nearby area has a price today', async () => {
-    const app = await renderApp('/crop/onion/today?area=bengaluru')
-    await screen.findByText('2,785')
+  it('is left out when no other area is within 100 km', async () => {
+    const app = await renderApp('/crop/onion/today?area=delhi')
+    await screen.findByText('4,124')
     expect(screen.queryByText(/附近最/)).not.toBeInTheDocument()
     expect(app.focusedId()).toBe('markets')
     await press(app, 'ArrowDown')
