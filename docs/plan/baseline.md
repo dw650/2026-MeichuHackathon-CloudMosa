@@ -135,7 +135,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - YAML 語法正確，例如用 `npx --yes yaml-lint` 或 Python `yaml.safe_load` 檢查。
     - 不會 push，所以在 GitHub 上實際跑不在這個任務的範圍內。
 
-- [ ] **T06 除錯頁**
+- [x] **T06 除錯頁**
   - 參考：[07](../07-dev-workflow.md) §1.1；[08](../08-platform-constraints.md) §12
   - 內容：
     - `/debug/keys`、`/debug/viewport`：只在 dev 建置或 `VITE_DEMO=true` 時存在。
