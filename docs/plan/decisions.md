@@ -249,3 +249,33 @@
   - 不另外排除輸入框（baseline 不需要打字，08 §4【決定】）；長按不節流，等 08 §12 實機確認 repeat 速度再調。
 - 理由：只攔自己處理的鍵，其他交給瀏覽器；OK 只走 keydown 一條路，不會觸發兩次。
 - 影響：`frontend/src/keys/keyScope.ts` 的 `onKeyDown`。
+
+## 2026-09-19 T23 漲跌顏色改由 React context 決定
+- 情況：03 §3.1 規定漲跌顏色依國家（`upIsPos`），沒寫怎麼實作。T03 的 tokens.css 用祖先元素的 `data-up` 屬性切換 `--up`／`--dn`，這樣元件的 class 只看方向，單元測試無法驗證「印度漲是綠、台灣漲是紅」：jsdom 不代入 `var()`，Vitest 也不載入 CSS 內容（`?raw`、`?inline` 都是空字串）。
+- 決定：`components/rise.ts` 提供 `UpIsPosContext`（預設 `true`＝印度）、`riseColor(direction, upIsPos)` 與 `useRiseColor(direction)`；Pill、Sparkline、MetricGrid 依方向與國家選 `pos`（綠）、`neg`（紅）、`flat`（灰）class，直接用 `--pos`／`--neg`／`--flat`。刪除 tokens.css 的 `--up`／`--dn` 與 `[data-up='neg']`，不留兩套機制。
+- 理由：顏色只在一個地方決定，而且測試能直接驗證；▲▼＝ 符號不受國家影響。
+- 影響：`frontend/src/components/rise.ts`、`Pill`、`Sparkline`、`MetricGrid`、`styles/tokens.css`、`lib/change.ts` 的註解。T21／T22 要在 App 根部加 `<UpIsPosContext value={country.up_is_pos}>`，沒加就一律是印度的顏色；畫面自己的 CSS 需要漲跌色時，用 `useRiseColor(direction)` 取得 class。
+
+## 2026-09-19 T23 元件字級提高到下限
+- 情況：草圖的指標標題 10px、走勢圖刻度 9px、今日價格標籤 10px、分頁兩側的 ◀ ▶ 9px，都低於 240×320 的 11px 下限；tokens 的 `--fs-3` 在 128×160 是 10px，中文的「舊」「你」「批發」會低於中文 11px 的下限。
+- 決定：以上都改用 `--fs-3`（240×320 是 11px）；128×160 的中文把 `--fs-3` 也提高到 11px（原本只有 `--fs-2`）。鍵帽維持 9px（03 §3.2 的例外），一律畫成 `<kbd>`，T24 的字級檢查略過 `kbd` 即可。
+- 理由：CLAUDE.md 的字級下限。放不下的標題用省略號（例如英文「vs 7-day avg」），不縮字。
+- 影響：`TrendChart`、`MetricGrid`、`Tabs`、`KeyCap` 的 CSS 與 `styles/tokens.css`。指標標題被截斷時，T27 可以改短英文字串。
+
+## 2026-09-19 T23 元件的介面與 128×160 的做法
+- 情況：03 §4、§6 列了元件與縮減規則，沒寫元件的介面、兩種尺寸怎麼切換，也有幾個草圖沒處理的情況。
+- 決定：
+  - 元件只負責顯示：文字與數字由畫面格式化後傳入（`TrendChart` 收 `formatValue`）；可選的項目（Card、九宮格的格子、面板的列）收 `focusId`，畫出 `data-focus-id` 與 `tabIndex={-1}`，焦點樣式只看 `:focus`。
+  - 兩種尺寸都用 CSS 切換，不在 JS 判斷：`TrendChart` 同時畫 216×112 與 114×58 兩張 SVG，由 media query 顯示其中一張。128×160 不畫資訊列右格、鍵帽（九宮格與面板的數字鍵帽除外）、分頁箭頭、說明列、迷你走勢、指標格，以及狀態框的圖示與說明。
+  - Card：`price={null}` 顯示「—」並變灰，同時拿掉迷你走勢與漲跌，原因由畫面放在 `meta`；128×160 是單行，漲跌只留符號。比價與市場清單在 128×160 也照 03 §6 顯示價格加符號（草圖只顯示差額）。「舊」「你」在 128×160 仍保留文字，因為不是今天的資料一定要標示（草圖在 128×160 拿掉了「舊」）。
+  - StatusBox 分成 `lines`（兩種尺寸都顯示）與 `details`（只在 240×320）；面板在 128×160 用勾選圖示取代草圖的「 ✓」文字。
+  - TrendChart：7 點以內每天都標 X 軸（沒有價格的日子標 `closedLabel`）並畫點，否則只標第 0、7、14、21 與最後一天；今天沒有價格時，最後一個有價格的點加粗並標數字；參考值較長時加寬右側留白；價格完全沒變時只畫一條參考線。迷你走勢照草圖，跳過沒有價格的日子。
+  - 分類色用 `data-tone`（tokens.css 設定 `--tn`、`--tc`）；分類的順序（鍵盤 1–9）、色調與代表圖示在 `components/categories.ts`。Shell 把 `overlay` 放進一個蓋住 header 與內容、不蓋軟鍵列的圖層，面板填滿該圖層。
+- 理由：畫面只要傳資料，元件不需要知道國家、語言或螢幕尺寸；兩種尺寸的差異集中在 CSS。
+- 影響：`frontend/src/components/`、`frontend/src/icons/`、`frontend/src/styles/tokens.css`。
+
+## 2026-09-19 T23 元件展示頁
+- 情況：T23 要做 `/debug/components` 給 T24 檢查；T06 決定除錯頁只用英文、不走 i18n。
+- 決定：區塊標題照 T06 用英文；元件裡的文字走 i18n、依目前語言顯示，才能檢查中文的字級與長度。進入時焦點在第一張卡片，↑ ↓ 在所有可選項目之間移動，方便看焦點樣式；面板畫在頁內固定高度的框裡，不蓋住整頁。
+- 理由：同一頁就能在兩種語言、兩種尺寸下檢查所有元件。
+- 影響：`frontend/src/screens/debug/DebugComponents.tsx`、`frontend/src/app/debugRoutes.tsx`。T24 檢查這一頁的字級時只略過 `kbd`。

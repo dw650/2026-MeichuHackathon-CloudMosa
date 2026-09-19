@@ -295,7 +295,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：逾時；503 時保留舊資料；錯誤碼轉換。
   - 完成條件：測試通過。
 
-- [ ] **T23 元件**
+- [x] **T23 元件**
   - 參考：[03](../03-ux-ui.md) §4、§6、§8；`ui-mockup/src/icons.js`、`render-core.js`、`phone.css`
   - 內容：
     - Header、InfoBar、SoftKeys、Tabs、Card、CropIcon（搬移所有 SVG）、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton。
