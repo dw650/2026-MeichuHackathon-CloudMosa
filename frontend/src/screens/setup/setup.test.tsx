@@ -98,3 +98,93 @@ describe('location check screen', () => {
     await waitFor(() => expect(app.path()).toBe('/setup/country?depth=1'))
   })
 })
+
+describe('country screen', () => {
+  it('lists each country with its coverage and goes back after a change once set up', async () => {
+    const app = await renderApp('/setup/country', { history: ['/areas?for=home'] })
+    expect(await screen.findByText('台灣')).toBeInTheDocument()
+    expect(screen.getByText('6 個邦、11 個縣')).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: /步/ })).toBeNull()
+    expect(app.focusedId()).toBe('IN')
+    expect(softKeys(app)).toEqual(['', '選取', '返回'])
+    app.press('ArrowDown')
+    app.press('Enter')
+    await waitFor(() => expect(app.path()).toBe('/areas?for=home'))
+    expect(useSettings.getState()).toMatchObject({ country: 'TW', areaId: 'taipei' })
+  })
+
+  it('offers a retry when the countries cannot be loaded', async () => {
+    const error = { error: { code: 'invalid_param', message: 'x', request_id: 't' } }
+    server.use(
+      http.get('*/api/v1/countries', () => HttpResponse.json(error, { status: 400 }), {
+        once: true,
+      }),
+    )
+    const app = await renderApp('/setup/country?depth=1', {
+      country: null,
+      history: ['/setup/lang'],
+    })
+    expect(await screen.findByText('連線失敗')).toBeInTheDocument()
+    expect(app.focusedId()).toBe('retry')
+    expect(app.softKey('center')).toBe('重試')
+    app.press('Enter')
+    expect(await screen.findByText('台灣')).toBeInTheDocument()
+    expect(app.focusedId()).toBe('IN')
+    expect(app.softKey('center')).toBe('選取')
+  })
+})
+
+describe('first-run setup', () => {
+  it('language, then yes to the guessed area: home, with nothing behind it', async () => {
+    const app = await renderApp('/setup/lang', { country: null })
+    app.press('Enter')
+    expect(app.path()).toBe('/setup/locate?depth=1')
+    expect(await screen.findByText('你在 Nashik 縣 附近嗎？')).toBeInTheDocument()
+    app.press('1')
+    await waitFor(() => expect(app.path()).toBe('/'))
+    expect(useSettings.getState()).toMatchObject({
+      language: 'zh-TW',
+      country: 'IN',
+      areaId: 'nashik',
+      setupDone: true,
+      watchlist: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat'],
+    })
+    await app.back()
+    expect(app.path()).toBe('/')
+  })
+
+  it('without a guess: language, country, area nearest first, then home', async () => {
+    noGuess()
+    const app = await renderApp('/setup/lang', { country: null })
+    app.press('Enter')
+    await waitFor(() => expect(app.path()).toBe('/setup/country?depth=1'))
+    expect(await screen.findByText('台灣')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: '第 2 步，共 3 步' })).toBeInTheDocument()
+    app.press('2')
+    expect(app.path()).toBe('/setup/area?depth=2')
+    expect(await screen.findByText('台北市')).toBeInTheDocument()
+    expect(screen.getByRole('heading')).toHaveTextContent('你的地區')
+    expect(screen.getByRole('img', { name: '第 3 步，共 3 步' })).toBeInTheDocument()
+    expect(rowIds().slice(0, 5)).toEqual(['taipei', 'newtaipei', 'taoyuan', 'yilan', 'hualien'])
+    expect(screen.getByText('北部 · 直線 11 km')).toBeInTheDocument()
+    expect(screen.getByText('3 天前')).toBeInTheDocument()
+    expect(screen.getByText('無資料')).toBeInTheDocument()
+    expect(app.focusedId()).toBe('taipei')
+    expect(softKeys(app)).toEqual(['', '選取', '返回'])
+    app.press('2')
+    await waitFor(() => expect(app.path()).toBe('/'))
+    expect(useSettings.getState()).toMatchObject({
+      country: 'TW',
+      areaId: 'newtaipei',
+      setupDone: true,
+      watchlist: ['cabbage', 'bokchoy', 'banana', 'sweetpotato', 'scallion', 'cauliflower'],
+    })
+    await app.back()
+    expect(app.path()).toBe('/')
+  })
+
+  it('asks for a country before the area', async () => {
+    const app = await renderApp('/setup/area?depth=1', { country: null, history: ['/setup/lang'] })
+    await waitFor(() => expect(app.path()).toBe('/setup/country?depth=1'))
+  })
+})
