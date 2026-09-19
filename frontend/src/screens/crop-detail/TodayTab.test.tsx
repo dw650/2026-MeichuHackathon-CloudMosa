@@ -223,6 +223,11 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(high.getByText('1')).toBeInTheDocument()
     expect(within(ownRow('附近最低')).getByText('Nashik')).toBeInTheDocument()
     expect(screen.queryByText('Ahmednagar')).not.toBeInTheDocument()
+    // The own row comes first, so the last row is the one that takes the focus.
+    expect(
+      ownRow('附近最低').compareDocumentPosition(nearbyCard('nearby-high')) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
     // The only thing to select: OK now opens Pune instead of 比價.
     expect(app.focusedId()).toBe('nearby-high')
     expect(app.softKey('center')).toBe('查看')
@@ -253,7 +258,7 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(own.getByText('You')).toBeInTheDocument()
     const low = within(nearbyCard('nearby-low'))
     expect(low.getByText('Taoyuan')).toBeInTheDocument()
-    expect(low.getByText('Lowest nearby · 27 km (straight)')).toBeInTheDocument()
+    expect(low.getByText('Lowest · 27 km (straight)')).toBeInTheDocument()
     expect(low.getByText('36.9')).toBeInTheDocument()
     expect(low.getByText('−1.4')).toBeInTheDocument()
     await press(app, 'ArrowDown')

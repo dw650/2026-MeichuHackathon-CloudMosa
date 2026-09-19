@@ -145,7 +145,9 @@
       "marketsRange": "最高 {{high}}・最低 {{low}}",
       "nearby": {
         "highest": "附近最高",
-        "lowest": "附近最低"
+        "lowest": "附近最低",
+        "highestAt": "附近最高 · {{distance}}",
+        "lowestAt": "附近最低 · {{distance}}"
       }
     },
     "stats": {
