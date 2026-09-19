@@ -162,7 +162,7 @@ class PriceCatcherProvider:
             return
         if got.status == 304:
             logger.info("my_pricecatcher: %s not modified", name)
-            self.stats.files[url] = dict(self.files[url])
+            self.stats.files[url] = dict(self.files.get(url, {}))
             return
         self.stats.dropped.update(got.dropped)
         if got.validators:
@@ -185,7 +185,7 @@ class PriceCatcherProvider:
                 got.validators[key] = response.headers[header]
         lines = response.aiter_lines()
         head = await anext(lines, "")
-        if head.strip().lstrip("﻿").split(",") != COLUMNS:
+        if head.strip().lstrip("\ufeff").split(",") != COLUMNS:
             raise UpstreamError(f"PriceCatcher file has unexpected columns: {head[:80]!r}")
         async for line in lines:
             if not line:

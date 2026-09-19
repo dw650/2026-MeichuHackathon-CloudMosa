@@ -223,6 +223,14 @@ async def test_unexpected_columns_fail_the_run() -> None:
         await provider.fetch(TODAY)
 
 
+async def test_a_byte_order_mark_and_blank_lines_are_fine() -> None:
+    body = "\ufeff" + HEADER + "\n2026-09-17,3181,114,6.0\n\n"
+    provider = make(FakeStorage({"2026-09": body}), plan=[TODAY])
+    rows = await provider.fetch(TODAY)
+    assert [r["price"] for r in rows] == ["6.0"]
+    assert provider.stats.dropped == {}
+
+
 async def test_unreadable_lines_are_counted() -> None:
     server = FakeStorage({"2026-09": HEADER + "2026-09-17,3181,114\n2026-09-17,3181,114,9.0\n"})
     provider = make(server, plan=[TODAY])
