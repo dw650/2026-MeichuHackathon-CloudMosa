@@ -5,7 +5,7 @@
 ## 先讀
 
 - 任何工作開始前：`docs/00-overview.md`（決定表、文件地圖、名詞表）。
-- 自動執行 baseline：`docs/plan/baseline.md`，從第一個沒打勾的任務繼續，並照該檔的「每個任務的做法」與「自己決定還是停下來」。
+- 自動執行 baseline：`docs/plan/baseline.md`，從第一個沒打勾的任務繼續，並照該檔的「每個任務的做法」與「自己決定還是停下來」。照該檔的「平行開發」一節：主 session 自己做後端與整合，前端交給背景子 agent 在 worktree 做。
 - 其他文件依任務的「參考」欄位讀需要的段落，不要整份重讀。
 
 **以誰為準**：
@@ -25,7 +25,7 @@
 
 | 指令 | 用途 |
 |---|---|
-| `make up` / `make down` | 起／停所有服務；網址是 `http://localhost:8080` |
+| `make up` / `make down` | 起／停所有服務；網址是 `http://localhost:<WEB_PORT>`（預設 8080） |
 | `make dev` | 開發模式（Vite HMR、api `--reload`） |
 | `make test` | 前端 Vitest ＋ 後端 pytest |
 | `make lint` | ESLint、tsc、ruff、mypy |
@@ -73,6 +73,7 @@
   - 每個任務一個本地分支 `feat/tNN-<name>`；小步 commit（英文 Conventional Commits）。
   - 合併前 `make lint` 與 `make test` 都要通過；用 `git merge --no-ff` 合併進本地 `main`。
   - **不 push、不開 PR、不 force push、不改寫 `main` 的歷史**。
+  - 前端子 agent 只 commit 在 worktree 的 `track/frontend`，不碰 `main`。
   - `.env`、API 金鑰、`*.mmdb` 不進 Git。
 - **什麼時候停下來問人**：需要金鑰或帳號、文件互相矛盾而且牽涉【決定】、同一個問題試了 3 種做法都失敗、要刪除不是自己建立的東西。停之前先在 `docs/plan/progress.md` 寫清楚。
 - **行為和 docs 不一致時**：先問人；確認後同步更新 docs，包括 `docs/00-overview.md` 的決定表。
