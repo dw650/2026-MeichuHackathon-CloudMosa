@@ -71,18 +71,54 @@
   --c-blue: #3d6fd9;
   --c-purple: #7a5ae0;
 
-  /* Rise/fall colors follow the country (data-up on the app root): India green-up, Taiwan red-up. */
-  --up: var(--pos);
-  --up-bg: var(--pos-bg);
-  --dn: var(--neg);
-  --dn-bg: var(--neg-bg);
+  /* Rise/fall colours follow the country (India green-up, Taiwan red-up). Components pick
+     --pos or --neg from the direction and UpIsPosContext (components/rise.ts). */
 }
 
-[data-up='neg'] {
-  --up: var(--neg);
-  --up-bg: var(--neg-bg);
-  --dn: var(--pos);
-  --dn-bg: var(--pos-bg);
+/* Category tones: data-tone sets the tile colour (--tn) and the line colour (--tc) below it. */
+[data-tone='green'] {
+  --tn: var(--t-green);
+  --tc: var(--c-green);
+}
+
+[data-tone='orange'] {
+  --tn: var(--t-orange);
+  --tc: var(--c-orange);
+}
+
+[data-tone='amber'] {
+  --tn: var(--t-amber);
+  --tc: var(--c-amber);
+}
+
+[data-tone='red'] {
+  --tn: var(--t-red);
+  --tc: var(--c-red);
+}
+
+[data-tone='olive'] {
+  --tn: var(--t-olive);
+  --tc: var(--c-olive);
+}
+
+[data-tone='yellow'] {
+  --tn: var(--t-yellow);
+  --tc: var(--c-yellow);
+}
+
+[data-tone='slate'] {
+  --tn: var(--t-slate);
+  --tc: var(--c-slate);
+}
+
+[data-tone='blue'] {
+  --tn: var(--t-blue);
+  --tc: var(--c-blue);
+}
+
+[data-tone='purple'] {
+  --tn: var(--t-purple);
+  --tc: var(--c-purple);
 }
 
 /* A system status bar may take some height on the device (docs/03 §2): compress the header. */
@@ -115,9 +151,10 @@
     --fs-kpi-v: 12px;
   }
 
-  /* Chinese needs 11px to stay legible (docs/03 §3.2). */
+  /* Chinese needs 11px to stay legible (docs/03 §3.2), in small tags (舊, 你, 批發) too. */
   :root:lang(zh) {
     --fs-2: 11px;
+    --fs-3: 11px;
   }
 }
 

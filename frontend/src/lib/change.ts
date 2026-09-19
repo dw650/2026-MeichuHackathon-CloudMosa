@@ -1,5 +1,5 @@
 // Rise and fall (docs/06 §3.4). Only the direction is exposed: its colour depends on the
-// country (India green-up, Taiwan red-up) and is chosen in CSS through `data-up`.
+// country (India green-up, Taiwan red-up) and is chosen by components/rise.ts.
 
 import { MINUS, MISSING, isFiniteNumber, roundedSign } from './format'
 import { toUnit, type UnitSpec } from './units'
