@@ -68,6 +68,8 @@ addopts = "-p no:cacheprovider"
 
 [tool.coverage.run]
 source = ["app"]
+# SQLAlchemy's asyncio layer switches greenlets; without this, lines after `await` look unrun.
+concurrency = ["greenlet", "thread"]
 omit = ["app/db/migrations/*"]
 
 [tool.coverage.report]

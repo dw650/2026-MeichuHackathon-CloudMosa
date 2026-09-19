@@ -64,6 +64,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/crops/{crop}/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare one crop across the areas of a country
+         * @description Each area's latest price, market count, straight-line distance from the area being viewed, difference and rank (highest price first, ties share a rank, no data is not ranked). Sorting for display is left to the client.
+         */
+        get: operations["compare"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crops/{crop}/markets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Wholesale markets of an area
+         * @description Each market's latest price, distance from the area centre and its difference from the area median. Retail prices have no market breakdown.
+         */
+        get: operations["markets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crops/{crop}/markets/{market}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One wholesale market
+         * @description Representative price (India: modal, Taiwan: average), change, the day's low–high range and the data source.
+         */
+        get: operations["market"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crops/{crop}/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Quote of one crop in one area
+         * @description Area price (wholesale: median of the markets that reported on the latest trade date), market count and range, change, indicators and a daily series with null for days without data. Without a price, `reason` says why.
+         */
+        get: operations["quote"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -76,6 +156,26 @@ export interface paths {
          * @description Database status and the latest successful fetch of every data source. Returns 503 `db_unavailable` when the database is down.
          */
         get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Prices of many crops in one area
+         * @description For the home screen and crop lists: latest area price, change vs the previous trading day, freshness and a 7-day sparkline for each crop. `crops` is a comma-separated list (default: every crop); unknown crop ids are skipped.
+         */
+        get: operations["prices"];
         put?: never;
         post?: never;
         delete?: never;
@@ -115,6 +215,74 @@ export interface components {
              * Format: date
              */
             today: string;
+        };
+        /**
+         * ChangeOut
+         * @description Latest vs the previous trading day with data; |pct| < 0.05% is flat.
+         */
+        ChangeOut: {
+            /** Diff Per Kg */
+            diff_per_kg: number;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "up" | "down" | "flat";
+            /** Pct */
+            pct: number;
+            /** Prev Trade Date */
+            prev_trade_date: string | null;
+        };
+        /** CompareOut */
+        CompareOut: {
+            /** Area Id */
+            area_id: string;
+            /** Crop Id */
+            crop_id: string;
+            /** Currency */
+            currency: string;
+            rank: components["schemas"]["RankOut"];
+            /** Rows */
+            rows: components["schemas"]["CompareRowOut"][];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "wholesale" | "retail";
+        };
+        /** CompareRowOut */
+        CompareRowOut: {
+            /** Area Id */
+            area_id: string;
+            /**
+             * Diff Per Kg
+             * @description This area minus the area being viewed.
+             */
+            diff_per_kg: number | null;
+            /**
+             * Distance Km
+             * @description Straight line between area centres (not road).
+             */
+            distance_km: number;
+            /** Is Base */
+            is_base: boolean;
+            /** N Markets */
+            n_markets: number;
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /**
+             * Rank
+             * @description By price, highest first; equal prices share a rank.
+             */
+            rank: number | null;
+            staleness: components["schemas"]["StalenessOut"];
+            /** Trade Date */
+            trade_date: string | null;
         };
         /** CountriesOut */
         CountriesOut: {
@@ -210,6 +378,198 @@ export interface components {
             /** Zh-Tw */
             "zh-TW": string;
         };
+        /** MarketOut */
+        MarketOut: {
+            /** Area Id */
+            area_id: string;
+            change: components["schemas"]["ChangeOut"] | null;
+            /** Crop Id */
+            crop_id: string;
+            /** Currency */
+            currency: string;
+            /** Fetched At */
+            fetched_at: string | null;
+            /** High Per Kg */
+            high_per_kg: number | null;
+            /** Km From Center */
+            km_from_center: number | null;
+            /** Low Per Kg */
+            low_per_kg: number | null;
+            /** Market Id */
+            market_id: string;
+            name: components["schemas"]["I18nText"];
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /** Reason */
+            reason: "no_data" | null;
+            source: components["schemas"]["SourceOut"] | null;
+            staleness: components["schemas"]["StalenessOut"];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /** Trade Date */
+            trade_date: string | null;
+        };
+        /** MarketRowOut */
+        MarketRowOut: {
+            /**
+             * Diff Per Kg
+             * @description Market price minus the area median.
+             */
+            diff_per_kg: number | null;
+            /** Km From Center */
+            km_from_center: number | null;
+            /** Market Id */
+            market_id: string;
+            name: components["schemas"]["I18nText"];
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            staleness: components["schemas"]["StalenessOut"];
+            /** Trade Date */
+            trade_date: string | null;
+        };
+        /** MarketsOut */
+        MarketsOut: {
+            /** Area Id */
+            area_id: string;
+            /** Crop Id */
+            crop_id: string;
+            /** Currency */
+            currency: string;
+            /** Median Per Kg */
+            median_per_kg: number | null;
+            /** Rows */
+            rows: components["schemas"]["MarketRowOut"][];
+            staleness: components["schemas"]["StalenessOut"];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /** Trade Date */
+            trade_date: string | null;
+        };
+        /** MarketsSummaryOut */
+        MarketsSummaryOut: {
+            /**
+             * Count
+             * @description Markets with a price on the latest trade date.
+             */
+            count: number;
+            /** Max Per Kg */
+            max_per_kg: number | null;
+            /** Min Per Kg */
+            min_per_kg: number | null;
+            /**
+             * Total
+             * @description All markets of the area.
+             */
+            total: number;
+        };
+        /** PriceItemOut */
+        PriceItemOut: {
+            change: components["schemas"]["ChangeOut"] | null;
+            /** Crop Id */
+            crop_id: string;
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /**
+             * Reason
+             * @description Why there is no price (null when there is one).
+             */
+            reason: ("no_retail_area" | "no_retail_crop" | "no_data") | null;
+            /**
+             * Spark
+             * @description Last 7 calendar days; null = no data.
+             */
+            spark: (number | null)[];
+            staleness: components["schemas"]["StalenessOut"];
+            /** Trade Date */
+            trade_date: string | null;
+        };
+        /** PricesOut */
+        PricesOut: {
+            /** Area Id */
+            area_id: string;
+            /** Country */
+            country: string;
+            /** Currency */
+            currency: string;
+            /** Fetched At */
+            fetched_at: string | null;
+            /** Items */
+            items: components["schemas"]["PriceItemOut"][];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "wholesale" | "retail";
+        };
+        /** QuoteOut */
+        QuoteOut: {
+            /** Area Id */
+            area_id: string;
+            change: components["schemas"]["ChangeOut"] | null;
+            /** Crop Id */
+            crop_id: string;
+            /** Currency */
+            currency: string;
+            /** Fetched At */
+            fetched_at: string | null;
+            /** @description Wholesale only. */
+            markets: components["schemas"]["MarketsSummaryOut"] | null;
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /** Reason */
+            reason: ("no_retail_area" | "no_retail_crop" | "no_data") | null;
+            /** Series */
+            series: components["schemas"]["SeriesPointOut"][];
+            source: components["schemas"]["SourceOut"] | null;
+            staleness: components["schemas"]["StalenessOut"];
+            stats: components["schemas"]["StatsOut"];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /** Trade Date */
+            trade_date: string | null;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "wholesale" | "retail";
+        };
+        /** RankOut */
+        RankOut: {
+            /** Position */
+            position: number | null;
+            /** Total */
+            total: number;
+        };
+        /** SeriesPointOut */
+        SeriesPointOut: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Price Per Kg */
+            price_per_kg: number | null;
+        };
+        /** SourceOut */
+        SourceOut: {
+            /** Id */
+            id: string;
+            name: components["schemas"]["I18nText"];
+        };
         /** SourceStatusOut */
         SourceStatusOut: {
             /**
@@ -231,6 +591,36 @@ export interface components {
             days: number | null;
             /** State */
             state: string;
+        };
+        /** StatsOut */
+        StatsOut: {
+            /** Arrivals */
+            arrivals: ("low" | "normal" | "high") | null;
+            /** Arrivals Ratio */
+            arrivals_ratio: number | null;
+            /** Change7 Pct */
+            change7_pct: number | null;
+            /** Change30 Pct */
+            change30_pct: number | null;
+            /** High7 Per Kg */
+            high7_per_kg: number | null;
+            /** High30 Per Kg */
+            high30_per_kg: number | null;
+            /** Low7 Per Kg */
+            low7_per_kg: number | null;
+            /** Low30 Per Kg */
+            low30_per_kg: number | null;
+            /**
+             * Pos30
+             * @description 0 = 30-day low, 1 = 30-day high.
+             */
+            pos30: number | null;
+            /** Volatility */
+            volatility: ("low" | "mid" | "high") | null;
+            /** Volatility Pct */
+            volatility_pct: number | null;
+            /** Vs Avg7 Pct */
+            vs_avg7_pct: number | null;
         };
         /** UnitOptionOut */
         UnitOptionOut: {
@@ -276,6 +666,9 @@ export interface components {
 }
 export type SchemaAreaOut = components['schemas']['AreaOut'];
 export type SchemaAreasOut = components['schemas']['AreasOut'];
+export type SchemaChangeOut = components['schemas']['ChangeOut'];
+export type SchemaCompareOut = components['schemas']['CompareOut'];
+export type SchemaCompareRowOut = components['schemas']['CompareRowOut'];
 export type SchemaCountriesOut = components['schemas']['CountriesOut'];
 export type SchemaCountryOut = components['schemas']['CountryOut'];
 export type SchemaCropOut = components['schemas']['CropOut'];
@@ -285,8 +678,19 @@ export type SchemaErrorOut = components['schemas']['ErrorOut'];
 export type SchemaHealthOut = components['schemas']['HealthOut'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaI18nText = components['schemas']['I18nText'];
+export type SchemaMarketOut = components['schemas']['MarketOut'];
+export type SchemaMarketRowOut = components['schemas']['MarketRowOut'];
+export type SchemaMarketsOut = components['schemas']['MarketsOut'];
+export type SchemaMarketsSummaryOut = components['schemas']['MarketsSummaryOut'];
+export type SchemaPriceItemOut = components['schemas']['PriceItemOut'];
+export type SchemaPricesOut = components['schemas']['PricesOut'];
+export type SchemaQuoteOut = components['schemas']['QuoteOut'];
+export type SchemaRankOut = components['schemas']['RankOut'];
+export type SchemaSeriesPointOut = components['schemas']['SeriesPointOut'];
+export type SchemaSourceOut = components['schemas']['SourceOut'];
 export type SchemaSourceStatusOut = components['schemas']['SourceStatusOut'];
 export type SchemaStalenessOut = components['schemas']['StalenessOut'];
+export type SchemaStatsOut = components['schemas']['StatsOut'];
 export type SchemaUnitOptionOut = components['schemas']['UnitOptionOut'];
 export type SchemaUnitSetOut = components['schemas']['UnitSetOut'];
 export type SchemaUnitsOut = components['schemas']['UnitsOut'];
@@ -576,6 +980,439 @@ export interface operations {
             };
         };
     };
+    compare: {
+        parameters: {
+            query: {
+                /** @description Area id */
+                area: string;
+                /** @description Country code */
+                country: string;
+                /** @description wholesale or retail */
+                type?: "wholesale" | "retail";
+            };
+            header?: never;
+            path: {
+                /** @description Crop id */
+                crop: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "crop_id": "onion",
+                     *       "currency": "INR",
+                     *       "rank": {
+                     *         "position": 3,
+                     *         "total": 10
+                     *       },
+                     *       "rows": [
+                     *         {
+                     *           "area_id": "delhi",
+                     *           "diff_per_kg": 5.9,
+                     *           "distance_km": 1017,
+                     *           "is_base": false,
+                     *           "n_markets": 2,
+                     *           "price_per_kg": 29.4,
+                     *           "rank": 1,
+                     *           "staleness": {
+                     *             "days": 0,
+                     *             "state": "today"
+                     *           },
+                     *           "trade_date": "2026-09-19"
+                     *         }
+                     *       ],
+                     *       "today": "2026-09-19",
+                     *       "type": "wholesale"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["CompareOut"];
+                };
+            };
+            /** @description type: Input should be 'wholesale' or 'retail' */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "type: Input should be 'wholesale' or 'retail'",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Area 'xyz' not found in IN */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "area_not_found",
+                     *         "message": "Area 'xyz' not found in IN",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    markets: {
+        parameters: {
+            query: {
+                /** @description Area id */
+                area: string;
+                /** @description Country code */
+                country: string;
+            };
+            header?: never;
+            path: {
+                /** @description Crop id */
+                crop: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "crop_id": "onion",
+                     *       "currency": "INR",
+                     *       "median_per_kg": 23.5,
+                     *       "rows": [
+                     *         {
+                     *           "diff_per_kg": 1.4,
+                     *           "km_from_center": 88,
+                     *           "market_id": "satana",
+                     *           "name": {
+                     *             "en": "Satana",
+                     *             "zh-TW": "Satana"
+                     *           },
+                     *           "price_per_kg": 24.9,
+                     *           "staleness": {
+                     *             "days": 0,
+                     *             "state": "today"
+                     *           },
+                     *           "trade_date": "2026-09-19"
+                     *         }
+                     *       ],
+                     *       "staleness": {
+                     *         "days": 0,
+                     *         "state": "today"
+                     *       },
+                     *       "today": "2026-09-19",
+                     *       "trade_date": "2026-09-19"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["MarketsOut"];
+                };
+            };
+            /** @description type: Input should be 'wholesale' or 'retail' */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "type: Input should be 'wholesale' or 'retail'",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Area 'xyz' not found in IN */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "area_not_found",
+                     *         "message": "Area 'xyz' not found in IN",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    market: {
+        parameters: {
+            query: {
+                /** @description Country code */
+                country: string;
+            };
+            header?: never;
+            path: {
+                /** @description Crop id */
+                crop: string;
+                market: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "change": {
+                     *         "diff_per_kg": 0.95,
+                     *         "direction": "up",
+                     *         "pct": 0.042,
+                     *         "prev_trade_date": "2026-09-18"
+                     *       },
+                     *       "crop_id": "onion",
+                     *       "currency": "INR",
+                     *       "fetched_at": "2026-09-19T11:40:00+05:30",
+                     *       "high_per_kg": 26,
+                     *       "km_from_center": 32,
+                     *       "low_per_kg": 18.9,
+                     *       "market_id": "lasalgaon",
+                     *       "name": {
+                     *         "en": "Lasalgaon",
+                     *         "zh-TW": "Lasalgaon"
+                     *       },
+                     *       "price_per_kg": 23.4,
+                     *       "source": {
+                     *         "id": "mock",
+                     *         "name": {
+                     *           "en": "Demo data",
+                     *           "zh-TW": "示範資料"
+                     *         }
+                     *       },
+                     *       "staleness": {
+                     *         "days": 0,
+                     *         "state": "today"
+                     *       },
+                     *       "today": "2026-09-19",
+                     *       "trade_date": "2026-09-19"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["MarketOut"];
+                };
+            };
+            /** @description Market 'xyz' not found in IN */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "market_not_found",
+                     *         "message": "Market 'xyz' not found in IN",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    quote: {
+        parameters: {
+            query: {
+                /** @description Area id */
+                area: string;
+                /** @description Country code */
+                country: string;
+                /** @description Series length */
+                days?: number;
+                /** @description wholesale or retail */
+                type?: "wholesale" | "retail";
+            };
+            header?: never;
+            path: {
+                /** @description Crop id */
+                crop: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "change": {
+                     *         "diff_per_kg": 0.95,
+                     *         "direction": "up",
+                     *         "pct": 0.042,
+                     *         "prev_trade_date": "2026-09-18"
+                     *       },
+                     *       "crop_id": "onion",
+                     *       "currency": "INR",
+                     *       "fetched_at": "2026-09-19T11:40:00+05:30",
+                     *       "markets": {
+                     *         "count": 7,
+                     *         "max_per_kg": 24.9,
+                     *         "min_per_kg": 22.8,
+                     *         "total": 10
+                     *       },
+                     *       "price_per_kg": 23.5,
+                     *       "series": [
+                     *         {
+                     *           "date": "2026-08-21",
+                     *           "price_per_kg": 21.2
+                     *         },
+                     *         {
+                     *           "date": "2026-08-23"
+                     *         }
+                     *       ],
+                     *       "source": {
+                     *         "id": "mock",
+                     *         "name": {
+                     *           "en": "Demo data",
+                     *           "zh-TW": "示範資料"
+                     *         }
+                     *       },
+                     *       "staleness": {
+                     *         "days": 0,
+                     *         "state": "today"
+                     *       },
+                     *       "stats": {
+                     *         "arrivals": "high",
+                     *         "arrivals_ratio": 1.18,
+                     *         "change30_pct": 0.11,
+                     *         "change7_pct": 0.052,
+                     *         "high30_per_kg": 24.1,
+                     *         "high7_per_kg": 23.5,
+                     *         "low30_per_kg": 19.8,
+                     *         "low7_per_kg": 21.9,
+                     *         "pos30": 0.82,
+                     *         "volatility": "mid",
+                     *         "volatility_pct": 0.028,
+                     *         "vs_avg7_pct": 0.031
+                     *       },
+                     *       "today": "2026-09-19",
+                     *       "trade_date": "2026-09-19",
+                     *       "type": "wholesale"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["QuoteOut"];
+                };
+            };
+            /** @description type: Input should be 'wholesale' or 'retail' */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "type: Input should be 'wholesale' or 'retail'",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Crop 'durian' not found in IN */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "crop_not_found",
+                     *         "message": "Crop 'durian' not found in IN",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;
@@ -605,6 +1442,131 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["HealthOut"];
+                };
+            };
+        };
+    };
+    prices: {
+        parameters: {
+            query: {
+                /** @description Area id */
+                area: string;
+                /** @description Country code */
+                country: string;
+                crops?: string | null;
+                /** @description wholesale or retail */
+                type?: "wholesale" | "retail";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "country": "IN",
+                     *       "currency": "INR",
+                     *       "fetched_at": "2026-09-19T11:40:00+05:30",
+                     *       "items": [
+                     *         {
+                     *           "change": {
+                     *             "diff_per_kg": 0.95,
+                     *             "direction": "up",
+                     *             "pct": 0.042,
+                     *             "prev_trade_date": "2026-09-18"
+                     *           },
+                     *           "crop_id": "onion",
+                     *           "price_per_kg": 23.5,
+                     *           "spark": [
+                     *             null,
+                     *             22.1,
+                     *             22.3,
+                     *             22,
+                     *             22.4,
+                     *             22.55,
+                     *             23.5
+                     *           ],
+                     *           "staleness": {
+                     *             "days": 0,
+                     *             "state": "today"
+                     *           },
+                     *           "trade_date": "2026-09-19"
+                     *         },
+                     *         {
+                     *           "crop_id": "chilli",
+                     *           "reason": "no_retail_crop",
+                     *           "spark": [
+                     *             null,
+                     *             null,
+                     *             null,
+                     *             null,
+                     *             null,
+                     *             null,
+                     *             null
+                     *           ],
+                     *           "staleness": {
+                     *             "state": "none"
+                     *           }
+                     *         }
+                     *       ],
+                     *       "today": "2026-09-19",
+                     *       "type": "wholesale"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["PricesOut"];
+                };
+            };
+            /** @description type: Input should be 'wholesale' or 'retail' */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "type: Input should be 'wholesale' or 'retail'",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Area 'xyz' not found in IN */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "area_not_found",
+                     *         "message": "Area 'xyz' not found in IN",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
