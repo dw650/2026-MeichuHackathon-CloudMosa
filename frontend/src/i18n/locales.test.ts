@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import { i18n } from './index'
 import en from './locales/en.json'
+import hi from './locales/hi.json'
+import ms from './locales/ms.json'
 import zhTW from './locales/zh-TW.json'
 
 /** Every leaf as [path, value]; array items get their index (`date.weekdays.0`). */
@@ -19,10 +21,14 @@ const placeholders = (text: unknown) =>
 
 const zhLeaves = new Map(leaves(zhTW))
 const enLeaves = new Map(leaves(en))
-const allLeaves = [...zhLeaves, ...enLeaves]
+/** Machine translations pending native review; they may miss keys added to zh-TW and en. */
+const partial = { ms: new Map(leaves(ms)), hi: new Map(leaves(hi)) }
+const allLeaves = [...zhLeaves, ...enLeaves, ...partial.ms, ...partial.hi]
 
 const zhT = i18n.getFixedT('zh-TW')
 const enT = i18n.getFixedT('en')
+const msT = i18n.getFixedT('ms')
+const hiT = i18n.getFixedT('hi')
 
 describe('locale files', () => {
   it('have exactly the same keys', () => {
@@ -47,7 +53,7 @@ describe('locale files', () => {
     }
   })
 
-  it('are both loaded, so every key resolves in both languages', () => {
+  it('are all loaded, so every key resolves in every language', () => {
     const lookUp = (t: typeof zhT, key: string) => (t as unknown as (k: string) => string)(key)
     for (const [path, value] of zhLeaves) {
       if (placeholders(value).length === 0) expect(lookUp(zhT, path)).toBe(value)
@@ -55,6 +61,48 @@ describe('locale files', () => {
     for (const [path, value] of enLeaves) {
       if (placeholders(value).length === 0) expect(lookUp(enT, path)).toBe(value)
     }
+    for (const [t, tree] of [
+      [msT, partial.ms],
+      [hiT, partial.hi],
+    ] as const) {
+      for (const [path, value] of tree) {
+        if (placeholders(value).length === 0) expect(lookUp(t, path)).toBe(value)
+      }
+    }
+  })
+})
+
+// Other work adds keys to zh-TW and en first; ms and hi catch up later, so a missing key is
+// reported (and shown in English at runtime) instead of failing the build.
+describe.each(Object.entries(partial))('%s locale file', (language, tree) => {
+  it('reports its coverage of the English keys', () => {
+    const missing = [...enLeaves.keys()].filter((path) => !tree.has(path))
+    const covered = enLeaves.size - missing.length
+    const percent = ((covered / enLeaves.size) * 100).toFixed(1)
+    console.info(
+      `${language}.json: ${covered}/${enLeaves.size} keys (${percent}%)` +
+        (missing.length ? `; English is shown for: ${missing.join(', ')}` : ''),
+    )
+    expect(covered).toBeGreaterThan(0)
+  })
+
+  it('has no key that English does not have', () => {
+    expect([...tree.keys()].filter((path) => !enLeaves.has(path))).toEqual([])
+  })
+
+  it('uses the same placeholders as English', () => {
+    for (const [path, value] of tree) {
+      expect(placeholders(value), path).toEqual(placeholders(enLeaves.get(path)))
+    }
+  })
+})
+
+describe('fallback to English', () => {
+  it('shows English for a key that Malay or Hindi does not have yet', () => {
+    i18n.addResource('en', 'translation', 'test.onlyInEnglish', 'Only English')
+    const lookUp = (t: typeof msT) => (t as unknown as (k: string) => string)('test.onlyInEnglish')
+    expect(lookUp(msT)).toBe('Only English')
+    expect(lookUp(hiT)).toBe('Only English')
   })
 })
 
@@ -85,6 +133,36 @@ describe('interpolation', () => {
     )
     expect(enT('setup.step', { step: 1, total: 3 })).toBe('Step 1 of 3')
     expect(enT('common.page', { page: 1, total: 2 })).toBe('Page 1/2')
+  })
+
+  it('fills variables in Malay', () => {
+    expect(msT('home.title', { area: 'Klang' })).toBe('Harga Klang')
+    expect(msT('detail.compare.rank', { area: 'Klang', rank: 2, total: 11 })).toBe(
+      'Klang: kedudukan harga 2/11',
+    )
+    expect(msT('setup.step', { step: 1, total: 3 })).toBe('Langkah 1 daripada 3')
+    expect(msT('common.page', { page: 1, total: 2 })).toBe('Halaman 1/2')
+  })
+
+  it('fills variables in Hindi', () => {
+    expect(hiT('home.title', { area: 'Nashik district' })).toBe('Nashik district के भाव')
+    expect(hiT('detail.compare.rank', { area: 'Nashik', rank: 2, total: 11 })).toBe(
+      'Nashik: भाव में 2/11 स्थान',
+    )
+    expect(hiT('states.lastPrice', { when: '3 दिन पहले', price: '2,340' })).toBe(
+      'पिछला (3 दिन पहले): 2,340',
+    )
+    expect(hiT('setup.step', { step: 1, total: 3 })).toBe('चरण 1/3')
+  })
+
+  it('follows the plural rules of Malay and Hindi', () => {
+    // Malay has no singular form; Hindi uses it for 0 and 1.
+    expect(msT('detail.today.markets', { count: 1 })).toBe('1 pasar di kawasan ini')
+    expect(msT('detail.compare.marketCount', { count: 3 })).toBe('3 pasar')
+    expect(hiT('detail.today.markets', { count: 1 })).toBe('इस क्षेत्र में 1 मंडी')
+    expect(hiT('detail.today.markets', { count: 7 })).toBe('इस क्षेत्र में 7 मंडियाँ')
+    expect(hiT('detail.compare.marketCount', { count: 0 })).toBe('0 मंडी')
+    expect(hiT('detail.compare.marketCount', { count: 3 })).toBe('3 मंडियाँ')
   })
 
   it('leaves escaping to React', () => {
@@ -119,5 +197,7 @@ describe('interpolation', () => {
       'Fri',
       'Sat',
     ])
+    expect(msT('date.weekdays', { returnObjects: true })).toHaveLength(7)
+    expect(hiT('date.months', { returnObjects: true })).toHaveLength(12)
   })
 })

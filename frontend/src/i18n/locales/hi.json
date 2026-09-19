@@ -1,0 +1,305 @@
+{
+  "app": {
+    "name": "AgriPrice"
+  },
+  "softkeys": {
+    "menu": "मेनू",
+    "open": "खोलें",
+    "back": "वापस",
+    "exit": "बाहर",
+    "select": "चुनें",
+    "close": "बंद करें",
+    "toggle": "बदलें",
+    "view": "देखें",
+    "compare": "तुलना",
+    "trend": "रुझान",
+    "today": "आज",
+    "retry": "फिर से",
+    "markets": "मंडियाँ"
+  },
+  "hints": {
+    "markets": "मंडियाँ",
+    "trend": "रुझान",
+    "compare": "तुलना",
+    "tabs": "टैब",
+    "open": "खोलें",
+    "run": "चलाएँ",
+    "area": "क्षेत्र",
+    "sort": "क्रम",
+    "d7": "7 दिन",
+    "d30": "30 दिन"
+  },
+  "date": {
+    "weekdays": ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"],
+    "short": "{{w}} {{d}}/{{m}}",
+    "dataTime": "{{d}}/{{m}} {{time}}",
+    "months": [
+      "जन॰",
+      "फ़र॰",
+      "मार्च",
+      "अप्रैल",
+      "मई",
+      "जून",
+      "जुल॰",
+      "अग॰",
+      "सित॰",
+      "अक्तू॰",
+      "नव॰",
+      "दिस॰"
+    ],
+    "day": "{{d}}/{{m}}",
+    "withYear": "{{month}} {{y}}"
+  },
+  "freshness": {
+    "today": "आज",
+    "yesterday": "कल",
+    "daysAgo": "{{n}} दिन पहले",
+    "none": "डेटा नहीं",
+    "old": "पुराना"
+  },
+  "priceType": {
+    "wholesale": "थोक",
+    "retail": "खुदरा",
+    "switchTo": {
+      "wholesale": "थोक देखें",
+      "retail": "खुदरा देखें"
+    }
+  },
+  "states": {
+    "loading": "{{area}} के भाव लोड हो रहे हैं",
+    "loadingNote": "10 सेकंड बाद त्रुटि दिखेगी",
+    "error": "कनेक्शन विफल",
+    "showingOld": "{{time}} का डेटा दिख रहा है",
+    "retry": "फिर से",
+    "settingsKept": "आपकी सेटिंग्स सुरक्षित हैं",
+    "notUpdated": "{{area}}: आज अपडेट नहीं हुआ",
+    "usualUpdate": "यह क्षेत्र आमतौर पर {{time}} तक अपडेट होता है",
+    "lastPrice": "पिछला ({{when}}): {{price}}",
+    "otherAreas": "अन्य क्षेत्र",
+    "seeTrend": "रुझान देखें",
+    "noRetail": "खुदरा डेटा नहीं",
+    "noRetailCrop": "इस फ़सल की खुदरा रिपोर्ट नहीं है",
+    "retailNote": "खुदरा भाव क्षेत्र के हिसाब से हैं, मंडी के नहीं"
+  },
+  "common": {
+    "distance": "{{km}} km (सीधी)",
+    "page": "पेज {{page}}/{{total}}",
+    "demoData": "डेमो डेटा"
+  },
+  "menu": {
+    "title": "मेनू",
+    "changeArea": "क्षेत्र बदलें",
+    "watchlist": "मेरी सूची",
+    "refresh": "ताज़ा करें",
+    "about": "जानकारी और डेटा",
+    "settings": "सेटिंग्स",
+    "addWatch": "मेरी सूची में जोड़ें",
+    "removeWatch": "सूची से हटाएँ",
+    "intl": "अंतरराष्ट्रीय भाव"
+  },
+  "categories": {
+    "cereal": "अनाज",
+    "veg": "सब्ज़ी",
+    "fruit": "फल",
+    "pulse": "दालें",
+    "spice": "मसाले",
+    "oil": "तिलहन",
+    "other": "अन्य",
+    "all": "सभी",
+    "recent": "हाल में"
+  },
+  "setup": {
+    "welcome": "हर जगह के आज के फ़सल भाव",
+    "step": "चरण {{step}}/{{total}}",
+    "language": {
+      "title": "Language・भाषा",
+      "phone": "फ़ोन की भाषा",
+      "more": "More・अन्य",
+      "moreSub": "Lain-lain・其他",
+      "notYet": "अभी उपलब्ध नहीं",
+      "fallbackNote": "→ English・अभी उपलब्ध नहीं"
+    },
+    "locate": {
+      "title": "आपका स्थान",
+      "question": "क्या आप {{area}} के पास हैं?",
+      "how": "नेटवर्क से अनुमान (GPS नहीं, सहेजा नहीं जाता)",
+      "yes": "हाँ, यही सही है",
+      "no": "नहीं, मैं खुद चुनूँगा"
+    },
+    "country": {
+      "title": "देश चुनें"
+    },
+    "area": {
+      "title": "आपका क्षेत्र"
+    }
+  },
+  "home": {
+    "title": "{{area}} के भाव",
+    "tabs": {
+      "watch": "मेरी सूची",
+      "all": "सभी फ़सलें"
+    },
+    "browse": "फ़सलें देखें"
+  },
+  "detail": {
+    "tabs": {
+      "trend": "रुझान",
+      "today": "आज",
+      "compare": "तुलना"
+    },
+    "trend": {
+      "title": "{{days}} दिन का रुझान",
+      "closed": "बंद",
+      "closedShort": "बंद"
+    },
+    "today": {
+      "median": "{{count}} मंडियों का मध्य भाव",
+      "oneMarket": "सिर्फ़ 1 मंडी",
+      "retailSurvey": "खुदरा सर्वे भाव",
+      "vsPrev": "पिछले कारोबारी दिन से",
+      "markets_one": "इस क्षेत्र में {{count}} मंडी",
+      "markets_other": "इस क्षेत्र में {{count}} मंडियाँ",
+      "marketsRange": "अधिकतम {{high}} · न्यूनतम {{low}}",
+      "nearby": {
+        "highest": "पास में सबसे ज़्यादा",
+        "lowest": "पास में सबसे कम",
+        "highestAt": "सबसे ज़्यादा · {{distance}}",
+        "lowestAt": "सबसे कम · {{distance}}"
+      }
+    },
+    "stats": {
+      "vsAvg7": "7 दिन के औसत से",
+      "arrivals": {
+        "label": "आवक",
+        "low": "कम",
+        "normal": "सामान्य",
+        "high": "ज़्यादा"
+      },
+      "position30": {
+        "label": "30 दिन का स्तर",
+        "low": "निचला",
+        "mid": "मध्य",
+        "high": "ऊँचा"
+      },
+      "volatility": {
+        "label": "उतार-चढ़ाव",
+        "low": "स्थिर",
+        "mid": "सामान्य",
+        "high": "तेज़"
+      },
+      "average": "औसत",
+      "high": "अधिकतम",
+      "low": "न्यूनतम"
+    },
+    "compare": {
+      "sortTitle": "क्रम",
+      "sorts": {
+        "priceDesc": "भाव ज़्यादा→कम",
+        "priceAsc": "भाव कम→ज़्यादा",
+        "distanceAsc": "पास वाले पहले",
+        "distanceDesc": "दूर वाले पहले"
+      },
+      "you": "आप",
+      "rank": "{{area}}: भाव में {{rank}}/{{total}} स्थान",
+      "rankNone": "{{area}}: डेटा नहीं, रैंक नहीं",
+      "marketCount_one": "{{count}} मंडी",
+      "marketCount_other": "{{count}} मंडियाँ"
+    }
+  },
+  "markets": {
+    "vsMedian": "मध्य भाव {{price}} से तुलना",
+    "noRetail": "इस मंडी का खुदरा भाव नहीं है",
+    "seeAreaRetail": "{{area}} का खुदरा भाव देखें",
+    "distance": "{{km}} km"
+  },
+  "areas": {
+    "title": "क्षेत्र चुनें",
+    "change": "क्षेत्र बदलें",
+    "recent": "हाल में",
+    "all": "सभी क्षेत्र",
+    "updated": "अपडेट हुआ",
+    "other": "अन्य क्षेत्र…",
+    "changeCountry": "देश बदलें…"
+  },
+  "watch": {
+    "title": "मेरी सूची"
+  },
+  "intl": {
+    "title": "अंतरराष्ट्रीय भाव",
+    "note": "विश्व बैंक Pink Sheet का मासिक औसत, हर महीने की शुरुआत में अपडेट",
+    "loading": "अंतरराष्ट्रीय भाव लोड हो रहे हैं",
+    "average": "मासिक औसत",
+    "rateDate": "{{date}} की दर से",
+    "rateShort": "दर {{date}}",
+    "perKg": "{{currency}}/kg",
+    "monthAverage": "{{month}} का औसत",
+    "noData": "अभी डेटा नहीं",
+    "noRate": "अभी विनिमय दर नहीं",
+    "showingOld": "पहले के भाव दिख रहे हैं",
+    "vsPrevMonth": "पिछले महीने से",
+    "trend": "पिछले 12 महीने",
+    "high": "12 माह अधिकतम",
+    "low": "12 माह न्यूनतम",
+    "vsAverage": "12 माह औसत से",
+    "published": "मूल भाव {{price}}",
+    "usd": "US${{price}}/{{unit}}",
+    "units": {
+      "mt": "टन",
+      "kg": "kg"
+    },
+    "rate": "US$1 = {{rate}} {{currency}}",
+    "series": "सीरीज़: {{name}}",
+    "source": "स्रोत: World Bank Pink Sheet ({{date}} को अपडेट)",
+    "sourceUndated": "स्रोत: World Bank Pink Sheet",
+    "credit": "Rates By Exchange Rate API"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "rows": {
+      "language": "भाषा",
+      "country": "देश",
+      "area": "मेरा क्षेत्र",
+      "wholesaleUnit": "थोक इकाई",
+      "retailUnit": "खुदरा इकाई"
+    },
+    "demo": {
+      "title": "Demo",
+      "fail": "API विफलता दिखाएँ",
+      "failNote": "भाव API 503 लौटाते हैं",
+      "stale": "क्षेत्र अपडेट न होना दिखाएँ",
+      "staleNote": "{{area}}: आख़िरी कारोबारी दिन {{days}} दिन पीछे",
+      "locate": "स्थान अनुमान बदलें",
+      "locateNote": "पहली सेटिंग में IP से अनुमान",
+      "on": "चालू",
+      "off": "बंद",
+      "locations": {
+        "auto": "अपने आप",
+        "nashik": "भारत · Nashik",
+        "taipei": "ताइवान · Taipei",
+        "kualalumpur": "मलेशिया · Kuala Lumpur",
+        "none": "अनुमान नहीं"
+      }
+    }
+  },
+  "about": {
+    "title": "जानकारी और डेटा",
+    "areaPrice": "क्षेत्र भाव = क्षेत्र की मंडियों के भाव का मध्य भाव (माध्यिका); मंडियों की संख्या भी दिखती है।",
+    "distance": "दूरी = क्षेत्रों के केंद्रों के बीच सीधी दूरी, सड़क की दूरी नहीं।",
+    "nearby": "पास में सबसे ज़्यादा और सबसे कम = 300 km के भीतर सबसे पास के 3 क्षेत्र, इसी कारोबारी दिन के भाव।",
+    "retail": "खुदरा भाव क्षेत्र के हिसाब से हैं; मंडीवार ब्योरा नहीं है।",
+    "gap": "खुदरा और थोक का अंतर मुनाफ़ा नहीं है; इसमें ढुलाई, नुकसान और पैकिंग शामिल हैं।",
+    "demo": "दिखाए गए सभी भाव डेमो डेटा हैं।",
+    "source": "डेटा स्रोत",
+    "noMoney": "हम कभी पैसे, PIN या कोड नहीं माँगते।",
+    "ipCredit": "IP Geolocation by DB-IP (CC BY 4.0)",
+    "version": "संस्करण {{version}}",
+    "intlCredit": "अंतरराष्ट्रीय भाव: World Bank Pink Sheet (CC BY 4.0); Rates By Exchange Rate API"
+  },
+  "errors": {
+    "screen": {
+      "title": "इस स्क्रीन में समस्या आई",
+      "note": "आपकी सेटिंग्स सुरक्षित हैं; होम पर जाकर फिर कोशिश करें",
+      "home": "होम पर जाएँ"
+    }
+  }
+}

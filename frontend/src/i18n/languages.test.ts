@@ -24,6 +24,8 @@ describe('phoneLanguage', () => {
     ['en-US', 'en'],
     ['EN_in', 'en'],
     ['hi-IN', 'hi'],
+    ['ms-MY', 'ms'],
+    ['ms', 'ms'],
     ['bn-BD', 'bn'],
     [' ur-PK ', 'ur'],
     ['vi', 'vi'],
@@ -38,13 +40,11 @@ describe('phoneLanguage', () => {
 
 describe('resolveLanguage', () => {
   it('keeps the translated languages', () => {
-    expect(SUPPORTED_LANGUAGES).toEqual(['zh-TW', 'en'])
-    expect(resolveLanguage('zh-TW')).toBe('zh-TW')
-    expect(resolveLanguage('en')).toBe('en')
+    expect(SUPPORTED_LANGUAGES).toEqual(['zh-TW', 'en', 'ms', 'hi'])
+    for (const id of SUPPORTED_LANGUAGES) expect(resolveLanguage(id)).toBe(id)
   })
 
-  it('uses English for हिन्दी and every language under More', () => {
-    expect(resolveLanguage('hi')).toBe('en')
+  it('uses English for every language under More', () => {
     for (const id of ids(MORE_LANGUAGES)) expect(resolveLanguage(id)).toBe('en')
   })
 
@@ -60,24 +60,25 @@ describe('resolveLanguage', () => {
 describe('mainLanguages', () => {
   it('puts the phone language first and marks it', () => {
     const list = mainLanguages('en-IN')
-    expect(ids(list)).toEqual(['en', 'zh-TW', 'hi'])
-    expect(list.map((l) => l.isPhoneLanguage)).toEqual([true, false, false])
+    expect(ids(list)).toEqual(['en', 'zh-TW', 'hi', 'ms'])
+    expect(list.map((l) => l.isPhoneLanguage)).toEqual([true, false, false, false])
   })
 
-  it('keeps the other two in their default order', () => {
-    expect(ids(mainLanguages('zh-Hant-TW'))).toEqual(['zh-TW', 'en', 'hi'])
-    expect(ids(mainLanguages('hi-IN'))).toEqual(['hi', 'zh-TW', 'en'])
+  it('keeps the others in their default order', () => {
+    expect(ids(mainLanguages('zh-Hant-TW'))).toEqual(['zh-TW', 'en', 'hi', 'ms'])
+    expect(ids(mainLanguages('hi-IN'))).toEqual(['hi', 'zh-TW', 'en', 'ms'])
+    expect(ids(mainLanguages('ms-MY'))).toEqual(['ms', 'zh-TW', 'en', 'hi'])
   })
 
-  it('marks हिन्दी as not translated', () => {
+  it('offers हिन्दी and Bahasa Melayu as translated languages', () => {
     const list = mainLanguages('hi-IN')
     expect(list[0]).toMatchObject({
       id: 'hi',
       name: 'हिन्दी',
-      translated: false,
+      translated: true,
       isPhoneLanguage: true,
     })
-    expect(list.filter((l) => l.translated).map((l) => l.id)).toEqual(['zh-TW', 'en'])
+    expect(list.every((l) => l.translated)).toBe(true)
   })
 
   it('carries the tile letter and tone of each language', () => {
@@ -85,6 +86,7 @@ describe('mainLanguages', () => {
       ['繁體中文', '中', 'green'],
       ['English', 'A', 'blue'],
       ['हिन्दी', 'अ', 'orange'],
+      ['Bahasa Melayu', 'M', 'purple'],
     ])
   })
 
@@ -92,10 +94,30 @@ describe('mainLanguages', () => {
     'uses the default order without a mark for %j',
     (code) => {
       const list = mainLanguages(code)
-      expect(ids(list)).toEqual(['zh-TW', 'en', 'hi'])
+      expect(ids(list)).toEqual(['zh-TW', 'en', 'hi', 'ms'])
       expect(list.some((l) => l.isPhoneLanguage)).toBe(false)
     },
   )
+
+  it.each([
+    ['IN', ['en', 'hi', 'zh-TW', 'ms']],
+    ['MY', ['ms', 'en', 'zh-TW', 'hi']],
+    ['TW', ['zh-TW', 'en', 'hi', 'ms']],
+  ])('lists the languages of %s next, once the country is known', (country, order) => {
+    expect(ids(mainLanguages('tl-TL', country))).toEqual(order)
+  })
+
+  it('still puts the phone language before the languages of the country', () => {
+    const list = mainLanguages('zh-TW', 'IN')
+    expect(ids(list)).toEqual(['zh-TW', 'en', 'hi', 'ms'])
+    expect(list[0]?.isPhoneLanguage).toBe(true)
+    expect(ids(mainLanguages('hi-IN', 'MY'))).toEqual(['hi', 'ms', 'en', 'zh-TW'])
+    expect(ids(mainLanguages('en-MY', 'MY'))).toEqual(['en', 'ms', 'zh-TW', 'hi'])
+  })
+
+  it.each([null, undefined, '', 'XX'])('uses the default order for the country %j', (country) => {
+    expect(ids(mainLanguages(null, country))).toEqual(['zh-TW', 'en', 'hi', 'ms'])
+  })
 })
 
 describe('moreLanguagesPage', () => {
@@ -130,12 +152,18 @@ describe('htmlLang', () => {
     expect(htmlLang('zh-TW')).toBe('zh-Hant')
     expect(htmlLang('en')).toBe('en')
   })
+
+  it('uses the language code for Malay and Hindi so :lang(hi) styles apply', () => {
+    expect(htmlLang('ms')).toBe('ms')
+    expect(htmlLang('hi')).toBe('hi')
+  })
 })
 
 describe('languageName', () => {
   it('returns the name of a listed language in its own script', () => {
     expect(languageName('zh-TW')).toBe('繁體中文')
     expect(languageName('hi')).toBe('हिन्दी')
+    expect(languageName('ms')).toBe('Bahasa Melayu')
     expect(languageName('ta')).toBe('தமிழ்')
   })
 
@@ -149,6 +177,7 @@ describe('isLanguageId', () => {
   it('accepts only listed ids', () => {
     expect(isLanguageId('zh-TW')).toBe(true)
     expect(isLanguageId('hi')).toBe(true)
+    expect(isLanguageId('ms')).toBe(true)
     expect(isLanguageId('id')).toBe(true)
     expect(isLanguageId('zh')).toBe(false)
     expect(isLanguageId(3)).toBe(false)

@@ -1,15 +1,18 @@
-// Languages offered on the setup screens (docs/02 F01, F15, §5.1). Only zh-TW and en are
-// translated; हिन्दी and every language under "More" are listed but use English.
+// Languages offered on the setup screens (docs/02 F01, F15, §5.1). zh-TW, en, ms and hi are
+// translated; every language under "More" is listed but uses English.
 
-/** UI languages with complete translations (locales/*.json). */
-export const SUPPORTED_LANGUAGES = ['zh-TW', 'en'] as const
+/**
+ * UI languages with a locale file (locales/*.json). zh-TW and en hold every key; ms and hi are
+ * machine translations pending native review, and a key they miss shows in English.
+ */
+export const SUPPORTED_LANGUAGES = ['zh-TW', 'en', 'ms', 'hi'] as const
 export type UiLanguage = (typeof SUPPORTED_LANGUAGES)[number]
 
 /** UI language for untranslated and unknown languages. */
 export const FALLBACK_LANGUAGE: UiLanguage = 'en'
 
-/** The three languages on the first setup screen. */
-export type MainLanguageId = 'zh-TW' | 'en' | 'hi'
+/** The languages on the first setup screen and in Settings → Language. */
+export type MainLanguageId = 'zh-TW' | 'en' | 'hi' | 'ms'
 /** Languages on the "More・其他" screen. */
 export type MoreLanguageId = 'bn' | 'mr' | 'vi' | 'sw' | 'ur' | 'ta' | 'te' | 'id'
 /** Any language the user can choose; the store keeps this id. */
@@ -28,7 +31,7 @@ export interface MainLanguage extends Language {
   /** Letter on the list tile. */
   readonly glyph: string
   /** Tile colour (`--t-*` / `--c-*` tokens). */
-  readonly tone: 'green' | 'blue' | 'orange'
+  readonly tone: 'green' | 'blue' | 'orange' | 'purple'
 }
 
 export interface MainLanguageOption extends MainLanguage {
@@ -46,14 +49,26 @@ export interface LanguagePage {
 const isSupported = (id: string): id is UiLanguage =>
   (SUPPORTED_LANGUAGES as readonly string[]).includes(id)
 
-/** Default order of the first setup screen (mockup `LANGS`). */
+/** Default order of the first setup screen (mockup `LANGS`, then Bahasa Melayu). */
 export const MAIN_LANGUAGES: readonly MainLanguage[] = (
   [
     { id: 'zh-TW', name: '繁體中文', glyph: '中', tone: 'green' },
     { id: 'en', name: 'English', glyph: 'A', tone: 'blue' },
     { id: 'hi', name: 'हिन्दी', glyph: 'अ', tone: 'orange' },
+    { id: 'ms', name: 'Bahasa Melayu', glyph: 'M', tone: 'purple' },
   ] as const
 ).map((l) => ({ ...l, translated: isSupported(l.id) }))
+
+/**
+ * Languages people use in each country, most used first (country codes of the API). Once the
+ * country is known (Settings → Language), they follow the phone language; the rest keep the
+ * default order.
+ */
+export const COUNTRY_LANGUAGES: Readonly<Partial<Record<string, readonly MainLanguageId[]>>> = {
+  IN: ['en', 'hi'],
+  MY: ['ms', 'en', 'zh-TW'],
+  TW: ['zh-TW', 'en'],
+}
 
 /** The "More・其他" screen, in order (mockup `MORE_LANGS`). */
 export const MORE_LANGUAGES: readonly Language[] = (
@@ -96,14 +111,28 @@ export function resolveLanguage(id: string | null | undefined): UiLanguage {
 }
 
 /**
- * The first setup screen (docs/02 §5.1): the phone language first and marked, then the
- * other two in their default order. When the phone language is not one of the three, the
- * default order is kept and nothing is marked. The screen adds "More・其他" after these.
+ * The main languages (docs/02 §5.1): the phone language first and marked, then the languages
+ * of `country` when it is known (`COUNTRY_LANGUAGES`), then the rest in the default order.
+ * When the phone language is not a main language, nothing is marked. First-run setup has no
+ * country yet and adds "More・其他" after these.
  */
-export function mainLanguages(phoneCode: string | null | undefined): MainLanguageOption[] {
+export function mainLanguages(
+  phoneCode: string | null | undefined,
+  country?: string | null,
+): MainLanguageOption[] {
   const phone = phoneLanguage(phoneCode)
-  const options = MAIN_LANGUAGES.map((l) => ({ ...l, isPhoneLanguage: l.id === phone }))
-  return [...options.filter((l) => l.isPhoneLanguage), ...options.filter((l) => !l.isPhoneLanguage)]
+  const preferred: readonly (LanguageId | null)[] = [
+    phone,
+    ...((country && COUNTRY_LANGUAGES[country]) || []),
+  ]
+  const rank = (id: LanguageId) => {
+    const index = preferred.indexOf(id)
+    return index < 0 ? preferred.length : index
+  }
+  // Array sort is stable, so languages of the same rank keep the default order.
+  return MAIN_LANGUAGES.map((l) => ({ ...l, isPhoneLanguage: l.id === phone })).sort(
+    (a, b) => rank(a.id) - rank(b.id),
+  )
 }
 
 /** One page of the "More・其他" screen; ◀ ▶ change pages and stop at both ends. */
@@ -127,9 +156,14 @@ export function languageName(id: string | null | undefined): string {
   )
 }
 
-const HTML_LANG: Readonly<Record<UiLanguage, string>> = { 'zh-TW': 'zh-Hant', en: 'en' }
+const HTML_LANG: Readonly<Record<UiLanguage, string>> = {
+  'zh-TW': 'zh-Hant',
+  en: 'en',
+  ms: 'ms',
+  hi: 'hi',
+}
 
-/** `<html lang>` for a UI language; tokens.css sizes Chinese text with `:lang(zh)`. */
+/** `<html lang>` for a UI language; tokens.css sizes Chinese and Hindi with `:lang(zh, hi)`. */
 export function htmlLang(language: UiLanguage): string {
   return HTML_LANG[language]
 }

@@ -21,7 +21,19 @@ describe('i18n setup', () => {
     expect(document.documentElement.matches(':lang(zh)')).toBe(true)
   })
 
-  it.each(['hi', 'bn', 'ur', 'xx', null])('uses English for %j', (id) => {
+  it.each([
+    ['ms', 'AgriPrice', 'Tetapan', 'ms'],
+    ['hi', 'AgriPrice', 'सेटिंग्स', 'hi'],
+  ])('switches to %s and marks the page lang', (id, name, settings, lang) => {
+    expect(setLanguage(id)).toBe(id)
+    expect(i18n.language).toBe(id)
+    expect(i18n.t('app.name')).toBe(name)
+    expect(i18n.t('settings.title')).toBe(settings)
+    expect(document.documentElement.lang).toBe(lang)
+    expect(document.documentElement.matches(':lang(zh)')).toBe(false)
+  })
+
+  it.each(['bn', 'ur', 'id', 'xx', null])('uses English for %j', (id) => {
     setLanguage('zh-TW')
     expect(setLanguage(id)).toBe('en')
     expect(i18n.language).toBe('en')
@@ -40,6 +52,15 @@ describe('initial language', () => {
   afterAll(() => {
     vi.restoreAllMocks()
     vi.resetModules()
+  })
+
+  it('follows a Hindi phone before any language is chosen', async () => {
+    vi.spyOn(navigator, 'language', 'get').mockReturnValue('hi-IN')
+    vi.resetModules()
+    const fresh = await import('./index')
+    expect(fresh.i18n.language).toBe('hi')
+    expect(document.documentElement.lang).toBe('hi')
+    fresh.setLanguage('en')
   })
 
   it('follows a Chinese phone before any language is chosen', async () => {
