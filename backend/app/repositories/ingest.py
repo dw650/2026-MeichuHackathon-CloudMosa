@@ -225,7 +225,7 @@ _AREA_RETAIL = text(
     """
 )
 
-# ---------- estimated prices (docs/06 §4) ----------
+# ---------- estimated prices (docs/06 §3.6) ----------
 #
 # Only ever written for a price type the country's source does not report, and never over a
 # row that source produced (the NOT EXISTS guards). Ratios and market factors are worked out
@@ -320,7 +320,7 @@ async def aggregate(
 ) -> None:
     """Recomputes market_daily and area_daily for the affected dates of one country. With an
     `estimate`, the price type the country's source does not report is worked out from the one
-    it does (docs/06 §4), after the real rows and never over them."""
+    it does (docs/06 §3.6), after the real rows and never over them."""
     params: dict[str, Any] = {"country": country, "dates": list(dates)}
     await session.execute(
         text("DELETE FROM area_daily WHERE country = :country AND trade_date = ANY(:dates)"),

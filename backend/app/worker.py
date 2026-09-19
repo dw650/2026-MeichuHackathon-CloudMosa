@@ -99,7 +99,7 @@ async def run_once(
         infos = registry.enabled(settings.provider_ids)
         cover = registry.coverage(infos, seeds)
         # A country whose source reports one price type only gets the other estimated from it
-        # (docs/06 §4); the screens read `estimated_price_types` to label it as an estimate.
+        # (docs/06 §3.6); the screens read `estimated_price_types` to label it as an estimate.
         estimates = derive.plan(load_derive_seed(), infos, cover)
         async with maker() as session:
             await catalog_repo.set_estimated_price_types(

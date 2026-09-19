@@ -41,7 +41,7 @@ async def upsert_country(session: AsyncSession, row: Row) -> None:
 async def set_estimated_price_types(
     session: AsyncSession, by_country: Mapping[str, Sequence[str]]
 ) -> None:
-    """Records which of a country's price types are estimated from the other one (docs/06 §4),
+    """Records which of a country's price types are estimated from the other one (docs/06 §3.6),
     as the enabled sources leave them. Written by the worker each run and read by every screen
     that has to say a price is an estimate."""
     for code, types in sorted(by_country.items()):

@@ -391,7 +391,7 @@ async def test_a_country_never_mixes_demo_and_real_prices(
     assert [(s.source, s.status) for s in summaries] == [("mock", "ok"), ("tw_moa", "ok")]
     assert await sources() == [("IN", "mock"), ("MY", "mock"), ("TW", "tw_moa")]
     # Nothing of the demo is left in Taiwan: no days before the real sample. tw_moa has no
-    # retail, so the retail prices are now estimated from the real wholesale ones (docs/06 §4).
+    # retail, so the retail prices are now estimated from the real wholesale ones (docs/06 §3.6).
     assert await count("trade_date < :d") == 0
     assert await count("price_type = 'wholesale'") > 0
     assert await estimated() == ["retail"]

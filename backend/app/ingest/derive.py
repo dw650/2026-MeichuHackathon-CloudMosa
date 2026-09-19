@@ -1,4 +1,4 @@
-"""Estimated prices (docs/06 §4).
+"""Estimated prices (docs/06 §3.6).
 
 A real source covers one price type only: Taiwan and India publish wholesale, Malaysia
 publishes retail. Rather than leaving the other type empty, the pipeline estimates it from the
@@ -7,7 +7,7 @@ real data still share one path and `quotes` keeps holding only what an agency re
 
 This module is the pure part: which countries estimate what, and by how much. Writing the rows
 is `app.repositories.ingest.aggregate`; saying so on screen is the country's
-`estimated_price_types` (docs/02 §5.11)."""
+`estimated_price_types` (docs/02 §2)."""
 
 import hashlib
 from collections.abc import Mapping, Sequence
@@ -45,7 +45,11 @@ class Derivation:
         rules = self.rules
         if crop_id in rules.crops:
             return rules.crops[crop_id]
-        return rules.categories.get(category, rules.default)  # type: ignore[arg-type]
+        # The seed's keys are the seven categories; anything else falls back to the default.
+        for name, ratio in rules.categories.items():
+            if name == category:
+                return ratio
+        return rules.default
 
     def market_factor(self, market_id: str) -> float:
         """What a derived market price is multiplied by: 1 ± `market_spread`, fixed per market

@@ -1,4 +1,4 @@
-"""The estimated rows the aggregation writes (docs/06 §4): Taiwan's retail from its wholesale
+"""The estimated rows the aggregation writes (docs/06 §3.6): Taiwan's retail from its wholesale
 market prices, Malaysia's wholesale from its retail survey, and what must stay untouched."""
 
 from datetime import UTC, date, datetime
@@ -173,9 +173,7 @@ async def test_a_real_market_price_is_never_replaced_by_an_estimate(
     seeded: AsyncSession,
 ) -> None:
     market = (
-        await seeded.execute(
-            text("SELECT id FROM markets WHERE area_id = 'kualalumpur' LIMIT 1")
-        )
+        await seeded.execute(text("SELECT id FROM markets WHERE area_id = 'kualalumpur' LIMIT 1"))
     ).scalar_one()
     await store(
         seeded,
@@ -192,7 +190,11 @@ async def test_a_real_market_price_is_never_replaced_by_an_estimate(
 async def test_only_the_estimated_type_is_added_for_the_whole_country(
     seeded: AsyncSession,
 ) -> None:
-    plans = plan(load_derive_seed(), (MOCK, TW_REAL, MY_REAL), {"tw_moa": ("TW",), "mock": ("IN",), "my_pricecatcher": ("MY",)})
+    plans = plan(
+        load_derive_seed(),
+        (MOCK, TW_REAL, MY_REAL),
+        {"tw_moa": ("TW",), "mock": ("IN",), "my_pricecatcher": ("MY",)},
+    )
     assert isinstance(plans["TW"], Derivation)
     await store(
         seeded,

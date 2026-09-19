@@ -1,4 +1,4 @@
-"""Estimated prices (docs/06 §4): the seed's ratios and which countries estimate what."""
+"""Estimated prices (docs/06 §3.6): the seed's ratios and which countries estimate what."""
 
 import pytest
 

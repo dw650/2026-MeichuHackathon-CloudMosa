@@ -266,7 +266,7 @@ describe('crop detail · 行情 tab · nearby prices', () => {
   })
 })
 
-describe('crop detail · estimated prices (docs/06 §4)', () => {
+describe('crop detail · estimated prices (docs/06 §3.6)', () => {
   it('names the crop ratio once, on every tab, and marks the price type', async () => {
     server.use(
       http.get('*/api/v1/countries', () =>

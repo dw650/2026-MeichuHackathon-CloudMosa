@@ -26,7 +26,7 @@ DERIVE_FILE = SEED_DIR / "derive.yaml"
 
 
 def load_derive_seed(path: Path = DERIVE_FILE) -> DeriveSeedFile:
-    """The ratios estimating each country's missing price type (docs/06 §4)."""
+    """The ratios estimating each country's missing price type (docs/06 §3.6)."""
     return DeriveSeedFile.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 

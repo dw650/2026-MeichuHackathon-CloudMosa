@@ -193,7 +193,7 @@ describe('HomeScreen · states (F12)', () => {
 })
 
 describe('HomeScreen · estimated prices', () => {
-  /** India on a wholesale-only source: the retail prices on screen are estimates (docs/06 §4). */
+  /** India on a wholesale-only source: the retail prices on screen are estimates (docs/06 §3.6). */
   const estimateRetail = () =>
     server.use(
       http.get('*/api/v1/countries', () =>

@@ -407,7 +407,7 @@ export interface components {
             default_watch: string[];
             /**
              * Estimated Price Types
-             * @description Price types no source of this country reports, estimated from the other one (docs/06 §4). Every screen showing such a price must say it is an estimate.
+             * @description Price types no source of this country reports, estimated from the other one (docs/06 §3.6). Every screen showing such a price must say it is an estimate.
              */
             estimated_price_types: string[];
             /** Locale */

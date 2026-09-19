@@ -82,7 +82,7 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
         tabs={DETAIL_TABS.map((id) => ({ id, label: t(`detail.tabs.${id}`) }))}
         activeId={tab}
       />
-      {/* Once per screen, above the tab's own content: this price is an estimate (docs/06 §4). */}
+      {/* Once per screen, above the tab's own content: this price is an estimate (docs/06 §3.6). */}
       <Note text={estimate.note(type, detail.cropId)} />
       {children}
     </Shell>

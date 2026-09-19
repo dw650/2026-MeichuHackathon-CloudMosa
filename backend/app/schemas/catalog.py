@@ -42,7 +42,7 @@ class CountryOut(BaseModel):
     source_label: I18nText
     estimated_price_types: list[str] = Field(
         description="Price types no source of this country reports, estimated from the other"
-        " one (docs/06 §4). Every screen showing such a price must say it is an estimate."
+        " one (docs/06 §3.6). Every screen showing such a price must say it is an estimate."
     )
     units: UnitsOut
 

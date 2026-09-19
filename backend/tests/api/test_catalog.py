@@ -134,16 +134,14 @@ async def test_an_estimated_price_type_carries_a_ratio_per_crop(
     api: httpx.AsyncClient, settings: Settings
 ) -> None:
     """With a real source that only reports wholesale, Taiwan's retail is an estimate: the
-    country says so and every crop carries the ratio the screens name (docs/06 §4)."""
+    country says so and every crop carries the ratio the screens name (docs/06 §3.6)."""
     engine = create_engine(settings)
     try:
         async with create_sessionmaker(engine)() as s:
             await catalog_repo.set_estimated_price_types(s, {"TW": ["retail"]})
             await s.commit()
         taiwan = next(
-            c
-            for c in (await api.get("/api/v1/countries")).json()["countries"]
-            if c["code"] == "TW"
+            c for c in (await api.get("/api/v1/countries")).json()["countries"] if c["code"] == "TW"
         )
         assert taiwan["estimated_price_types"] == ["retail"]
         crops = {c["id"]: c for c in (await api.get("/api/v1/countries/TW/crops")).json()["crops"]}
@@ -152,9 +150,7 @@ async def test_an_estimated_price_type_carries_a_ratio_per_crop(
         assert crops["rice"]["estimate_ratio"] == 1.3  # cereals
         assert crops["mushroom"]["estimate_ratio"] == 1.6  # the default
         india = next(
-            c
-            for c in (await api.get("/api/v1/countries")).json()["countries"]
-            if c["code"] == "IN"
+            c for c in (await api.get("/api/v1/countries")).json()["countries"] if c["code"] == "IN"
         )
         assert india["estimated_price_types"] == []
     finally:

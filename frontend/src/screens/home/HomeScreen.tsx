@@ -149,7 +149,7 @@ export default function HomeScreen() {
         </div>
       ) : (
         <div ref={listRoot}>
-          {/* Many crops at once, so no single ratio (docs/06 §4). */}
+          {/* Many crops at once, so no single ratio (docs/06 §3.6). */}
           <Note text={estimate.note(format.type)} />
           <CropPriceList
             crops={crops}

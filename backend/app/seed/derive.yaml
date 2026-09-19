@@ -1,4 +1,4 @@
-# Estimated prices (docs/06 §4).
+# Estimated prices (docs/06 §3.6).
 #
 # A country's real source only reports one price type: Taiwan and India publish wholesale,
 # Malaysia publishes retail. The missing type is estimated from the reported one with these
@@ -10,7 +10,7 @@
 # and a market stall pays for transport, shrinkage, trimming, packing and the stall itself,
 # and it is widest for what wilts fastest. Each number is justified below; replace them with a
 # real retail source (bonus B4) rather than tuning them. Every screen that shows an estimated
-# price says so, and the estimate is never attributed to the agency (docs/02 §5.11).
+# price says so, and the estimate is never attributed to the agency (docs/02 §2).
 #
 # `crops` overrides `categories` overrides `default`. Crop ids are per country, so the ratios
 # are listed per country too: `soybean` is fresh edamame in Taiwan but a dry oilseed in India.

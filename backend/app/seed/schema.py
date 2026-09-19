@@ -200,7 +200,7 @@ class SeedFile(_Model):
         return self
 
 
-# ---------- estimated prices (app/seed/derive.yaml, docs/06 §4) ----------
+# ---------- estimated prices (app/seed/derive.yaml, docs/06 §3.6) ----------
 
 MAX_RATIO = 5.0
 
@@ -223,7 +223,9 @@ class CountryDerive(_Model):
     def _sane(self) -> Self:
         if self.from_type == self.to_type:
             raise ValueError("`from` and `to` must be different price types")
-        bad = [r for r in [*self.categories.values(), *self.crops.values()] if not 0 < r <= MAX_RATIO]
+        bad = [
+            r for r in [*self.categories.values(), *self.crops.values()] if not 0 < r <= MAX_RATIO
+        ]
         if bad:
             raise ValueError(f"ratios must be > 0 and <= {MAX_RATIO}: {bad}")
         return self
