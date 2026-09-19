@@ -11,3 +11,4 @@
 - 2026-09-19 T05 完成：ci.yml（frontend、backend＋PostgreSQL service、images），每步都呼叫 make 目標；覆蓋率一行摘要；make audit（npm audit、pip-audit，目前 0 漏洞）；YAML 與 actionlint 檢查通過（2417253）
 - 2026-09-19 T06 完成：/debug/keys（key、code、repeat、時間差、popstate／back、Enter click 次數）、/debug/viewport（尺寸、字級、Intl 樣本），只在 dev 或 VITE_DEMO 建置；/api/v1/debug/headers 只在 DEMO_MODE（8359ab2）
 - 2026-09-19 T16 完成：src/lib 純函式——units（06 §5 單位表、由每公斤換算、單位設定失效時退回）、format（Intl 依國家 locale、lakh 分組、進位後才決定 +／−／±、缺值顯示「—」）、change（0.05% 持平、百分比位數規則、▲▼＝）、dates（UTC 安全的日期與星期、資料時間照字串原本的時刻、昨天／N 天前、滿 3 天警示、休市顯示日期），文字由 DateLabels 傳入；src/lib 覆蓋率 100%（9421605）
+- 2026-09-19 T17 完成：src/i18n——STR 搬進 zh-TW／en 字串檔（依畫面分組、key 有型別、{{變數}}、英文單複數、新增資料時間），語言清單（手機語言排第一並標示、हिन्दी 與 More 退回英文、More 每頁 4 個）、setLanguage 同步 <html lang>（zh-Hant）、pickText 取多語文字、dateLabels 接上 T16 的 DateLabels；測試兩份字串檔 key 與變數完全相同、兩種語言插值（016201b）
