@@ -15,6 +15,7 @@
   "min_per_kg": 23.68,
   "total": 2
  },
+ "nearby": null,
  "price_per_kg": 24.195,
  "reason": null,
  "series": [

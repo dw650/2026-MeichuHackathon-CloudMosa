@@ -10,6 +10,7 @@
   "min_per_kg": null,
   "total": 1
  },
+ "nearby": null,
  "price_per_kg": null,
  "reason": "no_data",
  "series": [
