@@ -12,13 +12,13 @@ from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.config import Settings
-from app.db.models import NewsItem, NewsRun
+from app.db.models import NEWS_LIST_ITEMS, NewsItem, NewsRun
 from app.db.session import create_engine, create_sessionmaker
 from app.ingest.news import gnews
 from app.ingest.news.base import RawNews, UpstreamError
 from app.ingest.news.config import CountryNews, load_news_config
 from app.ingest.news.job import NewsOptions, allowance, run_news
-from app.ingest.news.pipeline import new_rows, run_country
+from app.ingest.news.pipeline import MAX_TRIES, new_rows, run_country
 from app.ingest.news.reader import Article
 from app.ingest.news.rss import SEARCH_URL, parse_rss, to_raw
 from app.ingest.news.summarize import (
@@ -90,8 +90,11 @@ class FakeModel:
 
 
 async def items(session: AsyncSession, country: str = "TW") -> list[NewsItem]:
+    """Stored items in the order the list shows them: the newest first."""
     result = await session.execute(
-        select(NewsItem).where(NewsItem.country == country).order_by(NewsItem.published_at.desc())
+        select(NewsItem)
+        .where(NewsItem.country == country)
+        .order_by(NewsItem.published_at.desc(), NewsItem.id.desc())
     )
     return list(result.scalars().all())
 
@@ -226,7 +229,7 @@ async def test_malay_headlines_of_malaysia(seeded: AsyncSession) -> None:
 # ---------- summaries ----------
 
 
-async def test_pending_items_are_summarised_most_relevant_first(seeded: AsyncSession) -> None:
+async def test_the_listed_items_are_summarised_newest_first(seeded: AsyncSession) -> None:
     await run_country(seeded, "TW", TW, FakeSource(TW_RAW), clock=clock)
     reader = FakeReader()
     flash = FakeModel("flash", crops=("cabbage", "unknown"))
@@ -245,14 +248,13 @@ async def test_pending_items_are_summarised_most_relevant_first(seeded: AsyncSes
     assert run.requests == 7  # one search + two per article read
     stored = await items(seeded)
     done = [i for i in stored if i.summary]
-    assert len(done) == 3
-    # Items mentioning an area come first (Taichung, Yunlin, …).
+    # The three newest of the list, in that order: what the reader saw is what the list shows.
+    assert [i.title for i in done] == [i.title for i in stored[:3]]
     first = flash.requests[0]
     assert first.lang == "zh-TW"
     assert first.text == "西螺果菜市場到貨減少，菜價上漲。"
+    assert first.title == stored[0].title
     assert any(c.id == "cabbage" and "高麗菜" in c.names for c in first.crops)
-    summarised = {i.title for i in done}
-    assert any(t.startswith("母湯喔！") for t in summarised)
     for item in done:
         assert item.url == PUBLISHER
         assert item.summary_model == "flash"
@@ -264,6 +266,69 @@ async def test_pending_items_are_summarised_most_relevant_first(seeded: AsyncSes
     assert all(i.summary_tries == 0 for i in stored if not i.summary)
     [_, record] = await runs(seeded)
     assert (record.articles, record.model_calls, record.summaries) == (3, 3, 3)
+
+
+async def test_items_beyond_the_list_wait_for_their_turn(seeded: AsyncSession) -> None:
+    """The budget buys the items the list shows (at most nine), never the ones below them."""
+    await run_country(seeded, "TW", TW, FakeSource(TW_RAW), clock=clock)
+    reader = FakeReader()
+    run = await run_country(
+        seeded,
+        "TW",
+        TW,
+        FakeSource([]),
+        reader=reader,
+        summaries=Summaries([FakeModel("flash")], None, calls=20),
+        articles=20,
+        clock=clock,
+    )
+    stored = await items(seeded)
+    assert len(stored) == NEWS_LIST_ITEMS + 1  # ten on topic, nine of them listed
+    assert (run.articles, run.model_calls, run.summaries) == (9, 9, 9)
+    assert all(i.summary for i in stored[:NEWS_LIST_ITEMS])
+    last = stored[NEWS_LIST_ITEMS]
+    assert (last.summary, last.summary_tries) == (None, 0)  # not read, not tried
+
+
+async def test_a_later_run_summarises_the_listed_items_still_without_one(
+    seeded: AsyncSession,
+) -> None:
+    """Items stored earlier keep their place: each run takes the newest listed items that have
+    no summary yet."""
+    await run_country(seeded, "TW", TW, FakeSource(TW_RAW), clock=clock)  # stored, title only
+    for _ in range(2):
+        await run_country(
+            seeded,
+            "TW",
+            TW,
+            FakeSource([]),
+            reader=FakeReader(),
+            summaries=Summaries([FakeModel("flash")], None, calls=2),
+            articles=2,
+            clock=clock,
+        )
+    stored = await items(seeded)
+    assert [bool(i.summary) for i in stored[:5]] == [True, True, True, True, False]
+    assert not any(i.summary for i in stored[4:])
+
+
+async def test_an_item_is_not_offered_for_ever(seeded: AsyncSession) -> None:
+    """A summary that keeps failing gives its budget to the next item (the retry cap)."""
+    await run_country(seeded, "TW", TW, FakeSource(TW_RAW[:3]), clock=clock)
+    for _ in range(3):
+        run = await run_country(
+            seeded,
+            "TW",
+            TW,
+            FakeSource([]),
+            reader=FakeReader(text=None),  # no article text and no grounded model: no summary
+            summaries=Summaries([FakeModel("flash")], None, calls=10),
+            articles=10,
+            clock=clock,
+        )
+    stored = await items(seeded)
+    assert {i.summary_tries for i in stored} == {MAX_TRIES}
+    assert (run.articles, run.model_calls) == (0, 0)  # nothing left worth reading
 
 
 async def test_without_article_text_only_a_grounded_model_is_asked(seeded: AsyncSession) -> None:
@@ -390,12 +455,15 @@ async def test_run_news_end_to_end_with_gemini(maker: async_sessionmaker[AsyncSe
     )
     assert run.status == "ok"
     assert run.items_new == 10  # 12 headlines, two off topic
-    assert run.articles == run.model_calls == run.summaries == 10  # TW's share: 30 / 3 countries
+    # TW's share of the day is 10, but only the nine listed items are worth reading.
+    assert run.articles == run.model_calls == run.summaries == NEWS_LIST_ITEMS
     async with maker() as session:
         stored = await items(session)
-    assert all(i.summary and i.summary_model == "gemini-3.5-flash-lite" for i in stored)
-    assert all(i.url == "https://health.tvbs.com.tw/life/365962" for i in stored)
-    assert all("bokchoy" in i.crop_ids for i in stored)
+    listed, below = stored[:NEWS_LIST_ITEMS], stored[NEWS_LIST_ITEMS:]
+    assert all(i.summary and i.summary_model == "gemini-3.5-flash-lite" for i in listed)
+    assert all(i.url == "https://health.tvbs.com.tw/life/365962" for i in listed)
+    assert all("bokchoy" in i.crop_ids for i in listed)
+    assert [i.summary for i in below] == [None]  # the tenth waits for a day it is listed
     # Searches, links and pages are spaced out.
     assert {1.5, 2.0} <= set(time.slept)
     assert len([u for u in script.urls() if u.startswith(SEARCH_URL)]) == 5

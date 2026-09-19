@@ -1,8 +1,9 @@
 """One news run of one country (docs/06 §1.6):
 
 search → keep on-topic headlines of the last 7 days → drop duplicates (guid or title) → tag
-crops and areas → store → summarise the pending items within the day's budget (read the
-article, then ask the models) → delete items older than 7 days → record the run.
+crops and areas → store → summarise the items the list will show, newest first, within the
+day's budget (read the article, then ask the models) → delete items older than 7 days →
+record the run.
 
 A failed search keeps the stored items; a failed article or model only leaves that item
 title-only. Every run is recorded with what it spent (articles read, model calls), which the
@@ -15,7 +16,7 @@ from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import NEWS_KEEP_DAYS
+from app.db.models import NEWS_KEEP_DAYS, NEWS_LIST_ITEMS
 from app.ingest.news.base import NewsSource, RawNews, UpstreamError
 from app.ingest.news.config import CountryNews
 from app.ingest.news.match import Matcher, crop_terms, title_key
@@ -167,15 +168,19 @@ async def summarize_pending(
     now: datetime,
     run: NewsRunSummary,
 ) -> None:
-    """Summarises the most relevant items still without a summary, while the budget lasts."""
+    """Summarises the items the list will show, newest first, while the budget lasts.
+
+    The candidates are exactly the items the API returns (`repo.list_items`, the same order and
+    limit), so the budget goes to what people see; items stored by an earlier run that still
+    have no summary are in there too, until the retry cap. Anything below the list waits for
+    its turn (docs/06 §1.6)."""
     calls_before = summaries.calls
     choices = crop_choices(catalog, config)
     known_crops = {c.id for c in choices}
     tz = country_tz(catalog.utc_offset_min)
     since = now - timedelta(days=NEWS_KEEP_DAYS)
-    items = await repo.pending_summaries(
-        session, country, since, MAX_TRIES, limit=max(1, summaries.calls_left)
-    )
+    listed = await repo.list_items(session, country, since, NEWS_LIST_ITEMS)
+    items = [i for i in listed if i.summary is None and i.summary_tries < MAX_TRIES]
     try:
         for item in items:
             read = budget.left > 0 and not reader.google_refused

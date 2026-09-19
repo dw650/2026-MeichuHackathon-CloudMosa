@@ -85,30 +85,6 @@ async def insert_items(session: AsyncSession, rows: Sequence[dict[str, Any]]) ->
     return added
 
 
-async def pending_summaries(
-    session: AsyncSession, country: str, since: datetime, max_tries: int, limit: int
-) -> list[NewsItem]:
-    """Items without a summary, tried fewer than `max_tries` times: those mentioning an area,
-    then a crop, then the newest first."""
-    result = await session.execute(
-        select(NewsItem)
-        .where(
-            NewsItem.country == country,
-            NewsItem.summary.is_(None),
-            NewsItem.summary_tries < max_tries,
-            NewsItem.published_at >= since,
-        )
-        .order_by(
-            (func.cardinality(NewsItem.area_ids) > 0).desc(),
-            (func.cardinality(NewsItem.crop_ids) > 0).desc(),
-            NewsItem.published_at.desc(),
-            NewsItem.id.desc(),
-        )
-        .limit(limit)
-    )
-    return list(result.scalars().all())
-
-
 async def update_item(session: AsyncSession, item_id: int, **fields: Any) -> None:
     await session.execute(update(NewsItem).where(NewsItem.id == item_id).values(**fields))
 
@@ -145,17 +121,14 @@ async def count_items(session: AsyncSession, country: str, source: str) -> int:
 
 
 async def list_items(
-    session: AsyncSession, country: str, area_id: str, since: datetime, limit: int
+    session: AsyncSession, country: str, since: datetime, limit: int
 ) -> list[NewsItem]:
-    """A country's recent items: those mentioning the area first, then the newest first."""
+    """A country's recent items, the newest first. The news job uses the same list to decide
+    which items to summarise (docs/06 §1.6)."""
     result = await session.execute(
         select(NewsItem)
         .where(NewsItem.country == country, NewsItem.published_at >= since)
-        .order_by(
-            NewsItem.area_ids.any(area_id).desc(),  # type: ignore[arg-type]
-            NewsItem.published_at.desc(),
-            NewsItem.id.desc(),
-        )
+        .order_by(NewsItem.published_at.desc(), NewsItem.id.desc())
         .limit(limit)
     )
     return list(result.scalars().all())

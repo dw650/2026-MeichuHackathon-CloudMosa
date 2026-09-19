@@ -1,18 +1,16 @@
-"""The 新聞 page (docs/02 §5.9): the country's recent news with the user's area first."""
+"""The 新聞 page (docs/02 §5.9): the country's recent news, the newest first."""
 
 from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import NEWS_KEEP_DAYS, NewsItem
+from app.db.models import NEWS_KEEP_DAYS, NEWS_LIST_ITEMS, NewsItem
 from app.errors import ApiError
 from app.repositories import catalog as catalog_repo
 from app.repositories import news as repo
 from app.services.catalog import require_country
 from app.timeutil import country_tz, local_today
-
-MAX_ITEMS = 9  # one per digit key
 
 
 def item_out(item: NewsItem, tz: timezone, today: date) -> dict[str, Any]:
@@ -43,7 +41,7 @@ async def list_news(
     tz = country_tz(country.utc_offset_min)
     today = local_today(country.utc_offset_min, now)
     since = now - timedelta(days=NEWS_KEEP_DAYS)
-    items = await repo.list_items(session, country.code, area.id, since, MAX_ITEMS)
+    items = await repo.list_items(session, country.code, since, NEWS_LIST_ITEMS)
     fetched = await repo.last_fetch(session, country.code)
     return {
         "country": country.code,

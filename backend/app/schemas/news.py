@@ -34,7 +34,7 @@ class NewsOut(BaseModel):
     today: date
     fetched_at: datetime | None = Field(description="End of the latest successful news run.")
     items: list[NewsItemOut] = Field(
-        description="At most 9: items mentioning the area first, then the newest first."
+        description="At most 9, the newest first. `area_ids` says which areas an item mentions."
     )
 
 
