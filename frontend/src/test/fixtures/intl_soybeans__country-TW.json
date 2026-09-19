@@ -1,0 +1,102 @@
+{
+ "category": "pulse",
+ "change": {
+  "diff_per_kg": 0.1273,
+  "direction": "up",
+  "pct": 0.008368,
+  "prev_month": "2026-07-01"
+ },
+ "country": "TW",
+ "currency": "TWD",
+ "fx": {
+  "currency": "TWD",
+  "per_usd": 31.834145,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "soybean",
+ "id": "soybeans",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Soybeans",
+  "zh-TW": "大豆"
+ },
+ "price_per_kg": 15.3441,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 12.861,
+   "usd": 404.0
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 12.861,
+   "usd": 404.0
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 14.198,
+   "usd": 446.0
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 14.007,
+   "usd": 440.0
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 13.5295,
+   "usd": 425.0
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 14.6119,
+   "usd": 459.0
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 15.0576,
+   "usd": 473.0
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 14.7392,
+   "usd": 463.0
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 15.0576,
+   "usd": 473.0
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 14.771,
+   "usd": 464.0
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 15.2167,
+   "usd": 478.0
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 15.3441,
+   "usd": 482.0
+  }
+ ],
+ "source_name": "Soybeans",
+ "spec": {
+  "en": "US",
+  "zh-TW": "美國產"
+ },
+ "stats": {
+  "avg_per_kg": 14.3545,
+  "high_per_kg": 15.3441,
+  "low_per_kg": 12.861,
+  "vs_avg_pct": 0.068936
+ },
+ "today": "2026-09-19",
+ "usd": 482.0,
+ "usd_unit": "mt"
+}

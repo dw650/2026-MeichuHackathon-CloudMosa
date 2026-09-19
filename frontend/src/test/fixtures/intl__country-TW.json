@@ -1,0 +1,163 @@
+{
+ "country": "TW",
+ "currency": "TWD",
+ "fx": {
+  "currency": "TWD",
+  "per_usd": 31.834145,
+  "rate_date": "2026-09-19"
+ },
+ "items": [
+  {
+   "category": "cereal",
+   "change": {
+    "diff_per_kg": 0.1273,
+    "direction": "up",
+    "pct": 0.008565,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "rice",
+   "id": "rice",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Rice",
+    "zh-TW": "稻米"
+   },
+   "price_per_kg": 14.9939,
+   "reason": null,
+   "source_name": "Rice, Thai 5%",
+   "spec": {
+    "en": "Thai 5% broken",
+    "zh-TW": "泰國 5% 碎米"
+   },
+   "usd": 471.0,
+   "usd_unit": "mt"
+  },
+  {
+   "category": "cereal",
+   "change": {
+    "diff_per_kg": 0.6367,
+    "direction": "up",
+    "pct": 0.064516,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "wheat",
+   "id": "wheat",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Wheat",
+    "zh-TW": "小麥"
+   },
+   "price_per_kg": 10.5053,
+   "reason": null,
+   "source_name": "Wheat, US HRW",
+   "spec": {
+    "en": "US hard red winter",
+    "zh-TW": "美國硬紅冬麥"
+   },
+   "usd": 330.0,
+   "usd_unit": "mt"
+  },
+  {
+   "category": "cereal",
+   "change": {
+    "diff_per_kg": 0.3374,
+    "direction": "up",
+    "pct": 0.049672,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "maize",
+   "id": "maize",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Maize",
+    "zh-TW": "玉米"
+   },
+   "price_per_kg": 7.1308,
+   "reason": null,
+   "source_name": "Maize",
+   "spec": {
+    "en": "US No. 2 yellow",
+    "zh-TW": "美國 2 號黃玉米"
+   },
+   "usd": 224.0,
+   "usd_unit": "mt"
+  },
+  {
+   "category": "pulse",
+   "change": {
+    "diff_per_kg": 0.1273,
+    "direction": "up",
+    "pct": 0.008368,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "soybean",
+   "id": "soybeans",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Soybeans",
+    "zh-TW": "大豆"
+   },
+   "price_per_kg": 15.3441,
+   "reason": null,
+   "source_name": "Soybeans",
+   "spec": {
+    "en": "US",
+    "zh-TW": "美國產"
+   },
+   "usd": 482.0,
+   "usd_unit": "mt"
+  },
+  {
+   "category": "other",
+   "change": {
+    "diff_per_kg": 1.2734,
+    "direction": "up",
+    "pct": 0.117647,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "sugarcane",
+   "id": "sugar",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Sugar",
+    "zh-TW": "原糖"
+   },
+   "price_per_kg": 12.097,
+   "reason": null,
+   "source_name": "Sugar, world",
+   "spec": {
+    "en": "World (ISA) raw",
+    "zh-TW": "國際糖協定價格"
+   },
+   "usd": 0.38,
+   "usd_unit": "kg"
+  },
+  {
+   "category": "oil",
+   "change": {
+    "diff_per_kg": 0.5093,
+    "direction": "up",
+    "pct": 0.014532,
+    "prev_month": "2026-07-01"
+   },
+   "icon": "oil",
+   "id": "palm_oil",
+   "month": "2026-08-01",
+   "name": {
+    "en": "Palm oil",
+    "zh-TW": "棕櫚油"
+   },
+   "price_per_kg": 35.5587,
+   "reason": null,
+   "source_name": "Palm oil",
+   "spec": {
+    "en": "Malaysia crude",
+    "zh-TW": "馬來西亞粗油"
+   },
+   "usd": 1117.0,
+   "usd_unit": "mt"
+  }
+ ],
+ "published": "2026-09-02",
+ "today": "2026-09-19"
+}

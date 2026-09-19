@@ -1,0 +1,102 @@
+{
+ "category": "oil",
+ "change": {
+  "diff_per_kg": 1.5358,
+  "direction": "up",
+  "pct": 0.014532,
+  "prev_month": "2026-07-01"
+ },
+ "country": "IN",
+ "currency": "INR",
+ "fx": {
+  "currency": "INR",
+  "per_usd": 95.989567,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "oil",
+ "id": "palm_oil",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Palm oil",
+  "zh-TW": "棕櫚油"
+ },
+ "price_per_kg": 107.2203,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 99.5412,
+   "usd": 1037.0
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 99.6372,
+   "usd": 1038.0
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 94.3577,
+   "usd": 983.0
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 94.0698,
+   "usd": 980.0
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 96.4695,
+   "usd": 1005.0
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 99.7332,
+   "usd": 1039.0
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 106.4524,
+   "usd": 1109.0
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 110.004,
+   "usd": 1146.0
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 109.0441,
+   "usd": 1136.0
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 105.9725,
+   "usd": 1104.0
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 105.6845,
+   "usd": 1101.0
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 107.2203,
+   "usd": 1117.0
+  }
+ ],
+ "source_name": "Palm oil",
+ "spec": {
+  "en": "Malaysia crude",
+  "zh-TW": "馬來西亞粗油"
+ },
+ "stats": {
+  "avg_per_kg": 102.3489,
+  "high_per_kg": 110.004,
+  "low_per_kg": 94.0698,
+  "vs_avg_pct": 0.047596
+ },
+ "today": "2026-09-19",
+ "usd": 1117.0,
+ "usd_unit": "mt"
+}

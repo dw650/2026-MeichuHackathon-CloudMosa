@@ -1,0 +1,102 @@
+{
+ "category": "other",
+ "change": {
+  "diff_per_kg": 3.8396,
+  "direction": "up",
+  "pct": 0.117647,
+  "prev_month": "2026-07-01"
+ },
+ "country": "IN",
+ "currency": "INR",
+ "fx": {
+  "currency": "INR",
+  "per_usd": 95.989567,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "sugarcane",
+ "id": "sugar",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Sugar",
+  "zh-TW": "原糖"
+ },
+ "price_per_kg": 36.476,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 33.5963,
+   "usd": 0.35
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 32.6365,
+   "usd": 0.34
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 30.7167,
+   "usd": 0.32
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 30.7167,
+   "usd": 0.32
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 30.7167,
+   "usd": 0.32
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 29.7568,
+   "usd": 0.31
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 31.6766,
+   "usd": 0.33
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 30.7167,
+   "usd": 0.32
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 32.6365,
+   "usd": 0.34
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 30.7167,
+   "usd": 0.32
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 32.6365,
+   "usd": 0.34
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 36.476,
+   "usd": 0.38
+  }
+ ],
+ "source_name": "Sugar, world",
+ "spec": {
+  "en": "World (ISA) raw",
+  "zh-TW": "國際糖協定價格"
+ },
+ "stats": {
+  "avg_per_kg": 31.9166,
+  "high_per_kg": 36.476,
+  "low_per_kg": 29.7568,
+  "vs_avg_pct": 0.142855
+ },
+ "today": "2026-09-19",
+ "usd": 0.38,
+ "usd_unit": "kg"
+}

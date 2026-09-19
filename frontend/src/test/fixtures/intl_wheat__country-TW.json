@@ -1,0 +1,102 @@
+{
+ "category": "cereal",
+ "change": {
+  "diff_per_kg": 0.6367,
+  "direction": "up",
+  "pct": 0.064516,
+  "prev_month": "2026-07-01"
+ },
+ "country": "TW",
+ "currency": "TWD",
+ "fx": {
+  "currency": "TWD",
+  "per_usd": 31.834145,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "wheat",
+ "id": "wheat",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Wheat",
+  "zh-TW": "小麥"
+ },
+ "price_per_kg": 10.5053,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 7.4428,
+   "usd": 233.8
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 7.3473,
+   "usd": 230.8
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 7.828,
+   "usd": 245.9
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 7.7293,
+   "usd": 242.8
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 7.9554,
+   "usd": 249.9
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 8.2005,
+   "usd": 257.6
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 8.7862,
+   "usd": 276.0
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 8.9772,
+   "usd": 282.0
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 9.6457,
+   "usd": 303.0
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 9.1046,
+   "usd": 286.0
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 9.8686,
+   "usd": 310.0
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 10.5053,
+   "usd": 330.0
+  }
+ ],
+ "source_name": "Wheat, US HRW",
+ "spec": {
+  "en": "US hard red winter",
+  "zh-TW": "美國硬紅冬麥"
+ },
+ "stats": {
+  "avg_per_kg": 8.6159,
+  "high_per_kg": 10.5053,
+  "low_per_kg": 7.3473,
+  "vs_avg_pct": 0.219291
+ },
+ "today": "2026-09-19",
+ "usd": 330.0,
+ "usd_unit": "mt"
+}

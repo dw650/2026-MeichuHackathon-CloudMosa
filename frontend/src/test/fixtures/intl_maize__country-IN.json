@@ -1,0 +1,102 @@
+{
+ "category": "cereal",
+ "change": {
+  "diff_per_kg": 1.0175,
+  "direction": "up",
+  "pct": 0.049672,
+  "prev_month": "2026-07-01"
+ },
+ "country": "IN",
+ "currency": "INR",
+ "fx": {
+  "currency": "INR",
+  "per_usd": 95.989567,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "maize",
+ "id": "maize",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Maize",
+  "zh-TW": "玉米"
+ },
+ "price_per_kg": 21.5017,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 18.9483,
+   "usd": 197.4
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 19.0155,
+   "usd": 198.1
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 19.3899,
+   "usd": 202.0
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 19.7451,
+   "usd": 205.7
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 19.6299,
+   "usd": 204.5
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 20.1194,
+   "usd": 209.6
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 20.417,
+   "usd": 212.7
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 20.5418,
+   "usd": 214.0
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 20.7529,
+   "usd": 216.2
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 18.9195,
+   "usd": 197.1
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 20.4842,
+   "usd": 213.4
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 21.5017,
+   "usd": 224.0
+  }
+ ],
+ "source_name": "Maize",
+ "spec": {
+  "en": "US No. 2 yellow",
+  "zh-TW": "美國 2 號黃玉米"
+ },
+ "stats": {
+  "avg_per_kg": 19.9554,
+  "high_per_kg": 21.5017,
+  "low_per_kg": 18.9195,
+  "vs_avg_pct": 0.077486
+ },
+ "today": "2026-09-19",
+ "usd": 224.0,
+ "usd_unit": "mt"
+}
