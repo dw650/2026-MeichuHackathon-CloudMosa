@@ -241,7 +241,7 @@ class PriceProvider(Protocol):
 - 沒有資料時 `price_per_kg` 為 `null`，並附 `reason`：`no_retail_area`、`no_retail_crop`、`no_data`，讓前端顯示對應說明。
 - `staleness.state`：`today`、`closed`（中間只有休市日）、`stale`、`none`（[06](06-data.md) §3.5）。
 - `nearby`（2026-09-20 追加，行情頁的「附近最高／最低」，[02](02-product-spec.md) §5.4）：在這個地區和附近地區之間，價格最高與最低的各一列，手機只要下載兩列，不必下載所有地區。
-  - 附近＝同一個國家內離這個地區最近的 3 個地區，而且直線距離 300 km 以內；只算最新交易日和這個地區相同的。這個地區的價格要是新的（`staleness.state` 是 `today` 或 `closed`）。
+  - 附近＝同一個國家內直線距離 100 km 以內的所有地區（`NEARBY_MAX_KM`）；只算最新交易日和這個地區相同的。這個地區的價格要是新的（`staleness.state` 是 `today` 或 `closed`）。
   - 每列：`area_id`、`price_per_kg`、`diff_per_kg`（那個地區減這個地區）、`distance_km`（直線）、`is_base`（這個地區本身就是最高或最低；這時差額與距離都是 0）。同價時算這個地區，附近地區之間同價時取近的。
   - 這個地區沒有價格或是舊資料、沒有符合的附近地區、或附近都和這裡同價時為 `null`。
   - 走勢頁也會收到這個欄位（同一個端點），不使用。

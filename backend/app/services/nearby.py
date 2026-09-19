@@ -1,16 +1,16 @@
 """Nearby prices (docs/02 §5.4): the highest and lowest price around the area being viewed.
 
-Nearby areas are the NEARBY_COUNT other areas of the country closest to the viewed area, at
-most NEARBY_MAX_KM away in a straight line. The caller keeps only those whose latest trade
-date is the viewed area's, so every price compared is from the same day."""
+Nearby areas are every other area of the country within NEARBY_MAX_KM of the viewed area in a
+straight line: about two hours by truck, the same distance in every country. The caller keeps
+only those whose latest trade date is the viewed area's, so every price compared is from the
+same day."""
 
 from collections.abc import Sequence
 from dataclasses import dataclass
 
 from app.services.compare import PRICE_DECIMALS, haversine_km
 
-NEARBY_COUNT = 3
-NEARBY_MAX_KM = 300  # the same limit as a location guess (docs/06 §6)
+NEARBY_MAX_KM = 100
 
 
 @dataclass(frozen=True)
@@ -23,10 +23,9 @@ class Place:
 def nearest(
     base: Place,
     others: Sequence[Place],
-    count: int = NEARBY_COUNT,
     max_km: int = NEARBY_MAX_KM,
 ) -> list[tuple[str, int]]:
-    """(area id, km) of the `count` closest areas within `max_km`, nearest first.
+    """(area id, km) of every other area within `max_km`, nearest first.
 
     Equal distances keep the order of `others` (the catalog order)."""
     found = [
@@ -35,7 +34,7 @@ def nearest(
         if place.area_id != base.area_id
         and (km := haversine_km(base.lat, base.lon, place.lat, place.lon)) <= max_km
     ]
-    return [(area_id, km) for km, _, area_id in sorted(found)[:count]]
+    return [(area_id, km) for km, _, area_id in sorted(found)]
 
 
 @dataclass(frozen=True)

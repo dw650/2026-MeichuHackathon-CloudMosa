@@ -15,22 +15,7 @@
   "min_per_kg": 22.64,
   "total": 10
  },
- "nearby": {
-  "highest": {
-   "area_id": "pune",
-   "diff_per_kg": 0.76,
-   "distance_km": 165,
-   "is_base": false,
-   "price_per_kg": 24.71
-  },
-  "lowest": {
-   "area_id": "ahmednagar",
-   "diff_per_kg": -1.28,
-   "distance_km": 142,
-   "is_base": false,
-   "price_per_kg": 22.67
-  }
- },
+ "nearby": null,
  "price_per_kg": 23.95,
  "reason": null,
  "series": [

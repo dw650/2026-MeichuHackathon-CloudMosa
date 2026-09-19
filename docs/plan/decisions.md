@@ -678,3 +678,12 @@
 - 決定：這四個改成可省略（`lo` 與 `hi`、`arr` 與 `arrR` 要一起給或一起省略）；mock 只在來源格式有這些欄位時印出來。印度、台灣的 seed 沒變，輸出完全相同。
 - 理由：不放用不到的參數，示範資料也不會出現真實資料沒有的區間與到貨量。
 - 影響：`backend/app/seed/schema.py`、`backend/app/ingest/providers/mock.py`。
+
+## 2026-09-20 「附近」改成統一 100 km 內的所有地區
+- 情況：使用者希望各國用同一個距離定義，不限個數（原本是「最近 3 個、300 km 內」）。
+- 決定：附近＝同一國家內直線 100 km 以內、而且最新交易日和這裡相同的所有地區，約貨車 2 小時的距離。
+  - 用 seed 的座標算過：台灣 10 區在 100 km 內都有鄰居（最多 4 個）；50 km 時花蓮沒有鄰居；150 km 以上台北會算到台中，「附近」變成半個台灣。
+  - 印度目前的 11 區彼此相隔 140 km 以上，100 km 內只有 Bengaluru–Kolar，所以印度的示範資料幾乎不會出現附近卡片。接印度真實資料（Agmarknet）時會改挑相鄰的縣，讓大多數地區在 100 km 內有鄰居。
+  - 測試與 e2e 的例子改成台灣：新北市（台北市較高、桃園市較低）、台北市（自己最高）。
+  - 關於頁的「示範資料」說明一併修正：國際參考價是世界銀行的真實資料。
+- 影響：`backend/app/services/nearby.py`、`backend/tests/{unit,api}/test_nearby.py`、`backend/tests/dump_api_fixtures.py`、msw fixtures、`frontend/src/screens/crop-detail/TodayTab.test.tsx`、`frontend/src/i18n/locales/*.json`、`frontend/e2e/{flows,screens}.spec.ts`、docs/02 §5.4、docs/04。

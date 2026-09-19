@@ -29,8 +29,7 @@ const IN_SCREENS = [
   '/about',
   '/cat/recent',
   '/crop/onion/today?area=jalgaon',
-  // Nearby prices: the viewed area is the highest itself / no nearby area qualifies.
-  '/crop/onion/today?area=delhi',
+  // Nearby prices: no area within 100 km has today's price (Kolar is 3 days old).
   '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',
   '/crop/onion/markets?area=kurnool',
@@ -60,6 +59,8 @@ const cases: { name: string; state: AppState; paths: string[] }[] = [
       '/',
       '/?tab=all',
       '/crop/cabbage/today',
+      // Nearby prices on both sides (Taipei higher, Taoyuan lower).
+      '/crop/cabbage/today?area=newtaipei',
       '/crop/cabbage/trend',
       '/crop/cabbage/compare',
       '/crop/cabbage/markets',
