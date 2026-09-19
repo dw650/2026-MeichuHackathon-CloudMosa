@@ -62,6 +62,22 @@ QUOTE_EXAMPLE = {
         {"date": "2026-08-23", "price_per_kg": None},
     ],
     "source": {"id": "mock", "name": {"zh-TW": "示範資料", "en": "Demo data"}},
+    "nearby": {
+        "highest": {
+            "area_id": "pune",
+            "price_per_kg": 24.3,
+            "diff_per_kg": 0.8,
+            "distance_km": 165,
+            "is_base": False,
+        },
+        "lowest": {
+            "area_id": "ahmednagar",
+            "price_per_kg": 22.6,
+            "diff_per_kg": -0.9,
+            "distance_km": 142,
+            "is_base": False,
+        },
+    },
 }
 PRICES_EXAMPLE = {
     "country": "IN",
@@ -187,7 +203,9 @@ async def prices(
     description=(
         "Area price (wholesale: median of the markets that reported on the latest trade"
         " date), market count and range, change, indicators and a daily series with null for"
-        " days without data. Without a price, `reason` says why."
+        " days without data. Without a price, `reason` says why. `nearby` names the highest"
+        " and lowest price among this area and the 3 nearest other areas within 300 km that"
+        " have a price on the same trade date."
     ),
     response_model=QuoteOut,
     responses=_example(QUOTE_EXAMPLE)

@@ -22,6 +22,7 @@ async def test_quote_matches_the_documented_shape(api: httpx.AsyncClient) -> Non
     keys = [
         *("crop_id", "area_id", "type", "currency", "today", "trade_date", "staleness"),
         *("fetched_at", "price_per_kg", "markets", "change", "stats", "series", "source"),
+        "nearby",
     ]
     for key in keys:
         assert key in q
