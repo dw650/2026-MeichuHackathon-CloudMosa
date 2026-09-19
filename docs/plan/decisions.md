@@ -756,3 +756,49 @@
   - 國家變成三個，每國每次的額度是 30 ÷ 3 = 10。
 - 理由：馬來西亞的新聞一半是馬來文；州名是標題裡最常見的地名。
 - 影響：`backend/app/ingest/news/{sources.yaml,demo.yaml,demo.py}`、`backend/tests/news/`、`backend/tests/dump_api_fixtures.py`、`frontend/src/test/fixtures/news__area-kualalumpur_country-MY.json`、`frontend/src/screens/news/*.test.tsx`、`frontend/e2e/news.spec.ts`；docs 06 §1.6。
+## 2026-09-20 馬來文與印地文介面（機器翻譯，待母語者檢查）
+- 情況：要加 Bahasa Melayu（`ms`）與 हिन्दी（`hi`）兩個介面語言（印地文是加分項 B6）；同時有其他分支在 zh-TW／en 加新字串，`locales.test.ts` 原本要求所有字串檔的 key 完全相同。資料名稱（作物、地區、分類、來源）在 seed 只有 `{zh-TW, en}`。
+- 決定：
+  - `ms.json`、`hi.json` 翻譯 en.json 的每一個 key，**都是機器翻譯，要請母語者檢查**；變數與單複數 key 照英文。用詞統一：市場＝pasar／मंडी（印度的批發市場慣稱 mandi）、地區＝kawasan／क्षेत्र、批發＝borong／थोक、零售＝runcit／खुदरा、價格＝harga／भाव、關注＝Kegemaran（最愛）／मेरी सूची（我的清單）、中位數＝median／मध्य भाव。品牌名稱 AgriPrice、資料來源與授權標示（World Bank Pink Sheet、Rates By Exchange Rate API、DB-IP）照原文。
+  - 退回：`SUPPORTED_LANGUAGES` 是 `zh-TW`、`en`、`ms`、`hi`；i18next 的 `fallbackLng` 是英文，所以 ms／hi 缺的 key 執行時顯示英文。`locales.test.ts` 只要求 zh-TW 與 en 的 key 完全相同；ms／hi 只檢查沒有英文沒有的 key、變數與英文相同，並在測試輸出印出涵蓋率（例：`ms.json: 232/232 keys (100.0%)`）與缺的 key，不會失敗。型別上 zh-TW 仍要有全部英文的 key，ms／hi 是「每個 key 都可以沒有」的同一棵樹（`PartialStrings`），別的分支加了 zh-TW／en 的 key，合併後 ms／hi 不用同時補，之後再補翻譯即可。
+  - 資料名稱仍只有 `{zh-TW, en}`：`pickText` 本來就是「介面語言 → 英文 → 第一個非空值」，ms／hi 顯示英文名稱（例：「Nashik district के भाव」）。
+  - 單複數照各語言的規則：馬來文只有 `_other`；印地文 0 和 1 都用 `_one`（「0 मंडी」「1 मंडी」「3 मंडियाँ」）。
+  - 「More・其他」的語言（孟加拉文等）仍標「→ English・尚未提供」。
+- 理由：翻譯與其他分支可以各自進行，合併時不會因為缺翻譯而擋住；使用者永遠看得到字（最差是英文），不會看到 key。
+- 影響：`frontend/src/i18n/{languages,index}.ts`、`locales/{ms,hi}.json`、`locales.test.ts`。之後加字串：zh-TW 與 en 一定要加；ms／hi 可以晚點補，測試輸出會列出還缺哪些。
+
+## 2026-09-20 主要語言的清單與順序
+- 情況：02 §5.1 原本是三個語言（繁中、English、हिन्दी），手機語言排第一；T33 決定設定的語言清單和首次設定相同。多了 Bahasa Melayu 後要決定位置；要不要依國家調整順序，文件沒寫。
+- 決定：
+  - 主要語言四個，預設順序照草圖再加上馬來文：繁體中文、English、हिन्दी、Bahasa Melayu（圖示字母 `M`、紫色）。手機語言是其中之一時排第一並標「手機語言」。
+  - 首次設定的語言畫面還不知道國家（位置推測在背景查，回來時再重排會讓焦點跳動），只用「手機語言 → 預設順序」。
+  - 設定的語言清單（國家已知）：手機語言 → 該國的語言 → 其餘照預設順序；四個都一直列出。國家的語言：印度 English、हिन्दी；馬來西亞 Bahasa Melayu、English、繁體中文；台灣 繁體中文、English（`COUNTRY_LANGUAGES`）。
+  - 首次設定的語言畫面多一列，「More・其他」變成第 5 項（數字鍵 5）。
+- 理由：手機語言最可能是使用者讀得懂的；國家已知時，把當地常用的語言往前放，少按幾下。
+- 影響：`frontend/src/i18n/languages.ts`（`mainLanguages(phone, country)`）、`screens/settings/LanguageSettings.tsx`；docs/02 §5.1。
+
+## 2026-09-20 馬來文、印地文的數字與日期
+- 情況：數字的 locale 依國家是【決定】（03 §7）；印地文等 locale 可能用自己的數字（`mr-IN` 預設是天城文數字）。日期的字要有馬來文、印地文；7 日走勢的 X 軸原本把星期名稱截成 1 字（中文）或 2 字（英文），天城文會被截壞（शनि → शन）。
+- 決定：
+  - 數字仍用國家的 locale（不改【決定】）；所有 `Intl.NumberFormat` 都加 `numberingSystem: 'latn'`，任何語言都是 0–9。印度的 `en-IN` 和 `hi-IN-u-nu-latn` 的結果相同，所以印地文使用者看到的分組不變。
+  - 日期：馬來文「Sab 19/9」、印地文「शनि 19/9」（CLDR 的星期縮寫）；資料時間照當地習慣日在前「19/9 11:40」（繁中、英文維持「9/19 11:40」）；月份用 CLDR 縮寫（Ogo、अग॰）。
+  - 新增 `date.weekdayInitials`（四個字串檔都有），走勢圖直接用，不再截字：繁中「日…六」、英文「Su…Sa」和原本相同；馬來文「Ah…Sa」；印地文用 CLDR 的 narrow（र、सो、मं、बु、गु、शु、श）。休市的「休」：馬來文沿用英文的 X，印地文寫 बंद。
+- 理由：價格在任何語言下都讀得一樣；日期照使用者的習慣；截字對組合字母的文字不安全。
+- 影響：`frontend/src/lib/{format,change,monthly,dates}.ts`、`i18n/dateLabels.ts`、`screens/crop-detail/TrendTab.tsx`、`screens/debug/DebugComponents.tsx`；docs/03 §7。
+
+## 2026-09-20 天城文的字型與字級
+- 情況：字型堆疊只有 Roboto、Noto Sans TC、Noto Sans，天城文要靠瀏覽器自己挑備用字型；128×160 的字級下限是 10px（中文 11px），天城文有上下的母音符號與連字，10px 很難讀。雲端 Chromium 有哪些字型還沒驗證（08 §12）。
+- 決定：
+  - 字型堆疊在 `sans-serif` 前加上 `'Noto Sans Devanagari'`，不自備字型檔：Cloud Phone 官方支援印地文介面，雲端應該有天城文字型；本機與 CI 的 Chromium 有 Noto Sans Devanagari。到 Simulator 用 `/debug/viewport` 的 प्याज 樣本確認；沒有的話再自備子集（用 `unicode-range`，只有出現印地文時才載入）。
+  - 128×160 的印地文比照中文：`:root:lang(hi)` 把說明列與小標籤放大到 11px；e2e 的字級檢查對天城文字元也要求 11px。別的介面語言裡的中文或天城文（語言清單的名稱與圖示字母「中」「अ」）加上 `lang` 屬性，`[lang|='zh']`、`[lang|='hi']` 在 128×160 至少 11px。
+- 理由：天城文的筆畫密度和中文一樣高；寫明字型名稱，排版結果才固定、可測。
+- 影響：`frontend/src/styles/tokens.css`、`frontend/e2e/checks.ts`；docs/03 §3.2、docs/08 §12。
+
+## 2026-09-20 馬來文、印地文放不下的字串
+- 情況：e2e 的版面與字級檢查全部通過後，逐頁看兩種尺寸的截圖並量字串寬度，發現幾處被省略號截掉的是數字或單位（03 §7：數字永遠不截斷）；128×160 的馬來文右軟鍵「Kembali」是一個長字，寬度等於字本身，跑到中間軟鍵底下（往左溢出不會讓 footer 變寬，原本的檢查抓不到）。
+- 決定：
+  - 縮短（括號內是原本的字）：馬來文 本地區市場卡「{{count}} pasar tempatan」（…di kawasan ini）、最高最低「Maks X · Min Y」（Tinggi／Rendah）、較前一交易日「vs hari lalu」（vs hari dagangan lepas）、比 7 日均價「vs 7 hari」（vs purata 7 hari）、距離「{{km}} km lurus」（去掉括號）、設定列「Kawasan」（Kawasan saya）、右軟鍵「Balik」（Kembali）、關注「Kegemaran」與全部作物「Tanaman」（Senarai saya／Semua tanaman）、分類「Kacang」「Biji minyak」「Lain」「Terkini」（Kekacang／Bijian minyak／Lain-lain／Baru dilihat），最近使用的地區也用「Terkini」。印地文 本地區市場卡數字放前面「{{count}} स्थानीय मंडियाँ」（इस क्षेत्र में …）、最高最低「ऊँचा X · नीचा Y」（अधिकतम／न्यूनतम；走勢的高、低與國際參考價跟著改）、較前一交易日「पिछले दिन से」（पिछले कारोबारी दिन से）、比 7 日均價「7 दिन औसत से」（…के औसत से）、距離「{{km}} km सीधी」、比價的市場數一律「{{count}} मंडी」（像英文的 mkts）。
+  - 仍用省略號、沒有再縮的：128×160 的地區名稱、詳情分頁「Banding」、部分分類名稱與比價說明列的最後一段，和英文的情況相同。
+  - 軟鍵左右兩格加 `max-width: 100%`，太長時以省略號結尾，不會蓋住中間軟鍵；e2e 的版面檢查多一項「軟鍵互相重疊」。
+- 理由：數字與單位要看得到；只換更短的說法，不縮字。
+- 影響：`frontend/src/i18n/locales/{ms,hi}.json`、`frontend/src/components/SoftKeys/SoftKeys.module.css`、`frontend/e2e/checks.ts`。

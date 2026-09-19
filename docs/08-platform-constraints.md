@@ -109,7 +109,7 @@
 |---|---|---|
 | 實際 viewport 大小、是否有狀態列 | 記錄 `innerWidth`、`innerHeight`、`devicePixelRatio` | 用 `innerHeight` 排版，高度不足時自動壓縮 header |
 | 官方 pt 對應多少 px、12px 字是否讀得清楚 | 字級樣本頁 | 維持字級下限，只改 tokens |
-| Roboto 900、中文、天城文字型 | 樣本頁 | 改用 700；必要時自備字型子集 |
+| Roboto 900、中文、天城文字型 | 樣本頁（`/debug/viewport` 有 प्याज 樣本；字型堆疊已寫明 Noto Sans Devanagari，03 §3.2） | 改用 700；必要時自備字型子集（天城文可用 `unicode-range` 只在出現印地文時載入） |
 | `*`、`#`、`Escape` 的 `event.key`；長按的 repeat 速度 | 按鍵記錄頁 | 只用 `event.key`；調整節流參數 |
 | RSK 的 `back` 事件是否支援 | 開著面板時按 RSK，觀察 `back`／`popstate` | 全部靠歷史記錄返回（本 App 預設做法） |
 | Enter 會不會觸發兩次 | 在按鈕上按 Enter，計算次數 | 統一只處理 `keydown` 或只處理 `click`，擇一 |
