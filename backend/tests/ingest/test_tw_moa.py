@@ -18,6 +18,8 @@ import pytest
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app import worker
+from app.config import Settings
 from app.ingest.maps import maps_from_seeds
 from app.ingest.normalize import normalize_all
 from app.ingest.pipeline import run_provider
@@ -323,3 +325,45 @@ async def test_real_rows_flow_through_the_pipeline(session: AsyncSession) -> Non
     assert rows_in == rows_ok + sum(reasons.values())
     sources = await session.execute(text("SELECT DISTINCT source, country FROM quotes"))
     assert sources.all() == [("tw_moa", "TW")]
+
+
+async def test_a_country_never_mixes_demo_and_real_prices(
+    settings: Settings, session: AsyncSession, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def offline(*args: Any, **kwargs: Any) -> TwMoaProvider:
+        server = httpx.MockTransport(FakeServer())
+        return TwMoaProvider(*args, transport=server, sleep=Sleeps(), **kwargs)
+
+    def clock() -> datetime:
+        return NOW
+
+    async def sources() -> list[tuple[str, str]]:
+        result = await session.execute(
+            text("SELECT DISTINCT country, source FROM quotes ORDER BY country, source")
+        )
+        return [(c, s) for c, s in result.tuples().all()]
+
+    async def count(where: str) -> int:
+        result = await session.execute(
+            text(f"SELECT count(*) FROM area_daily WHERE country = 'TW' AND {where}"),
+            {"d": DAY - timedelta(days=2)},
+        )
+        return int(result.scalar_one())
+
+    monkeypatch.setattr(worker, "TwMoaProvider", offline)
+    demo = settings.model_copy(update={"providers": "mock"})
+    real = settings.model_copy(update={"providers": "mock,tw_moa"})
+
+    await worker.run_once(demo, clock)
+    assert await sources() == [("IN", "mock"), ("TW", "mock")]
+
+    summaries = await worker.run_once(real, clock)
+    assert [(s.source, s.status) for s in summaries] == [("mock", "ok"), ("tw_moa", "ok")]
+    assert await sources() == [("IN", "mock"), ("TW", "tw_moa")]
+    # Nothing of the demo is left in Taiwan: no retail, no days before the real sample.
+    assert await count("price_type = 'retail'") == 0
+    assert await count("trade_date < :d") == 0
+    assert await count("price_type = 'wholesale'") > 0
+
+    await worker.run_once(demo, clock)
+    assert await sources() == [("IN", "mock"), ("TW", "mock")]
