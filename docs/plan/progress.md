@@ -30,3 +30,4 @@
 - 2026-09-19 T23 完成：src/components 的 Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、MetricGrid、Sheet、StatusBox、Skeleton（另有 Tile、PriceTypeTag、IconGrid），SVG 搬到 src/icons；漲跌色改由 UpIsPosContext 決定；/debug/components 展示頁在兩種尺寸與語言下沒有溢出、字級不低於下限（45cf36f）
 - 2026-09-19 T24 完成：Playwright 設定、只輸出 JSON 摘要的報告器、失敗才截圖、溢出／字級下限／焦點／console 檢查、make e2e（demo 模式完整服務）與 e2e.yml；元件展示頁在兩種尺寸 × 兩種語言通過（00cc165）
 - 2026-09-19 同步點 1 完成：T23、T24 合併進 main，make lint、make test（前端 404、後端 157）、make e2e（70 項）全部通過（00cc165）
+- 2026-09-19 T32 完成：首次設定五個畫面（語言、其他語言、確認位置、國家、地區），推測不到位置時直接選國家，選「是」或選完地區後回到首頁且不留設定畫面在歷史裡（244b114）
