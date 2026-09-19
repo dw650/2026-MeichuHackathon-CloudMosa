@@ -1,0 +1,41 @@
+/* Developer diagnostics (docs/07 §1.1). Not part of the user-facing app. */
+.page {
+  display: grid;
+  gap: 4px;
+  padding: 4px var(--gut);
+  font-size: var(--fs-3);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 2px 4px;
+  background: var(--card);
+  border-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.key {
+  font-weight: 900;
+}
+
+.muted {
+  color: var(--ink3);
+}
+
+.button {
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
+}
