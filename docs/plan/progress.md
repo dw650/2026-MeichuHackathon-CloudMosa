@@ -45,3 +45,46 @@
 - 2026-09-19 T36 完成：每個動作即時存（store）；從首頁網址重新開啟時回到上次畫面與焦點、返回回到首頁（T21 機制，e2e 驗證）；設定 › Demo 可切換三個開關，請求帶上 X-Demo-* 標頭（e2e 驗證）（d22336f）
 - 2026-09-19 T37 完成：各畫面的 128×160 縮減規則已在實作時套用；make e2e 在 128×160 全部通過，16 個畫面截圖目視確認（3db54b5）
 - 2026-09-19 T38 完成：根目錄 README（繁中）：一句話介紹、4 張 240×320 截圖（make screenshots 產生）、快速開始與 demo 模式、mermaid 架構圖、技術選型、技術亮點、測試與 CI、專案結構；指令都實際執行、21 個連結都存在、mermaid 可解析（0a50868）
+- 2026-09-19 T39 完成：baseline 驗收——全部畫面 × 兩種尺寸、主要流程 × 四個國家與語言組合；新增驗收 e2e（`*` 讓所有數值一起切換、只用按鍵換語言不改國家與地區）；修正 128×160 看不到價格類型；make lint、make test（前端 481、後端 157）、make audit（0 漏洞）、make e2e（134 項）全部通過；空資料庫 `cp .env.example .env && make up` 約 31 秒可用，README 的快速開始照做可以跑起來（03aedd8）
+
+## baseline 完成摘要（2026-09-19）
+
+T01–T39 全部完成並合併進本地 `main`（沒有 push）。**Phase 2 由人接手**；各條平行開發線的分支（`track/*`）保留，worktree 已移除。
+
+### 做了什麼
+
+- **服務**：`make up` 用 docker compose 起四個服務：db（PostgreSQL 16，只綁 127.0.0.1）、api（FastAPI，啟動時自動 migrate）、worker（啟動時抓一次，之後在各國當地時間 00:05 抓）、web（Caddy：靜態檔、`/api` 轉發、安全標頭與 CSP、SPA fallback）。`make dev` 是 Vite HMR 加上 api `--reload`；`compose.prod.yaml` 開 80／443，`SITE_ADDRESS` 設成網域後 Caddy 會自己取得 HTTPS 憑證。
+- **資料管線**：mock provider 輸出真實來源的格式（data.gov.in 的公擔、農業部 FarmTransData 的民國日期、零售調查）→ 正規化 → 06 §2.1 的檢查 → COPY upsert → 市場代表價與地區中位數（附市場數）→ `ingest_runs`。印度 11 個地區、31 個市場，台灣 10 個地區、14 個市場，各 10 種作物、60 天；延遲、休市、沒有零售、沒有資料等例外都放進 mock。
+- **API**：`/api/v1` 的國家、地區、作物、價格、行情、比價、市場、位置推測與健康檢查；統一錯誤格式、X-Request-ID、Cache-Control、Swagger（`/api/docs`）。前端型別由 OpenAPI 產生（`make types`），CI 的 contract job 會擋下過期的型別。位置推測：`X-Forwarded-For` 最左邊的公開 IP → DB-IP 資料庫 → 300 km 內最近的地區；沒有資料庫檔案時照常運作，改成讓使用者自己選國家。
+- **前端**：全部畫面——首次設定（語言、其他語言、確認位置、國家、地區）、首頁（關注、全部作物）、作物清單、作物詳情（行情、走勢、比價）、本地區各市場、單一市場、地區清單、左軟鍵選單、換地區與排序面板、設定（語言、單位、編輯關注等）、關於。按鍵只看 `event.key`；每個畫面與面板都是一筆歷史；用真正的 DOM 焦點並依 ID 還原；每個動作立刻存；重新開啟時回到上次的畫面與焦點。繁中與 English 全部走 i18n；支援 240×320 與 128×160；印度與台灣的幣別、單位、漲跌顏色都跟著國家。
+- **狀態**：載入中、連線失敗（有／沒有舊資料）、地區今天未更新、沒有零售、沒有資料、地區不存在，以及每個畫面的 error boundary。demo 建置的設定多一列「Demo」，可以現場切換模擬 API 失敗、地區未更新與推測位置。
+- **品質**：`make lint`（ESLint 含分層規則、tsc、ruff、mypy strict）；`make test`（前端 481 項、後端 157 項；後端 services＋ingest 覆蓋率 98%，前端 lib＋keys＋focus＋store 通過 90% 門檻，前端整體 96%）；`make audit` 0 個漏洞；`make e2e`（Playwright 134 項：全部畫面 × 兩種尺寸、主要流程 × 四個國家與語言組合、各種狀態、重新開啟、驗收項目，每項都檢查溢出、字級、焦點與 console）。CI 有 frontend、backend、contract、images 四個 job；`e2e.yml` 在手動觸發與 push 到 `main` 時跑。
+- **README**：繁中，含 4 張截圖、快速開始、demo 模式、架構圖、技術選型與亮點。
+
+### decisions.md 的重點
+
+- 工具鏈：TypeScript 固定 5.9、react-router 用 7（產生型別與 lint 的工具還不支援 TS 6／7）。
+- 分層規則交給 ESLint 擋：`components/` 不讀 store、不呼叫 API；`screens/` 不直接 `fetch`、不直接讀 `localStorage`；也擋 `keyCode`、`alert`、GPS。
+- 後端：quotes 先 COPY 進暫存表再一次合併（約 6 秒降到 0.6 秒）；漲跌比率先進位到 12 位小數再和持平門檻比較；coverage 要設定 greenlet，才算得到 async 程式的覆蓋率。
+- 數字與日期：一律由 `Intl` 進位，正負號看進位後的結果（`+`、`−`、`±`）；日期與星期的文字由 i18n 傳進 `lib/dates`。
+- 漲跌顏色由 `UpIsPosContext` 依國家決定；元件的字級都提高到下限，只有鍵帽維持 9px。
+- 走勢圖的「休」只用在該國的休市星期；其他沒有資料的日子照常寫星期，不掩蓋資料延遲。
+- 每個畫面都有 error boundary；首頁與作物清單遇到 `area_not_found` 會導向地區清單。
+- 128×160：「舊」標籤仍然顯示；資訊列多一格，讓價格類型永遠看得到（T39）。
+- 排程改成多條線平行開發（使用者同意），品質關卡不變。
+
+### 還沒做的事
+
+- Phase 2：部署到公開 HTTPS、在官方 Simulator 測試、回填 08 §12。
+- `scripts/deploy.sh`：07 §5.2 寫明 Phase 2 才開始使用，還沒寫。
+- 加分項 B1–B8（順序見 02 §3.2）。B3 的 data.gov.in 需要 API 金鑰，要由人申請。
+- 英文較長的標題（例如「Median of 7 markets · ₹/qtl」）在 240×320 以省略號截斷，符合規格，但可以再縮短英文字串。
+
+### 給 Phase 2 的注意事項
+
+- **一定要公開 HTTPS**：Simulator 在 CloudMosa 的機房執行，連不到 `localhost`。還沒有 VM 時，用 Cloudflare Tunnel 或 ngrok 把本機的 `:8080` 暴露出去（`SITE_ADDRESS=:8080` 不看 Host，tunnel 後面也能用）。有 VM 時在 `.env` 把 `SITE_ADDRESS` 設成網域，執行 `docker compose -f compose.yaml -f compose.prod.yaml up -d --build`。
+- VM 上的 `.env` 手動建立，不進 Git；`POSTGRES_PASSWORD` 一定要換掉。
+- 位置推測要先跑 `make geoip` 下載 DB-IP 資料庫（`*.mmdb` 不進 Git）；沒有這個檔案時 App 照常運作，只是不會推測地區。DB-IP 的 CC BY 4.0 標示已經放在關於頁，換資料庫時要一起改。
+- 先部署 demo 建置（`.env` 設 `VITE_DEMO=true`、`DEMO_MODE=true`），在 Simulator 打開 `/debug/keys`、`/debug/viewport` 與 `/api/v1/debug/headers`，照 08 §12 逐項確認並回填。最要緊的幾項：`*`、`#`、`Escape` 的 `event.key`；面板開著時按 RSK 是否只關面板；Enter 會不會觸發兩次；實際的 `innerHeight`；`X-Forwarded-For` 的格式（決定位置推測能不能用）。
+- 正式建置沒有除錯頁，`/api/v1/debug/headers` 回 404。展示時要不要保留設定裡的「Demo」開關（可以現場示範連線失敗、資料未更新），由團隊決定。
+- 在 Simulator 照 02 §7 的驗收條件完整跑一次；程式有改動時，進 Phase 2 前先跑 `make e2e`。
