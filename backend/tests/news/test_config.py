@@ -19,12 +19,18 @@ def test_every_seeded_country_has_searches_and_malaysia_is_ready() -> None:
 
 def test_feed_editions_and_languages() -> None:
     tw = CONFIG.countries["TW"]
-    assert tw.summary_lang == "zh-TW"
     assert tw.feeds[0].ceid == "TW:zh-Hant"
     assert tw.feeds[0].lang == "zh-TW"
     assert CONFIG.countries["IN"].feeds[0].lang == "en"
     my_langs = [f.lang for f in CONFIG.countries["MY"].feeds]
     assert my_langs == ["en", "ms"]
+
+
+def test_every_country_is_summarised_in_its_own_language() -> None:
+    """The summary language is the country's own, not the headlines' and not the reader's
+    (user decision 2026-09-20, docs/06 §1.6)."""
+    langs = {cc: c.summary_lang for cc, c in CONFIG.countries.items()}
+    assert langs == {"TW": "zh-TW", "IN": "hi", "MY": "ms"}
 
 
 def test_aliases_point_at_crops_and_areas_of_the_seed() -> None:

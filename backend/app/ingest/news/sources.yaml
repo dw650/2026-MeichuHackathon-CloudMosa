@@ -1,6 +1,7 @@
 # News searches per country for the 新聞 page (docs/06 §1.6). Countries listed here but not in
 # the seed (app/seed/*.yaml) are skipped until their seed exists.
-#   summary_lang: language of the summaries (the country's UI language)
+#   summary_lang: language the summaries are written in: the country's own language
+#          (TW zh-TW, IN hi, MY ms), whatever the reader's interface language is
 #   feeds: Google News RSS editions (hl, gl, ceid) and the searches run in each; the worker
 #          adds "when:7d" on a country's first run and "when:2d" afterwards
 #   keywords: price news on their own (菜價, mandi prices); a headline with one is kept
@@ -41,7 +42,7 @@ countries:
       kaohsiung: [鳳山]
 
   IN:
-    summary_lang: en
+    summary_lang: hi
     feeds:
       - hl: en-IN
         gl: IN
@@ -104,7 +105,7 @@ countries:
   # Malaysia: English and Malay editions; the seed names crops in English, so the Malay names
   # headlines use are aliases here.
   MY:
-    summary_lang: en
+    summary_lang: ms
     feeds:
       - hl: en-MY
         gl: MY

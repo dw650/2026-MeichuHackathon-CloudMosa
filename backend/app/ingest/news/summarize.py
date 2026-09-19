@@ -37,10 +37,54 @@ LAB_TIMEOUT = httpx.Timeout(300.0, connect=10.0)  # a small self-hosted model ma
 MAX_SUMMARY_CHARS = 300
 MAX_CROPS = 3
 
-LANG_NAMES = {"zh-TW": "Traditional Chinese as written in Taiwan (繁體中文)", "en": "English"}
-LENGTH = {"zh-TW": "at most 90 Chinese characters in total", "en": "at most 50 words in total"}
+LANG_NAMES = {
+    "zh-TW": "Traditional Chinese as written in Taiwan (繁體中文)",
+    "en": "English",
+    "ms": "Bahasa Melayu (Malay) as written in Malaysia",
+    "hi": "Hindi (हिन्दी) in the Devanagari script",
+}
+# Two sentences that fit the news card without shrinking the font (docs/06 §1.6). Malay words
+# are about a quarter longer than English ones and Devanagari is wider than Latin, so both take
+# fewer of them than English does; Hindi is counted in characters, like Chinese, because a
+# model keeps to a character count better than to a word count in a non-Latin script.
+LENGTH = {
+    "zh-TW": "at most 90 Chinese characters in total",
+    "en": "at most 50 words in total",
+    "ms": "at most 40 words in total",
+    "hi": "at most 160 Devanagari characters in total",
+}
 _CJK = re.compile("[\u3400-\u9fff]")  # CJK ideographs
+_DEVANAGARI = re.compile("[\u0900-\u097f]")
 _LATIN = re.compile(r"[A-Za-z]")
+_WORD = re.compile(r"[a-z]+")
+MIN_LETTERS = 20  # a two-sentence summary has many more; a stray word or two is not one
+# Malay is written in Latin letters like English, so no character class tells them apart.
+# These are the commonest Malay function words: a real Malay sentence uses several, an English
+# one none. One alone can be a name or an abbreviation in English ("Dan", "Di"), so two count.
+MALAY_WORDS = frozenset(
+    {
+        "adalah",
+        "akan",
+        "dan",
+        "dari",
+        "dengan",
+        "di",
+        "harga",
+        "ialah",
+        "ini",
+        "itu",
+        "juga",
+        "ke",
+        "kerana",
+        "lebih",
+        "pada",
+        "sudah",
+        "tidak",
+        "untuk",
+        "yang",
+    }
+)
+MALAY_MIN_WORDS = 2
 _SENTENCE_END = re.compile(r"(?<=[。！？!?])|(?<=\.)(?=\s|$)")
 
 logger = logging.getLogger("app.ingest.news")
@@ -129,11 +173,28 @@ def _json_object(text: str) -> dict[str, Any] | None:
     return value if isinstance(value, dict) else None
 
 
+def _malay_words(text: str) -> int:
+    """How many different common Malay words the text uses."""
+    return len(MALAY_WORDS.intersection(_WORD.findall(text.lower())))
+
+
 def _language_ok(text: str, lang: str) -> bool:
-    cjk, latin = len(_CJK.findall(text)), len(_LATIN.findall(text))
+    """True when the answer really is in the language that was asked for. A model asked for
+    Hindi or Malay sometimes answers in English; that counts as no summary, never as a summary
+    in the wrong language (docs/06 §1.6)."""
+    cjk = len(_CJK.findall(text))
+    latin = len(_LATIN.findall(text))
+    devanagari = len(_DEVANAGARI.findall(text))
     if lang == "zh-TW":
         return cjk >= 10 and cjk >= latin
-    return latin >= 20 and cjk == 0
+    if lang == "hi":
+        # Devanagari, and more of it than Latin: a mostly English answer is not Hindi.
+        return devanagari >= MIN_LETTERS and devanagari >= latin and cjk == 0
+    if latin < MIN_LETTERS or cjk or devanagari:
+        return False
+    if lang == "ms":
+        return _malay_words(text) >= MALAY_MIN_WORDS
+    return True
 
 
 def _two_sentences(text: str) -> str:

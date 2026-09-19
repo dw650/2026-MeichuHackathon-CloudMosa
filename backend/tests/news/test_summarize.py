@@ -35,6 +35,10 @@ IN_CROPS = (
     CropChoice("potato", ("馬鈴薯", "Potato")),
     CropChoice("tomato", ("番茄", "Tomato")),
 )
+MY_CROPS = (
+    CropChoice("chilli", ("辣椒", "Chilli", "cili")),
+    CropChoice("cabbage", ("甘藍", "Cabbage", "kubis")),
+)
 TEXT = fixture_text("publisher_pts.html")[:500]
 TW_REQUEST = SummaryRequest(
     title="連續降雨全台農損逾2.3億 西螺果菜市場菜價漲3成",
@@ -51,6 +55,23 @@ IN_REQUEST = SummaryRequest(
     lang="en",
     crops=IN_CROPS,
     text="Wholesale onion prices have emerged as the biggest pressure point…",
+)
+HI_REQUEST = SummaryRequest(**{**IN_REQUEST.__dict__, "lang": "hi"})
+MS_REQUEST = SummaryRequest(
+    title="Harga cili turun di pasar borong Kuala Lumpur",
+    source="Berita Harian",
+    published=date(2026, 9, 18),
+    lang="ms",
+    crops=MY_CROPS,
+    text="Bekalan cili di pasar borong Kuala Lumpur bertambah minggu ini…",
+)
+HINDI = (
+    "नासिक मंडी में प्याज़ की आवक बढ़ी और भाव नरम पड़ गए।"
+    " व्यापारियों को नई फसल आने तक भाव स्थिर रहने की उम्मीद है।"
+)
+MALAY = (
+    "Harga cili di pasar borong Kuala Lumpur turun minggu ini kerana bekalan bertambah."
+    " Peniaga menjangkakan harga stabil sehingga akhir bulan."
 )
 LAB = "http://lab.test:11434/v1"
 TEXT_URL = GEMINI_URL.format(model=GEMINI_TEXT_MODEL)
@@ -133,6 +154,47 @@ def test_replies_that_break_the_rules_are_dropped() -> None:
     )
     too_long = json.dumps({"summary": "菜價" * 200 + "。"}, ensure_ascii=False)
     assert parse_reply(too_long, TW_REQUEST) is None
+
+
+def test_the_prompt_names_malay_and_hindi_with_their_own_length() -> None:
+    hindi = build_prompt(HI_REQUEST, grounded=False)
+    assert "Hindi" in hindi and "Devanagari" in hindi
+    assert "at most 160 Devanagari characters in total" in hindi
+    malay = build_prompt(MS_REQUEST, grounded=False)
+    assert "Bahasa Melayu" in malay
+    assert "at most 40 words in total" in malay
+
+
+def test_a_hindi_summary_needs_devanagari() -> None:
+    reply = json.dumps({"summary": HINDI, "crops": ["onion"]}, ensure_ascii=False)
+    assert parse_reply(reply, HI_REQUEST) == (HINDI, ("onion",))
+    # Asked for Hindi, answered in English: no summary at all.
+    english = '{"summary": "Onion prices eased at Lasalgaon. Traders expect steady rates."}'
+    assert parse_reply(english, HI_REQUEST) is None
+    # Mostly English with a few Hindi words is not a Hindi summary either.
+    mixed = json.dumps(
+        {
+            "summary": "Onion arrivals at the Lasalgaon market rose and the modal price eased"
+            " प्याज़ के भाव नरम. Traders expect steady rates until the new crop arrives."
+        },
+        ensure_ascii=False,
+    )
+    assert parse_reply(mixed, HI_REQUEST) is None
+    assert parse_reply(reply, IN_REQUEST) is None  # Hindi where English was asked for
+
+
+def test_a_malay_summary_needs_common_malay_words() -> None:
+    reply = json.dumps({"summary": MALAY, "crops": ["chilli"]}, ensure_ascii=False)
+    assert parse_reply(reply, MS_REQUEST) == (MALAY, ("chilli",))
+    # Latin letters alone cannot tell Malay from English, so the word test does.
+    english = (
+        '{"summary": "Chilli arrivals at the Kuala Lumpur wholesale market rose this week and'
+        ' prices eased. Traders expect steady prices until the end of the month."}'
+    )
+    assert parse_reply(english, MS_REQUEST) is None
+    # One common word can be a name in an English sentence ("Dan"); two cannot.
+    one = '{"summary": "Dan reported cheaper chillies at the wholesale market in Kuala Lumpur."}'
+    assert parse_reply(one, MS_REQUEST) is None
 
 
 def test_only_the_first_two_sentences_are_kept() -> None:

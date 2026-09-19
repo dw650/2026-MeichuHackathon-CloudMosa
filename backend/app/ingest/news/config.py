@@ -28,7 +28,8 @@ class Feed(_Model):
 
 
 class CountryNews(_Model):
-    summary_lang: Literal["zh-TW", "en"]
+    # The language the summaries are written in (docs/06 §1.6), not the reader's.
+    summary_lang: Literal["zh-TW", "en", "ms", "hi"]
     feeds: list[Feed] = Field(min_length=1)
     # A headline is kept when it has a keyword, or a crop or topic word and a price word, and
     # no `exclude` word.
