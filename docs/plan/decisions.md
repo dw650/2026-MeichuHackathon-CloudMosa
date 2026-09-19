@@ -508,3 +508,11 @@
 - 決定：T37 只做驗證與目視檢查：`make e2e` 的全部畫面與主要流程在 128×160 都通過；16 個畫面的 128×160 截圖逐一目視確認。唯一保留與草圖不同的地方是「舊」標籤在 128×160 仍然顯示（T23 的決定：不是今天的資料一定要標示）；連線失敗的警示卡在 128×160 只保留「連線失敗」標題。英文較長的標題（例如「Median of 7 markets · ₹/qtl」）在 240×320 以省略號截斷，符合 03 §7「長名稱用省略號」，之後可以再縮短英文字串。
 - 理由：縮減規則已經在各畫面實作；這個任務確認兩種尺寸都沒有溢出、字級與焦點都正確。
 - 影響：無程式變更。
+
+## 2026-09-19 T38 README 的做法
+- 情況：T38 要求 README 放截圖、快速開始、架構圖、技術選型、技術亮點、測試與專案結構，而且每個指令都實際跑過、每個連結都存在、mermaid 語法正確。
+- 決定：
+  - 截圖由 `make screenshots` 產生（`frontend/e2e/screenshots.spec.ts`，只在 `SCREENSHOTS=1` 時執行）：demo 模式的完整服務、240×320、2 倍解析度，四張放在 `docs/images/`（台灣首頁、印度行情、印度英文比價、台灣 30 日走勢）。
+  - 驗證方式：README 的相對連結用腳本逐一檢查檔案存在（21 個）；mermaid 用官方 mermaid 11 實際解析並繪製；`make up`、`make dev`、`make seed`、`make logs`、`make geoip`、`make test`、`make lint`、`make e2e`、`make audit`、`make types`、`make screenshots` 都在本機實際執行過。
+- 理由：評審打開 repo 第一眼看到的是 README，內容要能照著做而且正確。
+- 影響：`README.md`、`docs/images/`、`frontend/e2e/screenshots.spec.ts`、`Makefile`。

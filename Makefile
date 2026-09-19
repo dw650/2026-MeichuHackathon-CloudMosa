@@ -12,7 +12,7 @@ TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@
 export TEST_DATABASE_URL
 
 .PHONY: up dev down logs seed db-up test test-frontend test-backend lint lint-frontend lint-backend \
-	audit audit-frontend audit-backend build-frontend types geoip fixtures e2e
+	audit audit-frontend audit-backend build-frontend types geoip fixtures e2e screenshots
 
 ## Start all services (production build) and wait until they are healthy.
 up: .env
@@ -83,6 +83,12 @@ e2e: .env frontend/node_modules/.package-lock.json
 	VITE_DEMO=true DEMO_MODE=true $(COMPOSE) up -d --build --wait
 	cd frontend && npx playwright install chromium >/dev/null
 	cd frontend && E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test
+
+## Regenerate the README screenshots (docs/images/) from the running demo stack.
+screenshots: .env frontend/node_modules/.package-lock.json
+	VITE_DEMO=true DEMO_MODE=true $(COMPOSE) up -d --build --wait
+	mkdir -p docs/images
+	cd frontend && SCREENSHOTS=1 E2E_BASE_URL=$(E2E_BASE_URL) npx playwright test screenshots --project=qvga
 
 ## Re-save the frontend msw fixtures from real API responses (fixed clock, mock data).
 fixtures: db-up
