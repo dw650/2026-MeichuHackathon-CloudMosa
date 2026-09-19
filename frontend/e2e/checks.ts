@@ -54,8 +54,7 @@ export async function fontProblems(page: Page): Promise<string[]> {
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const text = node.textContent?.trim()
       const el = node.parentElement
-      if (!text || !el || el.closest('[data-keycap], [aria-hidden="true"] text, script, style'))
-        continue
+      if (!text || !el || el.closest('kbd, script, style')) continue
       const rect = el.getBoundingClientRect()
       if (rect.width === 0 || rect.height === 0 || getComputedStyle(el).visibility === 'hidden')
         continue

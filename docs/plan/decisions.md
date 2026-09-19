@@ -346,3 +346,14 @@
 - 決定：區塊標題照 T06 用英文；元件裡的文字走 i18n、依目前語言顯示，才能檢查中文的字級與長度。進入時焦點在第一張卡片，↑ ↓ 在所有可選項目之間移動，方便看焦點樣式；面板畫在頁內固定高度的框裡，不蓋住整頁。
 - 理由：同一頁就能在兩種語言、兩種尺寸下檢查所有元件。
 - 影響：`frontend/src/screens/debug/DebugComponents.tsx`、`frontend/src/app/debugRoutes.tsx`。T24 檢查這一頁的字級時只略過 `kbd`。
+
+## 2026-09-19 T24 Playwright 檢查的做法
+- 情況：07 §4 列了檢查項目與「只輸出 JSON 摘要、失敗才截圖」，但沒寫 `make e2e` 怎麼起服務、哪些文字不算字級下限、狀態怎麼準備。
+- 決定：
+  - `make e2e` 用 `VITE_DEMO=true DEMO_MODE=true docker compose up -d --build --wait` 起完整服務（跑完後服務維持 demo 模式），再跑 Playwright；兩個 project：240×320 與 128×160。
+  - 自訂報告器只印一份 JSON（通過數、失敗項目與數值、截圖路徑）；`screenshot: only-on-failure`，截圖在 `frontend/e2e/artifacts/`（不進 Git）。
+  - 檢查：頁面不水平溢出；`header`、`footer` 與標了 `data-fixed` 的區塊不溢出（有省略號的文字除外）；有 `data-focus-id` 的畫面焦點必須在這種元素上而且完整在內容區內；可見文字的字級 ≥ 11px（128×160：≥ 10px，中文 11px），`<kbd>` 鍵帽（9px）是唯一例外；沒有 console error 與未處理的例外。
+  - 用 `addInitScript` 在 App 載入前寫入 store 的儲存格式，直接開啟任何畫面、國家、語言與價格類型；除錯頁 `/debug/viewport` 故意有 10px 樣本，不列入檢查。
+  - CI 另有 `.github/workflows/e2e.yml`：手動觸發或 push 到 `main` 時跑 `make e2e`，失敗時上傳截圖。
+- 理由：一個指令跑完、輸出精簡；之後 T34、T39 的全部畫面檢查沿用同一套。
+- 影響：`frontend/playwright.config.ts`、`frontend/e2e/`、`frontend/tsconfig.e2e.json`、`Makefile`、`.github/workflows/e2e.yml`。
