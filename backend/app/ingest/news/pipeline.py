@@ -86,6 +86,9 @@ def matcher_for(catalog: CountryCatalog, config: CountryNews) -> Matcher:
         crop_aliases=config.crop_aliases,
         area_aliases=config.area_aliases,
         keywords=config.keywords,
+        topics=config.topics,
+        price_words=config.price_words,
+        exclude=config.exclude,
     )
 
 

@@ -111,6 +111,7 @@ async def test_a_run_stores_on_topic_items_once_with_tags(seeded: AsyncSession) 
     titles = [i.title for i in stored]
     assert len(titles) == len(set(titles)) == run.items_new
     assert not any("自助餐" in t for t in titles)  # off topic: no keyword, no crop
+    assert not any("竊賊" in t for t in titles)  # a topic word but no price word
     assert run.items_in == 2 * run.items_new
     assert source.days == [7]  # the first run fills a week
     theft = next(i for i in stored if i.title.startswith("母湯喔！菜價飆漲偷摘菜"))
@@ -124,6 +125,8 @@ async def test_a_run_stores_on_topic_items_once_with_tags(seeded: AsyncSession) 
     assert theft.summary is None
     xiluo = next(i for i in stored if "西螺" in i.title)
     assert xiluo.area_ids == ["yunlin"]
+    tpe = next(i for i in stored if "北農" in i.title)
+    assert tpe.area_ids == ["taipei"]  # an alias: 北農 is Taipei's wholesale market
     [record] = await runs(seeded)
     assert (record.status, record.items_new, record.articles, record.model_calls) == (
         "ok",
@@ -375,8 +378,8 @@ async def test_run_news_end_to_end_with_gemini(maker: async_sessionmaker[AsyncSe
         monotonic=time.clock,
     )
     assert run.status == "ok"
-    assert run.items_new == 11  # 12 headlines, one off topic
-    assert run.articles == run.model_calls == run.summaries == 11  # within TW's share of 15
+    assert run.items_new == 10  # 12 headlines, two off topic
+    assert run.articles == run.model_calls == run.summaries == 10  # within TW's share of 15
     async with maker() as session:
         stored = await items(session)
     assert all(i.summary and i.summary_model == "gemini-3.5-flash-lite" for i in stored)

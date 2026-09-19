@@ -98,14 +98,20 @@ def test_matcher_finds_crops_areas_and_relevance() -> None:
         areas=TW_AREAS,
         crop_aliases={"cabbage": ["高麗菜"]},
         area_aliases={},
-        keywords=["菜價", "果菜市場"],
+        keywords=["菜價"],
+        topics=["果菜", "蔬菜"],
+        price_words=["價", "漲"],
+        exclude=["裝運點"],
     )
     title = "臺中高麗菜價格回穩 雲林果菜市場到貨增"
     assert matcher.crop_ids(title) == ["cabbage"]
     assert matcher.area_ids(title) == ["taichung", "yunlin"]
-    assert matcher.relevant(title)
-    assert matcher.relevant("芭樂盛產")  # a crop is enough
+    assert matcher.relevant(title)  # a crop and a price word
+    assert matcher.relevant("菜價飆漲偷摘菜")  # a keyword alone
+    assert not matcher.relevant("芭樂盛產")  # a crop without a price word
+    assert not matcher.relevant("竹市加倍券開跑 果菜市場首日發2200張")  # a topic without one
     assert not matcher.relevant("自助餐4菜+白飯要85元")
+    assert not matcher.relevant("本頓港蔬菜裝運點價格")  # excluded
 
 
 def test_matcher_for_english_headlines() -> None:
@@ -115,6 +121,9 @@ def test_matcher_for_english_headlines() -> None:
         crop_aliases={"maize": ["corn"]},
         area_aliases={"bengaluru": ["Bengaluru", "Bangalore"]},
         keywords=["mandi price", "vegetable price"],
+        topics=["vegetable"],
+        price_words=["price", "rate", "kg"],
+        exclude=["on road price"],
     )
     assert matcher.crop_ids("Onion, tomato prices climb in Nashik mandis") == ["onion", "tomato"]
     assert matcher.area_ids("Onion arrivals drop at Nashik; Bangalore prices up") == [
@@ -123,4 +132,6 @@ def test_matcher_for_english_headlines() -> None:
     ]
     assert matcher.crop_ids("Corner shops raise prices") == []
     assert matcher.relevant("Vegetable prices remain stable")
+    assert matcher.relevant("Onion supply at 32/kg soon")
+    assert not matcher.relevant("Onion supply improves")
     assert not matcher.relevant("Mahindra XUV400 on road price Ramganj Mandi")

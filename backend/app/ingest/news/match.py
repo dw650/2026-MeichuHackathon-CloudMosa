@@ -108,6 +108,10 @@ def area_terms(
     return out
 
 
+def _words(values: Sequence[str]) -> TermIndex:
+    return TermIndex({value: [value] for value in values})
+
+
 @dataclass(frozen=True)
 class Matcher:
     """What one country's headlines mention: crops, areas, and whether they are on topic."""
@@ -115,6 +119,9 @@ class Matcher:
     crops: TermIndex
     areas: TermIndex
     keywords: TermIndex
+    topics: TermIndex
+    price_words: TermIndex
+    exclude: TermIndex
 
     @classmethod
     def build(
@@ -125,11 +132,17 @@ class Matcher:
         crop_aliases: Mapping[str, Sequence[str]],
         area_aliases: Mapping[str, Sequence[str]],
         keywords: Sequence[str],
+        topics: Sequence[str] = (),
+        price_words: Sequence[str] = (),
+        exclude: Sequence[str] = (),
     ) -> "Matcher":
         return cls(
             crops=TermIndex(crop_terms(crops, crop_aliases)),
             areas=TermIndex(area_terms(areas, area_aliases)),
-            keywords=TermIndex({kw: [kw] for kw in keywords}),
+            keywords=_words(keywords),
+            topics=_words(topics),
+            price_words=_words(price_words),
+            exclude=_words(exclude),
         )
 
     def crop_ids(self, text: str) -> list[str]:
@@ -139,5 +152,13 @@ class Matcher:
         return self.areas.find(text)
 
     def relevant(self, text: str) -> bool:
-        """On topic: mentions a topic keyword or one of the country's crops."""
-        return bool(self.keywords.find(text) or self.crops.find(text))
+        """On topic: a price keyword (菜價, mandi prices), or a crop or farm topic together with
+        a price word (芭樂 … 價格, onion … prices). A market or a crop alone is not enough:
+        「果菜市場發加倍券」 is not price news. Headlines with an `exclude` word (other
+        countries' market reports) are never on topic."""
+        if self.exclude.find(text):
+            return False
+        if self.keywords.find(text):
+            return True
+        about_produce = bool(self.crops.find(text) or self.topics.find(text))
+        return about_produce and bool(self.price_words.find(text))

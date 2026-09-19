@@ -30,7 +30,12 @@ class Feed(_Model):
 class CountryNews(_Model):
     summary_lang: Literal["zh-TW", "en"]
     feeds: list[Feed] = Field(min_length=1)
+    # A headline is kept when it has a keyword, or a crop or topic word and a price word, and
+    # no `exclude` word.
     keywords: list[str] = []
+    topics: list[str] = []
+    price_words: list[str] = []
+    exclude: list[str] = []
     crop_aliases: dict[str, list[str]] = {}
     area_aliases: dict[str, list[str]] = {}
 

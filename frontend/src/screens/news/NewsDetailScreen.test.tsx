@@ -50,7 +50,7 @@ describe('NewsDetailScreen', () => {
 
   it('has no summary box when there is no summary', async () => {
     await renderApp('/news/3', { country: 'TW' })
-    await screen.findByRole('heading', { name: '香蕉外銷訂單增加 高雄蕉農收入提升' })
+    await screen.findByRole('heading', { name: '香蕉外銷訂單增加 高雄產地價上揚' })
     expect(screen.queryByText('AI 依原文摘要，可能有誤')).toBeNull()
     expect(screen.getByText('昨天 18:10')).toBeInTheDocument()
     expect(screen.getByText('香蕉')).toBeInTheDocument()

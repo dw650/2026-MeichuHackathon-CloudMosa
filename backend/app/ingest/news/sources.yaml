@@ -3,7 +3,10 @@
 #   summary_lang: language of the summaries (the country's UI language)
 #   feeds: Google News RSS editions (hl, gl, ceid) and the searches run in each; the worker
 #          adds "when:7d" on a country's first run and "when:2d" afterwards
-#   keywords: a headline must mention one of these or one of the country's crops to be kept
+#   keywords: price news on their own (菜價, mandi prices); a headline with one is kept
+#   topics / price_words: otherwise a headline needs a crop or a topic word AND a price word
+#          (「果菜市場發加倍券」 has a topic but no price word, so it is left out)
+#   exclude: headlines with one of these are left out (other countries' market reports)
 #   crop_aliases / area_aliases: other names used in headlines, on top of every name in the
 #          seed (all languages); unknown ids are ignored
 countries:
@@ -14,8 +17,10 @@ countries:
         gl: TW
         ceid: "TW:zh-Hant"
         queries: [菜價, 蔬菜 批發價, 蔬菜價格, 果菜市場, 水果價格]
-    keywords:
-      [菜價, 蔬菜, 蔬果, 果菜, 青菜, 葉菜, 水果, 農產品, 菜農, 果農, 農損, 批發價, 產地價, 拍賣價, 到貨量]
+    keywords: [菜價, 批發價, 產地價, 拍賣價, 果菜價, 蔬菜價格, 水果價格, 農產品價格]
+    topics: [蔬菜, 蔬果, 果菜, 青菜, 葉菜, 水果, 農產品, 菜農, 果農, 農損]
+    price_words: [價, 漲, 跌, 貴, 便宜]
+    exclude: [裝運點, 終端市場, 美股]
     crop_aliases:
       cabbage: [高麗菜]
       sweetpotato: [地瓜, 番薯]
@@ -54,12 +59,27 @@ countries:
       - vegetable price
       - vegetables price
       - fruit price
-      - wholesale price
-      - wholesale market
       - food inflation
-      - kharif
-      - rabi
       - msp
+    topics: [vegetable, fruit, farmer, crop, kharif, rabi, agriculture, farm produce]
+    price_words:
+      - price
+      - rate
+      - cost
+      - costlier
+      - cheaper
+      - dearer
+      - inflation
+      - hike
+      - slump
+      - surge
+      - soar
+      - crash
+      - rs
+      - ₹
+      - kg
+      - quintal
+    exclude: [usda, terminal market, shipping point, on road price, pakistan]
     crop_aliases:
       chilli: [chili, green chilli]
       soybean: [soya, soyabean]
@@ -91,5 +111,7 @@ countries:
         gl: MY
         ceid: "MY:ms"
         queries: [harga sayur, pasar borong sayur]
-    keywords:
-      [vegetable price, vegetables price, fruit price, wholesale market, sayur, pasar borong, fama, petani]
+    keywords: [harga sayur, vegetable price, vegetables price, fruit price]
+    topics: [sayur, sayur-sayuran, buah, buah-buahan, petani, fama, pasar borong, vegetable, fruit, farmer]
+    price_words: [harga, naik, turun, mahal, murah, price, rate, cost, rm, kg]
+    exclude: [usda, terminal market, shipping point]
