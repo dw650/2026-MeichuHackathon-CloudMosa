@@ -44,7 +44,7 @@ test('no retail data for a crop: the reason and a way back to wholesale', async 
 
 test('an area without any data shows 「—」 and 無資料, never 0', async ({ page, errors }) => {
   await seed(page, { country: 'IN' })
-  await page.goto('/crop/onion/today?area=kurnool')
+  await page.goto('/crop/onion/today?area=dakshinakannada')
   await settled(page)
   await expect(page.getByText('無資料').first()).toBeVisible()
   await expectCleanScreen(page, errors)
