@@ -1,1 +1,33 @@
 docs/prompt
+
+# Dependencies and build output
+node_modules/
+.venv/
+dist/
+
+# Local configuration and secrets
+.env
+*.mmdb
+
+# Python tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Frontend tooling
+frontend/coverage/
+frontend/e2e/artifacts/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo
+
+# Editors and OS
+.DS_Store
+.idea/
+*.log
