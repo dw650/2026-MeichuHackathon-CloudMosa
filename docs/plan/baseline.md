@@ -263,7 +263,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每次變更立刻寫入；版本不符時遷移；壞掉的資料被重設；國家改變時連帶重設地區與關注。
   - 完成條件：測試通過。
 
-- [ ] **T19 按鍵**
+- [x] **T19 按鍵**
   - 參考：[04](../04-architecture.md) §4.2；[02](../02-product-spec.md) §4；[08](../08-platform-constraints.md) §3
   - 內容：`keyScope`（堆疊）與 `useKeys`。
   - 測試：
