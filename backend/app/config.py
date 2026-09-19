@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     # The running commit, passed by `make up` and scripts/deploy.sh (APP_VERSION).
     app_version: str = "dev"
+    # International reference prices (bonus B5, docs/06 §1.3): the worker's downloads.
+    intl_prices: bool = True
+    pink_sheet_page_url: str = "https://www.worldbank.org/en/research/commodity-markets"
+    pink_sheet_url: str = ""  # a fixed monthly file; empty = the one the page links today
+    fx_url: str = "https://open.er-api.com/v6/latest/USD"
 
     @property
     def provider_ids(self) -> list[str]:

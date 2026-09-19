@@ -268,7 +268,79 @@ class AreaDaily(Base):
     )
 
 
+# ---------- international reference prices (bonus B5, docs/06 §1.3) ----------
+
+
+class IntlSeries(Base):
+    """A World Bank Pink Sheet series of the international prices page, synced from
+    app/seed/intl/series.yaml. `source_column` is its name in the monthly sheet, as published."""
+
+    __tablename__ = "intl_series"
+
+    id: Mapped[str] = mapped_column(String(20), primary_key=True)
+    sort: Mapped[int] = mapped_column(SmallInteger)
+    source_column: Mapped[str] = mapped_column(String(80))
+    unit: Mapped[str] = mapped_column(String(4))  # of the US dollar price: mt | kg
+    icon: Mapped[str] = mapped_column(String(20))
+    category: Mapped[str] = mapped_column(String(16))
+    name: Mapped[I18n]
+    spec: Mapped[I18n]
+
+    __table_args__ = (CheckConstraint("unit IN ('mt', 'kg')", name="ck_intl_series_unit"),)
+
+
+class IntlPrice(Base):
+    """Monthly average of a series in US dollars per its unit, as published."""
+
+    __tablename__ = "intl_prices"
+
+    series_id: Mapped[str] = mapped_column(
+        ForeignKey("intl_series.id", ondelete="CASCADE"), primary_key=True
+    )
+    month: Mapped[date] = mapped_column(Date, primary_key=True)  # first day of the month
+    usd: Mapped[Decimal] = mapped_column(Numeric(14, 4))
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (
+        CheckConstraint("usd > 0", name="ck_intl_prices_usd_positive"),
+        CheckConstraint("EXTRACT(DAY FROM month) = 1", name="ck_intl_prices_first_day"),
+    )
+
+
+class FxRate(Base):
+    """Latest daily rate of a currency: units for one US dollar, on the provider's day."""
+
+    __tablename__ = "fx_rates"
+
+    currency: Mapped[str] = mapped_column(String(3), primary_key=True)
+    per_usd: Mapped[Decimal] = mapped_column(Numeric(18, 6))
+    rate_date: Mapped[date] = mapped_column(Date)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+    __table_args__ = (CheckConstraint("per_usd > 0", name="ck_fx_rates_positive"),)
+
+
+class IntlSource(Base):
+    """Download state of a B5 source (`wb_pink`, `er_api`): what we hold and when we last
+    checked, so restarts never download again and the next check can be conditional."""
+
+    __tablename__ = "intl_sources"
+
+    id: Mapped[str] = mapped_column(String(20), primary_key=True)
+    url: Mapped[str] = mapped_column(Text)
+    etag: Mapped[str | None] = mapped_column(Text)
+    last_modified: Mapped[str | None] = mapped_column(Text)
+    # wb_pink: "Updated on" date of the file; er_api: the rate date.
+    data_date: Mapped[date | None] = mapped_column(Date)
+    # er_api: when the provider publishes its next rates.
+    next_update_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+INTL_TABLES = ("intl_prices", "intl_series", "fx_rates", "intl_sources")
+
 DATA_TABLES = (
+    *INTL_TABLES,
     "area_daily",
     "market_daily",
     "quotes",
