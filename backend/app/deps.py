@@ -8,7 +8,8 @@ from fastapi import Depends, Request, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
-from app.services.prices import NO_DEMO, Demo
+from app.errors import ApiError
+from app.services.demo import LOCATE_NONE, NO_DEMO, Demo
 
 
 async def get_session(request: Request) -> AsyncIterator[AsyncSession]:
@@ -41,9 +42,45 @@ def public_cache(response: Response, settings: SettingsDep) -> None:
 NowDep = Annotated[datetime, Depends(get_now)]
 
 
+def _stale_days(value: str) -> dict[str, int]:
+    """`nashik:3` or `nashik:3,pune:1`; malformed entries are ignored."""
+    out: dict[str, int] = {}
+    for part in value.split(","):
+        area, _, days = part.strip().partition(":")
+        if area and days.isdigit() and 0 < int(days) <= 60:
+            out[area] = int(days)
+    return out
+
+
+def _locate(value: str) -> tuple[str, str] | str | None:
+    value = value.strip()
+    if value.lower() == LOCATE_NONE:
+        return LOCATE_NONE
+    cc, _, area = value.partition(":")
+    return (cc.upper(), area) if cc and area else None
+
+
 def get_demo(request: Request, settings: SettingsDep) -> Demo:
-    """Demo switches read from request headers (only in demo mode; see app/demo.py)."""
-    return NO_DEMO
+    """Demo switches from request headers (docs/04 §6.2); ignored unless DEMO_MODE=true."""
+    if not settings.demo_mode:
+        return NO_DEMO
+    h = request.headers
+    return Demo(
+        fail=h.get("x-demo-fail", "").strip().lower() in {"1", "true", "yes"},
+        stale_days=_stale_days(h.get("x-demo-stale", "")),
+        ip=h.get("x-demo-ip", "").strip() or None,
+        locate=_locate(h.get("x-demo-locate", "")),
+    )
 
 
 DemoDep = Annotated[Demo, Depends(get_demo)]
+
+
+def get_price_demo(demo: DemoDep) -> Demo:
+    """Price endpoints fail on purpose when the demo failure switch is on."""
+    if demo.fail:
+        raise ApiError(503, "demo_failure", "Simulated failure (X-Demo-Fail)")
+    return demo
+
+
+PriceDemoDep = Annotated[Demo, Depends(get_price_demo)]

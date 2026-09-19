@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Path, Query
 
-from app.deps import DemoDep, NowDep, SessionDep, public_cache
+from app.deps import NowDep, PriceDemoDep, SessionDep, public_cache
 from app.schemas.common import error_responses
 from app.schemas.prices import (
     CompareOut,
@@ -25,6 +25,7 @@ CropId = Annotated[str, Path(description="Crop id", examples=["onion"])]
 ERRORS = error_responses(
     (400, "invalid_param", "type: Input should be 'wholesale' or 'retail'"),
     (404, "area_not_found", "Area 'xyz' not found in IN"),
+    (503, "demo_failure", "Simulated failure (X-Demo-Fail, demo mode only)"),
 )
 
 _STALE = {"days": 0, "state": "today"}
@@ -169,7 +170,7 @@ def _example(value: object) -> dict[int | str, dict[str, object]]:
 async def prices(
     session: SessionDep,
     now: NowDep,
-    demo: DemoDep,
+    demo: PriceDemoDep,
     country: Country,
     area: AreaId,
     price_type: Type = "wholesale",
@@ -196,7 +197,7 @@ async def prices(
 async def quote(
     session: SessionDep,
     now: NowDep,
-    demo: DemoDep,
+    demo: PriceDemoDep,
     crop: CropId,
     country: Country,
     area: AreaId,
@@ -221,7 +222,7 @@ async def quote(
 async def compare(
     session: SessionDep,
     now: NowDep,
-    demo: DemoDep,
+    demo: PriceDemoDep,
     crop: CropId,
     country: Country,
     area: AreaId,
@@ -240,7 +241,12 @@ async def compare(
     responses=_example(MARKETS_EXAMPLE) | ERRORS,
 )
 async def markets(
-    session: SessionDep, now: NowDep, demo: DemoDep, crop: CropId, country: Country, area: AreaId
+    session: SessionDep,
+    now: NowDep,
+    demo: PriceDemoDep,
+    crop: CropId,
+    country: Country,
+    area: AreaId,
 ) -> MarketsOut:
     return MarketsOut.model_validate(await service.markets(session, country, area, crop, now, demo))
 
@@ -257,7 +263,7 @@ async def markets(
 async def market(
     session: SessionDep,
     now: NowDep,
-    demo: DemoDep,
+    demo: PriceDemoDep,
     crop: CropId,
     country: Country,
     market: Annotated[str, Path(examples=["lasalgaon"])],

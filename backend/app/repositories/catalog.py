@@ -115,18 +115,17 @@ async def default_watch(session: AsyncSession) -> dict[str, list[str]]:
 
 
 async def latest_wholesale_dates(
-    session: AsyncSession, country: str, start: date, end: date
+    session: AsyncSession, country: str, start: date, end: date, area_id: str | None = None
 ) -> dict[str, date]:
     """Latest wholesale trade date of each area (any crop) between start and end."""
-    result = await session.execute(
-        select(AreaDaily.area_id, func.max(AreaDaily.trade_date))
-        .where(
-            AreaDaily.country == country,
-            AreaDaily.price_type == "wholesale",
-            AreaDaily.trade_date.between(start, end),
-        )
-        .group_by(AreaDaily.area_id)
+    stmt = select(AreaDaily.area_id, func.max(AreaDaily.trade_date)).where(
+        AreaDaily.country == country,
+        AreaDaily.price_type == "wholesale",
+        AreaDaily.trade_date.between(start, end),
     )
+    if area_id is not None:
+        stmt = stmt.where(AreaDaily.area_id == area_id)
+    result = await session.execute(stmt.group_by(AreaDaily.area_id))
     return dict(result.tuples().all())
 
 
@@ -146,4 +145,9 @@ async def get_markets(session: AsyncSession, area_id: str) -> list[Market]:
     result = await session.execute(
         select(Market).where(Market.area_id == area_id).order_by(Market.sort)
     )
+    return list(result.scalars().all())
+
+
+async def get_all_areas(session: AsyncSession) -> list[Area]:
+    result = await session.execute(select(Area).order_by(Area.country, Area.sort))
     return list(result.scalars().all())

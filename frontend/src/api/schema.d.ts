@@ -164,6 +164,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/locate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Guess the user's area from the network address
+         * @description Uses the leftmost public address of `X-Client-Forwarded-For` (set by the proxy from the Cloud Phone's `X-Forwarded-For`) and the nearest area centre within 300 km. No GPS; the address is neither stored nor logged. Nulls mean no guess.
+         */
+        get: operations["locate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/prices": {
         parameters: {
             query?: never;
@@ -377,6 +397,16 @@ export interface components {
             en: string;
             /** Zh-Tw */
             "zh-TW": string;
+        };
+        /**
+         * LocateOut
+         * @description The guessed area, or nulls when there is no guess.
+         */
+        LocateOut: {
+            /** Area Id */
+            area_id: string | null;
+            /** Country */
+            country: string | null;
         };
         /** MarketOut */
         MarketOut: {
@@ -678,6 +708,7 @@ export type SchemaErrorOut = components['schemas']['ErrorOut'];
 export type SchemaHealthOut = components['schemas']['HealthOut'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaI18nText = components['schemas']['I18nText'];
+export type SchemaLocateOut = components['schemas']['LocateOut'];
 export type SchemaMarketOut = components['schemas']['MarketOut'];
 export type SchemaMarketRowOut = components['schemas']['MarketRowOut'];
 export type SchemaMarketsOut = components['schemas']['MarketsOut'];
@@ -1082,6 +1113,24 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
         };
     };
     markets: {
@@ -1184,6 +1233,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
                 };
             };
         };
@@ -1411,6 +1478,24 @@ export interface operations {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
         };
     };
     health: {
@@ -1442,6 +1527,32 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["HealthOut"];
+                };
+            };
+        };
+    };
+    locate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "area_id": "nashik",
+                     *       "country": "IN"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["LocateOut"];
                 };
             };
         };
@@ -1567,6 +1678,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
                 };
             };
         };

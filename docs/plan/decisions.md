@@ -138,3 +138,13 @@
   - pytest 的 coverage 設定 `concurrency = ["greenlet", "thread"]`：SQLAlchemy async 用 greenlet 切換，不設定的話 `await` 之後的程式會被當成沒執行。
 - 理由：前端需要的數值都由後端算好；缺的資料一律回 null 與原因。
 - 影響：`backend/app/services/prices.py`、`backend/app/schemas/prices.py`、`backend/app/api/v1/prices.py`、`backend/pyproject.toml`。
+
+## 2026-09-19 T15 位置推測與 demo 標頭的細節
+- 情況：04 §3、§6.2 定了標頭與 300 km 門檻，但沒寫「公開 IP」的範圍、demo 標頭的格式細節與作用範圍、`/locate` 的快取。
+- 決定：
+  - 「公開 IP」＝Python `ipaddress` 的 `is_global`：私有網段、迴路、鏈結本地、電信級 NAT（100.64.0.0/10）、文件用網段都略過，從最左邊找第一個公開位址；可以處理 IPv6、`[IPv6]:port`、`IPv4:port`。
+  - `/locate` 只回 `country`、`area_id`（名稱由前端從地區清單取），並加 `Cache-Control: private, no-store`，因為答案因人而異。IP 不存、不寫日誌。
+  - 查詢介面 `GeoLookup` 可替換；預設讀 mmdb（DB-IP Lite City，`make geoip` 下載，compose 把 `infra/geoip/` 唯讀掛進 api），檔案不存在就用永遠推測不到的 `NullLookup`。DB-IP Lite 的授權是 CC BY 4.0，若在正式環境使用，「關於與資料說明」要加註「IP Geolocation by DB-IP」。
+  - demo 標頭只在 `DEMO_MODE=true` 時解析：`X-Demo-Fail: 1` 只讓價格類端點回 503 `demo_failure`（目錄、健康檢查、`/locate` 不受影響）；`X-Demo-Stale: 地區:天數`（可用逗號放多個，天數 1–60，格式錯的忽略），同時影響價格端點與地區清單的新舊；`X-Demo-IP` 取代轉發位址；`X-Demo-Locate: IN:nashik` 或 `none` 直接指定結果（地區必須存在，否則視為推測不到）。
+- 理由：照文件的規則，細節選最簡單而且能在 demo 時重現每種狀態的做法。
+- 影響：`backend/app/services/locate.py`、`backend/app/services/demo.py`、`backend/app/deps.py`、`infra/geoip/README.md`、`scripts/fetch-geoip.sh`。
