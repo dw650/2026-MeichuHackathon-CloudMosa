@@ -391,7 +391,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 內容：逐一套用每個畫面的縮減規則。
   - 完成條件：`make e2e` 在 128×160 全部通過。
 
-- [ ] **T38 README**
+- [x] **T38 README**
   - 參考：[00](../00-overview.md)；[04](../04-architecture.md) §1、§9、§10；[05](../05-tech-stack.md)
   - 內容：根目錄 `README.md`，用繁體中文。評審打開 repo 第一眼看到的就是它。
     - 一句話介紹，加上 2–3 張 240×320 截圖。截圖用 Playwright 腳本產生到 `docs/images/`，可以重複產生；Makefile 加 `screenshots`。
