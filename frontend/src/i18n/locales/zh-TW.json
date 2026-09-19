@@ -1,0 +1,223 @@
+{
+  "app": {
+    "name": "農價"
+  },
+  "softkeys": {
+    "menu": "選單",
+    "open": "開啟",
+    "back": "返回",
+    "exit": "離開",
+    "select": "選取",
+    "close": "關閉",
+    "toggle": "切換",
+    "view": "查看",
+    "compare": "比價",
+    "trend": "走勢",
+    "today": "行情",
+    "retry": "重試",
+    "markets": "市場"
+  },
+  "hints": {
+    "markets": "看市場",
+    "trend": "走勢",
+    "compare": "比價",
+    "tabs": "分頁",
+    "open": "直接開啟",
+    "run": "直接執行",
+    "area": "換地區",
+    "sort": "排序",
+    "d7": "7 日",
+    "d30": "30 日"
+  },
+  "date": {
+    "weekdays": ["日", "一", "二", "三", "四", "五", "六"],
+    "short": "{{m}}/{{d}} 週{{w}}",
+    "dataTime": "{{m}}/{{d}} {{time}}"
+  },
+  "freshness": {
+    "today": "今日",
+    "yesterday": "昨天",
+    "daysAgo": "{{n}} 天前",
+    "none": "無資料",
+    "old": "舊"
+  },
+  "priceType": {
+    "wholesale": "批發",
+    "retail": "零售",
+    "switchTo": {
+      "wholesale": "看批發",
+      "retail": "看零售"
+    }
+  },
+  "states": {
+    "loading": "正在取得 {{area}} 的行情",
+    "loadingNote": "超過 10 秒會顯示錯誤",
+    "error": "連線失敗",
+    "showingOld": "先顯示 {{time}} 的資料",
+    "retry": "重試",
+    "settingsKept": "你的設定都還在",
+    "notUpdated": "{{area}} 今天還沒更新",
+    "usualUpdate": "這個地區通常 {{time}} 前更新",
+    "lastPrice": "最近一筆（{{when}}）：{{price}}",
+    "otherAreas": "看其他地區",
+    "seeTrend": "看走勢",
+    "noRetail": "尚無零售資料",
+    "noRetailCrop": "這個作物沒有零售回報",
+    "retailNote": "零售價以地區為單位，沒有市場細項"
+  },
+  "common": {
+    "distance": "直線 {{km}} km",
+    "page": "第 {{page}}／{{total}} 頁",
+    "demoData": "示範資料"
+  },
+  "menu": {
+    "title": "選單",
+    "changeArea": "換地區",
+    "watchlist": "編輯關注",
+    "refresh": "重新整理",
+    "about": "關於與資料說明",
+    "settings": "設定",
+    "addWatch": "加入關注",
+    "removeWatch": "取消關注"
+  },
+  "categories": {
+    "cereal": "穀物",
+    "veg": "蔬菜",
+    "fruit": "水果",
+    "pulse": "豆類",
+    "spice": "香料",
+    "oil": "油籽",
+    "other": "其他",
+    "all": "全部",
+    "recent": "最近"
+  },
+  "setup": {
+    "welcome": "查各地今天的農產品價格",
+    "step": "第 {{step}} 步，共 {{total}} 步",
+    "language": {
+      "title": "Language・語言",
+      "phone": "手機語言",
+      "more": "More・其他",
+      "moreSub": "अन्य",
+      "notYet": "尚未提供",
+      "fallbackNote": "→ English・尚未提供"
+    },
+    "locate": {
+      "title": "你的位置",
+      "question": "你在 {{area}} 附近嗎？",
+      "how": "依網路位置推測（不用 GPS，也不保存）",
+      "yes": "是，就是這裡",
+      "no": "不是，我自己選"
+    },
+    "country": {
+      "title": "選擇國家"
+    },
+    "area": {
+      "title": "你的地區"
+    }
+  },
+  "home": {
+    "title": "{{area}}行情",
+    "tabs": {
+      "watch": "關注",
+      "all": "全部作物"
+    },
+    "browse": "瀏覽作物"
+  },
+  "detail": {
+    "tabs": {
+      "trend": "走勢",
+      "today": "行情",
+      "compare": "比價"
+    },
+    "trend": {
+      "title": "{{days}} 日走勢",
+      "closed": "休市",
+      "closedShort": "休"
+    },
+    "today": {
+      "median": "{{count}} 個市場中位數",
+      "oneMarket": "僅 1 個市場",
+      "retailSurvey": "零售調查價",
+      "vsPrev": "較前一交易日",
+      "markets_one": "本地區 {{count}} 個市場",
+      "markets_other": "本地區 {{count}} 個市場",
+      "marketsRange": "最高 {{high}}・最低 {{low}}"
+    },
+    "stats": {
+      "vsAvg7": "比 7 日均價",
+      "arrivals": {
+        "label": "到貨量",
+        "low": "偏少",
+        "normal": "正常",
+        "high": "偏多"
+      },
+      "position30": {
+        "label": "30 日位置",
+        "low": "低檔",
+        "mid": "中段",
+        "high": "高檔"
+      },
+      "volatility": {
+        "label": "波動",
+        "low": "穩定",
+        "mid": "普通",
+        "high": "劇烈"
+      },
+      "average": "均價",
+      "high": "高",
+      "low": "低"
+    },
+    "compare": {
+      "sortTitle": "排序方式",
+      "sorts": {
+        "priceDesc": "價格 高→低",
+        "priceAsc": "價格 低→高",
+        "distanceAsc": "距離 近→遠",
+        "distanceDesc": "距離 遠→近"
+      },
+      "you": "你",
+      "rank": "{{area}} 價格排第 {{rank}}／{{total}}",
+      "rankNone": "{{area}} 無資料，未列排名",
+      "marketCount_one": "{{count}} 市場",
+      "marketCount_other": "{{count}} 市場"
+    }
+  },
+  "markets": {
+    "vsMedian": "與中位數 {{price}} 比較",
+    "noRetail": "這個市場沒有零售報價",
+    "seeAreaRetail": "看 {{area}} 的零售價"
+  },
+  "areas": {
+    "title": "選擇地區",
+    "change": "換地區",
+    "recent": "最近使用",
+    "all": "全部地區",
+    "updated": "已更新",
+    "other": "其他地區…",
+    "changeCountry": "更改國家…"
+  },
+  "watch": {
+    "title": "編輯關注"
+  },
+  "settings": {
+    "title": "設定",
+    "rows": {
+      "language": "語言",
+      "country": "國家",
+      "area": "我的地區",
+      "wholesaleUnit": "批發單位",
+      "retailUnit": "零售單位"
+    }
+  },
+  "about": {
+    "title": "關於與資料說明",
+    "areaPrice": "地區價＝該地區各市場代表價的中位數，並標出市場數。",
+    "distance": "距離＝地區中心之間的直線距離，不是路程。",
+    "retail": "零售價以地區為單位，沒有市場細項。",
+    "gap": "批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。",
+    "demo": "畫面上的價格都是示範資料。",
+    "source": "資料來源",
+    "noMoney": "本 App 不會向你要錢、密碼或驗證碼。"
+  }
+}
