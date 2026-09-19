@@ -16,7 +16,7 @@ import pytest
 from app.ingest import registry
 from app.ingest.maps import maps_from_seeds
 from app.ingest.normalize import normalize_all
-from app.ingest.providers import tw_moa
+from app.ingest.providers import my_pricecatcher, tw_moa
 from app.ingest.providers.base import (
     BuildContext,
     FetchStats,
@@ -27,6 +27,8 @@ from app.ingest.providers.base import (
 )
 from app.ingest.validate import MAX_AGE_DAYS
 from app.seed.loader import load_seed_files
+from tests.ingest.test_my_pricecatcher import TODAY as MY_DAY
+from tests.ingest.test_my_pricecatcher import FakeStorage
 from tests.ingest.test_tw_moa import DAY as TW_DAY
 from tests.ingest.test_tw_moa import FakeServer, Sleeps
 
@@ -51,9 +53,23 @@ def _tw_moa(ctx: BuildContext) -> PriceProvider:
     )
 
 
+def _my_pricecatcher(ctx: BuildContext) -> PriceProvider:
+    premises, items = my_pricecatcher.codes_from_seeds(ctx.seeds)
+    return my_pricecatcher.PriceCatcherProvider(
+        premises,
+        items,
+        ctx.today_of,
+        plan=ctx.days,
+        files=ctx.files,
+        transport=httpx.MockTransport(FakeStorage()),
+        sleep=Sleeps(),
+    )
+
+
 CASES: dict[str, Case] = {
     "mock": Case(today=date(2026, 9, 19), build=registry.SOURCES["mock"].build),
     "tw_moa": Case(today=TW_DAY, build=_tw_moa),
+    "my_pricecatcher": Case(today=MY_DAY, build=_my_pricecatcher),
 }
 SOURCE_IDS = sorted(registry.SOURCES)
 

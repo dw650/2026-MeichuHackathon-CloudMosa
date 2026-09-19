@@ -146,7 +146,7 @@ def pricecatcher(**overrides: str) -> dict[str, str]:
         "date": "2026-09-17",
         "premise_code": "3181",
         "item_code": "114",
-        "price": "9.0",
+        "price": "6.0",
     }
     return row | overrides
 
@@ -162,7 +162,7 @@ def test_malaysia_wet_market_rows_are_retail_points_of_their_area(maps: SourceMa
         "tomato",
         "3181",
     )
-    assert (q.trade_date, q.rep_price, q.variety) == (date(2026, 9, 17), 9.0, "114")
+    assert (q.trade_date, q.rep_price, q.variety) == (date(2026, 9, 17), 6.0, "114")
     assert (q.low_price, q.high_price, q.volume_kg) == (None, None, None)
 
 
