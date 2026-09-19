@@ -1,0 +1,240 @@
+{
+ "area_id": "pune",
+ "country": "IN",
+ "currency": "INR",
+ "fetched_at": "2026-09-19T11:40:00+05:30",
+ "items": [
+  {
+   "change": {
+    "diff_per_kg": 0.68,
+    "direction": "up",
+    "pct": 0.016853,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "onion",
+   "price_per_kg": 41.03,
+   "reason": null,
+   "spark": [
+    null,
+    38.45,
+    40.15,
+    40.48,
+    39.19,
+    40.35,
+    41.03
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -1.63,
+    "direction": "down",
+    "pct": -0.061766,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "tomato",
+   "price_per_kg": 24.76,
+   "reason": null,
+   "spark": [
+    null,
+    25.27,
+    26.08,
+    25.37,
+    26.44,
+    26.39,
+    24.76
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.22,
+    "direction": "up",
+    "pct": 0.009209,
+    "prev_trade_date": "2026-09-17"
+   },
+   "crop_id": "potato",
+   "price_per_kg": 24.11,
+   "reason": null,
+   "spark": [
+    null,
+    23.96,
+    23.85,
+    23.97,
+    23.89,
+    24.11,
+    null
+   ],
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
+   "change": null,
+   "crop_id": "chilli",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "soybean",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "maize",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.21,
+    "direction": "down",
+    "pct": -0.005976,
+    "prev_trade_date": "2026-09-15"
+   },
+   "crop_id": "wheat",
+   "price_per_kg": 34.93,
+   "reason": null,
+   "spark": [
+    null,
+    35.07,
+    35.14,
+    34.93,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "change": null,
+   "crop_id": "grapes",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.19,
+    "direction": "down",
+    "pct": -0.007322,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "banana",
+   "price_per_kg": 25.76,
+   "reason": null,
+   "spark": [
+    null,
+    26.37,
+    25.56,
+    25.56,
+    26.42,
+    25.95,
+    25.76
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 1.46,
+    "direction": "up",
+    "pct": 0.010096,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "garlic",
+   "price_per_kg": 146.07,
+   "reason": null,
+   "spark": [
+    null,
+    140.54,
+    143.88,
+    142.27,
+    141.86,
+    144.61,
+    146.07
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  }
+ ],
+ "today": "2026-09-19",
+ "type": "retail"
+}

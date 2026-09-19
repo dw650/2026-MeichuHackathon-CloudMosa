@@ -1,5 +1,7 @@
 """Shared response parts."""
 
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -16,7 +18,7 @@ class StalenessOut(BaseModel):
     """today · closed (only closed days since) · stale · none (nothing in 30 days)."""
 
     days: int | None
-    state: str = Field(pattern="^(today|closed|stale|none)$")
+    state: Literal["today", "closed", "stale", "none"]
 
 
 class ErrorBody(BaseModel):

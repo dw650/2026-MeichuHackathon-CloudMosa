@@ -619,8 +619,11 @@ export interface components {
         StalenessOut: {
             /** Days */
             days: number | null;
-            /** State */
-            state: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "today" | "closed" | "stale" | "none";
         };
         /** StatsOut */
         StatsOut: {

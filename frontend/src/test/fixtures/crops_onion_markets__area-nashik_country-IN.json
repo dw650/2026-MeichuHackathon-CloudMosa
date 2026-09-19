@@ -1,0 +1,164 @@
+{
+ "area_id": "nashik",
+ "crop_id": "onion",
+ "currency": "INR",
+ "median_per_kg": 23.95,
+ "rows": [
+  {
+   "diff_per_kg": 1.27,
+   "km_from_center": 22,
+   "market_id": "pimpalgaon",
+   "name": {
+    "en": "Pimpalgaon",
+    "zh-TW": "Pimpalgaon"
+   },
+   "price_per_kg": 25.22,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": 0.73,
+   "km_from_center": 88,
+   "market_id": "satana",
+   "name": {
+    "en": "Satana",
+    "zh-TW": "Satana"
+   },
+   "price_per_kg": 24.68,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": 0.31,
+   "km_from_center": 0,
+   "market_id": "nashikm",
+   "name": {
+    "en": "Nashik",
+    "zh-TW": "Nashik"
+   },
+   "price_per_kg": 24.26,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": 0.0,
+   "km_from_center": 55,
+   "market_id": "chandvad",
+   "name": {
+    "en": "Chandvad",
+    "zh-TW": "Chandvad"
+   },
+   "price_per_kg": 23.95,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": -0.79,
+   "km_from_center": 32,
+   "market_id": "lasalgaon",
+   "name": {
+    "en": "Lasalgaon",
+    "zh-TW": "Lasalgaon"
+   },
+   "price_per_kg": 23.16,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": -0.79,
+   "km_from_center": 95,
+   "market_id": "malegaon",
+   "name": {
+    "en": "Malegaon",
+    "zh-TW": "Malegaon"
+   },
+   "price_per_kg": 23.16,
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-18"
+  },
+  {
+   "diff_per_kg": -0.87,
+   "km_from_center": 60,
+   "market_id": "yeola",
+   "name": {
+    "en": "Yeola",
+    "zh-TW": "Yeola"
+   },
+   "price_per_kg": 23.08,
+   "staleness": {
+    "days": 3,
+    "state": "stale"
+   },
+   "trade_date": "2026-09-16"
+  },
+  {
+   "diff_per_kg": -0.91,
+   "km_from_center": 28,
+   "market_id": "niphad",
+   "name": {
+    "en": "Niphad",
+    "zh-TW": "Niphad"
+   },
+   "price_per_kg": 23.04,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": -1.31,
+   "km_from_center": 28,
+   "market_id": "sinnar",
+   "name": {
+    "en": "Sinnar",
+    "zh-TW": "Sinnar"
+   },
+   "price_per_kg": 22.64,
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "diff_per_kg": null,
+   "km_from_center": 70,
+   "market_id": "manmad",
+   "name": {
+    "en": "Manmad",
+    "zh-TW": "Manmad"
+   },
+   "price_per_kg": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  }
+ ],
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19"
+}

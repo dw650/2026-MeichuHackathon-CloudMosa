@@ -1,0 +1,78 @@
+{
+ "area_id": "taipei",
+ "change": {
+  "diff_per_kg": 10.7,
+  "direction": "up",
+  "pct": 0.388385,
+  "prev_trade_date": "2026-09-18"
+ },
+ "crop_id": "cabbage",
+ "currency": "TWD",
+ "fetched_at": "2026-09-19T14:10:00+08:00",
+ "markets": {
+  "count": 2,
+  "max_per_kg": 38.5,
+  "min_per_kg": 38.0,
+  "total": 2
+ },
+ "price_per_kg": 38.25,
+ "reason": null,
+ "series": [
+  {
+   "date": "2026-09-13",
+   "price_per_kg": 26.05
+  },
+  {
+   "date": "2026-09-14",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-15",
+   "price_per_kg": 26.75
+  },
+  {
+   "date": "2026-09-16",
+   "price_per_kg": 27.2
+  },
+  {
+   "date": "2026-09-17",
+   "price_per_kg": 26.85
+  },
+  {
+   "date": "2026-09-18",
+   "price_per_kg": 27.55
+  },
+  {
+   "date": "2026-09-19",
+   "price_per_kg": 38.25
+  }
+ ],
+ "source": {
+  "id": "mock",
+  "name": {
+   "en": "Demo data",
+   "zh-TW": "示範資料"
+  }
+ },
+ "staleness": {
+  "days": 0,
+  "state": "today"
+ },
+ "stats": {
+  "arrivals": "low",
+  "arrivals_ratio": 0.619997,
+  "change30_pct": 0.432584,
+  "change7_pct": 0.46833,
+  "high30_per_kg": 38.25,
+  "high7_per_kg": 38.25,
+  "low30_per_kg": 23.4,
+  "low7_per_kg": 26.05,
+  "pos30": 1.0,
+  "volatility": "high",
+  "volatility_pct": 0.094203,
+  "vs_avg7_pct": 0.329279
+ },
+ "today": "2026-09-19",
+ "trade_date": "2026-09-19",
+ "type": "wholesale"
+}

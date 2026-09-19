@@ -1,0 +1,145 @@
+{
+ "country": "IN",
+ "crops": [
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "onion",
+   "name": {
+    "en": "Onion",
+    "zh-TW": "洋蔥"
+   },
+   "variety": {
+    "en": "Red",
+    "zh-TW": "紅洋蔥"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "tomato",
+   "name": {
+    "en": "Tomato",
+    "zh-TW": "番茄"
+   },
+   "variety": {
+    "en": "Hybrid",
+    "zh-TW": "雜交種"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "potato",
+   "name": {
+    "en": "Potato",
+    "zh-TW": "馬鈴薯"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": true,
+   "has_retail": false,
+   "id": "chilli",
+   "name": {
+    "en": "Chilli",
+    "zh-TW": "青辣椒"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "pulse",
+   "default_watch": true,
+   "has_retail": false,
+   "id": "soybean",
+   "name": {
+    "en": "Soybean",
+    "zh-TW": "大豆"
+   },
+   "variety": {
+    "en": "Yellow",
+    "zh-TW": "黃豆"
+   }
+  },
+  {
+   "category": "cereal",
+   "default_watch": true,
+   "has_retail": false,
+   "id": "maize",
+   "name": {
+    "en": "Maize",
+    "zh-TW": "玉米"
+   },
+   "variety": {
+    "en": "Hybrid",
+    "zh-TW": "雜交種"
+   }
+  },
+  {
+   "category": "cereal",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "wheat",
+   "name": {
+    "en": "Wheat",
+    "zh-TW": "小麥"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": false,
+   "id": "grapes",
+   "name": {
+    "en": "Grapes",
+    "zh-TW": "葡萄"
+   },
+   "variety": {
+    "en": "Green",
+    "zh-TW": "綠葡萄"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "banana",
+   "name": {
+    "en": "Banana",
+    "zh-TW": "香蕉"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "garlic",
+   "name": {
+    "en": "Garlic",
+    "zh-TW": "大蒜"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "本地種"
+   }
+  }
+ ]
+}

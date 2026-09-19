@@ -1,0 +1,154 @@
+{
+ "area_id": "taipei",
+ "change": null,
+ "crop_id": "cauliflower",
+ "currency": "TWD",
+ "fetched_at": null,
+ "markets": null,
+ "price_per_kg": null,
+ "reason": "no_retail_crop",
+ "series": [
+  {
+   "date": "2026-08-21",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-22",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-23",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-24",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-25",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-26",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-27",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-28",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-29",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-30",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-08-31",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-01",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-02",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-03",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-04",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-05",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-06",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-07",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-08",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-09",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-10",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-11",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-12",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-13",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-14",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-15",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-16",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-17",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-18",
+   "price_per_kg": null
+  },
+  {
+   "date": "2026-09-19",
+   "price_per_kg": null
+  }
+ ],
+ "source": null,
+ "staleness": {
+  "days": null,
+  "state": "none"
+ },
+ "stats": {
+  "arrivals": null,
+  "arrivals_ratio": null,
+  "change30_pct": null,
+  "change7_pct": null,
+  "high30_per_kg": null,
+  "high7_per_kg": null,
+  "low30_per_kg": null,
+  "low7_per_kg": null,
+  "pos30": null,
+  "volatility": null,
+  "volatility_pct": null,
+  "vs_avg7_pct": null
+ },
+ "today": "2026-09-19",
+ "trade_date": null,
+ "type": "retail"
+}

@@ -1,0 +1,145 @@
+{
+ "country": "TW",
+ "crops": [
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "cabbage",
+   "name": {
+    "en": "Cabbage",
+    "zh-TW": "甘藍"
+   },
+   "variety": {
+    "en": "Early autumn",
+    "zh-TW": "初秋"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "bokchoy",
+   "name": {
+    "en": "Bok choy",
+    "zh-TW": "小白菜"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "土白菜"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "banana",
+   "name": {
+    "en": "Banana",
+    "zh-TW": "香蕉"
+   },
+   "variety": {
+    "en": "Pei-chiao",
+    "zh-TW": "北蕉"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "sweetpotato",
+   "name": {
+    "en": "Sweet potato",
+    "zh-TW": "甘藷"
+   },
+   "variety": {
+    "en": "TN57",
+    "zh-TW": "台農57號"
+   }
+  },
+  {
+   "category": "spice",
+   "default_watch": true,
+   "has_retail": true,
+   "id": "scallion",
+   "name": {
+    "en": "Scallion",
+    "zh-TW": "青蔥"
+   },
+   "variety": {
+    "en": "Local",
+    "zh-TW": "粉蔥"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "tomato",
+   "name": {
+    "en": "Tomato",
+    "zh-TW": "番茄"
+   },
+   "variety": {
+    "en": "Beef",
+    "zh-TW": "牛番茄"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "mango",
+   "name": {
+    "en": "Mango",
+    "zh-TW": "芒果"
+   },
+   "variety": {
+    "en": "Irwin",
+    "zh-TW": "愛文"
+   }
+  },
+  {
+   "category": "fruit",
+   "default_watch": false,
+   "has_retail": true,
+   "id": "pineapple",
+   "name": {
+    "en": "Pineapple",
+    "zh-TW": "鳳梨"
+   },
+   "variety": {
+    "en": "Tainung 17",
+    "zh-TW": "金鑽"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": true,
+   "has_retail": false,
+   "id": "cauliflower",
+   "name": {
+    "en": "Cauliflower",
+    "zh-TW": "花椰菜"
+   },
+   "variety": {
+    "en": "Green stem",
+    "zh-TW": "青梗"
+   }
+  },
+  {
+   "category": "veg",
+   "default_watch": false,
+   "has_retail": false,
+   "id": "waterspinach",
+   "name": {
+    "en": "Water spinach",
+    "zh-TW": "空心菜"
+   },
+   "variety": {
+    "en": "Small leaf",
+    "zh-TW": "小葉"
+   }
+  }
+ ]
+}
