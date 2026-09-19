@@ -929,3 +929,21 @@
 - 決定：台灣加回芒果（愛文，覆蓋率 42%，產季尾聲），共 30 種。三國共同的 12 種是番茄、甘藍、辣椒、蒜頭、洋蔥、馬鈴薯、胡蘿蔔、薑、香蕉、芒果、小黃瓜、茄子（代號相同）。芒果的示範價格改成真實中位數 81.1 元／公斤（原本 55 元）。
 - 理由：跨國比較要用同一個代號；覆蓋率低的那一種在沒有交易的縣市照原本的規則顯示「—」。
 - 影響：`backend/app/seed/TW.yaml`、測試的作物數、docs/06 §7.3。
+## 2026-09-20 B3 印度 Agmarknet 2.0 真實批發行情（in_agmarknet）
+- 情況：06 §1 原本規劃的 data.gov.in「Current Daily Price…」需要免費金鑰、而且沒有到貨量。查到官網 agmarknet.gov.in 用的後端 API 不需金鑰、有到貨量，而且同一份資料以 GODL-India 發布在 data.gov.in。使用者決定改用它，並要求印度的地區改成三個邦的所有縣、作物依真實回報量重選。
+- 決定：
+  - **來源**：`in_agmarknet`（`PROVIDERS` 加上才開啟，預設仍是 `mock`）。一個請求＝一個邦 × 一個品項 × 一個月（回應是當月到今天為止），所以一次執行 63 個請求（3 邦 × 21 種作物 × 當月），間隔 1 秒、共用 `http.py` 的重試；沒有 ETag，所以沒有 304。排程：每天 00:05 與 20:00（印度時間），約 126 個請求／天；第一次或對照表改了時抓整段 60 天（3 個月、189 個請求、約 8 分鐘）。欄位標題會寫單位（`Rs./Quintal`、`Metric Tonnes`），單位或欄位改了就讓那次執行失敗。
+  - **地區＝縣**：馬哈拉施特拉邦、卡納塔卡邦、德里（NCT）中，60 天內至少有一個市場回報這 21 種作物的縣，共 64 個；**市場＝這些縣裡有回報的全部市場**，共 432 個（沒有回報的市場不放進 seed，否則每個作物的市場清單都會多出永遠「無資料」的列）。保留舊代號 nashik、pune、ahmednagar（顯示名稱改成官方的 Ahilyanagar）、jalgaon、solapur、bengaluru（Bengaluru Urban）、kolar、delhi；indore、kurnool、agra 因為不在這三個邦而移除，chintamani 市場改掛在它真正所屬的 Chikkaballapur 縣。清單順序：先邦、再依名稱。
+  - **座標**：縣的中心取自 OpenStreetMap Nominatim（2026-09-20 一次性查詢，每秒 1 個請求；Bagalkote、Bengaluru North、Chikkaballapura 改用 OSM 目前的名稱才查得到），德里用整個 NCT 的中心點。Agmarknet 沒有市場座標，所以印度的市場不填 `km`，畫面不顯示「距地區中心」。
+  - **對照**：作物用品項代號（`commodityId`）完全比對、品種不分（同一市場同一天的不同品種取中位數，06 §2）；市場用 `"<邦代號>|<市場名稱>"`，因為市場名稱只在同一個邦內唯一。來源的市場名稱前後有多餘空白（正規化時併掉），最長的一個有 99 字，超過 `source_market` 欄位的 80 字，所以 seed 與正規化都截到 80 字（不為了一個市場加 migration）。
+  - **作物 21 種**：依 2026-08-01–09-19 的涵蓋度（有回報的「縣 × 交易日」數）重選：每個分類先取前 2 名，再依整體涵蓋度補滿 21 種。結果：小麥、玉米、高粱／洋蔥、番茄、馬鈴薯、甘藍、茄子、黃瓜、花椰菜、胡蘿蔔／石榴、蘋果／鷹嘴豆、綠豆／青辣椒、薑／花生、芝麻／棉花、粗糖。苦瓜與胡蘿蔔的涵蓋度只差 1%，取已經有圖示的胡蘿蔔。椰子（卡納塔卡邦以每千顆計價、和馬哈拉施特拉邦差 6 倍）與檳榔（等級差 3 倍以上）涵蓋度夠但不收。甘蔗在這三個邦完全沒有回報。預設關注把大豆換成鷹嘴豆（涵蓋度第 4 名），其餘不變。新畫 4 個圖示：高粱、綠豆、蘋果、粗糖。
+  - **零售**：印度沒有免金鑰的零售來源，所以開啟真實資料後零售是「—」與 `no_data`（和台灣相同）；示範資料仍然有零售，放在 15 個大城市的縣（原本的 6 個加上孟買、塔那、那格浦爾等），其餘的縣顯示「這個地區沒有零售回報」。
+  - **示範資料**：參數由真實資料算出來（作物 `p`／`lo`／`hi`＝9 月常見價／最低價／最高價的中位數，`chg`＝最後兩個交易日都有回報的市場的平均變動，`arr`＝「縣 × 日」到貨量中位數（公噸），地區與市場的 `k`＝各自的中位數比值，Nashik 定為 1）。mock 只在 81 個主要市場產生報價（Nashik 沿用原本的 10 個），避免 432 × 21 × 51 列讓示範資料與測試變慢；例外情境改成 Jalgaon（昨天）、Kolar（3 天前）、Dakshina Kannada（完全沒有資料）。mock 的印度批發列改成 Agmarknet 的格式，和真實資料走同一個正規化（`datagov_mandi` 移除）。
+  - **worker**：台灣與馬來西亞的每日工作都在 UTC+8 的 00:05 觸發，而原本每個國家的每日工作都會跑所有來源，等於每個連網來源一晚上跑三次（其中兩次同時）。改成每日工作只跑「涵蓋這個國家」的連網來源，mock 這種本機來源不受影響。
+- 理由：一個請求就能拿到一個邦一整個月的資料，是這個來源最省的抓法；縣與市場直接照來源的清單，新市場開始回報時只要重新整理 seed；作物照真實回報量選，每一格點進去都有價格。
+- 影響：`backend/app/ingest/providers/in_agmarknet.py`（新）、`backend/app/ingest/{normalize,registry}.py`、`backend/app/ingest/providers/mock.py`、`backend/app/services/sources.py`、`backend/app/worker.py`、`backend/app/seed/IN.yaml`、`backend/tests/fixtures/in_agmarknet/`（真實回應樣本與 filters 摘要）、`backend/tests/ingest/{test_in_agmarknet,test_contract,test_seed,test_mock_provider,test_normalize,test_worker}.py`、`backend/tests/api/{test_prices,test_catalog,test_nearby}.py`、`backend/tests/dump_api_fixtures.py`；`frontend/src/icons/`、msw fixtures 與前端測試、`frontend/e2e/`；`.env.example`、docs/00、04 §2、06 §1.1、§1.6、§7、§8。
+
+## 2026-09-20 印度單位標示改成 ₹/100公斤
+- 情況：使用者覺得繁體中文的「₹/公擔」看不懂（公擔是 100 公斤）。
+- 決定：印度批發的公擔單位在繁中顯示「₹/100公斤」，英文仍是「₹/qtl」。
+- 影響：`backend/app/seed/IN.yaml`、`backend/app/api/v1/catalog.py` 的範例、前端測試與 msw fixture、docs/03 §8、docs/06 §5。

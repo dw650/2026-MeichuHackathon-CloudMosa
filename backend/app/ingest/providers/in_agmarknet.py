@@ -51,6 +51,11 @@ COLUMNS = {
     "modalPrice": "Quintal",
 }
 PRICE_FIELDS = ("arrivals", "variety", "minimumPrice", "maximumPrice", "modalPrice")
+# The source answers 403 to a generic client name, so every request says who we are.
+HEADERS = {
+    "User-Agent": "agri-prices/1.0 (Meichu Hackathon 2026 project; agricultural price app)",
+    "Accept": "application/json",
+}
 
 logger = logging.getLogger("app.ingest.in_agmarknet")
 
@@ -172,7 +177,9 @@ class AgmarknetProvider:
                                 "includeExcel": "false",
                             }
                             what = f"state {state}, commodity {commodity}, {year}-{month:02d}"
-                            payload = await http.get(URL, params=params, read=_json, what=what)
+                            payload = await http.get(
+                                URL, params=params, read=_json, headers=HEADERS, what=what
+                            )
                             for row in _flatten(payload, state, commodity, wanted):
                                 day = datetime.strptime(row["arrivalDate"], "%d/%m/%Y").date()
                                 by_day.setdefault(day, []).append(row)

@@ -141,6 +141,8 @@ async def test_a_full_run_asks_every_state_and_commodity_once_a_month() -> None:
     assert {"01/08/2026", "19/09/2026"} <= days
     params = server.requests[0].url.params
     assert params["includeExcel"] == "false"
+    # The source refuses a generic client name (HTTP 403), so it learns who we are.
+    assert server.requests[0].headers["user-agent"].startswith("agri-prices/")
 
 
 async def test_fetch_returns_the_rows_of_that_day() -> None:

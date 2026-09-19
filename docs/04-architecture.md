@@ -48,7 +48,7 @@
 | `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `:8080` |
 | `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
-| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2）、`my_pricecatcher`（馬來西亞改用 PriceCatcher 真實零售價，見 [06](06-data.md) §1.5） | `mock` |
+| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2）、`my_pricecatcher`（馬來西亞改用 PriceCatcher 真實零售價，見 [06](06-data.md) §1.5）、`in_agmarknet`（印度改用 Agmarknet 真實批發價，見 [06](06-data.md) §1.6） | `mock` |
 | `INTL_PRICES` | worker 下載國際參考價（B5：世界銀行 Pink Sheet 與匯率，只在到期時下載，見 [06](06-data.md) §8）；`false` 不下載 | `true` |
 | `PINK_SHEET_URL` | 固定使用的 Pink Sheet 月資料檔；空白＝用官方頁上目前連結的檔案（[06](06-data.md) §1.3） | 空 |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
