@@ -106,3 +106,32 @@
   - API 的多語文字（`{"zh-TW", "en"}`）用 `pickText` 取：介面語言 → 英文 → 第一個非空值；都沒有時是空字串。
 - 理由：規則最少、都能測試；選了尚未翻譯的語言也會記住，翻譯完成後自動生效。
 - 影響：`frontend/src/i18n/languages.ts`、`index.ts`、`text.ts`。T18 的 `settings` 存語言 id，還原與變更時呼叫 `setLanguage(id)`。
+
+## 2026-09-19 T18 store 的欄位與動作
+- 情況：04 §4.5 只列出 `settings`、`session` 要放什麼，沒寫欄位、預設值、國家預設值從哪裡來、首次設定什麼時候算完成、demo 開關存在哪裡。
+- 決定：
+  - `settings`（localStorage key `agriprice.settings`，版本 1）：`language`（語言 id，可能是 `hi` 等；還沒選是 `null`，介面跟著手機語言）、`country`（`IN`／`TW`／`null`）、`areaId`（我的地區）、`recentAreaIds`（最近的在前、不重複、最多 3 個）、`watchlist`（依顯示順序）、`priceType`（`wholesale`／`retail`）、`units`（每種價格類型一個單位 id，`null`＝國家預設）、`setupDone`、`demo`（`fail`、`stale`、`locate`：`auto`｜`none`｜`IN:nashik`｜`TW:taipei`）。demo 開關先放進 settings，T36 做「Demo」列時不必遷移。
+  - 國家預設值由呼叫端從 `GET /countries` 傳進來，store 不呼叫 API：`chooseCountry(code, defaults)` 的 `defaults` 欄位名稱照 API（`default_area_id`、`default_recent_area_ids`、`default_watch`），可以直接傳 API 回傳的國家物件。
+  - 換成別的國家：我的地區、最近地區、關注換成該國預設，單位回到 `null`，清空最近看過的作物；再選一次同一個國家什麼都不變（不會洗掉關注）。語言、批發／零售、demo 開關保留。
+  - 首次設定完成＝選了地區：`chooseArea` 同時把 `setupDone` 設為 true；還沒選國家時忽略。選國家時雖然先填入預設地區，但要選完地區才算完成。
+  - 詳情頁換「正在看的地區」用 `rememberArea`：照草圖只加進最近地區，不改我的地區。
+  - `session`（`agriprice.session`，版本 1）：`lastLocation`（`pathname + search` 與 `location.key`）、`focus`（`{ key, id }` 陣列，最舊的在前，只留最新 50 筆）、`recentCrops`（最近的在前、最多 5 個）。焦點用陣列不用物件，因為像數字的 key 會打亂物件的順序。上次畫面的 `location.key` 也存起來，F13 重開後歷史的 key 是新的，靠 `selectLastFocusId` 找回那個畫面的焦點。
+  - 最近看過的作物只存一份（草圖是每個國家一份），換國家時由 `chooseCountry` 清空。
+- 理由：欄位一次定好，後面的任務只加動作、不改存放格式；store 只存使用者的選擇，伺服器資料留給 TanStack Query。
+- 影響：`frontend/src/store/settings.ts`、`session.ts`。T20 在焦點移動時呼叫 `rememberFocus`；T21 每次導覽呼叫 `rememberLocation`，而且只在 `setupDone` 時才還原 `lastLocation`；T22 的 demo 標頭讀 `settings.demo`。
+
+## 2026-09-19 T18 localStorage 壞掉時的處理
+- 情況：04 §4.5 規定解析失敗或版本不符時執行遷移函式、失敗就重設；沒寫版本相同但內容不對、少了欄位、版本比 App 新時怎麼辦。zustand persist 遇到 JSON 解析錯誤或遷移函式丟出例外時會停在初始狀態，`hasHydrated()` 一直是 false，壞資料也留在 localStorage。
+- 決定：
+  - `store/migrate.ts` 的 storage：讀不到或 JSON 解析失敗都當成沒存過；寫入失敗（空間滿、被封鎖）時繼續用記憶體裡的狀態。
+  - 每次載入都用各欄位的 reader 檢查：有欄位型別不對，或跨欄位規則不成立（`setupDone` 卻沒有國家或地區），就整份重設成預設值，也就是回到首次設定；只是少了欄位，那個欄位用預設值；清單去掉重複並截到上限。
+  - 版本不同時照 `steps[n]`（第 n 版 → 第 n+1 版）一步一步遷移；少了步驟、步驟丟出例外、版本比 App 新、遷移完仍不合格，都重設，並把預設值寫回 localStorage。
+  - 兩個 store 目前都是版本 1，還沒有遷移步驟；遷移流程在 `migrate.test.ts` 用假的步驟測試。之後改存放格式時，版本加 1 並在 `steps` 加一步。
+- 理由：同一套規則處理所有壞資料，App 不會卡住；少欄位不重設，萬一忘了加版本，使用者也不會被送回首次設定。
+- 影響：`frontend/src/store/migrate.ts`；各 store 的 `readers`、`check`、`steps`。
+
+## 2026-09-19 T18 語言設定與 i18next 同步
+- 情況：T17 決定 store 存語言 id，並在還原與變更時呼叫 `setLanguage(id)`，但沒寫由誰呼叫、還沒選語言時怎麼辦。
+- 決定：`store/settings.ts` 載入時套用一次，之後訂閱 `language` 的變化（包括重新 rehydrate）；`null`（還沒選，或資料被重設）時用手機語言，和 i18n 初始化相同。
+- 理由：只要載入 store 就生效，不必在 `main.tsx` 另外接線；副作用不放進 `lib/`。
+- 影響：`frontend/src/store/settings.ts`。
