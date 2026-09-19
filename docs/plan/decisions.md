@@ -621,3 +621,15 @@
 - 理由：官方頁的連結是唯一不用每年手動改設定的做法；到期規則讓每天的請求數固定在約 3 個（匯率 1、官方頁 1、檔案 1，檔案多半回 304），部署再頻繁也不會增加；月資料只換算、不補值，缺什麼就說什麼。
 - 影響：`backend/app/ingest/intl/`（新）、`backend/app/{repositories,services,schemas,api/v1}/intl.py`（新）、`backend/app/seed/intl/series.yaml`（新）、`backend/app/seed/{schema,loader}.py`、`backend/app/db/models.py`（`DATA_TABLES` 多四張表）、migration、`backend/app/{config,worker}.py`、`compose.yaml`、`.env.example`、`backend/tests/`（樣本、`intl_server.py`、`conftest.py` 的 `_ensure_intl_data`）、`frontend/src/screens/intl/`（新）、`frontend/src/lib/monthly.ts`（新）、`frontend/src/i18n/`、`MenuSheet`、`AboutScreen`、路由、msw fixtures 與 handler、e2e。要加序列改 `series.yaml`；要換匯率來源改 `backend/app/ingest/intl/fx.py` 與 `FX_URL`。
 
+## 2026-09-20 資料來源的共同介面與抓取原則
+- 情況：B2 之後 worker 用 `REAL_SOURCES`、`REFRESH_HOURS` 兩張表和 `build_providers` 的 if/elif 認得每個來源，啟動時與每天的例行執行都重抓 `tw_moa` 整段 60 天。伺服器每次 push 都重新部署，要接第三個來源（馬來西亞）之前，先把介面與抓取的方式定下來（使用者要求）。
+- 決定：
+  - 每個來源在 provider 旁邊宣告一個 `SourceInfo`（代號、國家、價格類型、期間、是否連網、排程重抓幾天、每小時更新時段、啟動時多久內成功過就略過），列進 `app/ingest/registry.py`。mock 標成備援來源（`fallback`），涵蓋沒有真實來源的國家。provider 多一個 `stats`：送出的請求數、下載時就略過的資料列（算進丟棄筆數）、下載過的檔案的 ETag 與 Last-Modified。
+  - 連網來源的抓取原則（`app/ingest/policy.py`）：啟動時，6 小時內成功過、對照表沒變、資料庫還有它的價格就略過；其他每次執行只抓資料庫還缺的日期加上最近 3 天；資料庫沒有它的價格、或對照表改了才抓整段 60 天。「缺的日期」看資料庫有沒有這個來源的報價，所以全國休市的日子會一直算缺；`tw_moa` 用日期區間一次抓完，請求數不變，只是回應多幾天。
+  - 對照表的指紋存在 `ingest_runs.maps_hash`：seed 加了作物或市場，下一次執行就抓整段，新作物也有歷史資料。
+  - 條件式請求的驗證資訊存在 `ingest_runs.files`，只有對照表沒變、資料庫還有這個來源的價格時才帶上，避免來源關掉又打開（價格已被刪掉）時拿到 304 卻沒有資料。
+  - 共用的連線與重試寫在 `app/ingest/http.py`（間隔 1 秒；429、5xx、網路錯誤最多 3 次，間隔 5、10 秒；下載到一半斷線就整個重來），`tw_moa` 改用它。
+  - 契約測試 `tests/ingest/test_contract.py`：登記表裡的每個來源都要有離線的測試案例，否則測試失敗。
+  - `ingest_runs` 新增 `requests`、`files`、`maps_hash`（migration `74f6aadac0c6`）。`PROVIDERS=mock` 的結果和原本完全相同。
+- 理由：新增來源只要寫 provider 與 `INFO`，不必改 worker；重新部署不會重抓 60 天；每次執行花了多少請求看得到。
+- 影響：`backend/app/ingest/{http,policy,registry,pipeline}.py`、`backend/app/ingest/providers/{base,mock,tw_moa}.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`backend/app/db/models.py` 與 migration；測試 `test_http`、`test_policy`、`test_contract`、`test_worker`（原本的「每小時更新用短期間」改成「依排定的日期抓」，`test_tw_moa` 改用登記表替換來源）；docs/06 §1.2、§1.4、§8，docs/04 §5.2。

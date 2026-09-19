@@ -167,8 +167,9 @@
 
 ```python
 class PriceProvider(Protocol):
-    source: str                       # "mock"、"tw_moa"、"in_datagov"
-    countries: tuple[str, ...]        # 這個來源涵蓋的國家
+    source: str                       # "mock"、"tw_moa"……
+    countries: tuple[str, ...]        # 這次執行涵蓋的國家
+    stats: FetchStats                 # 送出的請求數、下載時略過的資料列、下載過的檔案
 
     async def fetch(self, day: date) -> list[RawRow]:
         """抓某個交易日的原始資料；mock 也輸出來源格式。"""
@@ -177,7 +178,8 @@ class PriceProvider(Protocol):
         """轉成標準報價（每公斤、我們的代號）；對照不到回傳 None。"""
 ```
 
-真實來源可以在一次執行的第一個 `fetch` 就抓完整段期間（`tw_moa` 每個品項一個請求），之後的 `fetch` 從同一批資料取出，管線不必改。
+- 每個來源在同一個檔案宣告 `INFO = SourceInfo(...)`（國家、價格類型、期間、是否連網、排程），列進 `app/ingest/registry.py`。worker 只讀登記表，不認得任何一個來源的名字；介面、抓取原則與新增來源的步驟見 [06](06-data.md) §1.4。
+- 真實來源在一次執行的第一個 `fetch` 就抓完這次排定的日期（`tw_moa` 每個品項一個請求），之後的 `fetch` 從同一批資料取出。排定哪些日期由抓取原則決定（`app/ingest/policy.py`），連網的請求共用 `app/ingest/http.py` 的間隔與重試。
 
 管線：`fetch → normalize → validate → upsert quotes → aggregate(受影響的日期) → 記錄 ingest_run`。每一步都是可單獨測試的函式；真實來源的測試用 `tests/fixtures/` 裡存下來的實際回應，**測試不連外網**。
 
