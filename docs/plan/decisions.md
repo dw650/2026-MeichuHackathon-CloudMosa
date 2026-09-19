@@ -54,6 +54,87 @@
 - 理由：正式建置的路由表裡完全沒有除錯頁（已用正式與 demo 兩種映像實測）。Rolldown 仍會輸出沒有被引用的 chunk 檔，無法從路由到達，暫不處理。
 - 影響：`frontend/vite.config.ts`、`frontend/src/app/flags.ts`、`backend/app/main.py`。
 
+## 2026-09-19 T16 日期與新舊標示的文字由呼叫端傳入
+- 情況：T16 要產生「9/19 週六」「Sat 19/9」「昨天」「3 天前」，但 i18n 在 T17 才做；lib 不能寫死介面文字，也不該綁定 i18next 的插值語法。
+- 決定：`lib/dates.ts` 不含任何語言文字，由 `DateLabels` 參數傳入：`weekdays`（週日開頭）、`yesterday`、`none` 三個字串，以及 `date({m,d,w})`、`dateTime({m,d,time})`、`daysAgo({n})` 三個組字函式，變數名稱沿用 `STR`。資料時間照 03 §7 與草圖，兩種語言都是「9/19 11:40」；時刻固定 24 小時制 `HH:mm`，取時間字串原本寫的時刻，不換算時區。
+- 理由：T17 可以直接寫 `date: (v) => t('date', v)`；lib 的測試仍能驗證完整文字。
+- 影響：`frontend/src/lib/dates.ts`。T17 要提供 `DateLabels`（`STR` 沒有資料時間的字串，要新增一個 key）。
+
+## 2026-09-19 T16 數字的進位與正負號
+- 情況：文件只說用 `Intl.NumberFormat`、小數位數依單位；草圖用 `toFixed` 先進位再決定 `+`／`−`／`±`。但 `toFixed` 依二進位值進位（0.15 → 0.1），和 `Intl`（0.15 → 0.2）不一致；`Intl` 也會把 −0.04 印成「-0.0」。
+- 決定：一律由 `Intl` 進位（`signDisplay: 'exceptZero'` 加 `formatToParts`），正負號取自進位後的結果：正數 `+`、負數 `−`（U+2212，不帶號的格式遇到負數也用它）、進位後為 0 是 `±`。`null`、`NaN`、`Infinity` 都顯示「—」。價差的方向（`priceDiffDirection`）也依換算並進位後的值判斷，所以「±0」一定是持平色（草圖用未進位的原始值判斷）。
+- 理由：畫面上的數字、正負號與顏色永遠一致。
+- 影響：`frontend/src/lib/format.ts`、`frontend/src/lib/change.ts`。
+
+## 2026-09-19 T16 百分比格式
+- 情況：06 §3.4 規定了持平門檻與小數位數，但沒寫百分比是否依國家 locale、要不要帶正負號。
+- 決定：`formatPercent` 用 `Intl` 的 percent 樣式與國家 locale，只顯示大小，方向靠 ▲▼＝；10% 的界線依原始比例判斷（9.96% 顯示「10.0%」，和草圖相同）。另外提供 `formatSignedPercent` 給沒有符號的地方（例如「比 7 日均價」`+3.1%`），持平時是 `±0%`，和價差的 `±` 一致（草圖在 0 時顯示 `+0%`）。
+- 理由：percent 樣式以十進位乘 100，不會有 0.145 → 14% 的浮點誤差；全 App 的正負號規則一致。
+- 影響：`frontend/src/lib/change.ts`。
+
+## 2026-09-19 T16 新舊標示與單位設定的退回
+- 情況：06 §3.5 寫「3 天以上用警示色」，草圖從 2 天起就用警示色，也沒有「休市」狀態；單位表之後由 `GET /countries` 提供，使用者存的單位 id 可能已經不在表裡。
+- 決定：照文件，`stale` 滿 3 天才警示；`closed` 顯示最新交易日（格式同「9/19 週六」）、不警示；未知的狀態當成 `stale`，`stale` 卻沒有天數時不加標示。`resolveUnit` 依序退回：存的 id → 預設 id → 第一個選項 → 公斤（×1、1 位小數）。單位格式是 `{ id, perKg, decimals }`，`perKg` 是由每公斤換算的倍數（公擔 100、台斤 0.6）。
+- 理由：文件優先於草圖；資料或設定不符時退回最常見的顯示，畫面不會壞掉。
+- 影響：`frontend/src/lib/dates.ts` 的 `describeFreshness`、`frontend/src/lib/units.ts`；`/countries` 的單位欄位若取別的名稱，T22 在 API 層對應成 `UnitSpec`。
+
+## 2026-09-19 T17 字串 key 的分組與命名
+- 情況：T17 只寫「key 依畫面分組並取有意義的名稱」，沒規定怎麼分組、`STR` 的陣列怎麼存、變數怎麼命名。
+- 決定：共用的放 `app`、`softkeys`、`hints`、`date`、`freshness`、`priceType`、`states`、`common`、`menu`、`categories`；各畫面放 `setup`、`home`、`detail`（`tabs`、`trend`、`today`、`stats`、`compare`）、`markets`、`areas`、`watch`、`settings`、`about`。陣列改成以 id 為 key 的物件，id 沿用路由與 API：首頁分頁 `watch`／`all`、詳情分頁 `trend`／`today`／`compare`、分類是後端的 `cereal`…`other` 加 `all`、`recent`、到貨量 `low`／`normal`／`high`、波動與 30 日位置 `low`／`mid`／`high`；排序 `priceDesc`／`priceAsc`／`distanceAsc`／`distanceDesc` 與設定列 `language`／`country`／`area`／`wholesaleUnit`／`retailUnit` 是自訂的。只有星期維持陣列（週日開頭，給 `DateLabels`）。`{a}` 這類變數改成有意義的名稱（`{{area}}`、`{{count}}`、`{{price}}`…）；日期類（`date.*`、`freshness.daysAgo`）沿用 T16 的 `m`、`d`、`w`、`time`、`n`，直接傳給 `DateLabels`。
+- 理由：畫面可以直接寫 `` t(`detail.stats.arrivals.${level}`) ``；key 有型別，拼錯會編譯失敗。
+- 影響：`frontend/src/i18n/locales/*.json`、`frontend/src/i18n/index.ts`。加字串時兩個檔案都要加，`locales.test.ts` 檢查兩邊的 key 與變數一致。
+
+## 2026-09-19 T17 草圖字串的調整
+- 情況：`STR` 有幾句寫死範例值、拆成兩段，或只給草圖自己用；英文在數量是 1 時會變成「1 markets」。
+- 決定：
+  - `errSub`「先顯示 09:12 的資料」、`emptyNote`「通常 14:00 前更新」的時間改成 `{{time}}`，由畫面帶入。
+  - `aboutL` 第 3、4 段合併成 `about.noMoney` 一句；第 2 段和 `helpL` 第 5 段相同，只留 `about.demo`。
+  - 不搬：草圖模擬離開 App 的 `exitT`、`exitN`；語音播報（B8）的 `voice`、`voiceS`、`hint.listen`，做 B8 時再加。
+  - 新增：資料時間 `date.dataTime`（兩種語言都是 `{{m}}/{{d}} {{time}}`，03 §7）；語言清單的 `setup.language.fallbackNote`「→ English・尚未提供」（02 §5.1；草圖是在程式裡組字）。
+  - 英文單複數：`detail.today.markets`、`detail.compare.marketCount` 用 i18next 的 `count` 加 `_one`／`_other`（「1 market in this area」「1 mkt」）；中文兩個形式是同一句，只為了兩個檔案的 key 相同。`detail.today.median` 不分單複數，數量是 1 時照草圖改用 `detail.today.oneMarket`（中文的複數規則沒有「one」，不能交給 i18next 切換）。
+- 理由：介面文字全部走 i18n（03 §7），畫面不自己組字；用詞仍照 `STR`，只改範例值與分段。
+- 影響：`frontend/src/i18n/locales/*.json`。
+
+## 2026-09-19 T17 語言的判斷與退回
+- 情況：02 §5.1 只寫「手機語言排第一」；`navigator.language` 的代碼不一定標準（08 §9）；手機語言不在三個主要語言裡、或選了尚未翻譯的語言時怎麼辦，文件沒寫。
+- 決定：
+  - 手機語言只比對主要子標籤（不分大小寫，`-`、`_` 都可以）：`zh-Hant-TW`、`zh-CN` 都算繁體中文；`tl-TL` 這類不在清單的算推測不到。
+  - 手機語言是三個主要語言之一才排第一並標「手機語言」；否則照草圖的預設順序（繁體中文、English、हिन्दी），不標示。「More・其他」的語言不標示也不調整順序。
+  - store 存使用者選的語言 id（可能是 `hi`、`bn`…），`resolveLanguage` 換成介面語言：只有 `zh-TW`、`en` 是它自己，其他一律 `en`。B6 做完印地文時，把 `hi` 加進 `SUPPORTED_LANGUAGES` 並加字串檔即可。
+  - 還沒選語言時（首次設定），介面先用手機語言換算出的介面語言。
+  - `<html lang>`：`zh-TW` 用 `zh-Hant`，其他用 `en`，讓 tokens.css 的 `:lang(zh)` 生效。
+  - API 的多語文字（`{"zh-TW", "en"}`）用 `pickText` 取：介面語言 → 英文 → 第一個非空值；都沒有時是空字串。
+- 理由：規則最少、都能測試；選了尚未翻譯的語言也會記住，翻譯完成後自動生效。
+- 影響：`frontend/src/i18n/languages.ts`、`index.ts`、`text.ts`。T18 的 `settings` 存語言 id，還原與變更時呼叫 `setLanguage(id)`。
+
+## 2026-09-19 T18 store 的欄位與動作
+- 情況：04 §4.5 只列出 `settings`、`session` 要放什麼，沒寫欄位、預設值、國家預設值從哪裡來、首次設定什麼時候算完成、demo 開關存在哪裡。
+- 決定：
+  - `settings`（localStorage key `agriprice.settings`，版本 1）：`language`（語言 id，可能是 `hi` 等；還沒選是 `null`，介面跟著手機語言）、`country`（`IN`／`TW`／`null`）、`areaId`（我的地區）、`recentAreaIds`（最近的在前、不重複、最多 3 個）、`watchlist`（依顯示順序）、`priceType`（`wholesale`／`retail`）、`units`（每種價格類型一個單位 id，`null`＝國家預設）、`setupDone`、`demo`（`fail`、`stale`、`locate`：`auto`｜`none`｜`IN:nashik`｜`TW:taipei`）。demo 開關先放進 settings，T36 做「Demo」列時不必遷移。
+  - 國家預設值由呼叫端從 `GET /countries` 傳進來，store 不呼叫 API：`chooseCountry(code, defaults)` 的 `defaults` 欄位名稱照 API（`default_area_id`、`default_recent_area_ids`、`default_watch`），可以直接傳 API 回傳的國家物件。
+  - 換成別的國家：我的地區、最近地區、關注換成該國預設，單位回到 `null`，清空最近看過的作物；再選一次同一個國家什麼都不變（不會洗掉關注）。語言、批發／零售、demo 開關保留。
+  - 首次設定完成＝選了地區：`chooseArea` 同時把 `setupDone` 設為 true；還沒選國家時忽略。選國家時雖然先填入預設地區，但要選完地區才算完成。
+  - 詳情頁換「正在看的地區」用 `rememberArea`：照草圖只加進最近地區，不改我的地區。
+  - `session`（`agriprice.session`，版本 1）：`lastLocation`（`pathname + search` 與 `location.key`）、`focus`（`{ key, id }` 陣列，最舊的在前，只留最新 50 筆）、`recentCrops`（最近的在前、最多 5 個）。焦點用陣列不用物件，因為像數字的 key 會打亂物件的順序。上次畫面的 `location.key` 也存起來，F13 重開後歷史的 key 是新的，靠 `selectLastFocusId` 找回那個畫面的焦點。
+  - 最近看過的作物只存一份（草圖是每個國家一份），換國家時由 `chooseCountry` 清空。
+- 理由：欄位一次定好，後面的任務只加動作、不改存放格式；store 只存使用者的選擇，伺服器資料留給 TanStack Query。
+- 影響：`frontend/src/store/settings.ts`、`session.ts`。T20 在焦點移動時呼叫 `rememberFocus`；T21 每次導覽呼叫 `rememberLocation`，而且只在 `setupDone` 時才還原 `lastLocation`；T22 的 demo 標頭讀 `settings.demo`。
+
+## 2026-09-19 T18 localStorage 壞掉時的處理
+- 情況：04 §4.5 規定解析失敗或版本不符時執行遷移函式、失敗就重設；沒寫版本相同但內容不對、少了欄位、版本比 App 新時怎麼辦。zustand persist 遇到 JSON 解析錯誤或遷移函式丟出例外時會停在初始狀態，`hasHydrated()` 一直是 false，壞資料也留在 localStorage。
+- 決定：
+  - `store/migrate.ts` 的 storage：讀不到或 JSON 解析失敗都當成沒存過；寫入失敗（空間滿、被封鎖）時繼續用記憶體裡的狀態。
+  - 每次載入都用各欄位的 reader 檢查：有欄位型別不對，或跨欄位規則不成立（`setupDone` 卻沒有國家或地區），就整份重設成預設值，也就是回到首次設定；只是少了欄位，那個欄位用預設值；清單去掉重複並截到上限。
+  - 版本不同時照 `steps[n]`（第 n 版 → 第 n+1 版）一步一步遷移；少了步驟、步驟丟出例外、版本比 App 新、遷移完仍不合格，都重設，並把預設值寫回 localStorage。
+  - 兩個 store 目前都是版本 1，還沒有遷移步驟；遷移流程在 `migrate.test.ts` 用假的步驟測試。之後改存放格式時，版本加 1 並在 `steps` 加一步。
+- 理由：同一套規則處理所有壞資料，App 不會卡住；少欄位不重設，萬一忘了加版本，使用者也不會被送回首次設定。
+- 影響：`frontend/src/store/migrate.ts`；各 store 的 `readers`、`check`、`steps`。
+
+## 2026-09-19 T18 語言設定與 i18next 同步
+- 情況：T17 決定 store 存語言 id，並在還原與變更時呼叫 `setLanguage(id)`，但沒寫由誰呼叫、還沒選語言時怎麼辦。
+- 決定：`store/settings.ts` 載入時套用一次，之後訂閱 `language` 的變化（包括重新 rehydrate）；`null`（還沒選，或資料被重設）時用手機語言，和 i18n 初始化相同。
+- 理由：只要載入 store 就生效，不必在 `main.tsx` 另外接線；副作用不放進 `lib/`。
+- 影響：`frontend/src/store/settings.ts`。
 ## 2026-09-19 T07 資料表的補充欄位與零售對照
 - 情況：04 §7 只列主要欄位。零售資料沒有市場，`source_market_map` 對照不到地區；`quotes` 的唯一鍵（來源、市場、作物、品種、交易日）遇到零售列時市場是空值。
 - 決定：
@@ -148,3 +229,78 @@
   - demo 標頭只在 `DEMO_MODE=true` 時解析：`X-Demo-Fail: 1` 只讓價格類端點回 503 `demo_failure`（目錄、健康檢查、`/locate` 不受影響）；`X-Demo-Stale: 地區:天數`（可用逗號放多個，天數 1–60，格式錯的忽略），同時影響價格端點與地區清單的新舊；`X-Demo-IP` 取代轉發位址；`X-Demo-Locate: IN:nashik` 或 `none` 直接指定結果（地區必須存在，否則視為推測不到）。
 - 理由：照文件的規則，細節選最簡單而且能在 demo 時重現每種狀態的做法。
 - 影響：`backend/app/services/locate.py`、`backend/app/services/demo.py`、`backend/app/deps.py`、`infra/geoip/README.md`、`scripts/fetch-geoip.sh`。
+
+## 2026-09-19 T19 按鍵範圍的層級與順序
+- 情況：04 §4.2 只寫「分派給堆疊最上層、面板打開時不穿透」，沒寫上下順序怎麼決定。React 先執行子元件的 effect，畫在畫面裡的面板會比畫面早註冊，只看註冊順序的話面板會被壓在下面。也沒寫最上層沒有某個鍵的 handler 時要不要往下傳。
+- 決定：
+  - `useKeys(handlers, { layer })` 分兩層：`screen`（預設，畫面）與 `overlay`（面板：選單、換地區、排序）。`overlay` 永遠在 `screen` 之上；同一層裡最新註冊的在上面。
+  - 只有最上面的範圍收到按鍵；它沒寫的鍵直接丟掉，不往下傳。所以一個畫面、一個面板各只呼叫一次 `useKeys`，焦點 hook 提供的 handler 合併進同一個物件。
+  - handler 存在 ref 裡，每次按鍵都讀最新的；只在掛載與 `layer` 改變時註冊，重新 render 不會改變順序。註冊用 `useLayoutEffect`，畫面 commit 後、下一個按鍵進來前，堆疊就已經更新。
+  - `window` 上唯一的 `keydown` 監聽器在有範圍時自動掛上，最後一個範圍移除時拿掉，不需要另外呼叫安裝函式。除錯頁 `/debug/keys` 不註冊範圍，看到的仍是原始事件。
+- 理由：用層級決定順序，不受 effect 執行順序影響；不往下傳最符合「面板打開時按鍵不會穿透」。
+- 影響：`frontend/src/keys/keyScope.ts`、`useKeys.ts`；`frontend/eslint.config.js` 另外擋下 `keys/` import `screens/`。要加新的層（例如 B8 語音播報要蓋在面板上）就在 `keyScope.ts` 的 `LAYERS` 加一個名稱。
+
+## 2026-09-19 T19 preventDefault 與不處理的按鍵
+- 情況：04 §4.2 寫「按鍵處理完都要 preventDefault」「Enter 只在 keydown 處理」，沒寫沒處理的鍵、被忽略的長按、組合鍵與輸入法怎麼辦。
+- 決定：
+  - 最上層範圍有對應 handler 的鍵才 `preventDefault()`，長按時被忽略的重複事件也算；沒有 handler 的鍵不動，保留瀏覽器的預設行為。
+  - `Enter` 不論有沒有 handler、是不是長按，一律 `preventDefault()`，焦點在按鈕上時不會再觸發 `click`（08 §12「統一只處理 keydown」）。
+  - 帶 Ctrl、Meta、Alt 的組合鍵與輸入法組字中（`isComposing`）的事件完全不處理。Shift 照常處理，因為桌機要按 Shift 才打得出 `#`、`*`。
+  - 不另外排除輸入框（baseline 不需要打字，08 §4【決定】）；長按不節流，等 08 §12 實機確認 repeat 速度再調。
+- 理由：只攔自己處理的鍵，其他交給瀏覽器；OK 只走 keydown 一條路，不會觸發兩次。
+- 影響：`frontend/src/keys/keyScope.ts` 的 `onKeyDown`。
+
+## 2026-09-19 T20 焦點 hook 的介面與接法
+- 情況：04 §4.4 只寫 `useFocusList(ids)`、`useGrid(ids, cols)` 要處理哪些鍵，沒寫 hook 怎麼找到項目與要捲動的容器、怎麼接上 T19「一層只呼叫一次 `useKeys`」、OK 與數字鍵要做什麼、面板打開時畫面的清單怎麼辦。
+- 決定：
+  - `useFocusList(ids, { root, onActivate, digitOffset, active })`；`useGrid(ids, cols, { 同上, onLeftEdge })`。兩者都回傳 `{ focusedId, keys, focus }`。畫面先放 `keys`，再加自己的鍵：`useKeys({ ...list.keys, onHash, onStar, onMenu })`；面板相同，只是改成 `useKeys(..., { layer: 'overlay' })`。
+  - `root` 由畫面用 `useRef` 建立，放在包住項目的元素上；沒有項目的頁面放在內容上。項目要有 `data-focus-id` 與 `tabIndex={-1}`，只在 `root` 裡面找。要捲動的是 `root` 本身，或最近一個 `overflow-y: auto｜scroll` 的祖先（Shell 的內容區）。
+  - hook 不回傳 ref：React Compiler 的 lint（`react-hooks/refs`）看到回傳物件的某個屬性被放進 JSX 的 `ref`，會把整個物件當成 ref，之後讀 `list.keys`、`list.focusedId` 都會報錯。
+  - OK 與數字鍵都呼叫 `onActivate(id)`。數字 N 對應 `ids[N - 1 + digitOffset]`，超出清單就不動作。首頁連線失敗的警示卡沒有數字鍵帽，所以傳 `digitOffset: 1`（草圖的 `v.off`）。數字鍵會先把焦點移到該項再執行，所以返回時焦點在剛打開的項目上。`0` 不處理；畫面要用 `0`（B8 語音）時自己包一層 `onDigit`。
+  - 沒有項目時，`keys` 只有 ↑ ↓，一次捲動 60% 高度；不提供 `onEnter`、`onDigit`，由畫面自己加（例如走勢頁按 OK 換分頁）。
+  - `active: false` 表示上面蓋著面板：不移動 DOM 焦點、不寫 store、不理會歷史變化。變回 true 時，焦點回到原本的項目。畫面依網址的 `?sheet=` 算出（`active: !sheet`）；面板自己的清單用預設值 true。
+  - 每次 commit 後都重新套用焦點（真正的 DOM focus，並捲到可見範圍），項目重新 render 或內容位移時焦點不會掉。
+- 理由：畫面只需要一個 ref、一次 `useKeys`，lint 不會誤報；面板用明確的 `active` 判斷，和網址在同一次 render 生效，不會搶走面板的焦點。
+- 影響：`frontend/src/focus/useFocusList.ts`、`useGrid.ts`、`dom.ts`。之後的畫面照上面的方式接；B7 支援滑鼠點擊時用回傳的 `focus(id)`。
+
+## 2026-09-19 T20 捲動與九宮格邊界的細節
+- 情況：03 §5 寫「移出可見範圍時立即捲動並留 6px 邊距；第一項放得下時捲到最上面」「返回時依 ID 還原焦點與捲動位置」，沒寫怎麼量位置、捲動位置要不要另外存。02 §4 寫「九宮格一次跳一列」，沒寫在最上列、最下列按 ↑ ↓ 時怎麼辦；草圖把目標夾在 0–8 之間，會斜著跳到角落。
+- 決定：
+  - 焦點項目和可見範圍上下緣的距離小於 6px 就捲動，捲到剛好留 6px。判斷和捲動都用 6px（草圖用 4px 判斷、捲到 6px）。位置用 `getBoundingClientRect` 相對於捲動容器計算，中間隔幾層元素都正確。第一項放得下時，優先捲到最上面。
+  - 直接設定 `scrollTop`，不用 `scrollIntoView`，也不用平滑捲動。沒有項目時，一次捲 `round(可見高度 × 0.6)`。
+  - 捲動位置不另外存：返回時依 ID 還原焦點，再用同一條規則捲到可見範圍，和草圖的做法相同。
+  - 九宮格：↑ ↓ 的目標格不存在（在最上列、最下列，或最後一列比較短）時停在原地；◀ ▶ 只在同一列裡移動，最左欄再按 ◀ 呼叫 `onLeftEdge`，最右欄或右邊沒有格子時停在原地。
+- 理由：只用一個數字，最好理解也最好測；夾在範圍內會斜著跳，不符合「一次跳一列」。
+- 影響：`frontend/src/focus/dom.ts`（`SCROLL_MARGIN`、`PAGE_SCROLL`）、`useGrid.ts`。
+
+## 2026-09-19 T20 焦點的記憶與還原時機
+- 情況：04 §4.4 寫「每一筆歷史記住焦點 ID，返回時依 ID 還原，ID 不存在時落在第一項」，沒寫資料還沒載入、清單在畫面上改變、同一個畫面換到另一筆歷史時怎麼辦，也沒寫什麼時候寫進 store。
+- 決定：
+  - 以 `location.key` 為準。同一個畫面元件沒有卸載、但換到另一筆歷史時（同一路由 push、分頁 replace、面板關閉），依那一筆記住的 ID 還原；沒有紀錄就是新畫面，從第一項開始。
+  - 清單在畫面上改變時（資料載入、批發⇄零售）：焦點項目還在，就留在它身上；不見了，就移到原本位置上的項目（清單變短時是最後一項）。清單變空時沒有焦點，等項目回來再依記住的 ID 還原，所以返回時資料還在載入也能還原。
+  - 焦點一改變就寫進 session store：按鍵造成的移動在按鍵當下寫，因為打開項目後可能馬上離開畫面；還原與清單變動造成的改變在 effect 裡寫。`active` 是 false 時不寫。
+  - F13 重開後歷史的 key 是新的，而焦點 hook 只查目前的 key。T21 還原上次的畫面時，要在畫面第一次 render 前用 `rememberFocus(新的 key, selectLastFocusId(...))` 把焦點帶過去，否則會從第一項開始。
+- 理由：store 裡的焦點一直是最新的，不必等離開時才存（08 §7）；依 ID 而不是索引，資料順序改變也不會落在錯的項目。
+- 影響：`frontend/src/focus/restore.ts`（`restoreFocus`、`followList`、`useRestoredFocus`）；T21 的重開流程。
+
+## 2026-09-19 T20 前端覆蓋率門檻
+- 情況：baseline T20 要求 `src/lib`、`src/keys`、`src/focus`、`src/store` 合計 ≥ 90%，沒寫看哪幾項指標。
+- 決定：在 `frontend/vite.config.ts` 的 `coverage.thresholds` 用一個 glob `src/{lib,keys,focus,store}/**`，四個資料夾合計的 statements、branches、functions、lines 都要 ≥ 90%，不逐檔檢查。低於門檻時 `npm run coverage` 失敗；`make test` 與 CI 的前端 job 都跑這個指令。已確認暫時把門檻調到 100% 時確實會失敗。
+- 理由：四項都看，最不容易漏；照計畫寫的「合計」，和後端（services＋ingest 合計）一致。
+- 影響：`frontend/vite.config.ts`。之後有新的核心資料夾就加進 glob。
+## 2026-09-19 T21 路由表與歷史的做法
+- 情況：04 §4.3 定了路徑與「面板 push、分頁 replace、啟動時先換成首頁再 push」，但沒寫面板中的項目開啟另一個畫面、已經有面板時再開面板、從網址直接進入面板時要怎麼處理，也沒寫路由表怎麼讓各畫面平行開發。
+- 決定：
+  - 路由表由 `buildRoutes(screens)` 產生，每個畫面一個檔案（`src/screens/<畫面>/<名稱>Screen.tsx`），先放佔位元件；畫面任務只改自己的檔案。路由測試傳入替身元件，真的畫面換上來也不會壞。
+  - 畫面一律用 `useNav()`：`open`（push）、`back`、`switchTab`（replace）、`openSheet`（push；已經有面板時改成 replace，不疊兩層）、`closeSheet`（back；如果面板是這一頁的第一筆歷史，就改成拿掉參數）、`leaveSheet`（面板裡的項目開啟其他畫面時，用 replace 取代面板那一筆，返回時回到原畫面而不是面板）。
+  - 啟動還原（F13）只在「從首頁網址開啟 App」時做：歷史換成首頁、再 push 上次的畫面，並把上次的焦點帶到新的歷史 key；上次是首頁時直接開首頁（例如「全部作物」分頁）。其他網址（重新整理、直接連結）照原樣開。`?sheet=`、首次設定、除錯頁都不還原。
+  - 首次設定沒完成時，除了 `/setup/*` 與 `/debug/*`，所有路徑都導向 `/setup/lang`；作物詳情的分頁不是 trend／today／compare 時導向 today；其他未知路徑導回首頁。
+  - `RouterProvider` 從 `react-router` 匯入，不用 `react-router/dom`：測試環境會把兩者載入成兩份，context 對不上。
+- 理由：讓右軟鍵的 `history.back()` 在任何情況下都照「關面板 → 上一頁 → 首頁離開」運作。
+- 影響：`frontend/src/app/`（`paths.ts`、`navigation.ts`、`routes.ts`、`RootLayout.tsx`、`DetailTabGuard.tsx`、`router.ts`）、`frontend/src/screens/*` 的佔位元件。
+
+## 2026-09-19 排程改成多線平行（使用者同意）
+- 情況：baseline.md 的「平行開發」規定一次只派一個子 agent、前端線依序做；使用者在 21:20 左右要求加速，並同意偏離原排程。
+- 決定：前端基礎改成 T20、T23（子 agent，各自的 worktree）與 T21（主 session）同時做；同步點 1 分兩段（先合併 T16–T21，T23／T24 完成後再合併並跑 `make e2e`）；畫面階段由多個子 agent 各用一個 worktree 同時做，主 session 先做共用的畫面工具與首頁當範本，再負責合併。品質關卡不變（lint、型別、測試、覆蓋率門檻、大段落 Playwright）；畫面測試只寫計畫要求的核心情境。
+- 理由：縮短等待時間，品質底線不變。
+- 影響：只影響執行順序，不影響規格。

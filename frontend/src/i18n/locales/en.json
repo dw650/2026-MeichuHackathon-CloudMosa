@@ -1,0 +1,223 @@
+{
+  "app": {
+    "name": "AgriPrice"
+  },
+  "softkeys": {
+    "menu": "Menu",
+    "open": "Open",
+    "back": "Back",
+    "exit": "Exit",
+    "select": "Select",
+    "close": "Close",
+    "toggle": "Change",
+    "view": "View",
+    "compare": "Compare",
+    "trend": "Trend",
+    "today": "Today",
+    "retry": "Retry",
+    "markets": "Markets"
+  },
+  "hints": {
+    "markets": "Markets",
+    "trend": "Trend",
+    "compare": "Compare",
+    "tabs": "Tabs",
+    "open": "Open",
+    "run": "Run",
+    "area": "Area",
+    "sort": "Sort",
+    "d7": "7d",
+    "d30": "30d"
+  },
+  "date": {
+    "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "short": "{{w}} {{d}}/{{m}}",
+    "dataTime": "{{m}}/{{d}} {{time}}"
+  },
+  "freshness": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "{{n}}d ago",
+    "none": "No data",
+    "old": "Old"
+  },
+  "priceType": {
+    "wholesale": "Wholesale",
+    "retail": "Retail",
+    "switchTo": {
+      "wholesale": "Wholesale",
+      "retail": "Retail"
+    }
+  },
+  "states": {
+    "loading": "Loading prices for {{area}}",
+    "loadingNote": "Shows an error after 10 s",
+    "error": "Connection failed",
+    "showingOld": "Showing data from {{time}}",
+    "retry": "Retry",
+    "settingsKept": "Your settings are kept",
+    "notUpdated": "{{area}}: no update yet",
+    "usualUpdate": "This area usually updates by {{time}}",
+    "lastPrice": "Last ({{when}}): {{price}}",
+    "otherAreas": "Other areas",
+    "seeTrend": "See trend",
+    "noRetail": "No retail data",
+    "noRetailCrop": "No retail reports for this crop",
+    "retailNote": "Retail prices are per area, not per market"
+  },
+  "common": {
+    "distance": "{{km}} km (straight)",
+    "page": "Page {{page}}/{{total}}",
+    "demoData": "Demo data"
+  },
+  "menu": {
+    "title": "Menu",
+    "changeArea": "Change area",
+    "watchlist": "Watchlist",
+    "refresh": "Refresh",
+    "about": "About & data",
+    "settings": "Settings",
+    "addWatch": "Add to watchlist",
+    "removeWatch": "Remove from list"
+  },
+  "categories": {
+    "cereal": "Cereals",
+    "veg": "Veg",
+    "fruit": "Fruit",
+    "pulse": "Pulses",
+    "spice": "Spices",
+    "oil": "Oilseed",
+    "other": "Other",
+    "all": "All",
+    "recent": "Recent"
+  },
+  "setup": {
+    "welcome": "Today's crop prices, place by place",
+    "step": "Step {{step}} of {{total}}",
+    "language": {
+      "title": "Language・語言",
+      "phone": "Phone language",
+      "more": "More・其他",
+      "moreSub": "अन्य",
+      "notYet": "Not yet available",
+      "fallbackNote": "→ English・Not yet available"
+    },
+    "locate": {
+      "title": "Your location",
+      "question": "Are you near {{area}}?",
+      "how": "Guessed from your network (no GPS, not stored)",
+      "yes": "Yes, that’s right",
+      "no": "No, let me choose"
+    },
+    "country": {
+      "title": "Choose country"
+    },
+    "area": {
+      "title": "Your area"
+    }
+  },
+  "home": {
+    "title": "{{area}} prices",
+    "tabs": {
+      "watch": "Watchlist",
+      "all": "All crops"
+    },
+    "browse": "Browse"
+  },
+  "detail": {
+    "tabs": {
+      "trend": "Trend",
+      "today": "Today",
+      "compare": "Compare"
+    },
+    "trend": {
+      "title": "{{days}}-day trend",
+      "closed": "Closed",
+      "closedShort": "X"
+    },
+    "today": {
+      "median": "Median of {{count}} markets",
+      "oneMarket": "Only 1 market",
+      "retailSurvey": "Retail survey price",
+      "vsPrev": "vs last trading day",
+      "markets_one": "{{count}} market in this area",
+      "markets_other": "{{count}} markets in this area",
+      "marketsRange": "High {{high}} · Low {{low}}"
+    },
+    "stats": {
+      "vsAvg7": "vs 7-day avg",
+      "arrivals": {
+        "label": "Arrivals",
+        "low": "Low",
+        "normal": "Normal",
+        "high": "High"
+      },
+      "position30": {
+        "label": "30-day level",
+        "low": "Low",
+        "mid": "Mid",
+        "high": "High"
+      },
+      "volatility": {
+        "label": "Swing",
+        "low": "Calm",
+        "mid": "Normal",
+        "high": "Choppy"
+      },
+      "average": "Avg",
+      "high": "High",
+      "low": "Low"
+    },
+    "compare": {
+      "sortTitle": "Sort by",
+      "sorts": {
+        "priceDesc": "Price high→low",
+        "priceAsc": "Price low→high",
+        "distanceAsc": "Nearest first",
+        "distanceDesc": "Farthest first"
+      },
+      "you": "You",
+      "rank": "{{area}}: price rank {{rank}}/{{total}}",
+      "rankNone": "{{area}}: no data, not ranked",
+      "marketCount_one": "{{count}} mkt",
+      "marketCount_other": "{{count}} mkts"
+    }
+  },
+  "markets": {
+    "vsMedian": "Compared with median {{price}}",
+    "noRetail": "No retail price for this market",
+    "seeAreaRetail": "See {{area}} retail"
+  },
+  "areas": {
+    "title": "Choose area",
+    "change": "Change area",
+    "recent": "Recent",
+    "all": "All areas",
+    "updated": "Updated",
+    "other": "Other areas…",
+    "changeCountry": "Change country…"
+  },
+  "watch": {
+    "title": "Watchlist"
+  },
+  "settings": {
+    "title": "Settings",
+    "rows": {
+      "language": "Language",
+      "country": "Country",
+      "area": "My area",
+      "wholesaleUnit": "Wholesale unit",
+      "retailUnit": "Retail unit"
+    }
+  },
+  "about": {
+    "title": "About & data",
+    "areaPrice": "Area price = median of the area’s market prices; the market count is shown.",
+    "distance": "Distance = straight line between area centres, not road distance.",
+    "retail": "Retail prices are per area; there is no market breakdown.",
+    "gap": "The retail–wholesale gap is not profit; it includes transport, loss and packing.",
+    "demo": "All prices shown are demo data.",
+    "source": "Data source",
+    "noMoney": "We never ask for money, PINs or codes."
+  }
+}

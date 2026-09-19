@@ -239,7 +239,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-C：前端基礎
 
-- [ ] **T16 lib**
+- [x] **T16 lib**
   - 參考：[03](../03-ux-ui.md) §7；[06](../06-data.md) §3.4、§5
   - 內容：
     - `units.ts`：由每公斤換算、小數位數。
@@ -249,7 +249,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每個函式的主要情況與邊界情況。
   - 完成條件：測試通過。
 
-- [ ] **T17 i18n**
+- [x] **T17 i18n**
   - 參考：[03](../03-ux-ui.md) §7；[02](../02-product-spec.md) F15；`data.js` 的 `STR`、`LANGS`、`MORE_LANGS`
   - 內容：
     - 把 `STR` 的 zh、en 搬到 `locales/zh-TW.json`、`en.json`，key 依畫面分組並取有意義的名稱。
@@ -257,13 +257,13 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：兩份字串檔的 key 完全相同；插值正常。
   - 完成條件：測試通過。
 
-- [ ] **T18 Store**
+- [x] **T18 Store**
   - 參考：[04](../04-architecture.md) §4.5
   - 內容：`settings`、`session`，用 persist、版本號與遷移函式；壞掉的 JSON 會重設。
   - 測試：每次變更立刻寫入；版本不符時遷移；壞掉的資料被重設；國家改變時連帶重設地區與關注。
   - 完成條件：測試通過。
 
-- [ ] **T19 按鍵**
+- [x] **T19 按鍵**
   - 參考：[04](../04-architecture.md) §4.2；[02](../02-product-spec.md) §4；[08](../08-platform-constraints.md) §3
   - 內容：`keyScope`（堆疊）與 `useKeys`。
   - 測試：
@@ -272,7 +272,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - `Escape` 會觸發 `onMenu`；處理過的按鍵會 `preventDefault`。
   - 完成條件：測試通過。
 
-- [ ] **T20 焦點**
+- [x] **T20 焦點**
   - 參考：[04](../04-architecture.md) §4.4；[03](../03-ux-ui.md) §5；[02](../02-product-spec.md) §4
   - 內容：
     - `useFocusList`、`useGrid`：九宮格的 ◀ ▶ 在同一列移動，最左欄再按 ◀ 呼叫 callback。
@@ -280,7 +280,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：以上每一條規則各一個測試。
   - 完成條件：測試通過。開啟前端覆蓋率門檻：`src/lib`、`src/keys`、`src/focus`、`src/store` 合計 ≥ 90%，`make test` 與 CI 都檢查。
 
-- [ ] **T21 路由與歷史**
+- [x] **T21 路由與歷史**
   - 參考：[04](../04-architecture.md) §4.3
   - 內容：路由表，**一次登記全部路由**，還沒做的畫面先放佔位元件，之後各畫面任務只改自己的檔案，平行開發時比較不會衝突；面板用 `?sheet=`，打開時 push、關閉時 back；分頁用 replace；啟動時還原上次的畫面（先換成首頁再 push）；未知路徑導回首頁。
   - 測試：用 memory router 測 push 與 replace 的次數、還原後按返回會回到首頁。
