@@ -1,0 +1,48 @@
+# CD (docs/07 §5.3): when CI passes on main, deploys that commit to the server over SSH.
+# The key in the secret DEPLOY_SSH_KEY can only run scripts/deploy.sh there, with the commit as
+# its argument. Without the secret (for example in a fork) the job is skipped.
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or commit to deploy (a rollback is a deploy of an older commit)
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      HOST: ${{ vars.DEPLOY_HOST || '203.116.30.131' }}
+      HOST_KEY: ${{ vars.DEPLOY_HOST_KEY || 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK/0PspDmeGDyEsOkcYnXfBHyvbzgmCZ6LTsNWWjo8GX' }}
+      SSH_USER: ${{ vars.DEPLOY_USER || 'ubuntu' }}
+      APP_URL: ${{ vars.DEPLOY_URL || 'http://203.116.30.131:3001' }}
+      REF: ${{ github.event.workflow_run.head_sha || inputs.ref }}
+    steps:
+      - name: Skip without the deploy key
+        if: env.SSH_KEY == ''
+        run: echo "::notice::DEPLOY_SSH_KEY is not set in this repository; nothing to deploy."
+      - name: Deploy over SSH
+        if: env.SSH_KEY != ''
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s %s\n' "$HOST" "$HOST_KEY" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o ConnectTimeout=20 "$SSH_USER@$HOST" "$REF"
+          echo "Deployed \`$REF\` to $APP_URL" >> "$GITHUB_STEP_SUMMARY"

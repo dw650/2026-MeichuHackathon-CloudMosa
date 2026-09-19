@@ -532,3 +532,13 @@
   - 來源名稱用各來源實際的寫法（data.gov.in 的 commodity、FarmTransData 的作物名稱），之後接真實資料（B2、B3）可以直接對照。台灣的稻米、紅豆、芝麻可能不在果菜批發市場的資料裡【待確認】，接真實資料時要另找來源或顯示無資料。
 - 理由：展示時九宮格每一格都有內容；清單原本的順序不變，既有的測試與數字鍵位置不受影響。
 - 影響：`backend/app/seed/{IN,TW}.yaml`、`frontend/src/icons/`、`frontend/src/test/fixtures/`、docs/06 §7.3–7.4、docs/03 §8。
+## 2026-09-20 CD 提前完成（加分項 B1）
+- 情況：使用者要讓組員隨時看到最新的 `main`。02 §3.2 的 B1 原本排在 Simulator 測試之後。主辦單位的 VM 對外只開 22、3000、3001（80／443 被擋），同一台 VM 上還有組員的其他專案；repo 是私有的。
+- 決定：使用者選了部署來源 dw650/harrykuo1、CI 通過後才部署、伺服器關 demo 模式。其餘：
+  - 伺服器的 `~/harrykuo1` 改成 git clone，用唯讀 deploy key 拉程式，金鑰只設定在這個 repo 的 `core.sshCommand`。
+  - GitHub Actions 用專用金鑰 SSH 進伺服器。這把金鑰在 `authorized_keys` 用 forced command 與 `restrict` 限定只能執行 `deploy.sh`，只傳 ref。
+  - `deploy.sh`：`docker compose up --build --wait`，再經過 Caddy 做健康檢查；失敗就自動部署上一個成功的 commit（記在 `.git/deploy-last-good`），用 flock 避免兩個部署同時跑。
+  - 先用 HTTP（`http://203.116.30.131:3001`）；HTTPS 等 80／443 開放後改 `.env` 即可。
+  - 使用者同意停掉同一台 VM 上佔用 3000 port 的 `agriprice` 容器（只停止，沒有刪除）。
+- 理由：手動部署與 CD 共用一支腳本；私有 repo 不必把 GitHub 權杖放在伺服器上；CI 用的金鑰外洩時最多只能觸發部署。
+- 影響：`scripts/deploy.sh`、`.github/workflows/deploy.yml`、docs/07 §5.2–5.3、docs/00 目前狀態、README。
