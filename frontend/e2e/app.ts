@@ -2,7 +2,7 @@
 import { expect, type Page } from '@playwright/test'
 
 export type Country = 'IN' | 'TW' | 'MY'
-export type Lang = 'zh-TW' | 'en'
+export type Lang = 'zh-TW' | 'en' | 'ms' | 'hi'
 
 const DEFAULTS: Record<Country, { area: string; recent: string[]; watch: string[] }> = {
   IN: {

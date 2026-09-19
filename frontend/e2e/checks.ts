@@ -41,11 +41,25 @@ export async function layoutProblems(page: Page): Promise<string[]> {
         )
       }
     }
+    // A long side label can run under the centre key without widening the footer.
+    const keys = [...document.querySelectorAll<HTMLElement>('footer [data-softkey]')]
+      .filter((el) => el.offsetParent !== null && el.textContent?.trim())
+      .map((el) => ({ name: el.dataset.softkey, box: el.getBoundingClientRect() }))
+    for (const [i, a] of keys.entries()) {
+      for (const b of keys.slice(i + 1)) {
+        if (Math.min(a.box.right, b.box.right) - Math.max(a.box.left, b.box.left) > 1) {
+          problems.push(`soft keys ${a.name} and ${b.name} overlap`)
+        }
+      }
+    }
     return problems
   }, FIXED)
 }
 
-/** Every visible text is at least the floor (11px on 240×320, 10px on 128×160, 11px Chinese). */
+/**
+ * Every visible text is at least the floor: 11px on 240×320; 10px on 128×160, but 11px for
+ * Chinese and Devanagari (हिन्दी).
+ */
 export async function fontProblems(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const small = window.innerWidth <= 176
@@ -59,8 +73,8 @@ export async function fontProblems(page: Page): Promise<string[]> {
       if (rect.width === 0 || rect.height === 0 || getComputedStyle(el).visibility === 'hidden')
         continue
       const size = parseFloat(getComputedStyle(el).fontSize)
-      const zh = /[㐀-鿿]/.test(text)
-      const floor = small ? (zh ? 11 : 10) : 11
+      const dense = /\p{Script=Han}|\p{Script=Devanagari}/u.test(text)
+      const floor = small ? (dense ? 11 : 10) : 11
       if (size + 0.01 < floor) problems.add(`"${text.slice(0, 16)}" is ${size}px (< ${floor}px)`)
     }
     return [...problems].slice(0, 10)
