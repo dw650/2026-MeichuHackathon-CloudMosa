@@ -12,6 +12,7 @@ import { cx } from '@/components/cx'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
+import { Note } from '@/components/Note/Note'
 import { Pill } from '@/components/Pill/Pill'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
@@ -24,6 +25,7 @@ import { useKeys } from '@/keys/useKeys'
 import { type DateLabels, describeFreshness, formatDate, formatTime } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -78,6 +80,7 @@ export default function MarketScreen() {
   const { t, lang, pick, dates } = useText()
   const { country, crop, area } = useCountryData()
   const fmt = usePriceFormat()
+  const estimate = useEstimate()
   const countryCode = useSettings((s) => s.country)
   const myAreaId = useSettings((s) => s.areaId)
   const togglePriceType = useSettings((s) => s.togglePriceType)
@@ -181,6 +184,8 @@ export default function MarketScreen() {
               <UiIcon name="shield" />
               <span>{source.join(' · ')}</span>
             </p>
+            {/* Next to the credit, so the agency is never read as the source of an estimate. */}
+            <Note text={estimate.note('wholesale', cropId)} />
           </div>
         )}
       </>
@@ -210,7 +215,7 @@ export default function MarketScreen() {
     <Shell title={pick(cropInfo?.name)} softKeys={{ left: '', center, right: t('softkeys.back') }}>
       <div ref={root}>
         <InfoBar
-          small={<PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />}
+          small={<PriceTypeTag type={fmt.type} label={estimate.typeLabel(fmt.type)} />}
           left={
             <>
               <UiIcon name="store" />
@@ -220,7 +225,7 @@ export default function MarketScreen() {
           right={
             <>
               <KeyCap>*</KeyCap>
-              <PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />
+              <PriceTypeTag type={fmt.type} label={estimate.typeLabel(fmt.type)} />
               {showsFreshness && (
                 <span className={fresh.warn ? styles.warn : undefined}>{fresh.text}</span>
               )}

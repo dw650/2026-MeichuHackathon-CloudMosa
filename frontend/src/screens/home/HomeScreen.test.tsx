@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { useSession } from '@/store/session'
 import { useSettings } from '@/store/settings'
+import countries from '@/test/fixtures/countries.json'
 import { server } from '@/test/msw/server'
 import { renderApp } from '@/test/renderApp'
 
@@ -188,5 +189,33 @@ describe('HomeScreen · states (F12)', () => {
     // Digits still match the key caps drawn on the crop cards.
     app.press('1')
     await waitFor(() => expect(app.path()).toBe('/crop/onion/today'))
+  })
+})
+
+describe('HomeScreen · estimated prices', () => {
+  /** India on a wholesale-only source: the retail prices on screen are estimates (docs/06 §3.6). */
+  const estimateRetail = () =>
+    server.use(
+      http.get('*/api/v1/countries', () =>
+        HttpResponse.json({
+          countries: countries.countries.map((c) =>
+            c.code === 'IN' ? { ...c, estimated_price_types: ['retail'] } : c,
+          ),
+        }),
+      ),
+    )
+
+  it('marks the price type and says once how it was worked out', async () => {
+    estimateRetail()
+    const app = await renderApp('/')
+    await screen.findByText('洋蔥')
+    // Wholesale comes from the source itself: no mark, no note.
+    expect(screen.getByText('批發')).toBeInTheDocument()
+    expect(screen.queryByText(/推估/)).not.toBeInTheDocument()
+
+    act(() => app.press('*'))
+    await waitFor(() => expect(screen.getByText('≈零售')).toBeInTheDocument())
+    // One note for the whole list, without a ratio: the list has many crops.
+    expect(screen.getAllByText('零售價由批發價推估，僅供參考')).toHaveLength(1)
   })
 })

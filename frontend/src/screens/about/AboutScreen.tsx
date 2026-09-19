@@ -33,6 +33,7 @@ export default function AboutScreen() {
     t('about.otherCountries'),
     t('about.retail'),
     t('about.gap'),
+    t('about.estimate'),
     t('about.news'),
     t('about.demo'),
   ]

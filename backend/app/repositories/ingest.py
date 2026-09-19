@@ -10,6 +10,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import IngestRun, Market, SourceAreaMap, SourceCropMap, SourceMarketMap
+from app.ingest.derive import Derivation
 from app.ingest.providers.base import NormalizedQuote, SourceMaps
 
 
@@ -195,8 +196,9 @@ _MARKET_DAILY = text(
     """
 )
 
-# Wholesale: median of the markets that reported that day; retail: the area's survey price.
-_AREA_DAILY = text(
+# Wholesale: median of the markets that reported that day (after the estimated market rows,
+# if any, so they count like the real ones).
+_AREA_WHOLESALE = text(
     """
     INSERT INTO area_daily (area_id, crop_id, price_type, trade_date, country, price,
                             n_markets, min_market, max_market, volume_kg, fetched_at)
@@ -206,7 +208,14 @@ _AREA_DAILY = text(
     FROM market_daily
     WHERE country = :country AND trade_date = ANY(:dates)
     GROUP BY area_id, crop_id, trade_date, country
-    UNION ALL
+    """
+)
+
+# Retail: the area's survey price (the median when the source surveys several points).
+_AREA_RETAIL = text(
+    """
+    INSERT INTO area_daily (area_id, crop_id, price_type, trade_date, country, price,
+                            n_markets, min_market, max_market, volume_kg, fetched_at)
     SELECT area_id, crop_id, 'retail', trade_date, country,
            percentile_cont(0.5) WITHIN GROUP (ORDER BY rep_price),
            0, NULL, NULL, NULL, max(fetched_at)
@@ -216,10 +225,103 @@ _AREA_DAILY = text(
     """
 )
 
+# ---------- estimated prices (docs/06 §3.6) ----------
+#
+# Only ever written for a price type the country's source does not report, and never over a
+# row that source produced (the NOT EXISTS guards). Ratios and market factors are worked out
+# in app.ingest.derive and arrive as parallel arrays.
 
-async def aggregate(session: AsyncSession, country: str, dates: Sequence[date]) -> None:
-    """Recomputes market_daily and area_daily for the affected dates of one country."""
-    params = {"country": country, "dates": list(dates)}
+# Wholesale from retail (Malaysia): one market row per market of the area, from the area's
+# retail price. No volume and no day range: neither is estimated, both stay missing.
+_ESTIMATED_MARKETS = text(
+    """
+    INSERT INTO market_daily (market_id, crop_id, trade_date, country, area_id,
+                              rep_price, low_price, high_price, volume_kg, fetched_at)
+    SELECT m.market_id, a.crop_id, a.trade_date, a.country, a.area_id,
+           a.price * m.factor / r.ratio, NULL, NULL, NULL, a.fetched_at
+    FROM area_daily a
+    JOIN unnest(CAST(:crop_ids AS varchar[]), CAST(:ratios AS float8[]))
+         AS r(crop_id, ratio) ON r.crop_id = a.crop_id
+    JOIN unnest(CAST(:market_ids AS varchar[]), CAST(:market_areas AS varchar[]),
+                CAST(:factors AS float8[]))
+         AS m(market_id, area_id, factor) ON m.area_id = a.area_id
+    WHERE a.country = :country AND a.trade_date = ANY(:dates) AND a.price_type = :from_type
+      AND NOT EXISTS (
+          SELECT 1 FROM market_daily d
+          WHERE d.market_id = m.market_id AND d.crop_id = a.crop_id
+            AND d.trade_date = a.trade_date
+      )
+    """
+)
+
+# Retail from wholesale (Taiwan, India): retail has no market rows, so the area's wholesale
+# price is multiplied straight through. Areas and crops with no retail trade at all keep
+# showing "—" with their reason rather than an invented price.
+_ESTIMATED_AREA_RETAIL = text(
+    """
+    INSERT INTO area_daily (area_id, crop_id, price_type, trade_date, country, price,
+                            n_markets, min_market, max_market, volume_kg, fetched_at)
+    SELECT a.area_id, a.crop_id, 'retail', a.trade_date, a.country,
+           a.price * r.ratio, 0, NULL, NULL, NULL, a.fetched_at
+    FROM area_daily a
+    JOIN areas ar ON ar.id = a.area_id
+    JOIN crops c ON c.country = a.country AND c.id = a.crop_id
+    JOIN unnest(CAST(:crop_ids AS varchar[]), CAST(:ratios AS float8[]))
+         AS r(crop_id, ratio) ON r.crop_id = a.crop_id
+    WHERE a.country = :country AND a.trade_date = ANY(:dates) AND a.price_type = :from_type
+      AND ar.has_retail AND c.has_retail
+      AND NOT EXISTS (
+          SELECT 1 FROM area_daily d
+          WHERE d.area_id = a.area_id AND d.crop_id = a.crop_id
+            AND d.price_type = 'retail' AND d.trade_date = a.trade_date
+      )
+    """
+)
+
+
+async def _estimate_params(
+    session: AsyncSession, country: str, estimate: Derivation
+) -> dict[str, Any]:
+    """The country's crops and markets with the ratio and market factor of each, as the
+    arrays the two estimate statements join against."""
+    crops = (
+        await session.execute(
+            text("SELECT id, category FROM crops WHERE country = :country"), {"country": country}
+        )
+    ).all()
+    markets = (
+        await session.execute(
+            text(
+                "SELECT m.id, m.area_id FROM markets m JOIN areas a ON a.id = m.area_id"
+                " WHERE a.country = :country ORDER BY m.area_id, m.id"
+            ),
+            {"country": country},
+        )
+    ).all()
+    by_area: dict[str, list[str]] = {}
+    for market_id, area_id in markets:
+        by_area.setdefault(area_id, []).append(market_id)
+    factors = {m: f for ids in by_area.values() for m, f in estimate.market_factors(ids).items()}
+    return {
+        "crop_ids": [crop_id for crop_id, _ in crops],
+        "ratios": [estimate.ratio(crop_id, category) for crop_id, category in crops],
+        "market_ids": [market_id for market_id, _ in markets],
+        "market_areas": [area_id for _, area_id in markets],
+        "factors": [factors[market_id] for market_id, _ in markets],
+        "from_type": estimate.from_type,
+    }
+
+
+async def aggregate(
+    session: AsyncSession,
+    country: str,
+    dates: Sequence[date],
+    estimate: Derivation | None = None,
+) -> None:
+    """Recomputes market_daily and area_daily for the affected dates of one country. With an
+    `estimate`, the price type the country's source does not report is worked out from the one
+    it does (docs/06 §3.6), after the real rows and never over them."""
+    params: dict[str, Any] = {"country": country, "dates": list(dates)}
     await session.execute(
         text("DELETE FROM area_daily WHERE country = :country AND trade_date = ANY(:dates)"),
         params,
@@ -229,4 +331,10 @@ async def aggregate(session: AsyncSession, country: str, dates: Sequence[date]) 
         params,
     )
     await session.execute(_MARKET_DAILY, params)
-    await session.execute(_AREA_DAILY, params)
+    await session.execute(_AREA_RETAIL, params)
+    estimated = await _estimate_params(session, country, estimate) if estimate else {}
+    if estimate and estimate.to_type == "wholesale":
+        await session.execute(_ESTIMATED_MARKETS, params | estimated)
+    await session.execute(_AREA_WHOLESALE, params)
+    if estimate and estimate.to_type == "retail":
+        await session.execute(_ESTIMATED_AREA_RETAIL, params | estimated)

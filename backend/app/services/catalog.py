@@ -1,20 +1,34 @@
 """Countries, areas and crops, with each country's local today and area freshness."""
 
 from datetime import datetime, timedelta
+from functools import cache
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Country
 from app.errors import ApiError
+from app.ingest.derive import Derivation
 from app.repositories import catalog as repo
 from app.repositories import intl as fx_repo
+from app.seed.loader import load_derive_seed
 from app.services.demo import NO_DEMO, Demo
 from app.services.freshness import WINDOW_DAYS, staleness
 from app.timeutil import local_today
 
 #: Base of the exchange rates (bonus B5); also a display currency of its own.
 USD = "USD"
+
+
+@cache
+def _ratios() -> dict[str, Derivation]:
+    """The estimate ratios of every country (`app/seed/derive.yaml`, a file of the image).
+    Whether a country uses them is `countries.estimated_price_types`, which the worker writes
+    from the sources it actually runs."""
+    return {
+        code: Derivation(country=code, rules=rules)
+        for code, rules in load_derive_seed().countries.items()
+    }
 
 
 async def require_country(session: AsyncSession, code: str) -> Country:
@@ -43,6 +57,7 @@ async def list_countries(session: AsyncSession, now: datetime) -> list[dict[str,
             "area_suffix": c.area_suffix,
             "rep_price_label": c.rep_price_label,
             "source_label": c.source_label,
+            "estimated_price_types": c.estimated_price_types,
             "units": c.units,
             "default_price_type": c.default_price_type,
         }
@@ -105,6 +120,9 @@ async def list_areas(
 
 async def list_crops(session: AsyncSession, code: str) -> dict[str, Any]:
     country = await require_country(session, code)
+    # Only a country that estimates a price type carries a ratio, so a screen never names one
+    # for a price an agency really reported.
+    ratios = _ratios().get(country.code) if country.estimated_price_types else None
     crops = [
         {
             "id": c.id,
@@ -113,6 +131,7 @@ async def list_crops(session: AsyncSession, code: str) -> dict[str, Any]:
             "variety": c.variety,
             "has_retail": c.has_retail,
             "default_watch": c.default_watch,
+            "estimate_ratio": ratios.ratio(c.id, c.category) if ratios else None,
         }
         for c in await repo.get_crops(session, country.code)
     ]

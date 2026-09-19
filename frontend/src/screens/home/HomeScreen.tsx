@@ -10,6 +10,7 @@ import { IconGrid } from '@/components/IconGrid/IconGrid'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
+import { Note } from '@/components/Note/Note'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
 import { Tabs } from '@/components/Tabs/Tabs'
@@ -22,6 +23,7 @@ import { formatDate } from '@/lib/dates'
 import { AreaSheet, sheetSoftKeys } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -47,6 +49,7 @@ export default function HomeScreen() {
   const { t, lang, dates } = useText()
   const data = useCountryData()
   const format = usePriceFormat()
+  const estimate = useEstimate()
   const areaId = useSettings((s) => s.areaId)
   const watchlist = useSettings((s) => s.watchlist)
   const togglePriceType = useSettings((s) => s.togglePriceType)
@@ -113,7 +116,7 @@ export default function HomeScreen() {
         left={
           <>
             <KeyCap>*</KeyCap>
-            <PriceTypeTag type={format.type} label={t(`priceType.${format.type}`)} />
+            <PriceTypeTag type={format.type} label={estimate.typeLabel(format.type)} />
             {format.unitLabel}
           </>
         }
@@ -148,6 +151,8 @@ export default function HomeScreen() {
         </div>
       ) : (
         <div ref={listRoot}>
+          {/* Many crops at once, so no single ratio (docs/06 §3.6). */}
+          <Note text={estimate.note(format.type)} />
           <CropPriceList
             crops={crops}
             prices={prices}

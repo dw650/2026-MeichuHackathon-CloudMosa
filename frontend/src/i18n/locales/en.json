@@ -54,6 +54,13 @@
       "retail": "Retail"
     }
   },
+  "estimate": {
+    "tag": "≈{{label}}",
+    "retail": "Retail estimated from wholesale; a guide only",
+    "retailRatio": "Retail estimated from wholesale (×{{ratio}}); a guide only",
+    "wholesale": "Wholesale estimated from retail; a guide only",
+    "wholesaleRatio": "Wholesale estimated from retail (÷{{ratio}}); a guide only"
+  },
   "states": {
     "loading": "Loading prices for {{area}}",
     "loadingNote": "Shows an error after 10 s",
@@ -321,6 +328,7 @@
     "otherCountries": "Other countries = the median of that country's area prices on its own latest trading day, converted to your currency at the stored rate. Wholesale and retail are different trades and cannot be compared directly; varieties, quality and packing differ too, and the rate is only a reference.",
     "retail": "Retail prices are per area; there is no market breakdown.",
     "gap": "The retail–wholesale gap is not profit; it includes transport, loss and packing.",
+    "estimate": "A price marked “≈” is an estimate: the source of this country reports only the other price type, so we convert it with a fixed ratio. It is a guide, not an official figure.",
     "demo": "Country prices are demo data for now; international prices are real World Bank data.",
     "source": "Data source",
     "noMoney": "We never ask for money, PINs or codes.",

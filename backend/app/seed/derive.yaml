@@ -1,0 +1,90 @@
+# Estimated prices (docs/06 §3.6).
+#
+# A country's real source only reports one price type: Taiwan and India publish wholesale,
+# Malaysia publishes retail. The missing type is estimated from the reported one with these
+# multipliers, always `retail = wholesale x ratio` (Malaysia uses the same numbers the other
+# way round: `wholesale = retail / ratio`). The pipeline only estimates a price type no
+# enabled source of that country reports, so a country on mock data (both types) is untouched.
+#
+# The ratios are informed defaults, not measured margins: the gap between a wholesale market
+# and a market stall pays for transport, shrinkage, trimming, packing and the stall itself,
+# and it is widest for what wilts fastest. Each number is justified below; replace them with a
+# real retail source (bonus B4) rather than tuning them. Every screen that shows an estimated
+# price says so, and the estimate is never attributed to the agency (docs/02 §2).
+#
+# `crops` overrides `categories` overrides `default`. Crop ids are per country, so the ratios
+# are listed per country too: `soybean` is fresh edamame in Taiwan but a dry oilseed in India.
+
+countries:
+  # Taiwan: tw_moa publishes wholesale market prices only (docs/06 §1.2).
+  TW:
+    from: wholesale
+    to: retail
+    # Nothing below fits the crop or its category: the middle of the range.
+    default: 1.6
+    categories:
+      # Delivered daily, trimmed and sold in small lots; moderate waste.
+      veg: 1.7
+      # Graded and boxed at the wholesale market, so less trimming loss than vegetables.
+      fruit: 1.6
+      # Dry, packed, storable staples with high turnover and thin retail margins.
+      cereal: 1.3
+      pulse: 1.3
+    crops:
+      # Leafy and bunched: wilts in a day, the largest trimming and shrinkage loss.
+      bokchoy: 1.8
+      waterspinach: 1.8
+      scallion: 1.8
+      # Fresh chilli is sold like a vegetable, not like a dry spice.
+      chilli: 1.7
+      # Edamame is a fresh vegetable soybean, not a dry pulse.
+      soybean: 1.7
+      # Roots and bulbs keep for weeks: little waste, thinner retail margin.
+      sweetpotato: 1.5
+      garlic: 1.5
+
+  # India: the Agmarknet source (bonus B3, not registered yet) publishes mandi (wholesale)
+  # prices only (docs/06 §1.1); until it is enabled India stays on mock data and estimates
+  # nothing, because the mock reports both price types.
+  IN:
+    from: wholesale
+    to: retail
+    default: 1.6
+    categories:
+      veg: 1.7
+      fruit: 1.6
+      cereal: 1.3
+      pulse: 1.3
+    crops:
+      # Roots and bulbs: stored and sold from the sack, so the retail markup is smaller.
+      potato: 1.5
+      onion: 1.5
+      garlic: 1.5
+
+  # Malaysia: PriceCatcher surveys retail points only, the wet markets' wholesale reporting
+  # stopped in 2026 (docs/06 §1.5), so the wholesale price is the retail price divided back.
+  MY:
+    from: retail
+    to: wholesale
+    default: 1.6
+    categories:
+      veg: 1.7
+      fruit: 1.6
+      cereal: 1.3
+      pulse: 1.3
+    crops:
+      bokchoy: 1.8
+      waterspinach: 1.8
+      chilli: 1.7
+      # Long and french beans are eaten fresh like a vegetable, not dried like a pulse.
+      longbean: 1.7
+      frenchbean: 1.7
+      potato: 1.5
+      onion: 1.5
+      carrot: 1.5
+      garlic: 1.5
+      ginger: 1.5
+    # Wholesale needs a price per market. One derived market price is the area's divided
+    # price moved by up to ±4%, the same amount every run (from the market id), so the market
+    # list and its high/low are not perfectly flat and never jump about between runs.
+    market_spread: 0.04

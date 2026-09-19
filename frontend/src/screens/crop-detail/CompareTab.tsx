@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { type CompareRow, useCompare } from '@/api/queries'
 import { paths } from '@/app/paths'
 import { Card, CardList } from '@/components/Card/Card'
+import { Note } from '@/components/Note/Note'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { Tile } from '@/components/Tile/Tile'
 import { useFocusList } from '@/focus/useFocusList'
@@ -10,8 +11,9 @@ import { UiIcon } from '@/icons/ui'
 import { useKeys } from '@/keys/useKeys'
 import { describeFreshness } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
-import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
+import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { useText } from '@/screens/shared/useText'
 
 import { SORT_LABEL, sortRows } from './compareRows'
@@ -84,6 +86,7 @@ function AreaCard({ row, detail }: RowProps) {
 export function CompareTab({ detail }: { detail: Detail }) {
   const { t } = useText()
   const fmt = usePriceFormat()
+  const estimate = useEstimate()
   const { nav, sort } = detail
   const quote = useDetailQuote(detail)
   const { country, areaId, cropId, type } = detail
@@ -149,6 +152,7 @@ export function CompareTab({ detail }: { detail: Detail }) {
                 })}
           </div>
         )}
+        {stage === 'ready' && <Note text={estimate.note(detail.type, detail.cropId)} />}
         {stage === 'loading' && <LoadingState areaName={detail.areaName} />}
         {stage === 'failed' && <FailedState />}
         {stage === 'ready' && (

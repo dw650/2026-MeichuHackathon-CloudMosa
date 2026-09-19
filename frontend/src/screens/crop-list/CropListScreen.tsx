@@ -8,6 +8,7 @@ import { type CategoryId, CATEGORY_IDS } from '@/components/categories'
 import { InfoBar } from '@/components/InfoBar/InfoBar'
 import { FxNote } from '@/screens/shared/FxNote'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
+import { Note } from '@/components/Note/Note'
 import { PriceTypeTag } from '@/components/PriceTypeTag/PriceTypeTag'
 import { Shell } from '@/components/Shell/Shell'
 import { StatusBox } from '@/components/StatusBox/StatusBox'
@@ -27,6 +28,7 @@ import { useAreaPrices } from '@/screens/home/useAreaPrices'
 import { AreaSheet, sheetSoftKeys } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { areaLabel, useText } from '@/screens/shared/useText'
 import { useSession } from '@/store/session'
@@ -59,6 +61,7 @@ function CropList({ category }: { category: CategoryId }) {
   const { t, lang } = useText()
   const data = useCountryData()
   const format = usePriceFormat()
+  const estimate = useEstimate()
   const areaId = useSettings((s) => s.areaId)
   const togglePriceType = useSettings((s) => s.togglePriceType)
   const recentCrops = useSession((s) => s.recentCrops)
@@ -109,7 +112,7 @@ function CropList({ category }: { category: CategoryId }) {
       overlay={overlay}
     >
       <InfoBar
-        small={<PriceTypeTag type={format.type} label={t(`priceType.${format.type}`)} />}
+        small={<PriceTypeTag type={format.type} label={estimate.typeLabel(format.type)} />}
         left={
           <>
             <UiIcon name="pin" />
@@ -120,13 +123,14 @@ function CropList({ category }: { category: CategoryId }) {
         right={
           <>
             <KeyCap>*</KeyCap>
-            <PriceTypeTag type={format.type} label={t(`priceType.${format.type}`)} />
+            <PriceTypeTag type={format.type} label={estimate.typeLabel(format.type)} />
             {format.unitLabel}
           </>
         }
       />
       <FxNote />
       <div ref={root}>
+        <Note text={estimate.note(format.type)} />
         <CropPriceList
           crops={crops}
           prices={prices}

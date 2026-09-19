@@ -30,6 +30,7 @@
     "maize",
     "wheat"
    ],
+   "estimated_price_types": [],
    "locale": "en-IN",
    "name": {
     "en": "India",
@@ -124,6 +125,7 @@
     "scallion",
     "cauliflower"
    ],
+   "estimated_price_types": [],
    "locale": "zh-TW",
    "name": {
     "en": "Taiwan",
@@ -217,6 +219,7 @@
     "bokchoy",
     "garlic"
    ],
+   "estimated_price_types": [],
    "locale": "en-MY",
    "name": {
     "en": "Malaysia",

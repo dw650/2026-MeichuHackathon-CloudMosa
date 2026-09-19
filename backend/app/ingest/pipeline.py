@@ -9,6 +9,7 @@ from datetime import UTC, date, datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.ingest.combine import combine_points
+from app.ingest.derive import Derivation
 from app.ingest.normalize import normalize_all
 from app.ingest.policy import FetchPlan, LastRun, plan_fetch
 from app.ingest.providers.base import PriceProvider, SourceInfo
@@ -68,7 +69,11 @@ async def plan_run(
     )
 
 
-async def retire_sources(session: AsyncSession, owners: dict[str, set[str]]) -> None:
+async def retire_sources(
+    session: AsyncSession,
+    owners: dict[str, set[str]],
+    estimates: Mapping[str, Derivation] | None = None,
+) -> None:
     """Deletes each country's quotes from sources that no longer cover it (the mock's Taiwan
     prices once tw_moa is enabled, or the other way round) and re-aggregates the dates they
     touched, so a country never mixes demo and real prices. A country no enabled source covers
@@ -79,7 +84,7 @@ async def retire_sources(session: AsyncSession, owners: dict[str, set[str]]) -> 
             continue
         dates = await repo.delete_quotes_except(session, country, sorted(sources))
         if dates:
-            await repo.aggregate(session, country, dates)
+            await repo.aggregate(session, country, dates, (estimates or {}).get(country))
             logger.info(
                 "%s: removed prices of sources other than %s on %d dates",
                 country,
@@ -95,6 +100,7 @@ async def run_provider(
     today: dict[str, date],
     now: datetime | None = None,
     clock: Callable[[], datetime] = lambda: datetime.now(UTC),
+    estimates: Mapping[str, Derivation] | None = None,
 ) -> RunSummary:
     """Runs one provider. A failure is recorded and the previous data stays untouched."""
     started = now or clock()
@@ -120,7 +126,7 @@ async def run_provider(
         for q in stored:
             affected.setdefault(q.country, set()).add(q.trade_date)
         for country, dates in affected.items():
-            await repo.aggregate(session, country, sorted(dates))
+            await repo.aggregate(session, country, sorted(dates), (estimates or {}).get(country))
         summary = RunSummary(
             source=provider.source,
             status="ok",

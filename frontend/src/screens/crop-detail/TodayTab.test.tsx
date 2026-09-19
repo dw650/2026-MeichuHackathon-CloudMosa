@@ -3,6 +3,8 @@ import { delay, http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 
 import { useSettings } from '@/store/settings'
+import countries from '@/test/fixtures/countries.json'
+import inCrops from '@/test/fixtures/countries_IN_crops.json'
 import nashikRetail from '@/test/fixtures/crops_onion_quote__area-nashik_country-IN_days-30_type-retail.json'
 import { server } from '@/test/msw/server'
 import { renderApp } from '@/test/renderApp'
@@ -261,5 +263,39 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(app.softKey('center')).toBe('View')
     await press(app, 'Enter')
     expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
+  })
+})
+
+describe('crop detail · estimated prices (docs/06 §3.6)', () => {
+  it('names the crop ratio once, on every tab, and marks the price type', async () => {
+    server.use(
+      http.get('*/api/v1/countries', () =>
+        HttpResponse.json({
+          countries: countries.countries.map((c) =>
+            c.code === 'IN' ? { ...c, estimated_price_types: ['retail'] } : c,
+          ),
+        }),
+      ),
+      http.get('*/api/v1/countries/IN/crops', () =>
+        HttpResponse.json({
+          country: 'IN',
+          crops: inCrops.crops.map((c) => ({ ...c, estimate_ratio: c.id === 'onion' ? 1.5 : 1.7 })),
+        }),
+      ),
+    )
+    const app = await renderApp('/crop/onion/today', { history: ['/'] })
+    expect(await screen.findByText('2,395')).toBeInTheDocument()
+    expect(screen.queryByText(/推估/)).not.toBeInTheDocument()
+
+    await press(app, '*')
+    // The info bar holds one tag per screen size (only one is shown, docs/03 §6).
+    expect(await screen.findAllByText('≈零售')).toHaveLength(2)
+    const note = '零售價由批發價 ×1.5 推估，僅供參考'
+    // The note sits with the price, so it arrives with the retail quote.
+    expect(await screen.findAllByText(note)).toHaveLength(1)
+    // The same note on the 走勢 tab, still only once.
+    await press(app, 'ArrowLeft')
+    expect(app.path()).toBe('/crop/onion/trend')
+    expect(await screen.findAllByText(note)).toHaveLength(1)
   })
 })

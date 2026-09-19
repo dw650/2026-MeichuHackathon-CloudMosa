@@ -4,6 +4,7 @@
   {
    "category": "veg",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "onion",
    "name": {
@@ -18,6 +19,7 @@
   {
    "category": "veg",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "tomato",
    "name": {
@@ -32,6 +34,7 @@
   {
    "category": "veg",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "potato",
    "name": {
@@ -46,6 +49,7 @@
   {
    "category": "spice",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "chilli",
    "name": {
@@ -60,6 +64,7 @@
   {
    "category": "pulse",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "soybean",
    "name": {
@@ -74,6 +79,7 @@
   {
    "category": "cereal",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "maize",
    "name": {
@@ -88,6 +94,7 @@
   {
    "category": "cereal",
    "default_watch": true,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "wheat",
    "name": {
@@ -102,6 +109,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "grapes",
    "name": {
@@ -116,6 +124,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "banana",
    "name": {
@@ -130,6 +139,7 @@
   {
    "category": "spice",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "garlic",
    "name": {
@@ -144,6 +154,7 @@
   {
    "category": "cereal",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "rice",
    "name": {
@@ -158,6 +169,7 @@
   {
    "category": "veg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "cabbage",
    "name": {
@@ -172,6 +184,7 @@
   {
    "category": "veg",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "eggplant",
    "name": {
@@ -186,6 +199,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "mango",
    "name": {
@@ -200,6 +214,7 @@
   {
    "category": "fruit",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "pomegranate",
    "name": {
@@ -214,6 +229,7 @@
   {
    "category": "pulse",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": true,
    "id": "chickpea",
    "name": {
@@ -228,6 +244,7 @@
   {
    "category": "spice",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "turmeric",
    "name": {
@@ -242,6 +259,7 @@
   {
    "category": "oil",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "peanut",
    "name": {
@@ -256,6 +274,7 @@
   {
    "category": "oil",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "mustard",
    "name": {
@@ -270,6 +289,7 @@
   {
    "category": "other",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "cotton",
    "name": {
@@ -284,6 +304,7 @@
   {
    "category": "other",
    "default_watch": false,
+   "estimate_ratio": null,
    "has_retail": false,
    "id": "sugarcane",
    "name": {

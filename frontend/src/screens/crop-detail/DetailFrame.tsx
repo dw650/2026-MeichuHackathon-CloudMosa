@@ -12,6 +12,7 @@ import { UiIcon } from '@/icons/ui'
 import { describeFreshness, formatDateTime } from '@/lib/dates'
 import { AreaSheet } from '@/screens/shared/AreaSheet'
 import { MenuSheet } from '@/screens/shared/MenuSheet'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { useText } from '@/screens/shared/useText'
 
 import styles from './CropDetailScreen.module.css'
@@ -42,6 +43,7 @@ function DataTime({ quote }: { quote: QuoteView }) {
 /** Header, info bar and tabs of the crop detail screen around one tab's content. */
 export function DetailFrame({ detail, quote, softKeys, sheet, error, children }: DetailFrameProps) {
   const { t, pick } = useText()
+  const estimate = useEstimate()
   const { nav, tab, type } = detail
   if (isMissing(quote.error) || isMissing(error)) return <Navigate to={paths.home()} replace />
 
@@ -60,7 +62,7 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
   return (
     <Shell title={pick(detail.crop?.name) || t('app.name')} softKeys={keys} overlay={overlay}>
       <InfoBar
-        small={<PriceTypeTag type={type} label={t(`priceType.${type}`)} />}
+        small={<PriceTypeTag type={type} label={estimate.typeLabel(type)} />}
         left={
           <>
             <UiIcon name="pin" />
@@ -71,7 +73,7 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
         right={
           <>
             <KeyCap>*</KeyCap>
-            <PriceTypeTag type={type} label={t(`priceType.${type}`)} />
+            <PriceTypeTag type={type} label={estimate.typeLabel(type)} />
             <DataTime quote={quote} />
           </>
         }

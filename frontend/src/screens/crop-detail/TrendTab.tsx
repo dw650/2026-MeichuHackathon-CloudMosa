@@ -2,6 +2,7 @@ import { useRef } from 'react'
 
 import type { Quote } from '@/api/queries'
 import { CardList } from '@/components/Card/Card'
+import { Note } from '@/components/Note/Note'
 import { toneOf } from '@/components/categories'
 import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { MetricGrid } from '@/components/MetricGrid/MetricGrid'
@@ -16,6 +17,7 @@ import { directionOf } from '@/lib/change'
 import { parseLocalDate } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
 import { useCountryData } from '@/screens/shared/useCountryData'
+import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat } from '@/screens/shared/usePriceFormat'
 import { useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -57,6 +59,7 @@ function pointsOf(
 /** 走勢 (T28): the 7- or 30-day line with its high, low and swing. */
 export function TrendTab({ detail }: { detail: Detail }) {
   const { t, dates } = useText()
+  const estimate = useEstimate()
   const { nav, days } = detail
   const fmt = usePriceFormat()
   const setPriceType = useSettings((s) => s.setPriceType)
@@ -149,6 +152,7 @@ export function TrendTab({ detail }: { detail: Detail }) {
                 />
               )}
             </div>
+            <Note text={estimate.note(detail.type, detail.cropId)} />
             {!empty && (
               <MetricGrid
                 tone={toneOf(detail.crop?.category)}

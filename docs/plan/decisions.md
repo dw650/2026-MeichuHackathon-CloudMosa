@@ -882,3 +882,15 @@
   - 幣別名稱、單位名稱（公斤／公擔／台斤／斤）、換算說明四個語言都有；ms、hi 是機器翻譯。
 - 理由：匯率是既有資料，後端不必再算；換算只影響顯示，比價與「地區價」的定義（06 §3）完全不動；集中在 `lib/money.ts` 才能保證每個畫面一致、也能用單元測試覆蓋。
 - 影響：`backend/app/{repositories/intl.py,services/catalog.py,schemas/catalog.py,api/v1/catalog.py}`、`frontend/src/lib/money.ts`、`frontend/src/store/settings.ts`、`frontend/src/screens/shared/{useDisplayCurrency.ts,FxNote.tsx,fxNote.module.css,usePriceFormat.ts,useCountryData.ts}`、`frontend/src/screens/settings/CurrencySettings.tsx`、`frontend/src/screens/intl/{useIntlFormat.ts,parts.tsx}`、五個價格畫面各多一行 `<FxNote />`、`frontend/src/i18n/locales/*.json`、`frontend/src/icons/{names.ts,ui.tsx}`（多一個 `coins` 圖示）；docs/00 決定表、docs/02 §3.1 F10、§3.4 F19、§5.7、§5.8、docs/04 §API。
+## 2026-09-20 推估另一種價格（倍率、放哪一層、怎麼標示）
+- 情況：真實來源一個國家只有一種價格（台灣、印度批發，馬來西亞零售），開啟真實資料後另一種價格整個國家都是「—」，使用者要求補上有依據的推估值，並且清楚標示。
+- 決定：
+  - **倍率當資料**：新檔 `backend/app/seed/derive.yaml`（schema 在 `app/seed/schema.py`，載入在 `app/seed/loader.py`）。不改 `TW.yaml`／`MY.yaml`／`IN.yaml`。方向一律寫成「零售 ＝ 批發 × 倍率」，馬來西亞反過來除。倍率**依國家分開列**（作物代號依國家而定），順序是作物 > 分類 > 預設；葉菜 1.8、其他蔬菜 1.7、水果 1.6、根莖球根 1.5、穀物與乾豆 1.3、預設 1.6，依據寫在 06 §3.6 與檔案的註解裡。
+  - `load_seed_files()` 只讀檔名是兩個字母的國家檔（`TW.yaml`…），`derive.yaml` 才能放在同一個資料夾。
+  - **在彙整那一層推估**（`repositories/ingest.py` 的 `aggregate()`，純邏輯在 `ingest/derive.py`）：不寫進 `quotes`，所以 `quotes.source` 只代表機關報的資料，推估值的 `source` 是空的。兩個方向都有 `NOT EXISTS`，不覆蓋真實的列；不推估交易量與當日高低價。
+  - 馬來西亞的市場級批發價：地區零售 ÷ 倍率，每個市場乘上由市場代號雜湊決定的固定係數，同地區的係數中位數校正成 1（所以地區價正好是零售 ÷ 倍率，但市場之間有差異，也不會每次執行跳動）。
+  - `areas.has_retail`、`crops.has_retail` 是 false 的就不推估零售，維持「—」與原因。
+  - **標示**：新增 `countries.estimated_price_types`（worker 每次執行寫入，因為只有 worker 知道 `PROVIDERS`；api 不必拿到這個環境變數）與 `/crops` 的 `estimate_ratio`（api 從 `derive.yaml` 依作物算）。前端價格類型標籤變成「≈零售」，每個畫面一行說明（`components/Note`、`screens/shared/useEstimate.ts`），首頁與作物清單不帶倍率，作物詳情與市場畫面帶倍率，「關於與資料說明」多一行解釋「≈」。
+  - 另一個做法是把倍率也存進資料庫的作物表，或讓 api 也讀 `PROVIDERS`：前者多一個欄位要同步，後者兩個服務的環境變數可能不一致，所以都不採用。
+- 理由：畫面有參考值比整片「—」有用，但推估值必須永遠看得出是推估、而且不能被當成機關的報價；倍率是資料，接上真實零售來源（B4）就整段換掉。
+- 影響：`backend/app/seed/derive.yaml`、`app/seed/{schema,loader}.py`、`app/ingest/derive.py`、`app/repositories/{ingest,catalog}.py`、`app/services/catalog.py`、`app/schemas/catalog.py`、`app/worker.py`、`app/db/models.py` 與一支 migration；`frontend/src/components/Note/`、`screens/shared/useEstimate.ts`、首頁／作物清單／作物詳情／市場畫面／關於頁、四個語言檔；docs/06 §3.6、docs/02 §2、docs/03 §4、docs/00。

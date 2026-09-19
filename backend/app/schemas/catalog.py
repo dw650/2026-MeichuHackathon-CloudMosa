@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.common import I18nText, StalenessOut
 from app.schemas.prices import PriceType
@@ -41,6 +41,10 @@ class CountryOut(BaseModel):
     area_suffix: I18nText
     rep_price_label: I18nText
     source_label: I18nText
+    estimated_price_types: list[str] = Field(
+        description="Price types no source of this country reports, estimated from the other"
+        " one (docs/06 §3.6). Every screen showing such a price must say it is an estimate."
+    )
     units: UnitsOut
     # The price type a new user of this country starts on (docs/02 §4).
     default_price_type: PriceType
@@ -84,6 +88,10 @@ class CropOut(BaseModel):
     variety: I18nText
     has_retail: bool
     default_watch: bool
+    estimate_ratio: float | None = Field(
+        description="What the estimated price type of this country is multiplied by for this"
+        " crop (null when nothing is estimated), so a screen can name the ratio it shows."
+    )
 
 
 class CropsOut(BaseModel):
