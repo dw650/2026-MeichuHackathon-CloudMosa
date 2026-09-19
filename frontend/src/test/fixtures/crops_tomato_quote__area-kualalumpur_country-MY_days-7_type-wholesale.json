@@ -15,7 +15,22 @@
   "min_per_kg": 7.59,
   "total": 1
  },
- "nearby": null,
+ "nearby": {
+  "highest": {
+   "area_id": "kualalumpur",
+   "diff_per_kg": 0.0,
+   "distance_km": 0,
+   "is_base": true,
+   "price_per_kg": 7.59
+  },
+  "lowest": {
+   "area_id": "seremban",
+   "diff_per_kg": -0.85,
+   "distance_km": 53,
+   "is_base": false,
+   "price_per_kg": 6.74
+  }
+ },
  "price_per_kg": 7.59,
  "reason": null,
  "series": [

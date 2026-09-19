@@ -12,18 +12,18 @@
  "markets": null,
  "nearby": {
   "highest": {
-   "area_id": "kualalumpur",
-   "diff_per_kg": 0.0,
-   "distance_km": 0,
-   "is_base": true,
-   "price_per_kg": 10.46
+   "area_id": "hululangat",
+   "diff_per_kg": 1.53,
+   "distance_km": 17,
+   "is_base": false,
+   "price_per_kg": 11.99
   },
   "lowest": {
-   "area_id": "seremban",
-   "diff_per_kg": -0.85,
-   "distance_km": 53,
+   "area_id": "bahau",
+   "diff_per_kg": -2.07,
+   "distance_km": 87,
    "is_base": false,
-   "price_per_kg": 9.61
+   "price_per_kg": 8.39
   }
  },
  "price_per_kg": 10.46,
