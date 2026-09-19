@@ -1,0 +1,12 @@
+{
+ "database": "ok",
+ "sources": [
+  {
+   "last_success_at": "2026-09-19T06:10:00Z",
+   "rows_ok": 55361,
+   "source": "mock"
+  }
+ ],
+ "status": "ok",
+ "version": "dev"
+}

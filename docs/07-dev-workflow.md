@@ -122,7 +122,7 @@
 
 1. `git fetch`，把指定的 ref（分支、tag 或 commit，預設 `main`）checkout 成 detached HEAD。伺服器上不要改追蹤的檔案，部署時會被覆蓋。
 2. `docker compose up -d --build --wait`（`api` 啟動時自動跑 migration），等所有服務都健康。
-3. 經過 web（Caddy）打 `/api/v1/health`；成功就把這個 commit 記成上一個成功的版本（`.git/deploy-last-good`）。
+3. 經過 web（Caddy）打 `/api/v1/health`；成功就把這個 commit 記成上一個成功的版本（`.git/deploy-last-good`）。部署時把 commit 帶進 `APP_VERSION`，`/api/v1/health` 與「關於」頁會顯示目前的版本（`make up` 也會帶入）。
 4. 失敗時印出最近的日誌、自動部署上一個成功的版本，並回傳非 0。
 5. 回復就是部署較舊的 commit：`scripts/deploy.sh <commit>`。同一時間只會有一個部署在跑。
 

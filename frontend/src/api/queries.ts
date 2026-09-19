@@ -8,6 +8,7 @@ import type {
   SchemaCompareOut,
   SchemaCountriesOut,
   SchemaCropsOut,
+  SchemaHealthOut,
   SchemaLocateOut,
   SchemaMarketOut,
   SchemaMarketsOut,
@@ -43,6 +44,7 @@ export const queryKeys = {
   markets: (p: MarketsParams) => ['markets', p.country, p.area, p.crop] as const,
   market: (p: MarketParams) => ['market', p.country, p.crop, p.market] as const,
   locate: ['locate'] as const,
+  health: ['health'] as const,
 }
 
 export function useCountries() {
@@ -188,4 +190,13 @@ export function useLocate(enabled = true) {
 export function useRefresh(): () => Promise<void> {
   const client = useQueryClient()
   return () => client.refetchQueries({ type: 'active' })
+}
+
+/** The running version (commit) for the About page; it only changes with a deploy. */
+export function useHealth() {
+  return useQuery({
+    queryKey: queryKeys.health,
+    queryFn: ({ signal }) => apiGet<SchemaHealthOut>('/health', {}, { signal }),
+    staleTime: CATALOG_STALE_MS,
+  })
 }

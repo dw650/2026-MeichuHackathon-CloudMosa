@@ -48,6 +48,22 @@ describe('MarketScreen', () => {
     expect(app.path()).toBe(MARKET)
   })
 
+  it('names the source once when the price comes from the country source itself', async () => {
+    // Real data (tw_moa, …): the quote's source and the country's label are the same words.
+    const label = {
+      en: 'Agmarknet · Dept of Consumer Affairs',
+      'zh-TW': 'Agmarknet・消費者事務部（印度政府）',
+    }
+    server.use(
+      http.get(ENDPOINT, () =>
+        HttpResponse.json({ ...lasalgaon, source: { id: 'agmarknet', name: label } }),
+      ),
+    )
+    await renderApp(MARKET)
+    const line = await screen.findByText(/Agmarknet・消費者事務部/)
+    expect(line.textContent).toBe('Agmarknet・消費者事務部（印度政府）')
+  })
+
   it('marks data that is not from today and shows 「—」 without a price', async () => {
     serveMarket({ staleness: { days: 3, state: 'stale' }, trade_date: '2026-09-16' })
     const stale = await renderApp(MARKET)

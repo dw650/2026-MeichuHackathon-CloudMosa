@@ -7,6 +7,9 @@ POSTGRES_PASSWORD ?= agri-local-only
 export WEB_PORT DB_PORT POSTGRES_USER POSTGRES_PASSWORD
 
 COMPOSE ?= docker compose
+# The commit the stack is built from; shown by /api/v1/health and the About page.
+APP_VERSION ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo dev)
+export APP_VERSION
 # Backend tests use their own database on the compose `db` (CI points this at its service).
 TEST_DATABASE_URL ?= postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(DB_PORT)/agri_test
 export TEST_DATABASE_URL

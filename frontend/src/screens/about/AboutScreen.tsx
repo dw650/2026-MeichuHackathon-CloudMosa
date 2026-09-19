@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+import { useHealth } from '@/api/queries'
 import { Shell } from '@/components/Shell/Shell'
 import { useFocusList } from '@/focus/useFocusList'
 import { useKeys } from '@/keys/useKeys'
@@ -18,6 +19,7 @@ const NO_ITEMS: readonly string[] = []
 export default function AboutScreen() {
   const { t, pick } = useText()
   const { country } = useCountryData()
+  const version = useHealth().data?.version
   const root = useRef<HTMLDivElement>(null)
   const list = useFocusList(NO_ITEMS, { root })
   useKeys(list.keys)
@@ -44,6 +46,7 @@ export default function AboutScreen() {
           <span>{t('about.ipCredit')}</span>
         </div>
         <p className={styles.box}>{t('about.noMoney')}</p>
+        {version && <p className={styles.box}>{t('about.version', { version })}</p>}
       </div>
     </Shell>
   )

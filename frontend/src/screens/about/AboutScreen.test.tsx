@@ -17,6 +17,8 @@ describe('AboutScreen', () => {
     ]) {
       expect(screen.getByText(text)).toBeInTheDocument()
     }
+    // The running commit, so the team can tell which version is deployed.
+    expect(await screen.findByText('版本 dev')).toBeInTheDocument()
     expect(document.querySelector('[data-focus-id]')).toBeNull()
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
       '',

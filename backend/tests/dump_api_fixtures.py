@@ -49,10 +49,15 @@ async def collect() -> dict[str, object]:
 
     _ensure_database(TEST_DATABASE_URL)
     command.upgrade(_alembic_config(TEST_DATABASE_URL), "head")
-    settings = Settings(database_url=TEST_DATABASE_URL, db_null_pool=True, demo_mode=True)
+    settings = Settings(
+        database_url=TEST_DATABASE_URL, db_null_pool=True, demo_mode=True, app_version="dev"
+    )  # fixed values so reruns give identical fixtures
     await _ensure_mock_data(settings)
     app = create_app(settings, clock=lambda: NOW)
-    requests: list[tuple[str, dict[str, str], dict[str, str]]] = [("/countries", {}, {})]
+    requests: list[tuple[str, dict[str, str], dict[str, str]]] = [
+        ("/health", {}, {}),
+        ("/countries", {}, {}),
+    ]
     for cc, areas in AREAS.items():
         requests += [(f"/countries/{cc}/areas", {}, {}), (f"/countries/{cc}/crops", {}, {})]
         for area in areas:

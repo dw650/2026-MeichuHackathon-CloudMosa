@@ -36,6 +36,8 @@ last_good=.git/deploy-last-good
 # Chained with && because `set -e` does not apply inside a function called from `if`.
 deploy() {
   git checkout --quiet --force --detach "$1" &&
+    APP_VERSION="$(git rev-parse --short HEAD)" &&
+    export APP_VERSION &&
     "${compose[@]}" up --detach --build --wait --wait-timeout 300 --remove-orphans &&
     curl -fsS --retry 10 --retry-delay 3 --retry-all-errors -o /dev/null "$health"
 }

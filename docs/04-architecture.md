@@ -188,7 +188,7 @@ class PriceProvider(Protocol):
 
 | 方法與路徑 | 用途 | 主要回傳 |
 |---|---|---|
-| `GET /health` | 健康檢查 | 資料庫狀態、各來源最近一次成功抓取的時間 |
+| `GET /health` | 健康檢查 | 資料庫狀態、各來源最近一次成功抓取的時間、執行中的版本（commit，`APP_VERSION`） |
 | `GET /locate` | IP 推測位置（F17） | `country`、`area_id`，推測不到時為 `null` |
 | `GET /countries` | 國家清單與設定 | 幣別、locale、單位、休市日、漲跌顏色、預設地區、預設關注 |
 | `GET /countries/{cc}/areas` | 地區清單 | 名稱、區域、座標、有無零售、最新交易日與新舊 |
