@@ -49,6 +49,9 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://${POSTGRES_USER:-agri}:${POSTGRES_PASSWORD:-agri-local-only}@db:5432/${POSTGRES_DB:-agri}}
       PROVIDERS: ${PROVIDERS:-mock}
+      # International reference prices (bonus B5): downloaded only when due (docs/06 §8).
+      INTL_PRICES: ${INTL_PRICES:-true}
+      PINK_SHEET_URL: ${PINK_SHEET_URL:-}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
       db:

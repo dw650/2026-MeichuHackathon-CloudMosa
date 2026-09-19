@@ -34,6 +34,9 @@ const IN_SCREENS = [
   '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',
   '/crop/onion/markets?area=kurnool',
+  '/intl',
+  '/intl/rice',
+  '/intl/sugar',
 ]
 
 const cases: { name: string; state: AppState; paths: string[] }[] = [
@@ -63,6 +66,8 @@ const cases: { name: string; state: AppState; paths: string[] }[] = [
       '/crop/cabbage/markets/tp1',
       '/areas?for=home',
       '/settings',
+      '/intl',
+      '/intl/palm_oil',
     ],
   },
   {

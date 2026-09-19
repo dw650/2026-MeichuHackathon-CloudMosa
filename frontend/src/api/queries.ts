@@ -9,6 +9,8 @@ import type {
   SchemaCountriesOut,
   SchemaCropsOut,
   SchemaHealthOut,
+  SchemaIntlPricesOut,
+  SchemaIntlSeriesOut,
   SchemaLocateOut,
   SchemaMarketOut,
   SchemaMarketsOut,
@@ -29,6 +31,9 @@ export type MarketRow = SchemaMarketsOut['rows'][number]
 export type Market = SchemaMarketOut
 export type Staleness = PriceItem['staleness']
 export type Change = NonNullable<PriceItem['change']>
+export type IntlPrices = SchemaIntlPricesOut
+export type IntlItem = SchemaIntlPricesOut['items'][number]
+export type IntlSeries = SchemaIntlSeriesOut
 
 // The catalog barely changes; keep it longer than prices.
 const CATALOG_STALE_MS = 60 * 60 * 1000
@@ -43,6 +48,8 @@ export const queryKeys = {
   compare: (p: CompareParams) => ['compare', p.country, p.area, p.crop, p.type] as const,
   markets: (p: MarketsParams) => ['markets', p.country, p.area, p.crop] as const,
   market: (p: MarketParams) => ['market', p.country, p.crop, p.market] as const,
+  intl: (country: string) => ['intl', country] as const,
+  intlSeries: (country: string, series: string) => ['intl', country, series] as const,
   locate: ['locate'] as const,
   health: ['health'] as const,
 }
@@ -172,6 +179,25 @@ export function useMarket(p: MarketParams | null) {
         },
       ),
     enabled: !!p,
+  })
+}
+
+/** International reference prices (bonus B5): every series in the country's currency. */
+export function useIntlPrices(country: string | null | undefined) {
+  return useQuery({
+    queryKey: queryKeys.intl(country ?? ''),
+    queryFn: ({ signal }) => apiGet<SchemaIntlPricesOut>('/intl', { country }, { signal }),
+    enabled: !!country,
+  })
+}
+
+/** One international series with its 12 months (bonus B5). */
+export function useIntlSeries(country: string | null | undefined, series: string) {
+  return useQuery({
+    queryKey: queryKeys.intlSeries(country ?? '', series),
+    queryFn: ({ signal }) =>
+      apiGet<SchemaIntlSeriesOut>(`/intl/${encodeURIComponent(series)}`, { country }, { signal }),
+    enabled: !!country && !!series,
   })
 }
 

@@ -10,6 +10,8 @@ import AreasScreen from '@/screens/areas/AreasScreen'
 import CropDetailScreen from '@/screens/crop-detail/CropDetailScreen'
 import CropListScreen from '@/screens/crop-list/CropListScreen'
 import HomeScreen from '@/screens/home/HomeScreen'
+import IntlScreen from '@/screens/intl/IntlScreen'
+import IntlSeriesScreen from '@/screens/intl/IntlSeriesScreen'
 import MarketScreen from '@/screens/markets/MarketScreen'
 import MarketsScreen from '@/screens/markets/MarketsScreen'
 import SettingsItemScreen from '@/screens/settings/SettingsItemScreen'
@@ -37,6 +39,8 @@ export const SCREEN_NAMES = [
   'settings',
   'settings-item',
   'about',
+  'intl',
+  'intl-series',
   'setup-lang',
   'setup-langs',
   'setup-locate',
@@ -57,6 +61,8 @@ export const SCREENS: ScreenMap = {
   settings: SettingsScreen,
   'settings-item': SettingsItemScreen,
   about: AboutScreen,
+  intl: IntlScreen,
+  'intl-series': IntlSeriesScreen,
   'setup-lang': LanguageScreen,
   'setup-langs': MoreLanguagesScreen,
   'setup-locate': LocateScreen,
@@ -79,6 +85,8 @@ export function buildRoutes(screens: ScreenMap): RouteObject[] {
     { path: 'settings', Component: screens.settings },
     { path: 'settings/:item', Component: screens['settings-item'] },
     { path: 'about', Component: screens.about },
+    { path: 'intl', Component: screens.intl },
+    { path: 'intl/:seriesId', Component: screens['intl-series'] },
     { path: 'setup/lang', Component: screens['setup-lang'] },
     { path: 'setup/langs', Component: screens['setup-langs'] },
     { path: 'setup/locate', Component: screens['setup-locate'] },

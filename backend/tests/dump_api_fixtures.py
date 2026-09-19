@@ -16,7 +16,13 @@ import httpx
 
 from app.config import Settings
 from app.main import create_app
-from tests.conftest import NOW, TEST_DATABASE_URL, _ensure_database, _ensure_mock_data
+from tests.conftest import (
+    NOW,
+    TEST_DATABASE_URL,
+    _ensure_database,
+    _ensure_intl_data,
+    _ensure_mock_data,
+)
 from tests.conftest import alembic_config as _alembic_config
 
 AREAS = {
@@ -36,6 +42,7 @@ QUOTES = [
     ("TW", "cabbage", "taipei", "retail"),
     ("TW", "cauliflower", "taipei", "retail"),
 ]
+INTL_SERIES = ["rice", "wheat", "maize", "soybeans", "sugar", "palm_oil"]
 
 
 def _name(path: str, params: dict[str, str]) -> str:
@@ -55,6 +62,7 @@ async def collect() -> dict[str, object]:
         database_url=TEST_DATABASE_URL, db_null_pool=True, demo_mode=True, app_version="dev"
     )  # fixed values so reruns give identical fixtures
     await _ensure_mock_data(settings)
+    await _ensure_intl_data(settings)
     app = create_app(settings, clock=lambda: NOW)
     requests: list[tuple[str, dict[str, str], dict[str, str]]] = [
         ("/health", {}, {}),
@@ -78,6 +86,9 @@ async def collect() -> dict[str, object]:
         ("/crops/cabbage/markets/tp1", {"country": "TW"}, {}),
         ("/locate", {}, {"X-Demo-Locate": "IN:nashik"}),
     ]
+    for cc in AREAS:
+        requests.append(("/intl", {"country": cc}, {}))
+        requests += [(f"/intl/{series}", {"country": cc}, {}) for series in INTL_SERIES]
     bodies: dict[str, object] = {}
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test/api/v1") as client:

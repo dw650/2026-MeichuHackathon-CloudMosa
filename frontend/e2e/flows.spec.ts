@@ -136,3 +136,29 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   await step(page, errors, /^\/crop\/onion\/today$/)
   await expect.poll(() => focusedId(page)).toBe('nearby-high')
 })
+
+test('international prices by key only: menu → list → a series → back', async ({
+  page,
+  errors,
+}) => {
+  await seed(page, { country: 'TW', lang: 'zh-TW' })
+  await page.goto('/')
+  await step(page, errors, /^\/$/)
+  await press(page, 'Escape')
+  await step(page, errors, /sheet=menu/)
+  await press(page, '6') // 國際參考價, after the baseline rows
+  await step(page, errors, /^\/intl$/)
+  await press(page, 'Enter') // the first series
+  await step(page, errors, /^\/intl\/rice$/)
+  await press(page, 'ArrowDown') // nothing to select: scrolls the page
+  await step(page, errors, /^\/intl\/rice$/)
+  await page.goBack()
+  await step(page, errors, /^\/intl$/)
+  await expect.poll(() => focusedId(page)).toBe('series:rice')
+  await press(page, '5') // 原糖
+  await step(page, errors, /^\/intl\/sugar$/)
+  await page.goBack()
+  await step(page, errors, /^\/intl$/)
+  await page.goBack()
+  await step(page, errors, /^\/$/)
+})

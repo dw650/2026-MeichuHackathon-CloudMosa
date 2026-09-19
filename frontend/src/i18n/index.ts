@@ -16,6 +16,7 @@ import en from './locales/en.json'
 import zhTW from './locales/zh-TW.json'
 
 export { dateLabels } from './dateLabels'
+export { monthLabels } from './monthLabels'
 export * from './languages'
 export * from './text'
 

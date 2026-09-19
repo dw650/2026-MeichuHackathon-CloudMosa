@@ -19,10 +19,12 @@
  │  db：PostgreSQL 16 ◀──── worker：排程抓取                  │
  │   （volume）              providers → 正規化 → 檢查 → 彙整 │
  │                           mock｜tw_moa｜in_datagov         │
+ │                           B5：Pink Sheet＋匯率             │
  └────────────────────────────────────────────────────────────┘
                                  │（加分項）
                                  ▼
                  data.moa.gov.tw、api.data.gov.in
+                 worldbank.org、open.er-api.com（B5）
 ```
 
 - **單一網域**：前端與 API 同一個 HTTPS 來源，沒有 CORS、沒有混合內容問題（往屆作品的常見錯誤）。
@@ -47,6 +49,8 @@
 | `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
 | `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2） | `mock` |
+| `INTL_PRICES` | worker 下載國際參考價（B5：世界銀行 Pink Sheet 與匯率，只在到期時下載，見 [06](06-data.md) §8）；`false` 不下載 | `true` |
+| `PINK_SHEET_URL` | 固定使用的 Pink Sheet 月資料檔；空白＝用官方頁上目前連結的檔案（[06](06-data.md) §1.3） | 空 |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
 | `GEOIP_DB_PATH` | IP 地理資料庫檔案路徑（DB-IP Lite City，免註冊；檔案不存在時位置推測回傳 `null`） | `/data/geoip/city.mmdb` |
 | `DATAGOV_API_KEY` | 印度 data.gov.in 金鑰（B3） | 空 |
@@ -109,6 +113,7 @@
 | `/crop/:cropId/markets?area=`、`/crop/:cropId/markets/:marketId` | 本地區各市場、單一市場（F05） |
 | `/areas?for=home｜view` | 完整地區清單（F07） |
 | `/watch`、`/settings`、`/settings/:item`、`/about` | 編輯關注、設定、關於（F09–F11） |
+| `/intl`、`/intl/:seriesId` | 國際參考價清單與單一序列（B5，從左軟鍵選單進入） |
 
 - **面板**用查詢參數表示（`?sheet=menu｜area｜sort`），打開時 `push`，關閉時 `history.back()`。
 - **分頁**切換用 `replace`，不新增歷史（[02](02-product-spec.md) §4）。
@@ -198,9 +203,12 @@ class PriceProvider(Protocol):
 | `GET /crops/{crop}/compare?country=&area=&type=` | 比價頁 | 各地區的價格、市場數、直線距離、差額、新舊、名次；目前地區的名次與總數 |
 | `GET /crops/{crop}/markets?country=&area=` | 本地區各市場（只有批發） | 各市場代表價、距離、新舊、與中位數的差額 |
 | `GET /crops/{crop}/markets/{market}?country=` | 單一市場 | 代表價、漲跌、當日區間、來源 |
+| `GET /intl?country=` | 國際參考價清單（B5） | 國家幣別與今天、換算用的匯率（`fx`：每美元多少、匯率日期）、Pink Sheet 更新日；每條序列：名稱、規格、原文名稱、最新月份、原始美元價與單位、每公斤當地價、比上月、`reason` |
+| `GET /intl/{series}?country=` | 單一國際序列（B5） | 同上一條序列的欄位，加上 12 個月序列（沒有價格的月份為 `null`）與這 12 個月的高、低、平均、比平均 |
 
 - 比價頁的四種排序在**前端**做（地區最多幾十個，換排序不必重抓）；名次由後端算，不受排序影響。
 - `type` 是 `wholesale` 或 `retail`；零售沒有 `markets` 相關端點，前端依規格顯示說明。
+- 國際參考價的價格一樣是**每公斤、當地幣別**：每個月份都用最新的每日匯率換算，`usd` 保留世界銀行公布的原始值（`usd_unit`：`mt` 或 `kg`）。月份用該月第一天（`2026-08-01`）。沒有價格時 `price_per_kg` 為 `null` 並附 `reason`：`no_data`（還沒有月份）、`no_fx`（沒有這個幣別的匯率）。只回傳正在看的國家那一種幣別的匯率（匯率來源的條款不允許轉發整份匯率）。demo 的 `X-Demo-Fail` 對這兩個端點也有效。
 
 `GET /api/v1/crops/onion/quote?country=IN&area=nashik&type=wholesale` 的回應範例：
 
@@ -246,6 +254,7 @@ class PriceProvider(Protocol):
 |---|---|---|
 | 400 | `invalid_param` | 視為程式錯誤，回首頁 |
 | 404 | `area_not_found`、`crop_not_found` | 設定裡的地區或作物已經不存在：清掉並回到選擇畫面 |
+| 404 | `series_not_found`（B5） | 國際序列不存在（舊連結）：回到國際參考價清單 |
 | 503 | `upstream_unavailable`、`demo_failure` | 顯示連線失敗，有舊資料就顯示舊資料 |
 | 500 | `internal` | 同 503 |
 
@@ -278,10 +287,15 @@ class PriceProvider(Protocol):
 | `quotes` | `source`、`price_type`、`market_id`（零售為空）、`area_id`、`crop_id`、`variety`、`trade_date`、`rep_price`、`low_price`、`high_price`、`volume_kg`、`run_id`、`fetched_at` | 正規化後的報價；唯一鍵見 [06](06-data.md) §2.1 |
 | `market_daily` | `(market_id, crop_id, trade_date)` PK、`rep_price`、`low_price`、`high_price`、`volume_kg` | 同市場同天多筆取中位數後的結果 |
 | `area_daily` | `(area_id, crop_id, price_type, trade_date)` PK、`price`、`n_markets`、`min_market`、`max_market`、`volume_kg`、`fetched_at` | 地區價（批發為中位數、零售為調查價） |
+| `intl_series` | `id` PK、`sort`、`source_column`、`unit`（`mt`／`kg`）、`icon`、`category`、`name` jsonb、`spec` jsonb | 國際參考價的序列（B5），由 `app/seed/intl/series.yaml` 同步 |
+| `intl_prices` | `(series_id, month)` PK、`usd`、`fetched_at` | 每月月均價，美元／原始單位，照 Pink Sheet 原樣；`month` 是該月第一天 |
+| `fx_rates` | `currency` PK、`per_usd`、`rate_date`、`fetched_at` | 每種幣別最新的每日匯率（每美元多少） |
+| `intl_sources` | `id` PK（`wb_pink`、`er_api`）、`url`、`etag`、`last_modified`、`data_date`、`next_update_at`、`checked_at` | 國際參考價來源的下載狀態：上次檢查時間、條件式 GET 用的標頭、檔案更新日或匯率日期、匯率的下次更新時間 |
 
 - 價格欄位用 `numeric(12,4)`，單位都是每公斤。
 - `area_daily` 有 `(area_id, crop_id, price_type, trade_date DESC)` 索引；API 讀這張表，30 天序列與指標在請求時由 service 計算（每次最多 30 列）。
-- 國家、地區、市場、作物、對照表的內容放在 `app/seed/`（YAML），worker 啟動時同步進資料庫；改 seed 不需要寫 migration，改欄位才需要。
+- 國家、地區、市場、作物、對照表的內容放在 `app/seed/`（YAML），worker 啟動時同步進資料庫；改 seed 不需要寫 migration，改欄位才需要。國際參考價的序列在 `app/seed/intl/series.yaml`（子資料夾，不會被當成國家檔讀取）。
+- 國際參考價的四張表由 migration `80ac1f2d0366`（B5）建立，只新增資料表。
 
 ## 8. 容錯【決定】
 
@@ -333,14 +347,14 @@ class PriceProvider(Protocol):
 │   ├── src/
 │   │   ├── main.tsx  App.tsx
 │   │   ├── app/                 # routes.tsx、providers.tsx、ErrorBoundary.tsx
-│   │   ├── screens/             # setup/、home/、crop-list/、crop-detail/、markets/、areas/、watch/、settings/、about/
+│   │   ├── screens/             # setup/、home/、crop-list/、crop-detail/、markets/、areas/、watch/、settings/、about/、intl/（B5）
 │   │   ├── components/          # Shell、Header、InfoBar、SoftKeys、Tabs、Card、CropIcon、KeyCap、Pill、Sparkline、TrendChart、Sheet、StatusBox、Skeleton
 │   │   ├── keys/                # keyScope.ts、useKeys.ts
 │   │   ├── focus/               # useFocusList.ts、useGrid.ts、restore.ts
 │   │   ├── store/               # settings.ts、session.ts、migrate.ts
 │   │   ├── api/                 # client.ts、schema.d.ts（產生的）、queries.ts
 │   │   ├── i18n/                # index.ts、locales/zh-TW.json、locales/en.json
-│   │   ├── lib/                 # units.ts、format.ts、dates.ts
+│   │   ├── lib/                 # units.ts、format.ts、dates.ts、monthly.ts（B5 的月份）
 │   │   ├── styles/              # tokens.css、global.css
 │   │   └── icons/               # crops.tsx、ui.tsx
 │   └── e2e/                     # Playwright：viewports、overflow、focus、主要流程
@@ -348,13 +362,14 @@ class PriceProvider(Protocol):
 │   ├── Dockerfile  pyproject.toml  uv.lock  alembic.ini
 │   ├── app/
 │   │   ├── main.py  config.py  errors.py  deps.py
-│   │   ├── api/v1/              # health、locate、catalog、prices、markets
+│   │   ├── api/v1/              # health、locate、catalog、prices、markets、intl（B5）
 │   │   ├── schemas/
-│   │   ├── services/            # pricing、stats、compare、freshness、locate
+│   │   ├── services/            # pricing、stats、compare、freshness、locate、intl（B5）
 │   │   ├── repositories/
 │   │   ├── db/                  # models.py、session.py、migrations/
 │   │   ├── ingest/              # providers/（base、mock、tw_moa、in_datagov）、normalize、validate、aggregate、pipeline
-│   │   ├── seed/                # IN.yaml、TW.yaml（地區、市場、作物、對照、mock 參數）
+│   │   │                        # intl/（B5：http、pink_sheet、fx、refresh）
+│   │   ├── seed/                # IN.yaml、TW.yaml（地區、市場、作物、對照、mock 參數）、intl/series.yaml（B5）
 │   │   └── worker.py
 │   └── tests/                   # unit/、api/、ingest/、fixtures/
 ├── infra/

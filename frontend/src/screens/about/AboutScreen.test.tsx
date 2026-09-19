@@ -15,6 +15,7 @@ describe('AboutScreen', () => {
       '資料來源',
       '本 App 不會向你要錢、密碼或驗證碼。',
       'IP Geolocation by DB-IP（CC BY 4.0）',
+      '國際參考價：世界銀行 Pink Sheet（CC BY 4.0），匯率 Rates By Exchange Rate API',
     ]) {
       expect(screen.getByText(text)).toBeInTheDocument()
     }

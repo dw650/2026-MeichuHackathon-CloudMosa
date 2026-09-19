@@ -164,6 +164,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/intl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * International reference prices
+         * @description Six World Bank Pink Sheet series (monthly averages, published early the next month), each with its latest month, the price per kg in the country's currency and the change from the month before. Every month is converted with the latest daily exchange rate (`fx`); `usd` keeps the published price. No local price comes with a `reason`.
+         */
+        get: operations["intl_prices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/intl/{series}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One international reference price
+         * @description The series with its 12 months up to the latest one (null = no price that month) and their high, low and average, all per kg in the country's currency.
+         */
+        get: operations["intl_series"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/locate": {
         parameters: {
             query?: never;
@@ -374,6 +414,22 @@ export interface components {
         ErrorOut: {
             error: components["schemas"]["ErrorBody"];
         };
+        /** FxOut */
+        FxOut: {
+            /** Currency */
+            currency: string;
+            /**
+             * Per Usd
+             * @description Units of the currency for one US dollar.
+             */
+            per_usd: number;
+            /**
+             * Rate Date
+             * Format: date
+             * @description The rate's day as published by the provider (UTC).
+             */
+            rate_date: string;
+        };
         /** HealthOut */
         HealthOut: {
             /** Database */
@@ -399,6 +455,177 @@ export interface components {
             en: string;
             /** Zh-Tw */
             "zh-TW": string;
+        };
+        /**
+         * IntlChangeOut
+         * @description The latest month against the month before; |pct| < 0.05% is flat.
+         */
+        IntlChangeOut: {
+            /**
+             * Diff Per Kg
+             * @description In the country's currency; null without a rate.
+             */
+            diff_per_kg: number | null;
+            /**
+             * Direction
+             * @enum {string}
+             */
+            direction: "up" | "down" | "flat";
+            /** Pct */
+            pct: number;
+            /**
+             * Prev Month
+             * Format: date
+             */
+            prev_month: string;
+        };
+        /** IntlItemOut */
+        IntlItemOut: {
+            /** Category */
+            category: string;
+            change: components["schemas"]["IntlChangeOut"] | null;
+            /** Icon */
+            icon: string;
+            /** Id */
+            id: string;
+            /**
+             * Month
+             * @description First day of the latest month with a price.
+             */
+            month: string | null;
+            name: components["schemas"]["I18nText"];
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /**
+             * Reason
+             * @description Why there is no local price: no_data (no month yet) or no_fx (no rate).
+             */
+            reason: ("no_data" | "no_fx") | null;
+            /**
+             * Source Name
+             * @description The series as the World Bank names it.
+             */
+            source_name: string;
+            /** @description Grade or origin, e.g. Thai 5% broken. */
+            spec: components["schemas"]["I18nText"];
+            /**
+             * Usd
+             * @description The published monthly average, US$ per `usd_unit`.
+             */
+            usd: number | null;
+            /**
+             * Usd Unit
+             * @enum {string}
+             */
+            usd_unit: "mt" | "kg";
+        };
+        /** IntlPointOut */
+        IntlPointOut: {
+            /**
+             * Month
+             * Format: date
+             */
+            month: string;
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /** Usd */
+            usd: number | null;
+        };
+        /** IntlPricesOut */
+        IntlPricesOut: {
+            /** Country */
+            country: string;
+            /** Currency */
+            currency: string;
+            /** @description The rate every month is converted with. */
+            fx: components["schemas"]["FxOut"] | null;
+            /** Items */
+            items: components["schemas"]["IntlItemOut"][];
+            /**
+             * Published
+             * @description Update date of the World Bank file.
+             */
+            published: string | null;
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+        };
+        /** IntlSeriesOut */
+        IntlSeriesOut: {
+            /** Category */
+            category: string;
+            change: components["schemas"]["IntlChangeOut"] | null;
+            /** Country */
+            country: string;
+            /** Currency */
+            currency: string;
+            fx: components["schemas"]["FxOut"] | null;
+            /** Icon */
+            icon: string;
+            /** Id */
+            id: string;
+            /**
+             * Month
+             * @description First day of the latest month with a price.
+             */
+            month: string | null;
+            name: components["schemas"]["I18nText"];
+            /** Price Per Kg */
+            price_per_kg: number | null;
+            /** Published */
+            published: string | null;
+            /**
+             * Reason
+             * @description Why there is no local price: no_data (no month yet) or no_fx (no rate).
+             */
+            reason: ("no_data" | "no_fx") | null;
+            /**
+             * Series
+             * @description The 12 months up to `month`, oldest first; null = no price that month.
+             */
+            series: components["schemas"]["IntlPointOut"][];
+            /**
+             * Source Name
+             * @description The series as the World Bank names it.
+             */
+            source_name: string;
+            /** @description Grade or origin, e.g. Thai 5% broken. */
+            spec: components["schemas"]["I18nText"];
+            stats: components["schemas"]["IntlStatsOut"];
+            /**
+             * Today
+             * Format: date
+             */
+            today: string;
+            /**
+             * Usd
+             * @description The published monthly average, US$ per `usd_unit`.
+             */
+            usd: number | null;
+            /**
+             * Usd Unit
+             * @enum {string}
+             */
+            usd_unit: "mt" | "kg";
+        };
+        /**
+         * IntlStatsOut
+         * @description Over the months of `series` that have a price.
+         */
+        IntlStatsOut: {
+            /** Avg Per Kg */
+            avg_per_kg: number | null;
+            /** High Per Kg */
+            high_per_kg: number | null;
+            /** Low Per Kg */
+            low_per_kg: number | null;
+            /**
+             * Vs Avg Pct
+             * @description Latest price against the average.
+             */
+            vs_avg_pct: number | null;
         };
         /**
          * LocateOut
@@ -743,9 +970,16 @@ export type SchemaCropOut = components['schemas']['CropOut'];
 export type SchemaCropsOut = components['schemas']['CropsOut'];
 export type SchemaErrorBody = components['schemas']['ErrorBody'];
 export type SchemaErrorOut = components['schemas']['ErrorOut'];
+export type SchemaFxOut = components['schemas']['FxOut'];
 export type SchemaHealthOut = components['schemas']['HealthOut'];
 export type SchemaHttpValidationError = components['schemas']['HTTPValidationError'];
 export type SchemaI18nText = components['schemas']['I18nText'];
+export type SchemaIntlChangeOut = components['schemas']['IntlChangeOut'];
+export type SchemaIntlItemOut = components['schemas']['IntlItemOut'];
+export type SchemaIntlPointOut = components['schemas']['IntlPointOut'];
+export type SchemaIntlPricesOut = components['schemas']['IntlPricesOut'];
+export type SchemaIntlSeriesOut = components['schemas']['IntlSeriesOut'];
+export type SchemaIntlStatsOut = components['schemas']['IntlStatsOut'];
 export type SchemaLocateOut = components['schemas']['LocateOut'];
 export type SchemaMarketOut = components['schemas']['MarketOut'];
 export type SchemaMarketRowOut = components['schemas']['MarketRowOut'];
@@ -1584,6 +1818,273 @@ export interface operations {
                      *     }
                      */
                     "application/json": components["schemas"]["HealthOut"];
+                };
+            };
+        };
+    };
+    intl_prices: {
+        parameters: {
+            query: {
+                /** @description Country code; its currency is shown */
+                country: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "country": "TW",
+                     *       "currency": "TWD",
+                     *       "fx": {
+                     *         "currency": "TWD",
+                     *         "per_usd": 31.834145,
+                     *         "rate_date": "2026-09-19"
+                     *       },
+                     *       "items": [
+                     *         {
+                     *           "category": "cereal",
+                     *           "change": {
+                     *             "diff_per_kg": 0.1273,
+                     *             "direction": "up",
+                     *             "pct": 0.008565,
+                     *             "prev_month": "2026-07-01"
+                     *           },
+                     *           "icon": "rice",
+                     *           "id": "rice",
+                     *           "month": "2026-08-01",
+                     *           "name": {
+                     *             "en": "Rice",
+                     *             "zh-TW": "稻米"
+                     *           },
+                     *           "price_per_kg": 14.9939,
+                     *           "source_name": "Rice, Thai 5%",
+                     *           "spec": {
+                     *             "en": "Thai 5% broken",
+                     *             "zh-TW": "泰國 5% 碎米"
+                     *           },
+                     *           "usd": 471,
+                     *           "usd_unit": "mt"
+                     *         }
+                     *       ],
+                     *       "published": "2026-09-02",
+                     *       "today": "2026-09-20"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IntlPricesOut"];
+                };
+            };
+            /** @description country: Field required */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "country: Field required",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Country 'XX' not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "country_not_found",
+                     *         "message": "Country 'XX' not found",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+        };
+    };
+    intl_series: {
+        parameters: {
+            query: {
+                /** @description Country code; its currency is shown */
+                country: string;
+            };
+            header?: never;
+            path: {
+                /** @description Series id */
+                series: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "category": "cereal",
+                     *       "change": {
+                     *         "diff_per_kg": 0.1273,
+                     *         "direction": "up",
+                     *         "pct": 0.008565,
+                     *         "prev_month": "2026-07-01"
+                     *       },
+                     *       "country": "TW",
+                     *       "currency": "TWD",
+                     *       "fx": {
+                     *         "currency": "TWD",
+                     *         "per_usd": 31.834145,
+                     *         "rate_date": "2026-09-19"
+                     *       },
+                     *       "icon": "rice",
+                     *       "id": "rice",
+                     *       "month": "2026-08-01",
+                     *       "name": {
+                     *         "en": "Rice",
+                     *         "zh-TW": "稻米"
+                     *       },
+                     *       "price_per_kg": 14.9939,
+                     *       "published": "2026-09-02",
+                     *       "series": [
+                     *         {
+                     *           "month": "2025-09-01",
+                     *           "price_per_kg": 11.906,
+                     *           "usd": 374
+                     *         },
+                     *         {
+                     *           "month": "2026-08-01",
+                     *           "price_per_kg": 14.9939,
+                     *           "usd": 471
+                     *         }
+                     *       ],
+                     *       "source_name": "Rice, Thai 5%",
+                     *       "spec": {
+                     *         "en": "Thai 5% broken",
+                     *         "zh-TW": "泰國 5% 碎米"
+                     *       },
+                     *       "stats": {
+                     *         "avg_per_kg": 13.251,
+                     *         "high_per_kg": 15.726,
+                     *         "low_per_kg": 11.333,
+                     *         "vs_avg_pct": 0.131532
+                     *       },
+                     *       "today": "2026-09-20",
+                     *       "usd": 471,
+                     *       "usd_unit": "mt"
+                     *     }
+                     */
+                    "application/json": components["schemas"]["IntlSeriesOut"];
+                };
+            };
+            /** @description country: Field required */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "invalid_param",
+                     *         "message": "country: Field required",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Series 'xyz' not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "series_not_found",
+                     *         "message": "Series 'xyz' not found",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description Simulated failure (X-Demo-Fail, demo mode only) */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "error": {
+                     *         "code": "demo_failure",
+                     *         "message": "Simulated failure (X-Demo-Fail, demo mode only)",
+                     *         "request_id": "b3f1c2…"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ErrorOut"];
                 };
             };
         };

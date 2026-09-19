@@ -32,7 +32,23 @@
   "date": {
     "weekdays": ["日", "一", "二", "三", "四", "五", "六"],
     "short": "{{m}}/{{d}} 週{{w}}",
-    "dataTime": "{{m}}/{{d}} {{time}}"
+    "dataTime": "{{m}}/{{d}} {{time}}",
+    "months": [
+      "1 月",
+      "2 月",
+      "3 月",
+      "4 月",
+      "5 月",
+      "6 月",
+      "7 月",
+      "8 月",
+      "9 月",
+      "10 月",
+      "11 月",
+      "12 月"
+    ],
+    "day": "{{m}}/{{d}}",
+    "withYear": "{{y}} 年 {{month}}"
   },
   "freshness": {
     "today": "今日",
@@ -78,7 +94,8 @@
     "about": "關於與資料說明",
     "settings": "設定",
     "addWatch": "加入關注",
-    "removeWatch": "取消關注"
+    "removeWatch": "取消關注",
+    "intl": "國際參考價"
   },
   "categories": {
     "cereal": "穀物",
@@ -207,6 +224,35 @@
   "watch": {
     "title": "編輯關注"
   },
+  "intl": {
+    "title": "國際參考價",
+    "note": "世界銀行 Pink Sheet 月均價，每月初更新",
+    "loading": "正在取得國際參考價",
+    "average": "月均價",
+    "rateDate": "以 {{date}} 匯率換算",
+    "rateShort": "{{date}} 匯率",
+    "perKg": "{{currency}}/公斤",
+    "monthAverage": "{{month}}均價",
+    "noData": "尚無資料",
+    "noRate": "尚無匯率，無法換算",
+    "showingOld": "先顯示之前取得的價格",
+    "vsPrevMonth": "較上月",
+    "trend": "近 12 個月",
+    "high": "近一年高",
+    "low": "近一年低",
+    "vsAverage": "比一年均價",
+    "published": "原始報價 {{price}}",
+    "usd": "{{price}} 美元/{{unit}}",
+    "units": {
+      "mt": "公噸",
+      "kg": "公斤"
+    },
+    "rate": "1 美元＝{{rate}} {{currency}}",
+    "series": "系列：{{name}}",
+    "source": "資料：世界銀行 Pink Sheet（{{date}} 更新）",
+    "sourceUndated": "資料：世界銀行 Pink Sheet",
+    "credit": "匯率：Rates By Exchange Rate API"
+  },
   "settings": {
     "title": "設定",
     "rows": {
@@ -245,7 +291,8 @@
     "source": "資料來源",
     "noMoney": "本 App 不會向你要錢、密碼或驗證碼。",
     "ipCredit": "IP Geolocation by DB-IP（CC BY 4.0）",
-    "version": "版本 {{version}}"
+    "version": "版本 {{version}}",
+    "intlCredit": "國際參考價：世界銀行 Pink Sheet（CC BY 4.0），匯率 Rates By Exchange Rate API"
   },
   "errors": {
     "screen": {

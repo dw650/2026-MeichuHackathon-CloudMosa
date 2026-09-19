@@ -18,10 +18,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import Settings
 from app.db.models import DATA_TABLES
 from app.db.session import create_engine, create_sessionmaker
+from app.ingest.intl.refresh import refresh_intl
 from app.ingest.pipeline import run_provider
 from app.ingest.providers.mock import MockProvider
 from app.ingest.seed import sync_seed
 from app.main import create_app
+from app.seed.loader import load_intl_series
+from tests.intl_server import CONFIG as INTL_CONFIG
+from tests.intl_server import IntlServer
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 
@@ -145,10 +149,34 @@ async def _ensure_mock_data(settings: Settings) -> None:
         await engine.dispose()
 
 
+async def _ensure_intl_data(settings: Settings) -> None:
+    """Loads the international prices (bonus B5) from the saved samples once, through the
+    worker's own refresh at NOW (tests/intl_server.py, no network)."""
+    engine = create_engine(settings)
+    try:
+        maker = create_sessionmaker(engine)
+        async with maker() as s:
+            ready = await s.execute(
+                text(
+                    "SELECT EXISTS (SELECT 1 FROM intl_prices) AND EXISTS (SELECT 1 FROM fx_rates)"
+                )
+            )
+            if ready.scalar_one():
+                return
+        seeds = load_intl_series().series
+        server = IntlServer()
+        await refresh_intl(
+            maker, seeds, INTL_CONFIG, lambda: NOW, transport=server.transport(), force=True
+        )
+    finally:
+        await engine.dispose()
+
+
 @pytest.fixture
 async def api(settings: Settings, database_url: str) -> AsyncIterator[httpx.AsyncClient]:
-    """Client over the mock data with the app clock fixed at NOW."""
+    """Client over the mock data (and the B5 samples) with the app clock fixed at NOW."""
     await _ensure_mock_data(settings)
+    await _ensure_intl_data(settings)
     app = create_app(settings, clock=lambda: NOW)
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as c:

@@ -6,9 +6,11 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.0",
     "apscheduler>=3.11,<4",
+    "defusedxml>=0.7.1",
     "fastapi>=0.141.1",
     "geoip2>=5.3.0",
     "httpx>=0.28.1",
+    "openpyxl>=3.1.5",
     "psycopg[binary]>=3.3.6",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
@@ -24,6 +26,7 @@ dev = [
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
     "ruff>=0.16.8",
+    "types-openpyxl>=3.1.5.20260827",
     "types-pyyaml>=6.0.12.20260906",
 ]
 

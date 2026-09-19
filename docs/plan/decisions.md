@@ -607,3 +607,17 @@
   - 只比同一天，差額才有意義，也不會把舊資料當成今天的顯示。
   - 卡片放在指標下方：焦點從「本地區各市場」往下移時，中間的指標會一起露出來；自己的卡片不能選，排在前面，讓最後一張一定是可選的，捲到最下面時整頁都看得到。零售時第一個焦點就是附近的卡片（在 240×320 不用捲動就看得到），這時中間軟鍵是「查看」；沒有附近卡片時仍然是「比價」。
 - 影響：`backend/app/services/{nearby,freshness,prices}.py`、`backend/app/schemas/prices.py`、`backend/app/api/v1/prices.py`、`backend/tests/{unit/test_nearby.py,api/test_nearby.py}`、`backend/tests/dump_api_fixtures.py`（多存 North Delhi 與 Bengaluru Urban 的洋蔥批發行情）；`frontend/src/screens/crop-detail/{NearbyCards.tsx,nearbyRows.ts,TodayTab.tsx}`、i18n、關於頁、`frontend/src/api/schema.d.ts`、msw fixtures 與 handler（借用別的作物或地區的 fixture 時 `nearby` 設成 `null`）、e2e；docs/02 §3.1、§5.4，docs/04 §6。要改範圍就改 `nearby.py` 的 `NEARBY_COUNT`、`NEARBY_MAX_KM`，以及關於頁的 `about.nearby`。
+## 2026-09-20 B5 國際參考價
+- 情況：02 §3.2 只寫「選單進入的獨立頁；一條世界銀行月資料系列」，06 §1.3 只寫要用具名序列。使用者和 lead 另外決定：六條序列、以免金鑰的匯率換成當地幣別每公斤、匯率每天跟各國的每日工作一起抓、Pink Sheet 每天最多一次條件式 GET、部署重啟不重抓。其餘細節文件沒寫。
+- 決定：
+  - **序列**（使用者決定）：Pink Sheet 的 Rice, Thai 5%、Wheat, US HRW、Maize、Soybeans、Sugar, world、Palm oil，放在 `app/seed/intl/series.yaml`（子資料夾，國家 seed 的載入只讀 `app/seed/*.yaml`），worker 同步進 `intl_series`。依欄位名稱找序列並核對單位；Sugar, world 的原始單位是**美元/公斤**，其他是美元/公噸，詳情頁照原始單位顯示（不是全部寫成美元/公噸）。
+  - **檔案位址**：lead 給的位址（文件代號 `…-0050012025`）是 2025 年的文件，`Last-Modified` 停在 2026-01-14；官方頁目前連到 `…-0050012026`（2026-09-02 更新，含 2026 年 8 月）。所以 worker 每次檢查都先讀官方頁找「Monthly prices」連結，讀不到就用上次成功的位址或內建位址；`PINK_SHEET_URL` 可以固定一個檔案。官方頁與檔案都支援 `If-Modified-Since`（查核 2026-09-20），檔案用條件式 GET。
+  - **匯率**：ExchangeRate-API 的 `open.er-api.com/v6/latest/USD`（使用者決定）。存全部幣別的最新一筆（快取，條款允許），API 只回傳該國幣別那一個（條款不允許轉發）。每個月份都用最新匯率換算，畫面寫「以 9/19 匯率換算」。國家幣別取自 seed，加馬來西亞（MYR）不用改程式。
+  - **時機**：各國 00:05（和既有的每日工作同時；每個不同 UTC 時差一個工作，台灣與馬來西亞共用）與啟動時檢查，但只在到期時下載：匯率在「還沒有」「來源公布的下次更新已過（同一小時內不重抓）」或「滿 24 小時」時；Pink Sheet 在「還沒有」或「滿 23 小時」時（留一小時餘裕給每日工作的時間誤差）。狀態存在 `intl_sources`，所以重啟不重抓；每次檢查都記在 `ingest_runs`（`er_api`、`wb_pink`）。worker 啟動時先同步序列（本機、很快），畫面在任何下載之前就有六列。
+  - **資料表**：`intl_series`、`intl_prices`（美元／原始單位，照原樣）、`fx_rates`、`intl_sources`；migration `80ac1f2d0366`（down_revision `bec1dda1df2f`），只新增資料表，合併時可以直接改接到別的 head 後面。
+  - **API**：`GET /intl?country=`、`GET /intl/{series}?country=`，價格每公斤、當地幣別（照 04 §6），另附原始美元價；缺資料附 `reason`（`no_data`、`no_fx`）；demo 的 `X-Demo-Fail` 也有效。
+  - **畫面**：選單最後一列（原本各列的數字鍵不變）；兩頁都沒有選單、`*`、`#`；單位固定每公斤（取該國單位表裡每公斤的那一個，不跟批發／零售的單位設定）。清單卡片的說明列月份在前（英文規格較長時月份不會被截掉）；月份比今天所在月份早 3 個月以上用警示色（正常晚 1 個月，月初晚 2 個月）。匯率標示「Rates By Exchange Rate API」放在兩頁（條款要求每個使用匯率的頁面都要標示）；關於頁加一行兩個來源的標示（Pink Sheet 是 CC BY 4.0）。單一序列頁沒有可選項目，↑ ↓ 捲動；指標用「近一年高、近一年低、比一年均價」，避免「12 月高」被讀成十二月。
+  - **套件**：`openpyxl`（唯讀模式讀 xlsx）與 `defusedxml`（openpyxl 會自動用它解析 XML）；開發用 `types-openpyxl`。另外下載有大小上限（20 MB）、解壓後上限（64 MB）。
+- 理由：官方頁的連結是唯一不用每年手動改設定的做法；到期規則讓每天的請求數固定在約 3 個（匯率 1、官方頁 1、檔案 1，檔案多半回 304），部署再頻繁也不會增加；月資料只換算、不補值，缺什麼就說什麼。
+- 影響：`backend/app/ingest/intl/`（新）、`backend/app/{repositories,services,schemas,api/v1}/intl.py`（新）、`backend/app/seed/intl/series.yaml`（新）、`backend/app/seed/{schema,loader}.py`、`backend/app/db/models.py`（`DATA_TABLES` 多四張表）、migration、`backend/app/{config,worker}.py`、`compose.yaml`、`.env.example`、`backend/tests/`（樣本、`intl_server.py`、`conftest.py` 的 `_ensure_intl_data`）、`frontend/src/screens/intl/`（新）、`frontend/src/lib/monthly.ts`（新）、`frontend/src/i18n/`、`MenuSheet`、`AboutScreen`、路由、msw fixtures 與 handler、e2e。要加序列改 `series.yaml`；要換匯率來源改 `backend/app/ingest/intl/fx.py` 與 `FX_URL`。
+

@@ -1,0 +1,102 @@
+{
+ "category": "cereal",
+ "change": {
+  "diff_per_kg": 0.384,
+  "direction": "up",
+  "pct": 0.008565,
+  "prev_month": "2026-07-01"
+ },
+ "country": "IN",
+ "currency": "INR",
+ "fx": {
+  "currency": "INR",
+  "per_usd": 95.989567,
+  "rate_date": "2026-09-19"
+ },
+ "icon": "rice",
+ "id": "rice",
+ "month": "2026-08-01",
+ "name": {
+  "en": "Rice",
+  "zh-TW": "稻米"
+ },
+ "price_per_kg": 45.2111,
+ "published": "2026-09-02",
+ "reason": null,
+ "series": [
+  {
+   "month": "2025-09-01",
+   "price_per_kg": 35.9001,
+   "usd": 374.0
+  },
+  {
+   "month": "2025-10-01",
+   "price_per_kg": 34.1723,
+   "usd": 356.0
+  },
+  {
+   "month": "2025-11-01",
+   "price_per_kg": 35.3242,
+   "usd": 368.0
+  },
+  {
+   "month": "2025-12-01",
+   "price_per_kg": 40.6996,
+   "usd": 424.0
+  },
+  {
+   "month": "2026-01-01",
+   "price_per_kg": 39.1637,
+   "usd": 408.0
+  },
+  {
+   "month": "2026-02-01",
+   "price_per_kg": 39.2597,
+   "usd": 409.0
+  },
+  {
+   "month": "2026-03-01",
+   "price_per_kg": 36.572,
+   "usd": 381.0
+  },
+  {
+   "month": "2026-04-01",
+   "price_per_kg": 38.6838,
+   "usd": 403.0
+  },
+  {
+   "month": "2026-05-01",
+   "price_per_kg": 42.2354,
+   "usd": 440.0
+  },
+  {
+   "month": "2026-06-01",
+   "price_per_kg": 47.4188,
+   "usd": 494.0
+  },
+  {
+   "month": "2026-07-01",
+   "price_per_kg": 44.8271,
+   "usd": 467.0
+  },
+  {
+   "month": "2026-08-01",
+   "price_per_kg": 45.2111,
+   "usd": 471.0
+  }
+ ],
+ "source_name": "Rice, Thai 5%",
+ "spec": {
+  "en": "Thai 5% broken",
+  "zh-TW": "泰國 5% 碎米"
+ },
+ "stats": {
+  "avg_per_kg": 39.9556,
+  "high_per_kg": 47.4188,
+  "low_per_kg": 34.1723,
+  "vs_avg_pct": 0.131532
+ },
+ "today": "2026-09-19",
+ "usd": 471.0,
+ "usd_unit": "mt"
+}

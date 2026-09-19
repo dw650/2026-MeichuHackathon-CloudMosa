@@ -185,3 +185,36 @@ class SeedFile(_Model):
                 if area_map.area not in area_ids:
                     raise ValueError(f"{source}: unknown area {area_map.area!r}")
         return self
+
+
+# ---------- international reference prices (bonus B5, app/seed/intl/series.yaml) ----------
+
+IntlUnit = Literal["mt", "kg"]
+
+
+class IntlSeriesSeed(_Model):
+    """One World Bank Pink Sheet series: its column in the monthly sheet and how it is shown."""
+
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*$", max_length=20)
+    column: str = Field(min_length=1, max_length=80)
+    unit: IntlUnit
+    icon: str
+    category: Category
+    name: I18n
+    spec: I18n
+
+    _i18n = field_validator("name", "spec")(_check_i18n)
+
+
+class IntlSeedFile(_Model):
+    series: list[IntlSeriesSeed] = Field(min_length=1, max_length=9)
+
+    @model_validator(mode="after")
+    def _unique(self) -> Self:
+        for kind, values in (
+            ("series id", [s.id for s in self.series]),
+            ("column", [s.column for s in self.series]),
+        ):
+            if len(values) != len(set(values)):
+                raise ValueError(f"duplicate {kind}")
+        return self

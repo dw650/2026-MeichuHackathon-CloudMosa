@@ -75,6 +75,7 @@ describe('MenuSheet', () => {
       '4重新整理',
       '5關於與資料說明',
       '6設定',
+      '7國際參考價',
     ])
     expect(menu.focusedId()).toBe('watchToggle')
     expect([menu.softKey('left'), menu.softKey('center'), menu.softKey('right')]).toEqual([
@@ -103,6 +104,12 @@ describe('MenuSheet', () => {
     menu.press('Escape')
     menu.press('5')
     expect(menu.path()).toBe('/settings')
+
+    // International prices (bonus B5) come after the baseline rows.
+    await act(() => menu.router.navigate(-1))
+    menu.press('Escape')
+    menu.press('6')
+    expect(menu.path()).toBe('/intl')
   })
 
   it('moves to the area sheet, and closes with the left soft key', async () => {

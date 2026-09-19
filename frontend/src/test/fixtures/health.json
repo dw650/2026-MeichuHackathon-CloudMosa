@@ -3,8 +3,18 @@
  "sources": [
   {
    "last_success_at": "2026-09-19T06:10:00Z",
+   "rows_ok": 6,
+   "source": "er_api"
+  },
+  {
+   "last_success_at": "2026-09-19T06:10:00Z",
    "rows_ok": 55361,
    "source": "mock"
+  },
+  {
+   "last_success_at": "2026-09-19T06:10:00Z",
+   "rows_ok": 174,
+   "source": "wb_pink"
   }
  ],
  "status": "ok",

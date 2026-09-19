@@ -13,8 +13,9 @@ const NO_ITEMS: readonly string[] = []
 
 /**
  * 關於與資料說明 (F11, docs/02 §5.7): how the prices are worked out, the country's data source
- * with the IP database credit (DB-IP Lite, CC BY 4.0), and that the app never asks for money
- * or codes. Nothing to select: ↑ ↓ scroll the page by 60% (docs/03 §5).
+ * with the IP database credit (DB-IP Lite, CC BY 4.0) and the international prices' sources
+ * (World Bank Pink Sheet, CC BY 4.0; Rates By Exchange Rate API), and that the app never asks
+ * for money or codes. Nothing to select: ↑ ↓ scroll the page by 60% (docs/03 §5).
  */
 export default function AboutScreen() {
   const { t, pick } = useText()
@@ -45,6 +46,7 @@ export default function AboutScreen() {
           <b className={styles.label}>{t('about.source')}</b>
           <span>{pick(country?.source_label)}</span>
           <span>{t('about.ipCredit')}</span>
+          <span>{t('about.intlCredit')}</span>
         </div>
         <p className={styles.box}>{t('about.noMoney')}</p>
         {version && <p className={styles.box}>{t('about.version', { version })}</p>}
