@@ -146,7 +146,7 @@ async def test_prices_for_the_watchlist(api: httpx.AsyncClient) -> None:
 
 async def test_prices_default_to_every_crop_and_skip_unknown_ids(api: httpx.AsyncClient) -> None:
     body = (await api.get("/api/v1/prices", params=IN_NASHIK)).json()
-    assert len(body["items"]) == 10
+    assert len(body["items"]) == 21
     body = (await api.get("/api/v1/prices", params=IN_NASHIK | {"crops": "onion,durian"})).json()
     assert [i["crop_id"] for i in body["items"]] == ["onion"]
 

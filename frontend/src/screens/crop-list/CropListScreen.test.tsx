@@ -25,7 +25,13 @@ describe('CropListScreen', () => {
     expect(screen.getByRole('heading', { name: '蔬菜' })).toBeInTheDocument()
     expect(screen.getByText('Nashik 縣')).toBeInTheDocument()
     expect(screen.getAllByText('批發').length).toBeGreaterThan(0)
-    expect(focusIds()).toEqual(['crop:onion', 'crop:tomato', 'crop:potato'])
+    expect(focusIds()).toEqual([
+      'crop:onion',
+      'crop:tomato',
+      'crop:potato',
+      'crop:cabbage',
+      'crop:eggplant',
+    ])
     expect(card('crop:onion')).toHaveTextContent('2,395')
     expect(card('crop:potato')).toHaveTextContent('本地種 · 昨天')
     expect(app.focusedId()).toBe('crop:onion')
@@ -42,7 +48,7 @@ describe('CropListScreen', () => {
     const app = await renderApp('/cat/all')
     await screen.findByText('大蒜')
     expect(screen.getByRole('heading', { name: '全部' })).toBeInTheDocument()
-    expect(focusIds()).toHaveLength(10)
+    expect(focusIds()).toHaveLength(21)
     expect(card('crop:banana').querySelector('kbd')).toHaveTextContent('9')
     expect(card('crop:garlic').querySelector('kbd')).toBeNull()
     app.press('9')
@@ -61,8 +67,9 @@ describe('CropListScreen', () => {
     expect(app.focusedId()).toBe('crop:onion')
   })
 
-  it('says 無資料 for a category without crops', async () => {
-    const app = await renderApp('/cat/oil')
+  it('says 無資料 for a list without crops', async () => {
+    // Every category has crops in the seed data; a new user has no recently viewed crops.
+    const app = await renderApp('/cat/recent')
     expect(await screen.findByText('無資料')).toBeInTheDocument()
     expect(focusIds()).toEqual([])
     expect(softKeys(app)).toEqual(['選單', '', '返回'])

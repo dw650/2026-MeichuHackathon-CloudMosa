@@ -233,6 +233,256 @@
     "state": "today"
    },
    "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 1.52,
+    "direction": "up",
+    "pct": 0.031122,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "rice",
+   "price_per_kg": 50.36,
+   "reason": null,
+   "spark": [
+    null,
+    50.16,
+    51.11,
+    50.45,
+    49.84,
+    48.84,
+    50.36
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -0.27,
+    "direction": "down",
+    "pct": -0.00951,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "cabbage",
+   "price_per_kg": 28.12,
+   "reason": null,
+   "spark": [
+    null,
+    28.42,
+    29.17,
+    27.93,
+    28.28,
+    28.39,
+    28.12
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 0.6,
+    "direction": "up",
+    "pct": 0.014009,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "eggplant",
+   "price_per_kg": 43.43,
+   "reason": null,
+   "spark": [
+    null,
+    42.26,
+    42.58,
+    42.66,
+    41.96,
+    42.83,
+    43.43
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": -1.24,
+    "direction": "down",
+    "pct": -0.017345,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "mango",
+   "price_per_kg": 70.25,
+   "reason": null,
+   "spark": [
+    null,
+    69.47,
+    68.98,
+    70.7,
+    69.33,
+    71.49,
+    70.25
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 4.02,
+    "direction": "up",
+    "pct": 0.026281,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "pomegranate",
+   "price_per_kg": 156.98,
+   "reason": null,
+   "spark": [
+    null,
+    144.55,
+    149.18,
+    144.76,
+    150.71,
+    152.96,
+    156.98
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": {
+    "diff_per_kg": 1.68,
+    "direction": "up",
+    "pct": 0.017621,
+    "prev_trade_date": "2026-09-18"
+   },
+   "crop_id": "chickpea",
+   "price_per_kg": 97.02,
+   "reason": null,
+   "spark": [
+    null,
+    98.46,
+    96.12,
+    95.79,
+    96.93,
+    95.34,
+    97.02
+   ],
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   },
+   "trade_date": "2026-09-19"
+  },
+  {
+   "change": null,
+   "crop_id": "turmeric",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "peanut",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "mustard",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "cotton",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "change": null,
+   "crop_id": "sugarcane",
+   "price_per_kg": null,
+   "reason": "no_retail_crop",
+   "spark": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
   }
  ],
  "today": "2026-09-19",

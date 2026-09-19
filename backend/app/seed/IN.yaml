@@ -225,6 +225,73 @@ crops:
     retail: true
     mock: { p: 9500, lo: 8200, hi: 10800, chg: 0.024, arr: 150, arrR: 0.88, rt: 1.4 }
 
+  - id: rice
+    name: { zh-TW: 稻米, en: Rice }
+    category: cereal
+    variety: { zh-TW: 普通, en: Common }
+    retail: true
+    mock: { p: 3400, lo: 3150, hi: 3700, chg: 0.004, arr: 1800, arrR: 1.03, rt: 1.35 }
+  - id: cabbage
+    name: { zh-TW: 甘藍, en: Cabbage }
+    category: veg
+    variety: { zh-TW: 本地種, en: Local }
+    retail: true
+    mock: { p: 1250, lo: 900, hi: 1500, chg: -0.045, arr: 2600, arrR: 1.12, rt: 2.1 }
+  - id: eggplant
+    name: { zh-TW: 茄子, en: Brinjal }
+    category: veg
+    variety: { zh-TW: 圓茄, en: Round }
+    retail: true
+    mock: { p: 2100, lo: 1500, hi: 2700, chg: 0.058, arr: 1400, arrR: 0.91, rt: 1.9 }
+  - id: mango
+    name: { zh-TW: 芒果, en: Mango }
+    category: fruit
+    variety: { zh-TW: 托塔普里, en: Totapuri }
+    retail: true
+    mock: { p: 3600, lo: 2800, hi: 4500, chg: -0.027, arr: 520, arrR: 0.84, rt: 1.8 }
+  - id: pomegranate
+    name: { zh-TW: 石榴, en: Pomegranate }
+    category: fruit
+    variety: { zh-TW: 巴格瓦, en: Bhagwa }
+    retail: true
+    mock: { p: 9800, lo: 6500, hi: 13000, chg: 0.035, arr: 460, arrR: 1.08, rt: 1.45 }
+  - id: chickpea
+    name: { zh-TW: 鷹嘴豆, en: Chickpea }
+    category: pulse
+    variety: { zh-TW: 小粒種, en: Desi chana }
+    retail: true
+    mock: { p: 5900, lo: 5600, hi: 6250, chg: 0.009, arr: 1700, arrR: 0.95, rt: 1.5 }
+  - id: turmeric
+    name: { zh-TW: 薑黃, en: Turmeric }
+    category: spice
+    variety: { zh-TW: 指狀, en: Finger }
+    retail: false
+    mock: { p: 13800, lo: 12200, hi: 15400, chg: -0.014, arr: 420, arrR: 1.0, rt: null }
+  - id: peanut
+    name: { zh-TW: 花生, en: Groundnut }
+    category: oil
+    variety: { zh-TW: 帶殼, en: In shell }
+    retail: false
+    mock: { p: 6200, lo: 5500, hi: 6900, chg: 0.016, arr: 1250, arrR: 1.07, rt: null }
+  - id: mustard
+    name: { zh-TW: 芥菜籽, en: Mustard }
+    category: oil
+    variety: { zh-TW: 黑芥, en: Black }
+    retail: false
+    mock: { p: 6350, lo: 6000, hi: 6650, chg: -0.007, arr: 1500, arrR: 0.94, rt: null }
+  - id: cotton
+    name: { zh-TW: 棉花, en: Cotton }
+    category: other
+    variety: { zh-TW: 籽棉, en: Kapas }
+    retail: false
+    mock: { p: 7450, lo: 7000, hi: 7800, chg: 0.012, arr: 2400, arrR: 1.15, rt: null }
+  - id: sugarcane
+    name: { zh-TW: 甘蔗, en: Sugarcane }
+    category: other
+    variety: { zh-TW: 本地種, en: Local }
+    retail: false
+    mock: { p: 355, lo: 330, hi: 380, chg: 0, arr: 3500, arrR: 1.0, rt: null }
+
 # Source name → our id. The mock provider speaks the data.gov.in format (commodity, variety,
 # market) for wholesale and a DoCA-like format (centre) for retail. Empty variety = any.
 source_maps:
@@ -240,6 +307,17 @@ source_maps:
       - { source_name: Grapes, crop: grapes }
       - { source_name: Banana, crop: banana }
       - { source_name: Garlic, crop: garlic }
+      - { source_name: Rice, crop: rice }
+      - { source_name: Cabbage, crop: cabbage }
+      - { source_name: Brinjal, crop: eggplant }
+      - { source_name: Mango, crop: mango }
+      - { source_name: Pomegranate, crop: pomegranate }
+      - { source_name: Bengal Gram(Gram)(Whole), crop: chickpea }
+      - { source_name: Turmeric, crop: turmeric }
+      - { source_name: Groundnut, crop: peanut }
+      - { source_name: Mustard, crop: mustard }
+      - { source_name: Cotton, crop: cotton }
+      - { source_name: Sugarcane, crop: sugarcane }
     markets:
       - { source_market: Lasalgaon, market: lasalgaon }
       - { source_market: Niphad, market: niphad }

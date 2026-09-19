@@ -9,7 +9,7 @@ describe('WatchScreen', () => {
     const app = await renderApp('/watch', { history: ['/'] })
     expect(await screen.findByText('洋蔥')).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveTextContent('編輯關注')
-    expect(document.querySelectorAll('[data-focus-id]')).toHaveLength(10)
+    expect(document.querySelectorAll('[data-focus-id]')).toHaveLength(21)
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
       '',
       '切換',

@@ -199,6 +199,73 @@ crops:
     retail: false
     mock: { p: 40.0, lo: 26.0, hi: 52.0, chg: 0.35, arr: 2400, arrR: 0.66, rt: null, lag: 3 }
 
+  - id: maize
+    name: { zh-TW: 玉米, en: Corn }
+    category: cereal
+    variety: { zh-TW: 甜玉米, en: Sweet }
+    retail: true
+    mock: { p: 26.5, lo: 18.0, hi: 34.0, chg: 0.036, arr: 1650, arrR: 1.05, rt: 1.8 }
+  - id: rice
+    name: { zh-TW: 稻米, en: Rice }
+    category: cereal
+    variety: { zh-TW: 蓬萊米, en: Japonica }
+    retail: true
+    mock: { p: 32.0, lo: 29.5, hi: 35.0, chg: 0.003, arr: 800, arrR: 1.0, rt: 1.8 }
+  - id: guava
+    name: { zh-TW: 芭樂, en: Guava }
+    category: fruit
+    variety: { zh-TW: 珍珠拔, en: Pearl }
+    retail: true
+    mock: { p: 30.5, lo: 19.0, hi: 42.0, chg: -0.052, arr: 2100, arrR: 0.9, rt: 1.8 }
+  - id: soybean
+    name: { zh-TW: 毛豆, en: Edamame }
+    category: pulse
+    variety: { zh-TW: 鮮莢, en: Fresh pods }
+    retail: true
+    mock: { p: 47.0, lo: 36.0, hi: 58.0, chg: 0.021, arr: 380, arrR: 1.1, rt: 1.7 }
+  - id: adzuki
+    name: { zh-TW: 紅豆, en: Adzuki bean }
+    category: pulse
+    variety: { zh-TW: 本地種, en: Local }
+    retail: true
+    mock: { p: 96.0, lo: 88.0, hi: 105.0, chg: 0, arr: 60, arrR: 1.0, rt: 1.6 }
+  - id: garlic
+    name: { zh-TW: 蒜頭, en: Garlic }
+    category: spice
+    variety: { zh-TW: 乾蒜, en: Dried }
+    retail: true
+    mock: { p: 118.0, lo: 85.0, hi: 150.0, chg: 0.018, arr: 450, arrR: 0.95, rt: 1.6 }
+  - id: chilli
+    name: { zh-TW: 辣椒, en: Chilli }
+    category: spice
+    variety: { zh-TW: 朝天椒, en: Bird's eye }
+    retail: true
+    mock: { p: 125.0, lo: 75.0, hi: 180.0, chg: 0.12, arr: 210, arrR: 0.8, rt: 1.7 }
+  - id: peanut
+    name: { zh-TW: 落花生, en: Peanut }
+    category: oil
+    variety: { zh-TW: 帶殼, en: In shell }
+    retail: false
+    mock: { p: 64.0, lo: 52.0, hi: 76.0, chg: -0.011, arr: 180, arrR: 1.0, rt: null }
+  - id: sesame
+    name: { zh-TW: 芝麻, en: Sesame }
+    category: oil
+    variety: { zh-TW: 黑芝麻, en: Black }
+    retail: false
+    mock: { p: 215.0, lo: 195.0, hi: 240.0, chg: 0.005, arr: 120, arrR: 1.0, rt: null }
+  - id: sugarcane
+    name: { zh-TW: 甘蔗, en: Sugarcane }
+    category: other
+    variety: { zh-TW: 紅甘蔗, en: Red }
+    retail: true
+    mock: { p: 21.5, lo: 15.0, hi: 28.0, chg: -0.009, arr: 520, arrR: 1.05, rt: 2.0 }
+  - id: mushroom
+    name: { zh-TW: 香菇, en: Shiitake }
+    category: other
+    variety: { zh-TW: 太空包, en: Bag-grown }
+    retail: true
+    mock: { p: 168.0, lo: 130.0, hi: 205.0, chg: 0.027, arr: 140, arrR: 0.97, rt: 1.6 }
+
 # Source name → our id. The mock provider speaks the MOA FarmTransData format
 # (作物名稱 "甘藍-初秋", 市場名稱, 民國日期) for wholesale and a 物價查報-like format (縣市)
 # for retail. Empty variety = any.
@@ -215,6 +282,17 @@ source_maps:
       - { source_name: 鳳梨, crop: pineapple }
       - { source_name: 花椰菜, crop: cauliflower }
       - { source_name: 空心菜, crop: waterspinach }
+      - { source_name: 玉米, crop: maize }
+      - { source_name: 稻米, crop: rice }
+      - { source_name: 番石榴, crop: guava }
+      - { source_name: 毛豆, crop: soybean }
+      - { source_name: 紅豆, crop: adzuki }
+      - { source_name: 蒜頭, crop: garlic }
+      - { source_name: 辣椒, crop: chilli }
+      - { source_name: 落花生, crop: peanut }
+      - { source_name: 芝麻, crop: sesame }
+      - { source_name: 甘蔗, crop: sugarcane }
+      - { source_name: 香菇, crop: mushroom }
     markets:
       - { source_market: 台北一, market: tp1 }
       - { source_market: 台北二, market: tp2 }

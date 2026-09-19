@@ -49,7 +49,7 @@ describe('query hooks', () => {
     const r = result.current
     expect(r.countries.data?.countries.map((c) => c.code)).toEqual(['IN', 'TW'])
     expect(r.areas.data?.areas).toHaveLength(11)
-    expect(r.crops.data?.crops).toHaveLength(10)
+    expect(r.crops.data?.crops).toHaveLength(21)
     expect(r.prices.data?.items.map((i) => i.crop_id)).toEqual(['onion'])
     expect(r.quote.data?.series).toHaveLength(30)
     expect(r.compare.data?.rows).toHaveLength(11)
