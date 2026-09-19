@@ -92,3 +92,4 @@ T01–T39 全部完成並合併進本地 `main`（沒有 push）。**Phase 2 由
 - 2026-09-20 追加：CD（加分項 B1，使用者要求提前做）：`scripts/deploy.sh`（fetch → build → 健康檢查，失敗自動回到上一個成功的 commit）與 `deploy.yml`（dw650/harrykuo1 的 main CI 通過後 SSH 部署；金鑰限定只能執行 deploy.sh）；VM 端已準備好，等 GitHub 上的 deploy key 與 secret 設好後驗證（5501221）
 - 2026-09-20 追加：CD 伺服器端驗證：VM 用 deploy key 拉 dw650/harrykuo1，手動部署 18a3e2c 成功（外部可連 :3001、demo 已關）；CI 金鑰送 ref 可以部署，夾帶指令與要 shell 都被拒絕。自動部署等 main push 到 dw650 後驗證
 - 2026-09-20 追加：依賴檢查遇到外部服務中斷（npm audit 503）時重試後只警告、不擋部署；找到漏洞或其他錯誤仍然失敗（feaaa45）
+- 2026-09-20 追加：CD 改成伺服器自己拉（GitHub 的機器連不到 VM 的 22 port）：Deploy workflow 移動 `deploy` 分支，VM 的 systemd 計時器每分鐘檢查並部署；CI 金鑰已從 VM 移除（8a432e3）
