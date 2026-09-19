@@ -1,6 +1,7 @@
 """Catalog responses: countries, areas and crops."""
 
 from datetime import date
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -25,6 +26,15 @@ class UnitsOut(BaseModel):
     retail: UnitSetOut
 
 
+class CategoryOut(BaseModel):
+    """A tile of the home grid (docs/02 §5.2): crops carry its `id` as their `category`."""
+
+    id: str
+    name: I18nText
+    icon: str  # a crop illustration id
+    tone: Literal["green", "orange", "amber", "red", "olive", "yellow", "slate", "blue", "purple"]
+
+
 class CountryOut(BaseModel):
     code: str
     name: I18nText
@@ -44,6 +54,7 @@ class CountryOut(BaseModel):
     units: UnitsOut
     # The price type a new user of this country starts on (docs/02 §4).
     default_price_type: PriceType
+    categories: list[CategoryOut]
 
 
 class CountriesOut(BaseModel):

@@ -129,7 +129,7 @@ async def test_taiwan_rows_use_moa_fields_and_roc_dates(provider: MockProvider) 
     rows = [r for r in await provider.fetch(TODAY) if r.get("市場名稱") == "台北一"]
     cabbage = next(r for r in rows if r["作物名稱"] == "甘藍-初秋")
     assert cabbage["交易日期"] == "115.09.19"
-    assert 38.5 * 0.97 <= cabbage["平均價"] <= 38.5 * 1.03  # NT$ per kg
+    assert 32.6 * 0.97 <= cabbage["平均價"] <= 32.6 * 1.03  # NT$ per kg
     assert cabbage["下價"] <= cabbage["平均價"] <= cabbage["上價"]
     assert cabbage["交易量"] > 0
 

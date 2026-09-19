@@ -65,6 +65,15 @@ COUNTRY_EXAMPLE = {
             ],
         },
     },
+    "categories": [
+        {
+            "id": "cereal",
+            "name": {"zh-TW": "穀物", "en": "Cereals"},
+            "icon": "wheat",
+            "tone": "amber",
+        },
+        {"id": "veg", "name": {"zh-TW": "蔬菜", "en": "Veg"}, "icon": "cabbage", "tone": "green"},
+    ],
 }
 AREAS_EXAMPLE = {
     "country": "IN",
@@ -117,7 +126,8 @@ def _example(value: object) -> dict[int | str, dict[str, object]]:
     description=(
         "Currency, locale, local today, closed weekdays (ISO, 7 = Sunday), rise colour"
         " (`up_is_pos`: rising prices shown green), default area, recent areas and watchlist,"
-        " and the unit table (per-kg factor and decimals) for wholesale and retail."
+        " the unit table (per-kg factor and decimals) for wholesale and retail, and the"
+        " crop categories of the home grid in order (at most 8; crops carry their `id`)."
     ),
     response_model=CountriesOut,
     responses=_example({"countries": [COUNTRY_EXAMPLE]}),

@@ -1,17 +1,21 @@
-# Taiwan seed data (docs/06 §7.2–§7.3). Values follow docs/ui-mockup/src/data.js.
+# Taiwan seed data (docs/06 §7.2–§7.3). Areas, markets and crops follow the real MOA
+# FarmTransData (2026-07-23 to 09-20): every county or city with a fruit and vegetable
+# wholesale market, every such market, and the crops traded on most days in most areas.
 # The worker syncs everything except the `mock` blocks into the database; the mock provider
 # reads `mock` directly. Mock prices are in the source's unit: NT$ per kg.
 #   k:   price level factor (area or market)
 #   lag: days behind today for the latest data (0 = today, null = no data at all)
-#   p / lo / hi: today's base price and range; chg: change vs previous trading day
-#   arr: today's volume (kg); arrR: today ÷ average of the previous 7 trading days
+#   p / lo / hi: today's base price and range, the medians of 平均價 / 下價 / 上價 over the
+#        60 days (every market); chg: change vs previous trading day
+#   arr: today's volume (kg, the median 交易量 of a market and day);
+#        arrR: today ÷ average of the previous 7 trading days
 #   rt: retail factor (null = no retail data for this crop)
 
 country:
   code: TW
   sort: 2
   name: { zh-TW: 台灣, en: Taiwan }
-  coverage: { zh-TW: 10 個縣市, en: 10 cities/counties }
+  coverage: { zh-TW: 13 個縣市, en: 13 cities/counties }
   currency: TWD
   locale: zh-TW
   utc_offset_min: 480
@@ -33,7 +37,17 @@ country:
       options:
         - { id: kg, per_kg: 1, decimals: 1, label: { zh-TW: 元/公斤, en: NT$/kg } }
         - { id: catty, per_kg: 0.6, decimals: 1, label: { zh-TW: 元/台斤, en: NT$/catty } }
+  # Fruit and vegetable market groups for the home grid (crops use the ids).
+  categories:
+    - { id: leafy, name: { zh-TW: 葉菜類, en: Leafy }, icon: cabbage, tone: green }
+    - { id: root, name: { zh-TW: 根莖類, en: Roots }, icon: sweetpotato, tone: amber }
+    - { id: gourd, name: { zh-TW: 瓜類, en: Gourds }, icon: loofah, tone: olive }
+    - { id: fruitveg, name: { zh-TW: 花果菜類, en: Fruit veg }, icon: eggplant, tone: yellow }
+    - { id: spice, name: { zh-TW: 辛香料, en: Spices }, icon: chilli, tone: red }
+    - { id: fruit, name: { zh-TW: 水果, en: Fruit }, icon: pineapple, tone: orange }
 
+# Area centres are the county seats. Market coordinates are approximate, from the markets'
+# public addresses on OpenStreetMap (2026-09-20); the distance shown is computed from them.
 areas:
   - id: taipei
     name: { zh-TW: 台北市, en: Taipei }
@@ -43,8 +57,8 @@ areas:
     retail: true
     mock: { k: 1.0, lag: 0 }
     markets:
-      - { id: tp1, name: { zh-TW: 台北一, en: Taipei 1 }, km: 4, mock: { k: 1.0 } }
-      - { id: tp2, name: { zh-TW: 台北二, en: Taipei 2 }, km: 3, mock: { k: 1.02 } }
+      - { id: tp1, name: { zh-TW: 台北一, en: Taipei 1 }, lat: 25.0178, lon: 121.4982, mock: { k: 1.0 } }
+      - { id: tp2, name: { zh-TW: 台北二, en: Taipei 2 }, lat: 25.0681, lon: 121.5367, mock: { k: 1.02 } }
   - id: newtaipei
     name: { zh-TW: 新北市, en: New Taipei }
     region: { zh-TW: 北部, en: North }
@@ -53,8 +67,8 @@ areas:
     retail: true
     mock: { k: 0.98, lag: 0 }
     markets:
-      - { id: sanchong, name: { zh-TW: 三重, en: Sanchong }, km: 6, mock: { k: 0.97 } }
-      - { id: banqiao, name: { zh-TW: 板橋, en: Banqiao }, km: 2, mock: { k: 1.0 } }
+      - { id: sanchong, name: { zh-TW: 三重, en: Sanchong }, lat: 25.0654, lon: 121.4854, mock: { k: 0.97 } }
+      - { id: banqiao, name: { zh-TW: 板橋, en: Banqiao }, lat: 25.0196, lon: 121.4488, mock: { k: 1.0 } }
   - id: taoyuan
     name: { zh-TW: 桃園市, en: Taoyuan }
     region: { zh-TW: 北部, en: North }
@@ -63,7 +77,7 @@ areas:
     retail: true
     mock: { k: 0.95, lag: 0 }
     markets:
-      - { id: taoyuanm, name: { zh-TW: 桃園, en: Taoyuan }, km: 3, mock: { k: 1.0 } }
+      - { id: taoyuanm, name: { zh-TW: 桃園, en: Taoyuan }, lat: 25.0002, lon: 121.307, mock: { k: 1.0 } }
   - id: taichung
     name: { zh-TW: 台中市, en: Taichung }
     region: { zh-TW: 中部, en: Central }
@@ -72,8 +86,28 @@ areas:
     retail: true
     mock: { k: 0.92, lag: 0 }
     markets:
-      - { id: taichungm, name: { zh-TW: 台中, en: Taichung }, km: 5, mock: { k: 1.0 } }
-      - { id: fengyuan, name: { zh-TW: 豐原, en: Fengyuan }, km: 14, mock: { k: 1.01, lag: null } }
+      - { id: taichungm, name: { zh-TW: 台中, en: Taichung }, lat: 24.1994, lon: 120.6585, mock: { k: 1.0 } }
+      - { id: fengyuan, name: { zh-TW: 豐原, en: Fengyuan }, lat: 24.253, lon: 120.7058, mock: { k: 1.01, lag: null } }
+      - { id: dongshi, name: { zh-TW: 東勢, en: Dongshi }, lat: 24.2508, lon: 120.8278, mock: { k: 0.97 } }
+  - id: changhua
+    name: { zh-TW: 彰化縣, en: Changhua }
+    region: { zh-TW: 中部, en: Central }
+    lat: 24.08
+    lon: 120.54
+    retail: true
+    mock: { k: 0.88, lag: 0 }
+    markets:
+      - { id: xihu, name: { zh-TW: 溪湖, en: Xihu }, lat: 23.9576, lon: 120.4859, mock: { k: 1.0 } }
+      - { id: yongjing, name: { zh-TW: 永靖, en: Yongjing }, lat: 23.9238, lon: 120.5496, mock: { k: 0.97 } }
+  - id: nantou
+    name: { zh-TW: 南投縣, en: Nantou }
+    region: { zh-TW: 中部, en: Central }
+    lat: 23.91
+    lon: 120.68
+    retail: true
+    mock: { k: 0.9, lag: 0 }
+    markets:
+      - { id: nantoum, name: { zh-TW: 南投, en: Nantou }, lat: 23.9121, lon: 120.6912, mock: { k: 1.0 } }
   - id: yunlin
     name: { zh-TW: 雲林縣, en: Yunlin }
     region: { zh-TW: 中部, en: Central }
@@ -82,7 +116,7 @@ areas:
     retail: false
     mock: { k: 0.86, lag: 0 }
     markets:
-      - { id: xiluo, name: { zh-TW: 西螺, en: Xiluo }, km: 12, mock: { k: 1.0 } }
+      - { id: xiluo, name: { zh-TW: 西螺, en: Xiluo }, lat: 23.7833, lon: 120.4492, mock: { k: 1.0 } }
   - id: chiayi
     name: { zh-TW: 嘉義市, en: Chiayi }
     region: { zh-TW: 南部, en: South }
@@ -91,7 +125,7 @@ areas:
     retail: true
     mock: { k: 0.9, lag: 1 }
     markets:
-      - { id: chiayim, name: { zh-TW: 嘉義, en: Chiayi }, km: 2, mock: { k: 1.0 } }
+      - { id: chiayim, name: { zh-TW: 嘉義, en: Chiayi }, lat: 23.4908, lon: 120.3969, mock: { k: 1.0 } }
   - id: kaohsiung
     name: { zh-TW: 高雄市, en: Kaohsiung }
     region: { zh-TW: 南部, en: South }
@@ -100,8 +134,8 @@ areas:
     retail: true
     mock: { k: 0.94, lag: 0 }
     markets:
-      - { id: kaohsiungm, name: { zh-TW: 高雄, en: Kaohsiung }, km: 4, mock: { k: 1.0 } }
-      - { id: fengshan, name: { zh-TW: 鳳山, en: Fengshan }, km: 9, mock: { k: 0.98 } }
+      - { id: kaohsiungm, name: { zh-TW: 高雄, en: Kaohsiung }, lat: 22.64, lon: 120.314, mock: { k: 1.0 } }
+      - { id: fengshan, name: { zh-TW: 鳳山, en: Fengshan }, lat: 22.6135, lon: 120.353, mock: { k: 0.98 } }
   - id: pingtung
     name: { zh-TW: 屏東縣, en: Pingtung }
     region: { zh-TW: 南部, en: South }
@@ -110,7 +144,7 @@ areas:
     retail: false
     mock: { k: 0.9, lag: 0 }
     markets:
-      - { id: pingtungm, name: { zh-TW: 屏東, en: Pingtung }, km: 3, mock: { k: 1.0 } }
+      - { id: pingtungm, name: { zh-TW: 屏東, en: Pingtung }, lat: 22.6513, lon: 120.48, mock: { k: 1.0 } }
   - id: yilan
     name: { zh-TW: 宜蘭縣, en: Yilan }
     region: { zh-TW: 東部, en: East }
@@ -119,7 +153,7 @@ areas:
     retail: true
     mock: { k: 1.03, lag: 3 }
     markets:
-      - { id: yilanm, name: { zh-TW: 宜蘭, en: Yilan }, km: 3, mock: { k: 1.0 } }
+      - { id: yilanm, name: { zh-TW: 宜蘭, en: Yilan }, lat: 24.7374, lon: 121.776, mock: { k: 1.0 } }
   - id: hualien
     name: { zh-TW: 花蓮縣, en: Hualien }
     region: { zh-TW: 東部, en: East }
@@ -128,143 +162,201 @@ areas:
     retail: true
     mock: { k: 1.05, lag: null }
     markets:
-      - { id: hualienm, name: { zh-TW: 花蓮, en: Hualien }, km: 2, mock: { k: 1.0, lag: null } }
+      - { id: hualienm, name: { zh-TW: 花蓮, en: Hualien }, lat: 23.9842, lon: 121.5859, mock: { k: 1.0, lag: null } }
+  - id: taitung
+    name: { zh-TW: 台東縣, en: Taitung }
+    region: { zh-TW: 東部, en: East }
+    lat: 22.76
+    lon: 121.14
+    retail: true
+    mock: { k: 1.04, lag: 0 }
+    markets:
+      - { id: taitungm, name: { zh-TW: 台東, en: Taitung }, lat: 22.7712, lon: 121.1391, mock: { k: 1.0 } }
 
-# Categories: cereal, veg, fruit, pulse, spice, oil, other. `watch` = default watchlist.
+# The crops with a price on most trading days in most areas (docs/06 §7.3). The first ones keep
+# their old order, so the default watchlist (`watch`) is unchanged. `category` is one of
+# `country.categories`.
 crops:
   - id: cabbage
     name: { zh-TW: 甘藍, en: Cabbage }
-    category: veg
+    category: leafy
     variety: { zh-TW: 初秋, en: Early autumn }
     watch: true
     retail: true
-    mock: { p: 38.5, lo: 24.0, hi: 52.0, chg: 0.42, arr: 10862, arrR: 0.62, rt: 1.7 }
+    mock: { p: 32.6, lo: 22.0, hi: 46.3, chg: 0.42, arr: 8370, arrR: 0.62, rt: 1.7 }
   - id: bokchoy
     name: { zh-TW: 小白菜, en: Bok choy }
-    category: veg
+    category: leafy
     variety: { zh-TW: 土白菜, en: Local }
     watch: true
     retail: true
-    mock: { p: 45.2, lo: 30.1, hi: 60.0, chg: 0.61, arr: 4210, arrR: 0.55, rt: 1.6 }
+    mock: { p: 25.0, lo: 16.0, hi: 39.3, chg: 0.61, arr: 800, arrR: 0.55, rt: 1.6 }
   - id: banana
     name: { zh-TW: 香蕉, en: Banana }
     category: fruit
     variety: { zh-TW: 北蕉, en: Pei-chiao }
     watch: true
     retail: true
-    mock: { p: 27.0, lo: 18.5, hi: 35.0, chg: -0.031, arr: 8830, arrR: 1.04, rt: 1.8 }
+    mock: { p: 30.4, lo: 20.0, hi: 42.8, chg: -0.031, arr: 4913, arrR: 1.04, rt: 1.8 }
   - id: sweetpotato
     name: { zh-TW: 甘藷, en: Sweet potato }
-    category: veg
+    category: root
     variety: { zh-TW: 台農57號, en: TN57 }
     watch: true
     retail: true
-    mock: { p: 22.4, lo: 15.0, hi: 28.0, chg: 0, arr: 5120, arrR: 0.98, rt: 1.7, lag: 1 }
+    mock: { p: 19.0, lo: 12.0, hi: 25.1, chg: 0, arr: 2105, arrR: 0.98, rt: 1.7, lag: 1 }
   - id: scallion
     name: { zh-TW: 青蔥, en: Scallion }
     category: spice
     variety: { zh-TW: 粉蔥, en: Local }
     watch: true
     retail: true
-    mock: { p: 85.0, lo: 60.0, hi: 110.0, chg: 0.12, arr: 1960, arrR: 0.8, rt: 1.5 }
+    mock: { p: 59.9, lo: 35.1, hi: 80.0, chg: 0.12, arr: 2388, arrR: 0.8, rt: 1.5 }
   - id: tomato
     name: { zh-TW: 番茄, en: Tomato }
-    category: veg
+    category: fruitveg
     variety: { zh-TW: 牛番茄, en: Beef }
     retail: true
-    mock: { p: 42.0, lo: 28.0, hi: 55.0, chg: 0.05, arr: 3300, arrR: 0.93, rt: 1.6 }
-  - id: mango
-    name: { zh-TW: 芒果, en: Mango }
-    category: fruit
-    variety: { zh-TW: 愛文, en: Irwin }
-    retail: true
-    mock: { p: 55.0, lo: 35.0, hi: 80.0, chg: -0.08, arr: 1250, arrR: 0.7, rt: 1.5 }
+    mock: { p: 62.7, lo: 33.8, hi: 93.4, chg: 0.05, arr: 4298, arrR: 0.93, rt: 1.6 }
   - id: pineapple
     name: { zh-TW: 鳳梨, en: Pineapple }
     category: fruit
     variety: { zh-TW: 金鑽, en: Tainung 17 }
     retail: true
-    mock: { p: 25.0, lo: 17.0, hi: 31.0, chg: 0.02, arr: 2700, arrR: 1.0, rt: 1.7 }
+    mock: { p: 33.3, lo: 20.0, hi: 48.3, chg: 0.02, arr: 3876, arrR: 1.0, rt: 1.7 }
   - id: cauliflower
     name: { zh-TW: 花椰菜, en: Cauliflower }
-    category: veg
+    category: fruitveg
     variety: { zh-TW: 青梗, en: Green stem }
     watch: true
     retail: false
-    mock: { p: 50.0, lo: 32.0, hi: 66.0, chg: 0.2, arr: 1830, arrR: 0.74, rt: null }
+    mock: { p: 49.3, lo: 27.0, hi: 76.0, chg: 0.2, arr: 668, arrR: 0.74, rt: null }
   - id: waterspinach
     name: { zh-TW: 空心菜, en: Water spinach }
-    category: veg
+    category: leafy
     variety: { zh-TW: 小葉, en: Small leaf }
     retail: false
-    mock: { p: 40.0, lo: 26.0, hi: 52.0, chg: 0.35, arr: 2400, arrR: 0.66, rt: null, lag: 3 }
-
+    mock: { p: 25.6, lo: 15.9, hi: 40.0, chg: 0.35, arr: 2030, arrR: 0.66, rt: null, lag: 3 }
   - id: maize
     name: { zh-TW: 玉米, en: Corn }
-    category: cereal
+    category: fruitveg
     variety: { zh-TW: 甜玉米, en: Sweet }
     retail: true
-    mock: { p: 26.5, lo: 18.0, hi: 34.0, chg: 0.036, arr: 1650, arrR: 1.05, rt: 1.8 }
-  - id: rice
-    name: { zh-TW: 稻米, en: Rice }
-    category: cereal
-    variety: { zh-TW: 蓬萊米, en: Japonica }
-    retail: true
-    mock: { p: 32.0, lo: 29.5, hi: 35.0, chg: 0.003, arr: 800, arrR: 1.0, rt: 1.8 }
+    mock: { p: 28.5, lo: 12.2, hi: 45.0, chg: 0.036, arr: 1630, arrR: 1.05, rt: 1.8 }
   - id: guava
     name: { zh-TW: 芭樂, en: Guava }
     category: fruit
     variety: { zh-TW: 珍珠拔, en: Pearl }
     retail: true
-    mock: { p: 30.5, lo: 19.0, hi: 42.0, chg: -0.052, arr: 2100, arrR: 0.9, rt: 1.8 }
-  - id: soybean
-    name: { zh-TW: 毛豆, en: Edamame }
-    category: pulse
-    variety: { zh-TW: 鮮莢, en: Fresh pods }
-    retail: true
-    mock: { p: 47.0, lo: 36.0, hi: 58.0, chg: 0.021, arr: 380, arrR: 1.1, rt: 1.7 }
-  - id: adzuki
-    name: { zh-TW: 紅豆, en: Adzuki bean }
-    category: pulse
-    variety: { zh-TW: 本地種, en: Local }
-    retail: true
-    mock: { p: 96.0, lo: 88.0, hi: 105.0, chg: 0, arr: 60, arrR: 1.0, rt: 1.6 }
+    mock: { p: 54.0, lo: 30.0, hi: 71.9, chg: -0.052, arr: 2925, arrR: 0.9, rt: 1.8 }
   - id: garlic
     name: { zh-TW: 蒜頭, en: Garlic }
     category: spice
     variety: { zh-TW: 乾蒜, en: Dried }
     retail: true
-    mock: { p: 118.0, lo: 85.0, hi: 150.0, chg: 0.018, arr: 450, arrR: 0.95, rt: 1.6 }
+    mock: { p: 70.3, lo: 50.0, hi: 92.0, chg: 0.018, arr: 180, arrR: 0.95, rt: 1.6 }
   - id: chilli
     name: { zh-TW: 辣椒, en: Chilli }
     category: spice
-    variety: { zh-TW: 朝天椒, en: Bird's eye }
+    variety: { zh-TW: 紅小, en: Small red }
     retail: true
-    mock: { p: 125.0, lo: 75.0, hi: 180.0, chg: 0.12, arr: 210, arrR: 0.8, rt: 1.7 }
-  - id: peanut
-    name: { zh-TW: 落花生, en: Peanut }
-    category: oil
-    variety: { zh-TW: 帶殼, en: In shell }
-    retail: false
-    mock: { p: 64.0, lo: 52.0, hi: 76.0, chg: -0.011, arr: 180, arrR: 1.0, rt: null }
-  - id: sesame
-    name: { zh-TW: 芝麻, en: Sesame }
-    category: oil
-    variety: { zh-TW: 黑芝麻, en: Black }
-    retail: false
-    mock: { p: 215.0, lo: 195.0, hi: 240.0, chg: 0.005, arr: 120, arrR: 1.0, rt: null }
-  - id: sugarcane
-    name: { zh-TW: 甘蔗, en: Sugarcane }
-    category: other
-    variety: { zh-TW: 紅甘蔗, en: Red }
+    mock: { p: 85.6, lo: 50.0, hi: 116.8, chg: 0.12, arr: 140, arrR: 0.8, rt: 1.7 }
+  - id: napacabbage
+    name: { zh-TW: 包心白菜, en: Napa cabbage }
+    category: leafy
+    variety: { zh-TW: 包白, en: Local }
     retail: true
-    mock: { p: 21.5, lo: 15.0, hi: 28.0, chg: -0.009, arr: 520, arrR: 1.05, rt: 2.0 }
-  - id: mushroom
-    name: { zh-TW: 香菇, en: Shiitake }
-    category: other
-    variety: { zh-TW: 太空包, en: Bag-grown }
+    mock: { p: 20.0, lo: 12.6, hi: 26.3, chg: 0.08, arr: 3891, arrR: 0.9, rt: 1.7 }
+  - id: carrot
+    name: { zh-TW: 胡蘿蔔, en: Carrot }
+    category: root
+    variety: { zh-TW: 清洗, en: Washed }
     retail: true
-    mock: { p: 168.0, lo: 130.0, hi: 205.0, chg: 0.027, arr: 140, arrR: 0.97, rt: 1.6 }
+    mock: { p: 19.4, lo: 12.1, hi: 25.1, chg: -0.02, arr: 5340, arrR: 1.05, rt: 1.8 }
+  - id: taro
+    name: { zh-TW: 芋頭, en: Taro }
+    category: root
+    variety: { zh-TW: 檳榔心芋, en: Betelnut }
+    retail: true
+    mock: { p: 24.7, lo: 14.0, hi: 37.8, chg: 0.03, arr: 1850, arrR: 0.97, rt: 1.8 }
+  - id: potato
+    name: { zh-TW: 馬鈴薯, en: Potato }
+    category: root
+    variety: { zh-TW: 本產, en: Local }
+    retail: true
+    mock: { p: 21.9, lo: 14.5, hi: 28.8, chg: 0.01, arr: 2780, arrR: 1.02, rt: 1.7 }
+  - id: onion
+    name: { zh-TW: 洋蔥, en: Onion }
+    category: root
+    variety: { zh-TW: 本產, en: Local }
+    retail: true
+    mock: { p: 23.4, lo: 18.0, hi: 27.5, chg: -0.015, arr: 2820, arrR: 1.1, rt: 1.6 }
+  - id: loofah
+    name: { zh-TW: 絲瓜, en: Loofah }
+    category: gourd
+    variety: { zh-TW: 一般, en: Common }
+    retail: true
+    mock: { p: 32.9, lo: 18.2, hi: 49.1, chg: 0.12, arr: 3500, arrR: 0.85, rt: 1.7 }
+  - id: cucumber
+    name: { zh-TW: 小黃瓜, en: Cucumber }
+    category: gourd
+    variety: { zh-TW: 花胡瓜, en: Common }
+    retail: true
+    mock: { p: 41.0, lo: 22.3, hi: 64.0, chg: 0.1, arr: 3650, arrR: 0.88, rt: 1.6 }
+  - id: bittergourd
+    name: { zh-TW: 苦瓜, en: Bitter gourd }
+    category: gourd
+    variety: { zh-TW: 白大米, en: White }
+    retail: true
+    mock: { p: 52.0, lo: 26.8, hi: 83.0, chg: 0.06, arr: 1957, arrR: 0.93, rt: 1.6 }
+  - id: eggplant
+    name: { zh-TW: 茄子, en: Eggplant }
+    category: fruitveg
+    variety: { zh-TW: 麻荸茄, en: Long purple }
+    retail: true
+    mock: { p: 31.7, lo: 18.6, hi: 49.0, chg: 0.09, arr: 1992, arrR: 0.9, rt: 1.7 }
+  - id: greenpepper
+    name: { zh-TW: 甜椒, en: Bell pepper }
+    category: fruitveg
+    variety: { zh-TW: 青椒, en: Green }
+    retail: true
+    mock: { p: 37.7, lo: 20.0, hi: 56.0, chg: 0.05, arr: 2051, arrR: 0.95, rt: 1.7 }
+  - id: longbean
+    name: { zh-TW: 菜豆, en: Long bean }
+    category: fruitveg
+    variety: { zh-TW: 青色, en: Green }
+    retail: true
+    mock: { p: 56.3, lo: 35.0, hi: 80.0, chg: 0.04, arr: 591, arrR: 1.0, rt: 1.6 }
+  - id: frenchbean
+    name: { zh-TW: 敏豆, en: French bean }
+    category: fruitveg
+    variety: { zh-TW: 白豆, en: White }
+    retail: true
+    mock: { p: 121.9, lo: 55.5, hi: 195.2, chg: -0.03, arr: 840, arrR: 1.08, rt: 1.5 }
+  - id: ginger
+    name: { zh-TW: 薑, en: Ginger }
+    category: spice
+    variety: { zh-TW: 老薑, en: Mature }
+    retail: true
+    mock: { p: 114.5, lo: 87.3, hi: 152.5, chg: 0, arr: 382, arrR: 1.0, rt: 1.5 }
+  - id: dragonfruit
+    name: { zh-TW: 紅龍果, en: Dragon fruit }
+    category: fruit
+    variety: { zh-TW: 紅肉, en: Red flesh }
+    retail: true
+    mock: { p: 39.2, lo: 21.1, hi: 61.0, chg: -0.04, arr: 4773, arrR: 1.06, rt: 1.7 }
+  - id: passionfruit
+    name: { zh-TW: 百香果, en: Passion fruit }
+    category: fruit
+    variety: { zh-TW: 改良種, en: Improved }
+    retail: true
+    mock: { p: 70.8, lo: 46.1, hi: 109.0, chg: 0.02, arr: 2160, arrR: 0.98, rt: 1.6 }
+  - id: papaya
+    name: { zh-TW: 木瓜, en: Papaya }
+    category: fruit
+    variety: { zh-TW: 網室紅肉, en: Net-house red }
+    retail: true
+    mock: { p: 32.7, lo: 22.0, hi: 46.6, chg: -0.01, arr: 6000, arrR: 1.03, rt: 1.8 }
 
 # Source name → our id. The mock provider speaks the MOA FarmTransData format
 # (作物名稱 "甘藍-初秋", 市場名稱, 民國日期) for wholesale and a 物價查報-like format (縣市)
@@ -278,22 +370,30 @@ source_maps:
       - { source_name: 甘藷, crop: sweetpotato }
       - { source_name: 青蔥, crop: scallion }
       - { source_name: 番茄, crop: tomato }
-      - { source_name: 芒果, crop: mango }
       - { source_name: 鳳梨, crop: pineapple }
       - { source_name: 花椰菜, crop: cauliflower }
       - { source_name: 空心菜, crop: waterspinach }
       - { source_name: 玉米, crop: maize }
-      - { source_name: 稻米, crop: rice }
       - { source_name: 番石榴, crop: guava }
-      - { source_name: 毛豆, crop: soybean }
-      - { source_name: 紅豆, crop: adzuki }
       - { source_name: 蒜頭, crop: garlic }
       - { source_name: 辣椒, crop: chilli }
-      - { source_name: 落花生, crop: peanut }
-      - { source_name: 芝麻, crop: sesame }
-      - { source_name: 甘蔗, crop: sugarcane }
-      - { source_name: 香菇, crop: mushroom }
-    markets:
+      - { source_name: 包心白, crop: napacabbage }
+      - { source_name: 胡蘿蔔, crop: carrot }
+      - { source_name: 芋, crop: taro }
+      - { source_name: 馬鈴薯, crop: potato }
+      - { source_name: 洋蔥, crop: onion }
+      - { source_name: 絲瓜, crop: loofah }
+      - { source_name: 花胡瓜, crop: cucumber }
+      - { source_name: 苦瓜, crop: bittergourd }
+      - { source_name: 茄子, crop: eggplant }
+      - { source_name: 甜椒, crop: greenpepper }
+      - { source_name: 菜豆, crop: longbean }
+      - { source_name: 敏豆, crop: frenchbean }
+      - { source_name: 薑, crop: ginger }
+      - { source_name: 紅龍果, crop: dragonfruit }
+      - { source_name: 百香果, crop: passionfruit }
+      - { source_name: 木瓜, crop: papaya }
+    markets: &tw_markets
       - { source_market: 台北一, market: tp1 }
       - { source_market: 台北二, market: tp2 }
       - { source_market: 三重區, market: sanchong }
@@ -301,6 +401,10 @@ source_maps:
       - { source_market: 桃農, market: taoyuanm }
       - { source_market: 台中市, market: taichungm }
       - { source_market: 豐原區, market: fengyuan }
+      - { source_market: 東勢鎮, market: dongshi }
+      - { source_market: 溪湖鎮, market: xihu }
+      - { source_market: 永靖鄉, market: yongjing }
+      - { source_market: 南投市, market: nantoum }
       - { source_market: 西螺鎮, market: xiluo }
       - { source_market: 嘉義市, market: chiayim }
       - { source_market: 高雄市, market: kaohsiungm }
@@ -308,22 +412,27 @@ source_maps:
       - { source_market: 屏東市, market: pingtungm }
       - { source_market: 宜蘭市, market: yilanm }
       - { source_market: 花蓮市, market: hualienm }
+      - { source_market: 台東市, market: taitungm }
     areas:
       - { source_area: 台北市, area: taipei }
       - { source_area: 新北市, area: newtaipei }
       - { source_area: 桃園市, area: taoyuan }
       - { source_area: 台中市, area: taichung }
+      - { source_area: 彰化縣, area: changhua }
+      - { source_area: 南投縣, area: nantou }
       - { source_area: 雲林縣, area: yunlin }
       - { source_area: 嘉義市, area: chiayi }
       - { source_area: 高雄市, area: kaohsiung }
       - { source_area: 屏東縣, area: pingtung }
       - { source_area: 宜蘭縣, area: yilan }
       - { source_area: 花蓮縣, area: hualien }
-  # Real MOA FarmTransData names (bonus B2), taken from the API on 2026-09-20. Matching is
-  # exact: every (name, variety) pair is listed, and an empty variety only matches a product
-  # without one ("香蕉" is the common Pei-chiao banana). Other varieties and imported (進口)
-  # lots are left out on purpose, so the price is the variety in `crops[].variety`. 稻米, 紅豆
-  # and 芝麻 are not traded in the fruit and vegetable markets: those crops have no data.
+      - { source_area: 台東縣, area: taitung }
+  # Real MOA FarmTransData names (bonus B2), checked against 60 days of the API on 2026-09-20.
+  # Matching is exact: every (name, variety) pair is listed, and an empty variety only matches
+  # a product without one ("香蕉" is the common Pei-chiao banana). Other varieties and imported
+  # (進口) lots are left out on purpose, so the price is the variety in `crops[].variety`.
+  # The markets are all 19 fruit and vegetable markets of the data; the flower markets
+  # (台北市場, 台南市場, …) only send closure notices here.
   tw_moa:
     crops:
       - { source_name: 甘藍, source_variety: 初秋, crop: cabbage }
@@ -332,30 +441,27 @@ source_maps:
       - { source_name: 甘薯, source_variety: 臺農57號, crop: sweetpotato }
       - { source_name: 青蔥, source_variety: 粉蔥, crop: scallion }
       - { source_name: 番茄, source_variety: 牛番茄, crop: tomato }
-      - { source_name: 芒果, source_variety: 愛文, crop: mango }
       - { source_name: 鳳梨, source_variety: 金鑽鳳梨, crop: pineapple }
       - { source_name: 花椰菜, source_variety: 青梗, crop: cauliflower }
       - { source_name: 蕹菜, source_variety: 小葉, crop: waterspinach }
       - { source_name: 玉米, source_variety: 甜軟殼, crop: maize }
       - { source_name: 番石榴, source_variety: 珍珠芭, crop: guava }
-      - { source_name: 毛豆, source_variety: 豆莢, crop: soybean }
       - { source_name: 大蒜, source_variety: 蒜頭, crop: garlic }
-      - { source_name: 辣椒, source_variety: 朝天椒, crop: chilli }
-      - { source_name: 落花生, source_variety: 生, crop: peanut }
-      - { source_name: 甘蔗, source_variety: 帶皮, crop: sugarcane }
-      - { source_name: 濕香菇, crop: mushroom }
-    markets:
-      - { source_market: 台北一, market: tp1 }
-      - { source_market: 台北二, market: tp2 }
-      - { source_market: 三重區, market: sanchong }
-      - { source_market: 板橋區, market: banqiao }
-      - { source_market: 桃農, market: taoyuanm }
-      - { source_market: 台中市, market: taichungm }
-      - { source_market: 豐原區, market: fengyuan }
-      - { source_market: 西螺鎮, market: xiluo }
-      - { source_market: 嘉義市, market: chiayim }
-      - { source_market: 高雄市, market: kaohsiungm }
-      - { source_market: 鳳山區, market: fengshan }
-      - { source_market: 屏東市, market: pingtungm }
-      - { source_market: 宜蘭市, market: yilanm }
-      - { source_market: 花蓮市, market: hualienm }
+      - { source_name: 辣椒, source_variety: 紅小, crop: chilli }
+      - { source_name: 包心白, source_variety: 包白, crop: napacabbage }
+      - { source_name: 胡蘿蔔, source_variety: 清洗, crop: carrot }
+      - { source_name: 芋, source_variety: 檳榔心芋, crop: taro }
+      - { source_name: 馬鈴薯, source_variety: 本產, crop: potato }
+      - { source_name: 洋蔥, source_variety: 本產, crop: onion }
+      - { source_name: 絲瓜, crop: loofah }
+      - { source_name: 花胡瓜, crop: cucumber }
+      - { source_name: 苦瓜, source_variety: 白大米, crop: bittergourd }
+      - { source_name: 茄子, source_variety: 麻荸茄, crop: eggplant }
+      - { source_name: 甜椒, source_variety: 青椒, crop: greenpepper }
+      - { source_name: 菜豆, source_variety: 青色, crop: longbean }
+      - { source_name: 敏豆, source_variety: 白豆, crop: frenchbean }
+      - { source_name: 薑, source_variety: 老薑, crop: ginger }
+      - { source_name: 紅龍果, source_variety: 紅肉, crop: dragonfruit }
+      - { source_name: 百香果, source_variety: 改良種, crop: passionfruit }
+      - { source_name: 木瓜, source_variety: 網室紅肉, crop: papaya }
+    markets: *tw_markets

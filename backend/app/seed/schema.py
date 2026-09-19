@@ -4,10 +4,17 @@ from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from app.geo import haversine_km
+
 LANGS = ("zh-TW", "en")
+# The default seven categories (docs/02 §5.2); the international reference series use them too.
 Category = Literal["cereal", "veg", "fruit", "pulse", "spice", "oil", "other"]
 PriceType = Literal["wholesale", "retail"]
+# Colour families of the frontend (styles/tokens.css `data-tone`).
+Tone = Literal["green", "orange", "amber", "red", "olive", "yellow", "slate", "blue", "purple"]
 I18n = dict[str, str]
+MAX_CATEGORIES = 8  # the home grid has nine keys and the last one is 「最近」
+RESERVED_CATEGORY_IDS = {"all", "recent"}  # home grid paths /cat/all (gone) and /cat/recent
 
 
 def _check_i18n(value: I18n) -> I18n:
@@ -46,6 +53,35 @@ class Units(_Model):
     retail: UnitSet
 
 
+class CategorySeed(_Model):
+    """One tile of the home grid: a crop category with its name, illustration and colour."""
+
+    id: str = Field(pattern=r"^[a-z][a-z0-9]*$", max_length=16)
+    name: I18n
+    icon: str = Field(pattern=r"^[a-z][a-z0-9_]*$", max_length=40)  # a crop illustration id
+    tone: Tone
+
+    _i18n = field_validator("name")(_check_i18n)
+
+
+def _default(cat_id: str, zh: str, en: str, icon: str, tone: str) -> CategorySeed:
+    return CategorySeed.model_validate(
+        {"id": cat_id, "name": {"zh-TW": zh, "en": en}, "icon": icon, "tone": tone}
+    )
+
+
+# A country without its own `categories` uses these (India and Malaysia).
+DEFAULT_CATEGORIES: tuple[CategorySeed, ...] = (
+    _default("cereal", "穀物", "Cereals", "wheat", "amber"),
+    _default("veg", "蔬菜", "Veg", "cabbage", "green"),
+    _default("fruit", "水果", "Fruit", "mango", "orange"),
+    _default("pulse", "豆類", "Pulses", "soybean", "olive"),
+    _default("spice", "香料", "Spices", "chilli", "red"),
+    _default("oil", "油籽", "Oilseed", "oil", "yellow"),
+    _default("other", "其他", "Other", "box", "slate"),
+)
+
+
 class CountrySeed(_Model):
     code: str = Field(pattern=r"^[A-Z]{2}$")
     sort: int
@@ -65,10 +101,24 @@ class CountrySeed(_Model):
     # The price type a new user of this country starts on (`*` still toggles it); retail for a
     # country whose source has retail prices only.
     default_price_type: PriceType = "wholesale"
+    # The home grid's categories in keypad order; crops use their ids.
+    categories: list[CategorySeed] = Field(default_factory=lambda: list(DEFAULT_CATEGORIES))
 
     _i18n = field_validator("name", "coverage", "area_suffix", "rep_price_label", "source_label")(
         _check_i18n
     )
+
+    @field_validator("categories")
+    @classmethod
+    def _category_list(cls, value: list[CategorySeed]) -> list[CategorySeed]:
+        ids = [c.id for c in value]
+        if not 1 <= len(ids) <= MAX_CATEGORIES:
+            raise ValueError(f"a country has 1 to at most {MAX_CATEGORIES} categories")
+        if len(ids) != len(set(ids)):
+            raise ValueError("duplicate category ids")
+        if reserved := RESERVED_CATEGORY_IDS.intersection(ids):
+            raise ValueError(f"reserved category ids: {sorted(reserved)}")
+        return value
 
     @field_validator("closed_weekdays")
     @classmethod
@@ -110,12 +160,31 @@ class MockCrop(_Model):
 
 
 class MarketSeed(_Model):
+    """A market. Its distance from the area centre is either a fixed demo value (`km`) or
+    computed from the market's approximate coordinates (`lat`, `lon`), never both."""
+
     id: str
     name: I18n
     km: int | None = None
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lon: float | None = Field(default=None, ge=-180, le=180)
     mock: MockLevel = MockLevel()
 
     _i18n = field_validator("name")(_check_i18n)
+
+    @model_validator(mode="after")
+    def _one_distance(self) -> Self:
+        if (self.lat is None) != (self.lon is None):
+            raise ValueError(f"market {self.id}: lat and lon go together")
+        if self.km is not None and self.lat is not None:
+            raise ValueError(f"market {self.id}: give km or lat/lon, not both")
+        return self
+
+    def distance_km(self, area: "AreaSeed") -> int | None:
+        """Kilometres from the area centre; `None` when neither is known."""
+        if self.lat is not None and self.lon is not None:
+            return haversine_km(area.lat, area.lon, self.lat, self.lon)
+        return self.km
 
 
 class AreaSeed(_Model):
@@ -134,7 +203,7 @@ class AreaSeed(_Model):
 class CropSeed(_Model):
     id: str
     name: I18n
-    category: Category
+    category: str  # one of the country's categories (checked by SeedFile)
     variety: I18n
     watch: bool = False
     retail: bool
@@ -189,6 +258,10 @@ class SeedFile(_Model):
         for area in [c.default_area, *c.default_recent_areas]:
             if area not in area_ids:
                 raise ValueError(f"unknown area {area!r} in country settings")
+        category_ids = {cat.id for cat in c.categories}
+        for crop in self.crops:
+            if crop.category not in category_ids:
+                raise ValueError(f"crop {crop.id}: unknown category {crop.category!r}")
         for source, maps in self.source_maps.items():
             for crop_map in maps.crops:
                 if crop_map.crop not in crop_ids:

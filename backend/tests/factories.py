@@ -25,6 +25,7 @@ async def add_minimal_catalog(session: AsyncSession) -> None:
             rep_price_label=EN_ZH,
             source_label=EN_ZH,
             units={},
+            categories=[],
         )
     )
     await session.flush()

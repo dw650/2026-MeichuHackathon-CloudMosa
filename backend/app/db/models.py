@@ -62,6 +62,8 @@ class Country(Base):
     units: Mapped[dict[str, Any]]
     # The price type a new user of this country starts on: wholesale or retail.
     default_price_type: Mapped[str] = mapped_column(String(10), server_default="wholesale")
+    # The home grid's categories in order: [{"id", "name", "icon", "tone"}] (docs/02 §5.2).
+    categories: Mapped[list[dict[str, Any]]] = mapped_column(JSONB)
 
 
 class Area(Base):
