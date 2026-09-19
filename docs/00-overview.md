@@ -16,8 +16,8 @@
 
 ## 目前狀態（2026-09-19）
 
-- 規格、互動草圖、baseline 執行計畫（[`plan/baseline.md`](plan/baseline.md)）已完成；**尚未開始寫正式程式**。
-- 範圍策略：**先做 baseline**（用 mock 資料走完整的後端管線），在官方 Simulator 測試通過後，再考慮加分項。
+- **baseline（T01–T39）已完成**：前後端、資料管線、全部畫面與狀態、兩種尺寸、兩國兩語，`make lint`、`make test`、`make audit`、`make e2e` 都通過。完成摘要在 [`plan/progress.md`](plan/progress.md) 最後；實作時自行決定的事項在 [`plan/decisions.md`](plan/decisions.md)。
+- 下一步是 **Phase 2**（部署到公開 HTTPS、在官方 Simulator 測試，並回填 [08 §12](08-platform-constraints.md)），由人接手；通過後再做加分項。
 
 ## 關鍵決定
 

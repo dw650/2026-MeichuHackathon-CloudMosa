@@ -516,3 +516,9 @@
   - 驗證方式：README 的相對連結用腳本逐一檢查檔案存在（21 個）；mermaid 用官方 mermaid 11 實際解析並繪製；`make up`、`make dev`、`make seed`、`make logs`、`make geoip`、`make test`、`make lint`、`make e2e`、`make audit`、`make types`、`make screenshots` 都在本機實際執行過。
 - 理由：評審打開 repo 第一眼看到的是 README，內容要能照著做而且正確。
 - 影響：`README.md`、`docs/images/`、`frontend/e2e/screenshots.spec.ts`、`Makefile`。
+
+## 2026-09-19 T39 驗收時的修正
+- 情況：驗收檢查發現 128×160 的作物詳情、各市場、單一市場、作物清單看不到目前的價格類型：資訊列在小尺寸只留左半邊，而「批發／零售」標籤放在右半邊。02 §2 規定「目前的類型永遠顯示在畫面上」。
+- 決定：`InfoBar` 新增 `small` 屬性（128×160 時代替右半邊顯示的內容），上述四個畫面傳入價格類型標籤；首頁本來就把標籤放在左半邊。另外新增驗收 e2e：`*` 讓詳情頁的價格、標籤、單位與指標一起變、首頁每張卡片一起變而且選擇會保存；只用按鍵從設定切換語言後，國家、地區與幣別不變。
+- 理由：任何尺寸都不能出現「看不出是批發還是零售」的價格。
+- 影響：`frontend/src/components/InfoBar/`、`frontend/src/screens/{crop-detail/DetailFrame,markets/*,crop-list/CropListScreen}.tsx`、`frontend/e2e/acceptance.spec.ts`。

@@ -403,7 +403,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - 簡化版的專案結構與文件地圖（連到 `docs/00-overview.md`）。
   - 完成條件：README 裡的每個指令都實際執行過而且正確；所有連結都指向存在的檔案；mermaid 語法正確。
 
-- [ ] **T39 🔍 大段落檢查 C：baseline 驗收**
+- [x] **T39 🔍 大段落檢查 C：baseline 驗收**
   - 參考：[02](../02-product-spec.md) §7
   - 內容：
     - Playwright：全部畫面 × 兩種尺寸。

@@ -24,7 +24,7 @@ describe('CropListScreen', () => {
 
     expect(screen.getByRole('heading', { name: '蔬菜' })).toBeInTheDocument()
     expect(screen.getByText('Nashik 縣')).toBeInTheDocument()
-    expect(screen.getByText('批發')).toBeInTheDocument()
+    expect(screen.getAllByText('批發').length).toBeGreaterThan(0)
     expect(focusIds()).toEqual(['crop:onion', 'crop:tomato', 'crop:potato'])
     expect(card('crop:onion')).toHaveTextContent('2,395')
     expect(card('crop:potato')).toHaveTextContent('本地種 · 昨天')

@@ -21,8 +21,13 @@
   overflow: hidden;
 }
 
-.right {
+.right,
+.small {
   flex: none;
+}
+
+.small {
+  display: none;
 }
 
 .cell b {
@@ -40,5 +45,9 @@
   .right,
   .bar kbd {
     display: none;
+  }
+
+  .small {
+    display: inline-flex;
   }
 }

@@ -196,6 +196,7 @@ export default function MarketsScreen() {
     >
       <div ref={root}>
         <InfoBar
+          small={<PriceTypeTag type={fmt.type} label={t(`priceType.${fmt.type}`)} />}
           left={
             <>
               <UiIcon name="pin" />

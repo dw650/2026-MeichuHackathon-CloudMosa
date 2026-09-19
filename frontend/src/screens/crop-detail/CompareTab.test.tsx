@@ -96,7 +96,7 @@ describe('crop detail · 比價 tab (T29)', () => {
 
     await press(app, '*')
     await waitFor(() => expect(app.focusedId()).toBe('area:delhi'))
-    expect(screen.getByText('零售')).toBeInTheDocument()
+    expect(screen.getAllByText('零售').length).toBeGreaterThan(0)
     expect(within(card('bengaluru')).getByText('直線 880 km')).toBeInTheDocument()
     expect(app.path()).toBe('/crop/onion/compare')
   })
