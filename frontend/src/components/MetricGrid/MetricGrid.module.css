@@ -1,0 +1,62 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.cell {
+  display: grid;
+  align-content: start;
+  gap: 1px;
+  min-width: 0;
+  padding: 4px 5px;
+  border-radius: var(--rad);
+  background: var(--card);
+}
+
+/* The mockup's 10px titles use the 11px floor instead (docs/03 §3.2). */
+.label {
+  overflow: hidden;
+  color: var(--ink3);
+  font-size: var(--fs-3);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value {
+  font-size: var(--fs-kpi-v);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.pos {
+  color: var(--pos);
+}
+
+.neg {
+  color: var(--neg);
+}
+
+.gauge {
+  position: relative;
+  height: 3px;
+  margin-top: 2px;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 3px;
+  background: var(--tc, var(--brand));
+}
+
+/* 128×160 leaves these out rather than shrinking them (docs/03 §6). */
+@media (max-width: 176px) {
+  .grid {
+    display: none;
+  }
+}

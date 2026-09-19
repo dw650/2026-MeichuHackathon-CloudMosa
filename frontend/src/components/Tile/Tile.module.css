@@ -1,0 +1,49 @@
+/* Icon square (docs/03 §4): the category tone, or slate grey without one. */
+.tile {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--tile);
+  height: var(--tile);
+  border-radius: 8px;
+  background: var(--tile-bg, var(--tn, var(--t-slate)));
+  color: var(--tile-ink, var(--tc, var(--ink2)));
+  font-size: var(--fs-2);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.round {
+  border-radius: 50%;
+}
+
+.tile > svg {
+  width: 62%;
+  height: 62%;
+}
+
+.art > svg {
+  width: 80%;
+  height: 80%;
+}
+
+.tile > kbd {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+}
+
+@media (max-width: 176px) {
+  .tile {
+    border-radius: 4px;
+  }
+
+  .round {
+    border-radius: 50%;
+  }
+
+  .tile > kbd {
+    display: none;
+  }
+}
