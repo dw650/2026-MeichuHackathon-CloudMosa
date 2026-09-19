@@ -1,0 +1,95 @@
+# News searches per country for the 新聞 page (docs/06 §1.4). Countries listed here but not in
+# the seed (app/seed/*.yaml) are skipped until their seed exists.
+#   summary_lang: language of the summaries (the country's UI language)
+#   feeds: Google News RSS editions (hl, gl, ceid) and the searches run in each; the worker
+#          adds "when:7d" on a country's first run and "when:2d" afterwards
+#   keywords: a headline must mention one of these or one of the country's crops to be kept
+#   crop_aliases / area_aliases: other names used in headlines, on top of every name in the
+#          seed (all languages); unknown ids are ignored
+countries:
+  TW:
+    summary_lang: zh-TW
+    feeds:
+      - hl: zh-TW
+        gl: TW
+        ceid: "TW:zh-Hant"
+        queries: [菜價, 蔬菜 批發價, 蔬菜價格, 果菜市場, 水果價格]
+    keywords:
+      [菜價, 蔬菜, 蔬果, 果菜, 青菜, 葉菜, 水果, 農產品, 菜農, 果農, 農損, 批發價, 產地價, 拍賣價, 到貨量]
+    crop_aliases:
+      cabbage: [高麗菜]
+      sweetpotato: [地瓜, 番薯]
+      scallion: [三星蔥]
+      waterspinach: [蕹菜]
+      rice: [白米, 稻穀, 公糧]
+      guava: [番石榴]
+      garlic: [大蒜]
+      peanut: [花生]
+    area_aliases:
+      # Wholesale markets and companies named in headlines.
+      taipei: [北農]
+      newtaipei: [板橋果菜]
+      taichung: [豐原]
+      yunlin: [西螺]
+      kaohsiung: [鳳山]
+
+  IN:
+    summary_lang: en
+    feeds:
+      - hl: en-IN
+        gl: IN
+        ceid: "IN:en"
+        queries:
+          - mandi prices
+          - onion prices India
+          - tomato prices India
+          - vegetable prices India
+          - APMC prices
+    keywords:
+      - mandi price
+      - mandi rate
+      - mandi arrival
+      - apmc
+      - agmarknet
+      - vegetable price
+      - vegetables price
+      - fruit price
+      - wholesale price
+      - wholesale market
+      - food inflation
+      - kharif
+      - rabi
+      - msp
+    crop_aliases:
+      chilli: [chili, green chilli]
+      soybean: [soya, soyabean]
+      maize: [corn]
+      grapes: [grape]
+      rice: [paddy]
+      eggplant: [eggplant]
+      chickpea: [chana]
+      turmeric: [haldi]
+      peanut: [peanut]
+      sugarcane: [sugar cane]
+    area_aliases:
+      nashik: [Lasalgaon, Pimpalgaon]
+      pune: [Poona]
+      ahmednagar: [Ahilyanagar]
+      solapur: [Sholapur]
+      bengaluru: [Bengaluru, Bangalore]
+      delhi: [Delhi, Azadpur]
+
+  # Malaysia: used once its seed exists (another track adds it).
+  MY:
+    summary_lang: en
+    feeds:
+      - hl: en-MY
+        gl: MY
+        ceid: "MY:en"
+        queries: [vegetable prices Malaysia, vegetable price hike Malaysia]
+      - hl: ms-MY
+        gl: MY
+        ceid: "MY:ms"
+        queries: [harga sayur, pasar borong sayur]
+    keywords:
+      [vegetable price, vegetables price, fruit price, wholesale market, sayur, pasar borong, fama, petani]
