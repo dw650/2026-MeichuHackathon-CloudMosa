@@ -198,13 +198,17 @@ async def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     settings = get_settings()
     configure_logging(settings.log_level)
-    await sync_intl(settings)
+    # A bonus page (B5) must never keep the daily prices from being fetched or scheduled.
+    try:
+        await sync_intl(settings)
+    except Exception:
+        logger.exception("syncing the international series failed")
     summaries = await run_once(settings)
     logger.info("start-up run: %s", [(s.source, s.status, s.rows_ok) for s in summaries])
     try:
         intl = await run_intl(settings)
         logger.info("start-up intl: %s", [(s.source, s.status, s.rows_ok) for s in intl])
-    except Exception:  # a bonus page must never keep the daily prices from being scheduled
+    except Exception:
         logger.exception("start-up intl check failed")
     if args.once:
         return

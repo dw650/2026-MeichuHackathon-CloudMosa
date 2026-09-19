@@ -105,6 +105,16 @@ describe('IntlScreen', () => {
     expect(screen.queryByText(/匯率換算/)).not.toBeInTheDocument()
   })
 
+  it('says there is nothing yet before the first series are listed', async () => {
+    serveTW((data) => {
+      data.items = []
+    })
+    const app = await renderApp('/intl', { country: 'TW' })
+    expect(await screen.findByText('尚無資料')).toBeInTheDocument()
+    expect(app.focusedId()).toBeNull()
+    expect(softKeys(app)).toEqual(['', '', '返回'])
+  })
+
   it('shows a static loading state, then the failure with a retry', async () => {
     server.use(http.get('*/api/v1/intl', () => failure(503, 'upstream_unavailable')))
     const app = await renderApp('/intl')

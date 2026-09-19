@@ -9,8 +9,10 @@ import { Card, CardList } from '@/components/Card/Card'
 import { CropIcon } from '@/components/CropIcon/CropIcon'
 import type { PillProps } from '@/components/Pill/Pill'
 import { Shell } from '@/components/Shell/Shell'
+import { StatusBox } from '@/components/StatusBox/StatusBox'
 import { useFocusList } from '@/focus/useFocusList'
 import { useKeys } from '@/keys/useKeys'
+import { MISSING } from '@/lib/format'
 import { describeMonth } from '@/lib/monthly'
 import { useText } from '@/screens/shared/useText'
 import { useSettings } from '@/store/settings'
@@ -90,6 +92,8 @@ export default function IntlScreen() {
                 />
               ))}
             </CardList>
+            {/* Only before the worker's first start: no series listed yet. */}
+            {items.length === 0 && <StatusBox title={MISSING} lines={[t('intl.noData')]} />}
           </>
         )}
       </div>
