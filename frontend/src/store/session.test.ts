@@ -155,6 +155,7 @@ describe('session store', () => {
         () => seed({ ...saved, lastLocation: { path: '//evil.example', key: 'k' } }),
       ],
       ['a relative path', () => seed({ ...saved, lastLocation: { path: 'crop/onion', key: 'k' } })],
+      ['focus that is not a list', () => seed({ ...saved, focus: { k1: 'crop:onion' } })],
       ['a focus entry without an id', () => seed({ ...saved, focus: [{ key: 'k1' }] })],
       ['recent crops that are not a list', () => seed({ ...saved, recentCrops: 'onion' })],
     ])('starts afresh on %s', async (_, arrange) => {
