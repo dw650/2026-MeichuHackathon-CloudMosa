@@ -139,7 +139,8 @@ def test_normalize_all_counts_unmapped_and_malformed_rows(maps: SourceMaps) -> N
 
 
 def pricecatcher(**overrides: str) -> dict[str, str]:
-    """A real row: Pasar Pudu (a Kuala Lumpur wet market), TOMATO, 2026-09-17."""
+    """A real row: Pasar Pudu (a Kuala Lumpur wet market), TOMATO, 2026-09-17, joined with its
+    lookup row (type, state, district)."""
     row = {
         "_country": "MY",
         "_type": "retail",
@@ -147,6 +148,9 @@ def pricecatcher(**overrides: str) -> dict[str, str]:
         "premise_code": "3181",
         "item_code": "114",
         "price": "6.0",
+        "premise_type": "Pasar Basah",
+        "state": "W.P. Kuala Lumpur",
+        "district": "Cheras",
     }
     return row | overrides
 
@@ -166,9 +170,29 @@ def test_malaysia_wet_market_rows_are_retail_points_of_their_area(maps: SourceMa
     assert (q.low_price, q.high_price, q.volume_kg) == (None, None, None)
 
 
+def test_malaysia_wet_markets_belong_to_their_district(maps: SourceMaps) -> None:
+    # Pasar Besar Pelabuhan Klang: a wet market of the Klang district.
+    row = pricecatcher(premise_code="5532", state="Selangor", district="Klang")
+    q = PROVIDER.normalize(row, maps)
+    assert q is not None
+    assert (q.price_type, q.area_id, q.point) == ("retail", "klang", "5532")
+    # A wet market the seed has never listed is still a point of its district.
+    q = PROVIDER.normalize(pricecatcher(premise_code="99999", district="Kepong"), maps)
+    assert q is not None
+    assert (q.area_id, q.point) == ("kualalumpur", "99999")
+
+
 def test_malaysia_wholesale_market_rows_are_market_quotes(maps: SourceMaps) -> None:
     # A real row of Pasar Borong Pandan Kangkar Tebrau (Johor Bahru), June 2025.
-    row = pricecatcher(_type="wholesale", date="2025-06-18", premise_code="18151", price="3.0")
+    row = pricecatcher(
+        _type="wholesale",
+        date="2025-06-18",
+        premise_code="18151",
+        price="3.0",
+        premise_type="Borong",
+        state="Johor",
+        district="Johor Bahru",
+    )
     q = PROVIDER.normalize(row, maps)
     assert q is not None
     assert (q.price_type, q.area_id, q.market_id, q.point, q.rep_price) == (
@@ -181,7 +205,12 @@ def test_malaysia_wholesale_market_rows_are_market_quotes(maps: SourceMaps) -> N
 
 
 def test_malaysia_unmapped_premises_and_items_return_none(maps: SourceMaps) -> None:
-    assert PROVIDER.normalize(pricecatcher(premise_code="17532"), maps) is None  # mini market
+    mini_market = pricecatcher(premise_code="17532", premise_type="Pasar Mini", district="Kepong")
+    assert PROVIDER.normalize(mini_market, maps) is None
+    # Pasar Basah Tuaran: a wet market of a district with too few reports to be an area.
+    tuaran = pricecatcher(premise_code="234", state="Sabah", district="Tuaran")
+    assert PROVIDER.normalize(tuaran, maps) is None
+    assert PROVIDER.normalize(pricecatcher(premise_type=""), maps) is None  # not in the lookup
     assert PROVIDER.normalize(pricecatcher(item_code="105"), maps) is None  # local cabbage
     assert PROVIDER.normalize(pricecatcher(item_code="1"), maps) is None  # chicken
 

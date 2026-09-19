@@ -149,18 +149,38 @@ def tw_retail(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | N
     )
 
 
+PRICECATCHER_WET_MARKET = "Pasar Basah"  # premise_type of a wet market in lookup_premise.csv
+
+
+def pricecatcher_districts(state: str, district: str) -> tuple[str, str]:
+    """The seed names a PriceCatcher district "State/District", or a whole state by its name
+    alone (a federal territory: PriceCatcher splits W.P. Kuala Lumpur into constituencies). The
+    district is tried first."""
+    return f"{state}/{district}", state
+
+
 def pricecatcher(raw: RawRow, maps: SourceMaps, source: str) -> NormalizedQuote | None:
     """Malaysia PriceCatcher (KPDN): one price per premise, item and day, in RM per the item's
-    unit; the seed maps only items sold per kg, matched exactly by item code.
+    unit, joined with the premise's row of lookup_premise.csv (type, state, district). The seed
+    maps only items sold per kg, matched exactly by item code.
 
-    A premise mapped to a market (the wholesale "Borong" premises) gives a wholesale quote; one
-    mapped to an area (a wet market) gives a retail point of that area, and the pipeline keeps
+    A premise mapped to a market (the wholesale "Borong" premises) gives a wholesale quote; a
+    wet market of a mapped district gives a retail point of that area, and the pipeline keeps
     the median of an area's points. Any other premise or item is unmapped."""
     item = str(raw.get("item_code", "")).strip()
     premise = str(raw.get("premise_code", "")).strip()
     crop = maps.crop("MY", item, exact=True)
     market = maps.market("MY", premise)
-    area = maps.market_area.get(market) if market else maps.area("MY", premise)
+    area: str | None = None
+    if market:
+        area = maps.market_area.get(market)
+    elif str(raw.get("premise_type", "")).strip() == PRICECATCHER_WET_MARKET:
+        state = str(raw.get("state", "")).strip()
+        district = str(raw.get("district", "")).strip()
+        for name in pricecatcher_districts(state, district):
+            area = maps.area("MY", name)
+            if area:
+                break
     if crop is None or area is None:
         return None
     return NormalizedQuote(

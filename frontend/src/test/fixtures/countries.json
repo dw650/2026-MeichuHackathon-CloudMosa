@@ -15,6 +15,7 @@
    },
    "currency": "INR",
    "default_area_id": "nashik",
+   "default_price_type": "wholesale",
    "default_recent_area_ids": [
     "nashik",
     "pune",
@@ -109,6 +110,7 @@
    },
    "currency": "TWD",
    "default_area_id": "taipei",
+   "default_price_type": "wholesale",
    "default_recent_area_ids": [
     "taipei",
     "newtaipei",
@@ -195,11 +197,12 @@
    "closed_weekdays": [],
    "code": "MY",
    "coverage": {
-    "en": "11 states & territories",
-    "zh-TW": "11 個州與直轄區"
+    "en": "15 states & FTs, 75 districts",
+    "zh-TW": "15 個州與直轄區、75 個縣"
    },
    "currency": "MYR",
    "default_area_id": "kualalumpur",
+   "default_price_type": "retail",
    "default_recent_area_ids": [
     "kualalumpur",
     "klang",

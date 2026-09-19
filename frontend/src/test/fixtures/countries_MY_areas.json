@@ -208,6 +208,1222 @@
     "days": 1,
     "state": "stale"
    }
+  },
+  {
+   "has_retail": true,
+   "id": "batupahat",
+   "lat": 1.85,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.93,
+   "name": {
+    "en": "Batu Pahat",
+    "zh-TW": "Batu Pahat"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kluang",
+   "lat": 2.03,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.32,
+   "name": {
+    "en": "Kluang",
+    "zh-TW": "Kluang"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kotatinggi",
+   "lat": 1.73,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.9,
+   "name": {
+    "en": "Kota Tinggi",
+    "zh-TW": "Kota Tinggi"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "mersing",
+   "lat": 2.43,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.84,
+   "name": {
+    "en": "Mersing",
+    "zh-TW": "Mersing"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "muar",
+   "lat": 2.04,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.57,
+   "name": {
+    "en": "Muar",
+    "zh-TW": "Muar"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "pontian",
+   "lat": 1.49,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.39,
+   "name": {
+    "en": "Pontian",
+    "zh-TW": "Pontian"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "segamat",
+   "lat": 2.51,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.81,
+   "name": {
+    "en": "Segamat",
+    "zh-TW": "Segamat"
+   },
+   "region": {
+    "en": "Johor",
+    "zh-TW": "Johor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "baling",
+   "lat": 5.67,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.92,
+   "name": {
+    "en": "Baling",
+    "zh-TW": "Baling"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kotasetar",
+   "lat": 6.12,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.37,
+   "name": {
+    "en": "Kota Setar",
+    "zh-TW": "Kota Setar"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kualamuda",
+   "lat": 5.71,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.5,
+   "name": {
+    "en": "Kuala Muda",
+    "zh-TW": "Kuala Muda"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kubangpasu",
+   "lat": 6.34,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.37,
+   "name": {
+    "en": "Kubang Pasu",
+    "zh-TW": "Kubang Pasu"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "langkawi",
+   "lat": 6.37,
+   "latest_trade_date": "2026-09-19",
+   "lon": 99.79,
+   "name": {
+    "en": "Langkawi",
+    "zh-TW": "Langkawi"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sik",
+   "lat": 5.92,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.82,
+   "name": {
+    "en": "Sik",
+    "zh-TW": "Sik"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "yan",
+   "lat": 5.85,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.42,
+   "name": {
+    "en": "Yan",
+    "zh-TW": "Yan"
+   },
+   "region": {
+    "en": "Kedah",
+    "zh-TW": "Kedah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "bachok",
+   "lat": 6.06,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.4,
+   "name": {
+    "en": "Bachok",
+    "zh-TW": "Bachok"
+   },
+   "region": {
+    "en": "Kelantan",
+    "zh-TW": "Kelantan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kualakrai",
+   "lat": 5.53,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.2,
+   "name": {
+    "en": "Kuala Krai",
+    "zh-TW": "Kuala Krai"
+   },
+   "region": {
+    "en": "Kelantan",
+    "zh-TW": "Kelantan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "pasirputeh",
+   "lat": 5.84,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.41,
+   "name": {
+    "en": "Pasir Puteh",
+    "zh-TW": "Pasir Puteh"
+   },
+   "region": {
+    "en": "Kelantan",
+    "zh-TW": "Kelantan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "tanahmerah",
+   "lat": 5.81,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.15,
+   "name": {
+    "en": "Tanah Merah",
+    "zh-TW": "Tanah Merah"
+   },
+   "region": {
+    "en": "Kelantan",
+    "zh-TW": "Kelantan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "tumpat",
+   "lat": 6.2,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.17,
+   "name": {
+    "en": "Tumpat",
+    "zh-TW": "Tumpat"
+   },
+   "region": {
+    "en": "Kelantan",
+    "zh-TW": "Kelantan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "alorgajah",
+   "lat": 2.39,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.21,
+   "name": {
+    "en": "Alor Gajah",
+    "zh-TW": "Alor Gajah"
+   },
+   "region": {
+    "en": "Melaka",
+    "zh-TW": "Melaka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "jasin",
+   "lat": 2.31,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.43,
+   "name": {
+    "en": "Jasin",
+    "zh-TW": "Jasin"
+   },
+   "region": {
+    "en": "Melaka",
+    "zh-TW": "Melaka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "melakatengah",
+   "lat": 2.23,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.25,
+   "name": {
+    "en": "Melaka Tengah",
+    "zh-TW": "Melaka Tengah"
+   },
+   "region": {
+    "en": "Melaka",
+    "zh-TW": "Melaka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "bahau",
+   "lat": 2.81,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.4,
+   "name": {
+    "en": "Bahau",
+    "zh-TW": "Bahau"
+   },
+   "region": {
+    "en": "Negeri Sembilan",
+    "zh-TW": "Negeri Sembilan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "portdickson",
+   "lat": 2.53,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.81,
+   "name": {
+    "en": "Port Dickson",
+    "zh-TW": "Port Dickson"
+   },
+   "region": {
+    "en": "Negeri Sembilan",
+    "zh-TW": "Negeri Sembilan"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "bera",
+   "lat": 3.24,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.54,
+   "name": {
+    "en": "Bera",
+    "zh-TW": "Bera"
+   },
+   "region": {
+    "en": "Pahang",
+    "zh-TW": "Pahang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "temerloh",
+   "lat": 3.45,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.42,
+   "name": {
+    "en": "Temerloh",
+    "zh-TW": "Temerloh"
+   },
+   "region": {
+    "en": "Pahang",
+    "zh-TW": "Pahang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "batangpadang",
+   "lat": 4.08,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.33,
+   "name": {
+    "en": "Batang Padang",
+    "zh-TW": "Batang Padang"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "hilirperak",
+   "lat": 4.0,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.0,
+   "name": {
+    "en": "Hilir Perak",
+    "zh-TW": "Hilir Perak"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "huluperak",
+   "lat": 5.45,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.3,
+   "name": {
+    "en": "Hulu Perak",
+    "zh-TW": "Hulu Perak"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kerian",
+   "lat": 5.03,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.5,
+   "name": {
+    "en": "Kerian",
+    "zh-TW": "Kerian"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kualakangsar",
+   "lat": 4.77,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.94,
+   "name": {
+    "en": "Kuala Kangsar",
+    "zh-TW": "Kuala Kangsar"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "larutmatangselama",
+   "lat": 4.86,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.74,
+   "name": {
+    "en": "Larut, Matang & Selama",
+    "zh-TW": "Larut, Matang & Selama"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "manjung",
+   "lat": 4.33,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.63,
+   "name": {
+    "en": "Manjung",
+    "zh-TW": "Manjung"
+   },
+   "region": {
+    "en": "Perak",
+    "zh-TW": "Perak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "arau",
+   "lat": 6.43,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.27,
+   "name": {
+    "en": "Arau",
+    "zh-TW": "Arau"
+   },
+   "region": {
+    "en": "Perlis",
+    "zh-TW": "Perlis"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kangar",
+   "lat": 6.44,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.19,
+   "name": {
+    "en": "Kangar",
+    "zh-TW": "Kangar"
+   },
+   "region": {
+    "en": "Perlis",
+    "zh-TW": "Perlis"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "padangbesar",
+   "lat": 6.66,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.32,
+   "name": {
+    "en": "Padang Besar",
+    "zh-TW": "Padang Besar"
+   },
+   "region": {
+    "en": "Perlis",
+    "zh-TW": "Perlis"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "baratdaya",
+   "lat": 5.34,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.24,
+   "name": {
+    "en": "Barat Daya",
+    "zh-TW": "Barat Daya"
+   },
+   "region": {
+    "en": "Penang",
+    "zh-TW": "Pulau Pinang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "seberangperaiselatan",
+   "lat": 5.22,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.48,
+   "name": {
+    "en": "Seberang Perai Selatan",
+    "zh-TW": "Seberang Perai Selatan"
+   },
+   "region": {
+    "en": "Penang",
+    "zh-TW": "Pulau Pinang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "seberangperaitengah",
+   "lat": 5.36,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.46,
+   "name": {
+    "en": "Seberang Perai Tengah",
+    "zh-TW": "Seberang Perai Tengah"
+   },
+   "region": {
+    "en": "Penang",
+    "zh-TW": "Pulau Pinang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "seberangperaiutara",
+   "lat": 5.5,
+   "latest_trade_date": "2026-09-19",
+   "lon": 100.45,
+   "name": {
+    "en": "Seberang Perai Utara",
+    "zh-TW": "Seberang Perai Utara"
+   },
+   "region": {
+    "en": "Penang",
+    "zh-TW": "Pulau Pinang"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "beaufort",
+   "lat": 5.35,
+   "latest_trade_date": "2026-09-19",
+   "lon": 115.74,
+   "name": {
+    "en": "Beaufort",
+    "zh-TW": "Beaufort"
+   },
+   "region": {
+    "en": "Sabah",
+    "zh-TW": "Sabah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kotakinabalu",
+   "lat": 5.98,
+   "latest_trade_date": "2026-09-19",
+   "lon": 116.07,
+   "name": {
+    "en": "Kota Kinabalu",
+    "zh-TW": "Kota Kinabalu"
+   },
+   "region": {
+    "en": "Sabah",
+    "zh-TW": "Sabah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sandakan",
+   "lat": 5.84,
+   "latest_trade_date": "2026-09-19",
+   "lon": 118.12,
+   "name": {
+    "en": "Sandakan",
+    "zh-TW": "Sandakan"
+   },
+   "region": {
+    "en": "Sabah",
+    "zh-TW": "Sabah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "tawau",
+   "lat": 4.24,
+   "latest_trade_date": "2026-09-19",
+   "lon": 117.89,
+   "name": {
+    "en": "Tawau",
+    "zh-TW": "Tawau"
+   },
+   "region": {
+    "en": "Sabah",
+    "zh-TW": "Sabah"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kapit",
+   "lat": 2.01,
+   "latest_trade_date": "2026-09-19",
+   "lon": 112.94,
+   "name": {
+    "en": "Kapit",
+    "zh-TW": "Kapit"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "limbang",
+   "lat": 4.75,
+   "latest_trade_date": "2026-09-19",
+   "lon": 115.01,
+   "name": {
+    "en": "Limbang",
+    "zh-TW": "Limbang"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "miri",
+   "lat": 4.39,
+   "latest_trade_date": "2026-09-19",
+   "lon": 113.99,
+   "name": {
+    "en": "Miri",
+    "zh-TW": "Miri"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sarikei",
+   "lat": 2.13,
+   "latest_trade_date": "2026-09-19",
+   "lon": 111.52,
+   "name": {
+    "en": "Sarikei",
+    "zh-TW": "Sarikei"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sibu",
+   "lat": 2.29,
+   "latest_trade_date": "2026-09-19",
+   "lon": 111.83,
+   "name": {
+    "en": "Sibu",
+    "zh-TW": "Sibu"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "song",
+   "lat": 2.01,
+   "latest_trade_date": "2026-09-19",
+   "lon": 112.55,
+   "name": {
+    "en": "Song",
+    "zh-TW": "Song"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sriaman",
+   "lat": 1.21,
+   "latest_trade_date": "2026-09-19",
+   "lon": 111.41,
+   "name": {
+    "en": "Sri Aman",
+    "zh-TW": "Sri Aman"
+   },
+   "region": {
+    "en": "Sarawak",
+    "zh-TW": "Sarawak"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "gombak",
+   "lat": 3.23,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.71,
+   "name": {
+    "en": "Gombak",
+    "zh-TW": "Gombak"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "hululangat",
+   "lat": 3.08,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.83,
+   "name": {
+    "en": "Hulu Langat",
+    "zh-TW": "Hulu Langat"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "huluselangor",
+   "lat": 3.54,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.59,
+   "name": {
+    "en": "Hulu Selangor",
+    "zh-TW": "Hulu Selangor"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kualaselangor",
+   "lat": 3.33,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.25,
+   "name": {
+    "en": "Kuala Selangor",
+    "zh-TW": "Kuala Selangor"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "petaling",
+   "lat": 3.08,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.58,
+   "name": {
+    "en": "Petaling",
+    "zh-TW": "Petaling"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "petalingjaya",
+   "lat": 3.1,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.65,
+   "name": {
+    "en": "Petaling Jaya",
+    "zh-TW": "Petaling Jaya"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sepang",
+   "lat": 2.8,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.71,
+   "name": {
+    "en": "Sepang",
+    "zh-TW": "Sepang"
+   },
+   "region": {
+    "en": "Selangor",
+    "zh-TW": "Selangor"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "besut",
+   "lat": 5.58,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.5,
+   "name": {
+    "en": "Besut",
+    "zh-TW": "Besut"
+   },
+   "region": {
+    "en": "Terengganu",
+    "zh-TW": "Terengganu"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "dungun",
+   "lat": 4.76,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.42,
+   "name": {
+    "en": "Dungun",
+    "zh-TW": "Dungun"
+   },
+   "region": {
+    "en": "Terengganu",
+    "zh-TW": "Terengganu"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "huluterengganu",
+   "lat": 4.91,
+   "latest_trade_date": "2026-09-19",
+   "lon": 102.77,
+   "name": {
+    "en": "Hulu Terengganu",
+    "zh-TW": "Hulu Terengganu"
+   },
+   "region": {
+    "en": "Terengganu",
+    "zh-TW": "Terengganu"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kualanerus",
+   "lat": 5.4,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.06,
+   "name": {
+    "en": "Kuala Nerus",
+    "zh-TW": "Kuala Nerus"
+   },
+   "region": {
+    "en": "Terengganu",
+    "zh-TW": "Terengganu"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "marang",
+   "lat": 5.17,
+   "latest_trade_date": "2026-09-19",
+   "lon": 103.17,
+   "name": {
+    "en": "Marang",
+    "zh-TW": "Marang"
+   },
+   "region": {
+    "en": "Terengganu",
+    "zh-TW": "Terengganu"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "putrajaya",
+   "lat": 2.92,
+   "latest_trade_date": "2026-09-19",
+   "lon": 101.68,
+   "name": {
+    "en": "Putrajaya",
+    "zh-TW": "Putrajaya"
+   },
+   "region": {
+    "en": "W.P. Putrajaya",
+    "zh-TW": "W.P. Putrajaya"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
   }
  ],
  "country": "MY",

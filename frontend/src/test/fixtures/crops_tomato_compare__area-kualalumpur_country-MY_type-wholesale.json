@@ -106,9 +106,527 @@
    "trade_date": "2026-09-16"
   },
   {
+   "area_id": "petalingjaya",
+   "diff_per_kg": null,
+   "distance_km": 6,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "gombak",
+   "diff_per_kg": null,
+   "distance_km": 10,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "petaling",
+   "diff_per_kg": null,
+   "distance_km": 14,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "hululangat",
+   "diff_per_kg": null,
+   "distance_km": 17,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "putrajaya",
+   "diff_per_kg": null,
+   "distance_km": 24,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sepang",
+   "diff_per_kg": null,
+   "distance_km": 38,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "huluselangor",
+   "diff_per_kg": null,
+   "distance_km": 46,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kualaselangor",
+   "diff_per_kg": null,
+   "distance_km": 53,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "portdickson",
+   "diff_per_kg": null,
+   "distance_km": 69,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "bahau",
+   "diff_per_kg": null,
+   "distance_km": 87,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "temerloh",
+   "diff_per_kg": null,
+   "distance_km": 88,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "bera",
+   "diff_per_kg": null,
+   "distance_km": 95,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "alorgajah",
+   "diff_per_kg": null,
+   "distance_km": 101,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "batangpadang",
+   "diff_per_kg": null,
+   "distance_km": 112,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "melakatengah",
+   "diff_per_kg": null,
+   "distance_km": 119,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "hilirperak",
+   "diff_per_kg": null,
+   "distance_km": 123,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "jasin",
+   "diff_per_kg": null,
+   "distance_km": 124,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "segamat",
+   "diff_per_kg": null,
+   "distance_km": 143,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "muar",
+   "diff_per_kg": null,
+   "distance_km": 157,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
    "area_id": "kinta",
    "diff_per_kg": null,
    "distance_km": 175,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "manjung",
+   "diff_per_kg": null,
+   "distance_km": 177,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "batupahat",
+   "diff_per_kg": null,
+   "distance_km": 199,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kualakangsar",
+   "diff_per_kg": null,
+   "distance_km": 199,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "larutmatangselama",
+   "diff_per_kg": null,
+   "distance_km": 218,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kluang",
+   "diff_per_kg": null,
+   "distance_km": 219,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "huluterengganu",
+   "diff_per_kg": null,
+   "distance_km": 230,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kerian",
+   "diff_per_kg": null,
+   "distance_km": 248,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "mersing",
+   "diff_per_kg": null,
+   "distance_km": 251,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "huluperak",
+   "diff_per_kg": null,
+   "distance_km": 260,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "pontian",
+   "diff_per_kg": null,
+   "distance_km": 263,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "dungun",
+   "diff_per_kg": null,
+   "distance_km": 263,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "seberangperaiselatan",
+   "diff_per_kg": null,
+   "distance_km": 267,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kualakrai",
+   "diff_per_kg": null,
+   "distance_km": 272,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "marang",
+   "diff_per_kg": null,
+   "distance_km": 279,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "seberangperaitengah",
+   "diff_per_kg": null,
+   "distance_km": 282,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "besut",
+   "diff_per_kg": null,
+   "distance_km": 286,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kotatinggi",
+   "diff_per_kg": null,
+   "distance_km": 291,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "baratdaya",
+   "diff_per_kg": null,
+   "distance_km": 293,
    "is_base": false,
    "n_markets": 0,
    "price_per_kg": null,
@@ -134,6 +652,132 @@
    "trade_date": null
   },
   {
+   "area_id": "baling",
+   "diff_per_kg": null,
+   "distance_km": 294,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kualanerus",
+   "diff_per_kg": null,
+   "distance_km": 294,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "seberangperaiutara",
+   "diff_per_kg": null,
+   "distance_km": 296,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "tanahmerah",
+   "diff_per_kg": null,
+   "distance_km": 301,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "pasirputeh",
+   "diff_per_kg": null,
+   "distance_km": 311,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kualamuda",
+   "diff_per_kg": null,
+   "distance_km": 315,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sik",
+   "diff_per_kg": null,
+   "distance_km": 324,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "yan",
+   "diff_per_kg": null,
+   "distance_km": 333,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "bachok",
+   "diff_per_kg": null,
+   "distance_km": 334,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
    "area_id": "kotabharu",
    "diff_per_kg": null,
    "distance_km": 338,
@@ -148,9 +792,261 @@
    "trade_date": null
   },
   {
+   "area_id": "tumpat",
+   "diff_per_kg": null,
+   "distance_km": 344,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kotasetar",
+   "diff_per_kg": null,
+   "distance_km": 362,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kubangpasu",
+   "diff_per_kg": null,
+   "distance_km": 385,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "arau",
+   "diff_per_kg": null,
+   "distance_km": 398,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kangar",
+   "diff_per_kg": null,
+   "distance_km": 403,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "langkawi",
+   "diff_per_kg": null,
+   "distance_km": 416,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "padangbesar",
+   "diff_per_kg": null,
+   "distance_km": 420,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
    "area_id": "kuching",
    "diff_per_kg": null,
    "distance_km": 979,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sarikei",
+   "diff_per_kg": null,
+   "distance_km": 1098,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sriaman",
+   "diff_per_kg": null,
+   "distance_km": 1101,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sibu",
+   "diff_per_kg": null,
+   "distance_km": 1130,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "song",
+   "diff_per_kg": null,
+   "distance_km": 1213,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kapit",
+   "diff_per_kg": null,
+   "distance_km": 1256,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "miri",
+   "diff_per_kg": null,
+   "distance_km": 1372,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "limbang",
+   "diff_per_kg": null,
+   "distance_km": 1488,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "beaufort",
+   "diff_per_kg": null,
+   "distance_km": 1577,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "kotakinabalu",
+   "diff_per_kg": null,
+   "distance_km": 1625,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "tawau",
+   "diff_per_kg": null,
+   "distance_km": 1802,
+   "is_base": false,
+   "n_markets": 0,
+   "price_per_kg": null,
+   "rank": null,
+   "staleness": {
+    "days": null,
+    "state": "none"
+   },
+   "trade_date": null
+  },
+  {
+   "area_id": "sandakan",
+   "diff_per_kg": null,
+   "distance_km": 1846,
    "is_base": false,
    "n_markets": 0,
    "price_per_kg": null,

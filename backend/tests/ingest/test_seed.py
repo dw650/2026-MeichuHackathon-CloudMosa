@@ -19,7 +19,7 @@ def test_seed_files_have_the_expected_areas_and_crops() -> None:
     assert list(seeds) == ["IN", "TW", "MY"]
     assert len(seeds["IN"].areas) == 11
     assert len(seeds["TW"].areas) == 10
-    assert len(seeds["MY"].areas) == 11
+    assert len(seeds["MY"].areas) == 75
     assert len(seeds["IN"].crops) == 21
     assert len(seeds["TW"].crops) == 21
     assert len(seeds["MY"].crops) == 20
@@ -143,7 +143,7 @@ async def test_sync_is_repeatable(session: AsyncSession) -> None:
     await sync_seed(session)
     assert await _counts(session) == first
     assert first["countries"] == 3
-    assert first["areas"] == 32
+    assert first["areas"] == 96
     assert first["crops"] == 62
     assert first["markets"] == 52
 
@@ -208,9 +208,10 @@ def _lookup(name: str) -> dict[str, dict[str, str]]:
 
 
 def test_malaysia_maps_follow_the_pricecatcher_lookups() -> None:
-    """Checked against the real lookups (tests/fixtures/my_pricecatcher): wholesale markets are
-    "Borong" premises, retail points are wet markets of the area's state and district, and every
-    item is sold per kg, so its price needs no conversion."""
+    """Checked against the real lookups (tests/fixtures/my_pricecatcher: every wet market and
+    wholesale market of lookup_premise.csv on 2026-09-20): wholesale markets are "Borong"
+    premises; each area is one district of the lookup (a federal territory as a whole) with at
+    least two wet markets; every item is sold per kg, so its price needs no conversion."""
     my = next(s for s in load_seed_files() if s.country.code == "MY")
     premises = _lookup("lookup_premise.csv")
     items = _lookup("lookup_item.csv")
@@ -221,19 +222,23 @@ def test_malaysia_maps_follow_the_pricecatcher_lookups() -> None:
         premise = premises[m.source_market]
         assert premise["premise_type"] == "Borong", m
         assert premise["district"] == area_of_market[m.market].name["en"] or m.market == "klborong"
+    wet: dict[str, int] = {}
+    for p in premises.values():
+        if p["premise_type"] == "Pasar Basah":
+            for key in (f"{p['state']}/{p['district']}", p["state"]):
+                wet[key] = wet.get(key, 0) + 1
+    assert sorted(a.area for a in maps.areas) == sorted(areas)  # one district per area
     for a in maps.areas:
-        premise = premises[a.source_area]
-        assert premise["premise_type"] == "Pasar Basah", a
+        assert wet.get(a.source_area, 0) >= 2, a
+        state, _, district = a.source_area.partition("/")
         area = areas[a.area]
-        if a.area == "kualalumpur":  # the whole federal territory
-            assert premise["state"] == "W.P. Kuala Lumpur"
-        else:
-            assert premise["district"] == area.name["en"], a
+        assert area.region["zh-TW"] == state, a
+        if district:
+            assert area.name["en"] == district, a
+        else:  # a whole federal territory
+            assert state.startswith("W.P. "), a
+            assert area.name["en"] == state.removeprefix("W.P. "), a
     for c in maps.crops:
         assert items[c.source_name]["unit"] == "1kg", c
-    # The demo uses the same items and markets, and one of those wet markets per area.
-    mock = my.source_maps["mock"]
-    assert mock.crops == maps.crops
-    assert mock.markets == maps.markets
-    assert {a.area for a in mock.areas} == set(areas)
-    assert {a.source_area for a in mock.areas} <= {a.source_area for a in maps.areas}
+    # The demo prints the same items, markets and districts.
+    assert my.source_maps["mock"] == maps
