@@ -142,7 +142,7 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
 | 讀原文（解碼 2 個請求＋發布者網頁 1–2 個請求） | 30 篇 |
 | 模型呼叫（自架、Gemini、Gemini 搜尋都算） | 30 次 |
 
-- 每個國家每次最多用「每日上限 ÷ 國家數」（兩國各 15），先處理提到地區、再來是提到作物的、較新的新聞；一則最多試兩次。沒做到的留到下一次。
+- 每個國家每次最多用「每日上限 ÷ 國家數」（台灣、印度、馬來西亞三國各 10），先處理提到地區、再來是提到作物的、較新的新聞；一則最多試兩次。沒做到的留到下一次。
 - 每天各國當地時間 00:00 各跑一次（worker）。worker 啟動時（每次部署都會重啟）只跑「沒有這個來源的新聞，或最近 24 小時內沒有成功抓過」的國家，所以部署不會重複抓。第一次跑抓 7 天（`when:7d`），之後抓 2 天（重疊一天，補延遲或失敗的那天）。
 - 手動執行：`docker compose exec worker python -m app.news --once [--country TW]`（照樣受每日額度限制）。
 - `NEWS_SOURCE=demo`：固定的示範新聞（`backend/app/ingest/news/demo.yaml`，發布者標為「示範資料」「Demo data」），不連網、不呼叫模型，`make e2e` 與 `make screenshots` 用它。切換 `google`／`demo` 時，另一種來源的新聞會先被刪掉，不會混在一起。`NEWS_SOURCE=off` 不抓新聞。

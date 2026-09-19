@@ -720,7 +720,7 @@
   - 讀原文：照 googlenewsdecoder 的做法解 Google 新聞連結（文章頁的 `data-n-a-sg`／`data-n-a-ts` → `batchexecute`）；抓發布者網頁（瀏覽器 UA、逾時、重試一次、最多 3 MB），正文依序取 JSON-LD `articleBody`、`<p>` 段落、`og:description`，最多 3,000 字。不加 trafilatura 等套件。只抓公開網址（轉址也檢查；服務名稱、localhost、內網 IP 不抓），避免 SSRF。2026-09-20 用真實連結試過：台灣 3 則讀到 2 則、印度 3 則讀到 2 則（讀不到的是 Cloudflare 驗證頁與 403）。
   - 模型順序：`SUMMARY_API_BASE`＋`SUMMARY_MODEL`（OpenAI 相容，有設定才用，逾時 300 秒）→ Gemini `GEMINI_MODEL`（預設 **`gemini-3.5-flash-lite`**：2026-09-20 查 pricing 與 models 頁，穩定版、2026-07-21 發布、未公告停用日期、免費層輸入輸出不收費、免費層沒有 grounding）。沒有原文時用 **`gemini-2.5-flash`** 加 `googleSearch` 工具（免費 grounding 每天 500 次，未公告停用日期）；它不接受 JSON Schema 與工具並用，所以用提示要求 JSON，並要求回答有引用網頁（`groundingChunks`）。
   - 回答規則：JSON；兩句以內；語言要對（台灣要有中文、印度與馬來西亞是英文）；300 字以內；作物只收該國清單的代號（Gemini 文字模型另外用 JSON Schema 的 enum 限定）。不合規則就丟掉，不重寫、不補。
-  - 額度：最近 24 小時、所有國家合計最多讀 30 篇原文、呼叫模型 30 次；每國每次最多一半（兩國時 15）；Gemini 每 7 秒最多一次。rate-limits 頁已不列免費層數字（只在 AI Studio 顯示），所以取保守的值。額度、429、金鑰錯誤、模型不存在時，這個模型在這次執行不再使用；Google 回 403／429／5xx 時不再解連結。
+  - 額度：最近 24 小時、所有國家合計最多讀 30 篇原文、呼叫模型 30 次；每國每次最多「上限 ÷ 國家數」（三國各 10）；Gemini 每 7 秒最多一次。rate-limits 頁已不列免費層數字（只在 AI Studio 顯示），所以取保守的值。額度、429、金鑰錯誤、模型不存在時，這個模型在這次執行不再使用；Google 回 403／429／5xx 時不再解連結。
   - 一則最多送兩次（`summary_tries`）；先處理提到地區、再來是提到作物的、較新的。每則記下產生摘要的模型（`summary_model`）。
   - 測試的 Gemini 與 OpenAI 相容回應是照官方文件的格式寫的（沒有金鑰，無法錄真實回應）；無效金鑰的錯誤回應是 2026-09-20 真實錄下的。
 - 理由：原文加便宜模型最省額度；沒有原文時才用搜尋；任何一步失敗都只少一個摘要，不會出現編造的內容。
@@ -745,3 +745,14 @@
   - 多列 INSERT 以第一列的欄位為準，欄位不同的列要分組寫入（`repositories/news.insert_items`）。
 - 理由：沿用既有的錯誤格式、快取標頭與型別產生流程；排序在資料庫做，前端不必知道地區的別名。
 - 影響：`backend/app/{api/v1/news.py,schemas/news.py,services/news.py,repositories/news.py,db/models.py}`、migration、`frontend/src/api/{queries.ts,schema.d.ts}`、msw fixtures 與 handlers、`tests/dump_api_fixtures.py`；docs 04 §6、§7。
+
+## 2026-09-20 N1 新聞在馬來西亞
+- 情況：rebase 到含馬來西亞 seed 與來源登記表的 main（252441d）後，馬來西亞的新聞會開始執行。馬來西亞的作物在 seed 只有中文與英文名稱，馬來文的新聞標題（harga cili、kubis、sawi…）比對不到；地區一州一個，標題多半寫州名。
+- 決定：
+  - `sources.yaml` 的 MY 加上作物的馬來文別名（kubis→甘藍、cili→辣椒、sawi→小白菜、kangkung→空心菜…）與地區的州名別名（Selangor→Klang、Pahang→Kuantan、Penang→Timur Laut、KL→Kuala Lumpur…）。
+  - 摘要語言維持英文（介面沒有馬來文）；馬來文標題帶 `lang="ms"`。
+  - 示範新聞多 4 則馬來西亞（其中一則是馬來文標題、沒有摘要），e2e 與 msw fixture 都加上馬來西亞。
+  - 新聞 migration `23655d2e487a` 改接在 `74f6aadac0c6` 之後；新聞 worker 排程接在來源登記表版的 worker 後面，沒有用回 `REAL_SOURCES`／`REFRESH_HOURS`。
+  - 國家變成三個，每國每次的額度是 30 ÷ 3 = 10。
+- 理由：馬來西亞的新聞一半是馬來文；州名是標題裡最常見的地名。
+- 影響：`backend/app/ingest/news/{sources.yaml,demo.yaml,demo.py}`、`backend/tests/news/`、`backend/tests/dump_api_fixtures.py`、`frontend/src/test/fixtures/news__area-kualalumpur_country-MY.json`、`frontend/src/screens/news/*.test.tsx`、`frontend/e2e/news.spec.ts`；docs 06 §1.6。
