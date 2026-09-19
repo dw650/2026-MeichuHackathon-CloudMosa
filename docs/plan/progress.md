@@ -88,3 +88,5 @@ T01–T39 全部完成並合併進本地 `main`（沒有 push）。**Phase 2 由
 - 先部署 demo 建置（`.env` 設 `VITE_DEMO=true`、`DEMO_MODE=true`），在 Simulator 打開 `/debug/keys`、`/debug/viewport` 與 `/api/v1/debug/headers`，照 08 §12 逐項確認並回填。最要緊的幾項：`*`、`#`、`Escape` 的 `event.key`；面板開著時按 RSK 是否只關面板；Enter 會不會觸發兩次；實際的 `innerHeight`；`X-Forwarded-For` 的格式（決定位置推測能不能用）。
 - 正式建置沒有除錯頁，`/api/v1/debug/headers` 回 404。展示時要不要保留設定裡的「Demo」開關（可以現場示範連線失敗、資料未更新），由團隊決定。
 - 在 Simulator 照 02 §7 的驗收條件完整跑一次；程式有改動時，進 Phase 2 前先跑 `make e2e`。
+- 2026-09-20 追加：作物擴充到每國 21 種，七個分類都至少 2 種（使用者要求）；新畫 13 個作物圖示；seed、msw fixtures、測試與 docs/06 §7.3–7.4 同步更新；make lint、make test（前端 481、後端 158）、make e2e（134 項）全部通過（f40073d）
+- 2026-09-20 追加：CD（加分項 B1，使用者要求提前做）：`scripts/deploy.sh`（fetch → build → 健康檢查，失敗自動回到上一個成功的 commit）與 `deploy.yml`（dw650/harrykuo1 的 main CI 通過後 SSH 部署；金鑰限定只能執行 deploy.sh）；VM 端已準備好，等 GitHub 上的 deploy key 與 secret 設好後驗證（5501221）
