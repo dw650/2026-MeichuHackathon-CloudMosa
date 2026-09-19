@@ -145,13 +145,13 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-A：資料管線（後端）
 
-- [ ] **T07 資料表**
+- [x] **T07 資料表**
   - 參考：[04](../04-architecture.md) §7
   - 內容：SQLAlchemy 模型與 Alembic migration，含全部資料表、唯一鍵、`area_daily` 的索引。
   - 測試：對測試資料庫跑 upgrade 與 downgrade 都成功；`quotes` 的唯一鍵會擋下重複資料。
   - 完成條件：測試通過；api 啟動時會自動 migrate。
 
-- [ ] **T08 Seed**
+- [x] **T08 Seed**
   - 參考：[06](../06-data.md) §7.2–§7.3；`ui-mockup/src/data.js` 的 `COUNTRIES`
   - 內容：
     - `app/seed/IN.yaml`、`TW.yaml`：國家設定、地區、市場、作物、預設關注、單位、休市日、mock 參數（`p`、`lo`、`hi`、`chg`、`arr`、`arrR`、`rt`、`k`）、來源對照表。
@@ -162,7 +162,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - 印度 11 個地區、台灣 10 個地區，每國 10 種作物。
   - 完成條件：測試通過。
 
-- [ ] **T09 Mock provider**
+- [x] **T09 Mock provider**
   - 參考：[06](../06-data.md) §7.1、§7.4；[04](../04-architecture.md) §5.2
   - 內容：
     - 依 `PriceProvider` 介面，輸出**來源格式**的原始資料：印度用 data.gov.in 欄位與 quintal；台灣用農業部欄位與民國日期。
@@ -174,13 +174,13 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - 青辣椒沒有零售資料。
   - 完成條件：測試通過。
 
-- [ ] **T10 正規化與檢查**
+- [x] **T10 正規化與檢查**
   - 參考：[06](../06-data.md) §2、§2.1
   - 內容：各來源的 `normalize`（quintal → 每公斤、民國日期轉換、對照表）與 `validate`（§2.1 的每一條規則）。
   - 測試：每一條檢查規則至少一個測試；對照不到的資料列會被記數；價格單位正確。
   - 完成條件：測試通過。
 
-- [ ] **T11 彙整、管線與 worker**
+- [x] **T11 彙整、管線與 worker**
   - 參考：[06](../06-data.md) §3.2–§3.3、§8；[04](../04-architecture.md) §2、§5.2
   - 內容：
     - upsert `quotes` → `market_daily`（同市場同天多筆取中位數）→ `area_daily`（中位數、市場數、最高、最低；零售直接寫入）。
@@ -192,7 +192,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
 
 ## Phase 1-B：服務與 API
 
-- [ ] **T12 計算服務**
+- [x] **T12 計算服務**
   - 參考：[06](../06-data.md) §3.4、§3.5、§4
   - 內容（純函式）：
     - 資料新舊判斷：today、closed、stale、none。
@@ -203,7 +203,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：每個函式的邊界情況，包括樣本不足時回傳空值、最高等於最低時位置是 0.5、休市日不算舊資料。
   - 完成條件：測試通過。開啟後端覆蓋率門檻：`app/services` 與 `app/ingest` 合計 ≥ 90%，`make test` 與 CI 都檢查。
 
-- [ ] **T13 目錄 API 與型別產生**
+- [x] **T13 目錄 API 與型別產生**
   - 參考：[04](../04-architecture.md) §6
   - 內容：
     - `GET /countries`、`/countries/{cc}/areas`、`/countries/{cc}/crops`；多語名稱用物件表示。
@@ -213,7 +213,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
   - 測試：API 測試（回應格式、不存在的國家回傳 404 與錯誤碼）。
   - 完成條件：測試通過；`make types` 產生 `frontend/src/api/schema.d.ts`；`http://localhost:8080/api/docs` 可以打開。
 
-- [ ] **T14 價格 API**
+- [x] **T14 價格 API**
   - 參考：[04](../04-architecture.md) §6；[06](../06-data.md) §3
   - 內容：
     - `GET /prices`、`/crops/{crop}/quote`、`/crops/{crop}/compare`、`/crops/{crop}/markets`、`/crops/{crop}/markets/{market}`。
@@ -223,7 +223,7 @@ git worktree add ../<repo 資料夾名>-fe -b track/frontend main
     - quote 回應和 §6 的範例欄位一致。
   - 完成條件：測試通過；重新產生前端型別。
 
-- [ ] **T15 位置推測與 demo 標頭**
+- [x] **T15 位置推測與 demo 標頭**
   - 參考：[04](../04-architecture.md) §3、§6.2；[06](../06-data.md) §6
   - 內容：
     - 從 `X-Client-Forwarded-For` 取最左邊的公開 IP。

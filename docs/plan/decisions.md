@@ -135,3 +135,97 @@
 - 決定：`store/settings.ts` 載入時套用一次，之後訂閱 `language` 的變化（包括重新 rehydrate）；`null`（還沒選，或資料被重設）時用手機語言，和 i18n 初始化相同。
 - 理由：只要載入 store 就生效，不必在 `main.tsx` 另外接線；副作用不放進 `lib/`。
 - 影響：`frontend/src/store/settings.ts`。
+## 2026-09-19 T07 資料表的補充欄位與零售對照
+- 情況：04 §7 只列主要欄位。零售資料沒有市場，`source_market_map` 對照不到地區；`quotes` 的唯一鍵（來源、市場、作物、品種、交易日）遇到零售列時市場是空值。
+- 決定：
+  - 新增 `source_area_map`（來源的回報中心或城市 → 地區），給零售資料用。
+  - `quotes` 唯一鍵改成（來源、價格類型、地區、市場、作物、品種、交易日），並設 `NULLS NOT DISTINCT`；批發列的市場決定地區，所以等同文件的鍵，零售列也能擋重複。品種空白存成 `''`。
+  - `countries` 另外存名稱、涵蓋範圍、預設最近地區、地區名稱後綴（「 縣」）、代表價名稱（常見價／平均價）、單位表（JSONB）；`closed_weekdays` 用 ISO 星期（1＝週一…7＝週日）。
+  - `crops.has_retail`、`markets.sort`、`ingest_runs.drop_reasons`（各原因的丟棄筆數）、`quotes.country`、`market_daily.country／area_id／fetched_at`、`area_daily.country`。
+  - 除了文件要求的 `ix_area_daily_lookup`，另加 `ix_area_daily_compare`（國家、作物、類型、日期），給比價查詢用。
+  - 用 CHECK 限制價格類型、代表價 > 0、「批發一定有市場、零售一定沒有」。
+- 理由：API 需要的國家設定都能從資料庫讀；零售與批發走同一條管線。
+- 影響：`backend/app/db/models.py`、`backend/app/db/migrations/versions/`。改欄位要新增 migration。
+
+## 2026-09-19 T08 Seed 檔的結構
+- 情況：06 §7.3 說基準價 `p`「seed 時換成每公斤」，但 06 §7.1 又要求 mock 輸出來源格式（印度用 quintal）。另外 mock 的例外情境（地區、市場、作物的資料延遲）文件沒寫要放哪裡。
+- 決定：
+  - mock 參數放在 seed YAML 各項目的 `mock` 區塊，單位跟來源一致（印度 ₹／quintal、台灣元／公斤），由 mock provider 直接讀；換成每公斤是在正規化這一步。資料庫只存目錄（國家、地區、市場、作物、對照表），不存 mock 參數。
+  - 例外情境用 `lag`（比今天晚幾天，`null`＝完全沒有資料）表示，放在地區、市場、作物的 `mock` 區塊。
+  - 對照表放在 `source_maps.<來源>`。mock 產生原始資料時，名稱反查自同一份對照表，所以一定對得上，正規化仍然完整跑對照。
+  - 同步時刪除 seed 裡已經沒有的地區、市場、作物（連帶刪除相關資料），對照表整批替換，所以重跑結果相同。
+  - 新增 `countries.source_label`（關於頁的資料來源名稱），用第二個 migration 補上。
+- 理由：mock 和真實資料走同一條管線；加國家＝加一個 YAML 檔。
+- 影響：`backend/app/seed/`、`backend/app/ingest/seed.py`、`backend/app/repositories/catalog.py`。
+
+## 2026-09-19 T09 Mock 原始資料的格式與產生細節
+- 情況：06 §7 規定 mock 輸出來源格式，但零售來源（DoCA、物價查報）的格式還是【待確認】；data.gov.in 沒有到貨量；文件也沒寫市場的 ±2% 是每天不同還是固定、到貨量怎麼分到各市場、今天休市時基準價落在哪天。
+- 決定：
+  - 印度批發用 data.gov.in 的欄位（`state`、`district`、`market`、`commodity`、`variety`、`grade`、`arrival_date` dd/mm/yyyy、`min_price`／`max_price`／`modal_price` 字串、₹／quintal），另外加一個 mock 專用的 `arrival_qtl`；接真實資料後沒有這欄，到貨量就顯示「—」。
+  - 台灣批發用 FarmTransData 的欄位（`交易日期` 民國日期、`作物名稱`「甘藍-初秋」、`市場名稱`、`上價`／`中價`／`下價`／`平均價`、`交易量` 公斤）。
+  - 零售先自訂接近來源的格式：印度 `centre`、`commodity`、`date`、`retail_price`（₹／公斤）；台灣 `調查日期`、`縣市`、`品項`、`零售價`（元／公斤）。
+  - 每列多兩個 mock 專用的欄位 `_country`、`_type`（wholesale／retail），讓同一個 provider 可以涵蓋兩國兩種價格。
+  - 市場的 ±2%、零售的 ±2.5%、隨機漫步都用「國家、作物、市場或地區、日期」當種子，每天不同但重跑相同。
+  - 「今天」如果是休市日，基準價落在今天以前最近的交易日。
+  - 到貨量是地區層級：最新交易日＝`arr`，前 7 個交易日的平均剛好是 `arr ÷ arrR`，再平均分給地區內的各市場。
+- 理由：照文件的規則，缺的部分選最簡單、之後好換成真實格式的做法。
+- 影響：`backend/app/ingest/providers/mock.py`。接上真實零售來源（B4）時換掉零售格式即可。
+
+## 2026-09-19 T10 檢查規則的細節
+- 情況：06 §2.1 的「價格 ≤ 0」沒說是否包含最低、最高價；「同國同作物當天中位數」沒說是否分批發與零售；也沒寫格式錯誤的列怎麼算。
+- 決定：
+  - 只有代表價 ≤ 0 或缺漏才丟掉整列；最低或最高價 ≤ 0 時保留代表價、清掉區間。
+  - 離群值的中位數依（國家、作物、價格類型、交易日）分組，批發與零售分開算。
+  - 檢查順序：缺值與 ≤ 0 → 區間顛倒 → 日期（未來、60 天以前）→ 去重（後到的覆蓋先到的，另外記重複筆數）→ 離群值。
+  - 讀不懂的列（例如日期格式錯）記為 `malformed`，對照不到的記為 `unmapped`，和其他丟棄原因一起記數。
+- 理由：少丟資料、不讓零售價被當成批發價的離群值；去重後再算中位數，重複列不會影響判斷。
+- 影響：`backend/app/ingest/validate.py`、`backend/app/ingest/normalize.py`。
+
+## 2026-09-19 T11 管線與 worker 的細節
+- 情況：06 §8 只寫 mock「啟動時一次、每天 00:05（當地）」，但 mock 同時涵蓋兩個時區；04 §7 沒寫零售列的市場數、同市場多筆時的交易量怎麼算。
+- 決定：
+  - 每次執行都同步 seed 並跑全部已啟用的 provider，各國用自己的「今天」；排程是兩個 job，分別在印度與台灣當地 00:05 執行（結果相同，只是讓兩國都在自己換日後更新）。
+  - 彙整只重算這次受影響的日期：先刪掉該國那些日期的 `market_daily`、`area_daily`，再從 `quotes` 重算，所以重跑結果相同。同市場同天多筆時，價格取中位數、交易量取總和；零售列的 `n_markets` 記 0。
+  - `quotes` 用 COPY 寫進暫存表，再一次 `INSERT … ON CONFLICT` 合併（2.6 萬列從約 6 秒降到 0.6 秒）。
+  - `rows_in = rows_ok + rows_dropped`；重複列也算進 `rows_dropped`，並在 `drop_reasons` 記為 `duplicate`。
+  - 抓取失敗時整批 rollback（舊資料不動），`ingest_runs` 記 `failed` 與錯誤訊息；`/api/v1/health` 列出各來源最近一次成功的時間。
+  - `PROVIDERS` 裡還沒實作的來源（`tw_moa`、`in_datagov`）只記警告並略過。
+  - worker 等 api healthy（已經 migrate）才啟動；`make seed` 用 `docker compose run --rm worker python -m app.worker --once`。
+- 理由：一條管線、重跑結果相同、失敗不影響舊資料。
+- 影響：`backend/app/ingest/pipeline.py`、`backend/app/repositories/ingest.py`、`backend/app/worker.py`、`compose.yaml`、`Makefile`。
+
+## 2026-09-19 T12 指標的計算區間與樣本數
+- 情況：06 §3.4 沒寫「最近 7 天」「30 日」是以最新交易日還是今天為終點，也沒寫樣本多少才算足夠；到貨量在有市場漏報時會被低估。
+- 決定：
+  - 所有區間都以後端算的「今天」為終點（今天往回 7 或 30 個日曆日），和走勢圖一致；舊資料的地區在區間內資料少時，指標自然變成空值。
+  - 比 7 日均價、30 日位置、波動至少要 2 天有資料，否則為空值（畫面顯示「—」）。
+  - 到貨量用「每個有報價市場的平均交易量」計算比值，避免某市場漏報時看起來像到貨減少。
+  - 漲跌比率先四捨五入到 12 位小數再和 0.05% 比較，避免浮點誤差把剛好 0.05% 判成持平。
+  - 比價名次用競賽排名（1、2、2、4），價格先四捨五入到 4 位小數（資料庫精度）再比；有報價但是舊資料的地區仍然排名，只標示新舊。
+- 理由：畫面上的數字和走勢圖對得起來；資料不足就顯示「—」，不補值。
+- 影響：`backend/app/services/stats.py`、`freshness.py`、`compare.py`。
+
+## 2026-09-19 T14 價格 API 的細節
+- 情況：04 §6 列了端點與 quote 範例，但沒寫 `/prices` 裡不存在的作物怎麼辦、「本地區 N 個市場」的 N 是哪個數、到貨量與波動要不要附數值、資料時間用哪個時區。
+- 決定：
+  - `/prices` 的 `crops` 裡不存在的作物直接略過（首頁不會因為關注清單裡有一個舊作物就整頁 404）；地區不存在仍回 404 `area_not_found`。單一作物的端點遇到不存在的作物回 404 `crop_not_found`，市場回 `market_not_found`，國家回 `country_not_found`。
+  - quote 的 `markets` 同時給 `count`（最新交易日有報價的市場數，用在「{n} 個市場中位數」）與 `total`（地區全部市場數，用在「本地區 {N} 個市場」卡片），`min_per_kg`／`max_per_kg` 只算最新交易日有報價的市場。
+  - `stats` 除了文件範例的欄位，另外給 `volatility_pct`、`arrivals_ratio`、`high30_per_kg`、`low30_per_kg`、`change7_pct`、`change30_pct`，給走勢頁與「▲18%」用。
+  - `fetched_at` 換成該國的時區偏移（例：`+05:30`），前端直接顯示字串裡的時間。
+  - 比價列預設依價格高到低、沒有資料的排最後、同價依距離；名次由後端算，不受前端排序影響。
+  - 各市場列表的每個市場用它自己 30 天內最新的價格（附新舊），差額是和地區中位數比。
+  - 零售沒有 `markets` 端點；quote 在零售時 `markets` 為 null、`arrivals` 為 null。
+  - 所有價格端點加 `Cache-Control: public, max-age=60`；demo 模式另外加 `Vary: X-Demo-Fail, X-Demo-Stale`。服務層留一個 `Demo` 參數（地區往前推 N 天），T15 接上標頭。
+  - pytest 的 coverage 設定 `concurrency = ["greenlet", "thread"]`：SQLAlchemy async 用 greenlet 切換，不設定的話 `await` 之後的程式會被當成沒執行。
+- 理由：前端需要的數值都由後端算好；缺的資料一律回 null 與原因。
+- 影響：`backend/app/services/prices.py`、`backend/app/schemas/prices.py`、`backend/app/api/v1/prices.py`、`backend/pyproject.toml`。
+
+## 2026-09-19 T15 位置推測與 demo 標頭的細節
+- 情況：04 §3、§6.2 定了標頭與 300 km 門檻，但沒寫「公開 IP」的範圍、demo 標頭的格式細節與作用範圍、`/locate` 的快取。
+- 決定：
+  - 「公開 IP」＝Python `ipaddress` 的 `is_global`：私有網段、迴路、鏈結本地、電信級 NAT（100.64.0.0/10）、文件用網段都略過，從最左邊找第一個公開位址；可以處理 IPv6、`[IPv6]:port`、`IPv4:port`。
+  - `/locate` 只回 `country`、`area_id`（名稱由前端從地區清單取），並加 `Cache-Control: private, no-store`，因為答案因人而異。IP 不存、不寫日誌。
+  - 查詢介面 `GeoLookup` 可替換；預設讀 mmdb（DB-IP Lite City，`make geoip` 下載，compose 把 `infra/geoip/` 唯讀掛進 api），檔案不存在就用永遠推測不到的 `NullLookup`。DB-IP Lite 的授權是 CC BY 4.0，若在正式環境使用，「關於與資料說明」要加註「IP Geolocation by DB-IP」。
+  - demo 標頭只在 `DEMO_MODE=true` 時解析：`X-Demo-Fail: 1` 只讓價格類端點回 503 `demo_failure`（目錄、健康檢查、`/locate` 不受影響）；`X-Demo-Stale: 地區:天數`（可用逗號放多個，天數 1–60，格式錯的忽略），同時影響價格端點與地區清單的新舊；`X-Demo-IP` 取代轉發位址；`X-Demo-Locate: IN:nashik` 或 `none` 直接指定結果（地區必須存在，否則視為推測不到）。
+- 理由：照文件的規則，細節選最簡單而且能在 demo 時重現每種狀態的做法。
+- 影響：`backend/app/services/locate.py`、`backend/app/services/demo.py`、`backend/app/deps.py`、`infra/geoip/README.md`、`scripts/fetch-geoip.sh`。

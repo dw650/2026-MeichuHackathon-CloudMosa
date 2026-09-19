@@ -26,6 +26,10 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://${POSTGRES_USER:-agri}:${POSTGRES_PASSWORD:-agri-local-only}@db:5432/${POSTGRES_DB:-agri}}
       DEMO_MODE: ${DEMO_MODE:-false}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GEOIP_DB_PATH: ${GEOIP_DB_PATH:-/data/geoip/city.mmdb}
+    volumes:
+      # Optional IP database for /locate (see infra/geoip/README.md); never in Git.
+      - ./infra/geoip:/data/geoip:ro
     depends_on:
       db:
         condition: service_healthy
@@ -35,6 +39,21 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+
+  worker:
+    build: ./backend
+    command: ["python", "-m", "app.worker"]
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://${POSTGRES_USER:-agri}:${POSTGRES_PASSWORD:-agri-local-only}@db:5432/${POSTGRES_DB:-agri}}
+      PROVIDERS: ${PROVIDERS:-mock}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      db:
+        condition: service_healthy
+      # The api runs the migrations before it reports healthy.
+      api:
+        condition: service_healthy
 
   web:
     build:

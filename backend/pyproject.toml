@@ -5,11 +5,14 @@ description = "Agricultural price API and ingest worker"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.0",
+    "apscheduler>=3.11,<4",
     "fastapi>=0.141.1",
+    "geoip2>=5.3.0",
     "httpx>=0.28.1",
     "psycopg[binary]>=3.3.6",
     "pydantic>=2.13.5",
     "pydantic-settings>=2.15.0",
+    "pyyaml>=6.0.3",
     "sqlalchemy[asyncio]>=2.0.54",
     "uvicorn[standard]>=0.53.0",
 ]
@@ -21,6 +24,7 @@ dev = [
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
     "ruff>=0.16.8",
+    "types-pyyaml>=6.0.12.20260906",
 ]
 
 [tool.uv]
@@ -46,9 +50,16 @@ files = ["app", "tests"]
 exclude = ["app/db/migrations/versions/"]
 
 [[tool.mypy.overrides]]
+# APScheduler 3 ships no type information.
+module = ["apscheduler.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
 module = ["tests.*"]
 disallow_untyped_defs = false
 disallow_incomplete_defs = false
+# pytest.approx inside tuples is fine at runtime but trips strict equality checks.
+disable_error_code = ["comparison-overlap"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -58,6 +69,8 @@ addopts = "-p no:cacheprovider"
 
 [tool.coverage.run]
 source = ["app"]
+# SQLAlchemy's asyncio layer switches greenlets; without this, lines after `await` look unrun.
+concurrency = ["greenlet", "thread"]
 omit = ["app/db/migrations/*"]
 
 [tool.coverage.report]
