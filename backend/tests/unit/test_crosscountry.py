@@ -173,9 +173,11 @@ def test_only_a_crop_with_a_published_series_gets_a_world_row() -> None:
 
 def test_a_world_row_without_a_month_or_a_rate_says_why() -> None:
     empty = world_row("rice", None, None, "mt", TWD)
-    assert empty is not None and (empty.price_per_kg, empty.reason) == (None, "no_data")
+    assert empty is not None
+    assert (empty.price_per_kg, empty.reason) == (None, "no_data")
     unrated = world_row("sugarcane", date(2026, 8, 1), 0.5, "kg", None)
-    assert unrated is not None and (unrated.price_per_kg, unrated.reason) == (None, "no_fx")
+    assert unrated is not None
+    assert (unrated.price_per_kg, unrated.reason) == (None, "no_fx")
 
 
 def test_the_world_row_rate_counts_towards_the_note_date() -> None:

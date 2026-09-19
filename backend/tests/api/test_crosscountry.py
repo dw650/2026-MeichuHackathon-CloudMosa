@@ -84,8 +84,10 @@ async def test_a_crop_with_a_world_bank_series_gets_the_world_price(
     assert world is not None
     assert world["series_id"] == "wheat"
     assert world["month"] is not None
-    assert world["usd"] is not None and world["usd_unit"] in ("mt", "kg")
-    assert world["price_per_kg"] is not None and world["reason"] is None
+    assert world["usd"] is not None
+    assert world["usd_unit"] in ("mt", "kg")
+    assert world["price_per_kg"] is not None
+    assert world["reason"] is None
 
 
 async def test_a_crop_without_a_series_has_no_world_price(api: httpx.AsyncClient) -> None:

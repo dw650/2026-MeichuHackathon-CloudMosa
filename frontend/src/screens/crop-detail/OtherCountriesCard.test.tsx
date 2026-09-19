@@ -14,7 +14,8 @@ const section = () => {
   return head?.parentElement ?? document.body
 }
 /** A card by the name on it. */
-const row = (name: string) => screen.getByText(name).closest('[class*="card"]') ?? document.body
+const row = (name: string) =>
+  screen.getByText(name).closest<HTMLElement>('[class*="card"]') ?? document.body
 
 function serve(others: unknown) {
   server.use(
