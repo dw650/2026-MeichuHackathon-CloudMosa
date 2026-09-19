@@ -4,7 +4,7 @@
  */
 import type { Page } from '@playwright/test'
 
-import { type Country, type Lang, seed, settled } from './app'
+import { type Country, type Lang, seed, settled, waitForNews } from './app'
 import { expect, expectCleanScreen, test } from './checks'
 
 async function press(page: Page, key: string) {
@@ -182,6 +182,7 @@ test('international prices by key only: menu → list → a series → back', as
 
 test('news by key: menu → 新聞 → an item → 1 (its crop) → back', async ({ page, errors }) => {
   await seed(page, { country: 'TW', lang: 'zh-TW' })
+  await waitForNews(page, 'TW', 'taipei')
   await page.goto('/')
   await step(page, errors, /^\/$/)
   await press(page, 'Escape')

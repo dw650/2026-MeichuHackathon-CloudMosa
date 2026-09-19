@@ -5,7 +5,7 @@
  */
 import type { Page } from '@playwright/test'
 
-import { type AppState, seed, settled } from './app'
+import { type AppState, seed, settled, waitForNews } from './app'
 import { expect, expectCleanScreen, test } from './checks'
 
 interface NewsList {
@@ -32,6 +32,7 @@ for (const c of cases) {
   test.describe(`news ${c.name}`, () => {
     test('/news', async ({ page, errors }) => {
       await seed(page, c.state)
+      await waitForNews(page, c.state.country ?? 'IN', c.area)
       await page.goto('/news')
       await settled(page)
       await expect(page.locator('[data-focus-id^="news:"]').first()).toBeFocused()
@@ -40,6 +41,7 @@ for (const c of cases) {
 
     test('/news/:id', async ({ page, errors }) => {
       await seed(page, c.state)
+      await waitForNews(page, c.state.country ?? 'IN', c.area)
       const ids = await newsIds(page, c.state.country ?? 'IN', c.area)
       expect(ids.length).toBeGreaterThan(1)
       for (const id of ids) {
