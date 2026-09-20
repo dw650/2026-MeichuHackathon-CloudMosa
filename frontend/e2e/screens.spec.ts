@@ -89,7 +89,7 @@ const cases: { name: string; state: AppState; paths: string[]; locale?: string }
       '/cat/leafy',
       '/cat/fruitveg',
       '/crop/cabbage/today',
-      // Nearby prices on both sides (Taipei higher, Taoyuan lower).
+      // Nearby prices on both sides (Taipei higher, Changhua lower; 150 km radius).
       '/crop/cabbage/today?area=newtaipei',
       '/crop/cabbage/trend',
       '/crop/cabbage/compare',
