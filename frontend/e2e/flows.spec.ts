@@ -171,7 +171,7 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   page,
   errors,
 }) => {
-  // Around New Taipei: Taipei (11 km) pays more, Taoyuan (16 km) less.
+  // Around New Taipei: Taipei (11 km) pays more, Changhua (139 km, inside 150 km) less.
   await seed(page, { country: 'TW' })
   await page.goto('/crop/cabbage/today?area=newtaipei')
   await step(page, errors, /^\/crop\/cabbage\/today\?area=newtaipei$/)
@@ -185,9 +185,9 @@ test('nearby prices: ↓ reaches both cards and a digit opens that area', async 
   expect(await focusedId(page)).toBe('nearby-low')
   await expectCleanScreen(page, errors)
 
-  // 3 opens the lowest nearby area (Taoyuan) on its 行情 tab, like the compare tab does.
+  // 3 opens the lowest nearby area (Changhua) on its 行情 tab, like the compare tab does.
   await press(page, '3')
-  await step(page, errors, /^\/crop\/cabbage\/today\?area=taoyuan$/)
+  await step(page, errors, /^\/crop\/cabbage\/today\?area=changhua$/)
   await page.goBack()
   await step(page, errors, /^\/crop\/cabbage\/today\?area=newtaipei$/)
   await expect.poll(() => focusedId(page)).toBe('nearby-low')
