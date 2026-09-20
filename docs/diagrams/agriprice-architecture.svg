@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title description"><title id="title">AgriPrice 系統架構與資料流程</title><desc id="description">按鍵手機透過 CloudMosa 雲端 Chromium 執行 React。Caddy 轉發請求至 FastAPI，後者查詢 PostgreSQL。Worker 抓取台灣、印度、馬來西亞行情、世界銀行月資料、匯率與新聞，整理後寫入資料庫。Gemini 處理新聞摘要與作物標註。</desc><defs><marker id="blue" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#2969A7"/></marker><marker id="orange" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#B66A1D"/></marker><marker id="purple" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#8154AE"/></marker><marker id="grey" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#7A8F82"/></marker></defs><style>text { font-family: "Noto Sans CJK TC", "Microsoft JhengHei", "PingFang TC", sans-serif; }</style><rect x="0" y="0" width="1920" height="1080" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<g transform="translate(63 62)"><path d="M19 46V20M19 30C3 28 2 13 4 7C18 8 23 17 19 30ZM19 21C19 6 30 1 36 2C37 15 29 23 19 21Z" fill="#DCECE0" stroke="#146C43" stroke-width="3" stroke-linejoin="round"/></g>
+<text x="117" y="105" font-size="44" fill="#183C2B" font-weight="700" text-anchor="start">AgriPrice 系統架構與資料流程</text>
+<text x="118" y="147" font-size="23" fill="#6B7F73" font-weight="400" text-anchor="start">按鍵查詢、背景資料更新與 Gemini 新聞摘要</text>
+<rect x="1564" y="77" width="298" height="44" rx="22" fill="#EEF5EF" stroke="none" stroke-width="1.5"/>
+<text x="1713" y="106" font-size="20" fill="#146C43" font-weight="700" text-anchor="middle">Cloud Phone × 開放資料</text>
+<rect x="56" y="200" width="388" height="740" rx="24" fill="#F7FAF8" stroke="#DDE7DF" stroke-width="1.5"/>
+<rect x="472" y="200" width="960" height="740" rx="24" fill="#FFFFFF" stroke="#CCDCD1" stroke-width="2"/>
+<rect x="1460" y="200" width="404" height="740" rx="24" fill="#F8FAFC" stroke="#DEE5EB" stroke-width="1.5"/>
+<text x="81" y="245" font-size="25" fill="#183C2B" font-weight="700" text-anchor="start">使用端</text>
+<text x="498" y="245" font-size="25" fill="#183C2B" font-weight="700" text-anchor="start">應用伺服器</text>
+<rect x="681" y="215" width="174" height="40" rx="12" fill="#EEF5EF" stroke="none" stroke-width="1.5"/>
+<text x="768" y="242" font-size="18" fill="#146C43" font-weight="700" text-anchor="middle">Docker Compose</text>
+<text x="1485" y="245" font-size="25" fill="#183C2B" font-weight="700" text-anchor="start">外部資料與 AI</text>
+<rect x="76" y="316" width="348" height="237" rx="18" fill="#EEF5F0" stroke="#CCDCD1" stroke-width="1.5"/>
+<text x="250" y="351" font-size="20" fill="#435A4D" font-weight="700" text-anchor="middle">CloudMosa 雲端 Chromium</text>
+<path d="M 176,728 L 176,553" fill="none" stroke="#7A8F82" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<path d="M 320,553 L 320,728" fill="none" stroke="#7A8F82" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<path d="M 406,412 L 510,412" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 510,485 L 406,485" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 700,412 L 784,412" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 784,485 L 700,485" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 855,528 L 855,713" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 981,714 L 981,528" fill="none" stroke="#2969A7" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 1484,598 L 1277,598 L 1277,710" fill="none" stroke="#B66A1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#orange)" marker-start="url(#orange)"/>
+<path d="M 1150,815 L 1039,815" fill="none" stroke="#B66A1D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#orange)"/>
+<path d="M 1404,777 L 1484,777" fill="none" stroke="#8154AE" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#purple)"/>
+<path d="M 1484,841 L 1404,841" fill="none" stroke="#8154AE" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#purple)"/>
+<rect x="94" y="378" width="312" height="150" rx="16" fill="#F2F8FE" stroke="#BFD3E6" stroke-width="1.5"/>
+<ellipse cx="134" cy="423" rx="25" ry="9" fill="none" stroke="#2969A7" stroke-width="2" transform="rotate(0 134 423)"/>
+<ellipse cx="134" cy="423" rx="25" ry="9" fill="none" stroke="#2969A7" stroke-width="2" transform="rotate(60 134 423)"/>
+<ellipse cx="134" cy="423" rx="25" ry="9" fill="none" stroke="#2969A7" stroke-width="2" transform="rotate(120 134 423)"/>
+<ellipse cx="134" cy="423" rx="4" ry="4" fill="#2969A7" stroke="none" stroke-width="1.5" transform="rotate(0 134 423)"/>
+<text x="178" y="435" font-size="36" fill="#225C92" font-weight="700" text-anchor="start">React</text>
+<text x="118" y="472" font-size="21" fill="#435A4D" font-weight="400" text-anchor="start">TypeScript + Vite</text>
+<text x="118" y="507" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">行情・走勢・比價・新聞</text>
+<rect x="94" y="728" width="312" height="150" rx="16" fill="#FFFFFF" stroke="#D2DFD6" stroke-width="1.5"/>
+<rect x="120" y="753" width="52" height="95" rx="10" fill="#F2F6F3" stroke="#5B7965" stroke-width="2.5"/>
+<rect x="128" y="764" width="36" height="29" rx="3" fill="#D8E9DC" stroke="#9BB3A2" stroke-width="1.5"/>
+<ellipse cx="146" cy="805" rx="5" ry="5" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 146 805)"/>
+<ellipse cx="133" cy="818" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 133 818)"/>
+<ellipse cx="146" cy="818" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 146 818)"/>
+<ellipse cx="159" cy="818" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 159 818)"/>
+<ellipse cx="133" cy="827" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 133 827)"/>
+<ellipse cx="146" cy="827" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 146 827)"/>
+<ellipse cx="159" cy="827" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 159 827)"/>
+<ellipse cx="133" cy="836" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 133 836)"/>
+<ellipse cx="146" cy="836" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 146 836)"/>
+<ellipse cx="159" cy="836" rx="2.2" ry="2.2" fill="#5B7965" stroke="none" stroke-width="1.5" transform="rotate(0 159 836)"/>
+<text x="190" y="788" font-size="26" fill="#183C2B" font-weight="700" text-anchor="start">按鍵型手機</text>
+<text x="190" y="826" font-size="21" fill="#6B7F73" font-weight="400" text-anchor="start">農夫／商販</text>
+<ellipse cx="512" cy="318" rx="5" ry="5" fill="#2969A7" stroke="none" stroke-width="1.5" transform="rotate(0 512 318)"/>
+<text x="527" y="325" font-size="21" fill="#2969A7" font-weight="700" text-anchor="start">使用者查詢</text>
+<text x="1025" y="325" font-size="20" fill="#6B7F73" font-weight="400" text-anchor="end">/api/v1</text>
+<rect x="510" y="378" width="190" height="150" rx="16" fill="#F4F8F5" stroke="#C9DACF" stroke-width="1.5"/>
+<rect x="531" y="400" width="37" height="37" rx="10" fill="#E1EFE6" stroke="none" stroke-width="1.5"/>
+<text x="549.5" y="427" font-size="25" fill="#236A49" font-weight="700" text-anchor="middle">C</text>
+<text x="578" y="433" font-size="29" fill="#236A49" font-weight="700" text-anchor="start">Caddy</text>
+<text x="534" y="473" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">靜態網頁服務</text>
+<text x="534" y="506" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">API 反向代理</text>
+<rect x="784" y="378" width="255" height="150" rx="16" fill="#EFF8F3" stroke="#B7D6C2" stroke-width="1.5"/>
+<g transform="translate(804 403)"><circle cx="17.5" cy="17.5" r="17.5" fill="#20805B"/><path d="M20 5L9 20H16L14 31L27 15H19Z" fill="#FFFFFF"/></g>
+<text x="850" y="434" font-size="34" fill="#196B48" font-weight="700" text-anchor="start">FastAPI</text>
+<text x="808" y="473" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">Python / REST API</text>
+<text x="808" y="506" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">查詢、統計、比價</text>
+<text x="514" y="672" font-size="28" fill="#183C2B" font-weight="700" text-anchor="start">查詢與更新</text>
+<text x="514" y="716" font-size="28" fill="#183C2B" font-weight="700" text-anchor="start">分開執行</text>
+<text x="514" y="763" font-size="19" fill="#6B7F73" font-weight="400" text-anchor="start">API 讀取已整理的資料</text>
+<text x="514" y="796" font-size="19" fill="#6B7F73" font-weight="400" text-anchor="start">Worker 排程更新資料</text>
+<path d="M784,734 C784,702.0 1039,702.0 1039,734 L1039,872 C1039,904.0 784,904.0 784,872 Z" fill="#EFF5FB" stroke="#9AB8D3" stroke-width="2"/>
+<ellipse cx="911.5" cy="734" rx="127.5" ry="24" fill="#DCEAF7" stroke="#9AB8D3" stroke-width="2"/>
+<text x="911.5" y="788" font-size="32" fill="#285F8B" font-weight="700" text-anchor="middle">PostgreSQL</text>
+<text x="911.5" y="823" font-size="20" fill="#435A4D" font-weight="400" text-anchor="middle">SQLAlchemy 2</text>
+<text x="911.5" y="860" font-size="20" fill="#435A4D" font-weight="400" text-anchor="middle">行情・匯率・新聞</text>
+<rect x="1150" y="710" width="254" height="186" rx="16" fill="#FFF8ED" stroke="#E8CB9E" stroke-width="1.5"/>
+<g transform="translate(1174 735)"><circle cx="15.5" cy="15.5" r="13" fill="none" stroke="#B66A1D" stroke-width="2.5"/><path d="M15.5 7V16L22 20" fill="none" stroke="#B66A1D" stroke-width="2.5" stroke-linecap="round"/></g>
+<text x="1218" y="765" font-size="34" fill="#985716" font-weight="700" text-anchor="start">Worker</text>
+<text x="1174" y="804" font-size="18" fill="#435A4D" font-weight="400" text-anchor="start">Python + APScheduler</text>
+<text x="1174" y="840" font-size="19" fill="#435A4D" font-weight="400" text-anchor="start">HTTPX · 排程抓取</text>
+<text x="1174" y="874" font-size="18" fill="#435A4D" font-weight="400" text-anchor="start">正規化 → 檢查 → 彙整</text>
+<rect x="1484" y="278" width="356" height="400" rx="16" fill="#FFFFFF" stroke="#D8E2E9" stroke-width="1.5"/>
+<text x="1508" y="316" font-size="24" fill="#183C2B" font-weight="700" text-anchor="start">API 與開放資料</text>
+<ellipse cx="1513" cy="350" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 350)"/>
+<text x="1530" y="356" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">台灣農業部</text>
+<text x="1530" y="379" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">FarmTransData API · 批發行情</text>
+<ellipse cx="1513" cy="402" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 402)"/>
+<text x="1530" y="408" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">印度 Agmarknet</text>
+<text x="1530" y="431" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">行情 API · 批發市場</text>
+<ellipse cx="1513" cy="454" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 454)"/>
+<text x="1530" y="460" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">馬來西亞 PriceCatcher</text>
+<text x="1530" y="483" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">CSV · 市場報價</text>
+<ellipse cx="1513" cy="506" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 506)"/>
+<text x="1530" y="512" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">World Bank Pink Sheet</text>
+<text x="1530" y="535" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">XLSX · 國際月均價</text>
+<ellipse cx="1513" cy="558" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 558)"/>
+<text x="1530" y="564" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">ExchangeRate-API</text>
+<text x="1530" y="587" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">JSON · 匯率</text>
+<ellipse cx="1513" cy="610" rx="3" ry="3" fill="#92A5B5" stroke="none" stroke-width="1.5" transform="rotate(0 1513 610)"/>
+<text x="1530" y="616" font-size="20" fill="#435A4D" font-weight="700" text-anchor="start">Google News</text>
+<text x="1530" y="639" font-size="16" fill="#6B7F73" font-weight="400" text-anchor="start">RSS + 新聞原文</text>
+<rect x="1484" y="738" width="356" height="158" rx="16" fill="#F5EFFC" stroke="#CAB5E0" stroke-width="1.5"/>
+<g transform="translate(1507 759)"><path d="M18 0C20.5 11 25 15.5 36 18C25 20.5 20.5 25 18 36C15.5 25 11 20.5 0 18C11 15.5 15.5 11 18 0Z" fill="#8154AE"/></g>
+<text x="1555" y="790" font-size="32" fill="#704299" font-weight="700" text-anchor="start">Gemini API</text>
+<text x="1508" y="835" font-size="23" fill="#435A4D" font-weight="400" text-anchor="start">新聞摘要與作物標註</text>
+<text x="1508" y="873" font-size="19" fill="#6B7F73" font-weight="400" text-anchor="start">讀取原文後產生摘要</text>
+<rect x="127.0" y="627" width="98.0" height="32" rx="7" fill="#F7FAF8" stroke="none" stroke-width="1.5"/>
+<text x="176" y="650" font-size="20" fill="#7A8F82" font-weight="400" text-anchor="middle">按鍵操作</text>
+<rect x="271.0" y="627" width="98.0" height="32" rx="7" fill="#F7FAF8" stroke="none" stroke-width="1.5"/>
+<text x="320" y="650" font-size="20" fill="#7A8F82" font-weight="400" text-anchor="middle">畫面更新</text>
+<rect x="425.96875" y="378" width="64.0625" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="458" y="399" font-size="18" fill="#2969A7" font-weight="400" text-anchor="middle">HTTP</text>
+<rect x="404.234375" y="492" width="107.53125" height="28" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="458" y="511" font-size="16" fill="#2969A7" font-weight="400" text-anchor="middle">網頁／JSON</text>
+<rect x="719.1953125" y="378" width="45.609375" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="742" y="399" font-size="18" fill="#2969A7" font-weight="400" text-anchor="middle">API</text>
+<rect x="710.9375" y="491" width="62.125" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="742" y="511" font-size="17" fill="#2969A7" font-weight="400" text-anchor="middle">JSON</text>
+<rect x="809.046875" y="604" width="91.90625" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="855" y="625" font-size="18" fill="#2969A7" font-weight="400" text-anchor="middle">SQL 查詢</text>
+<rect x="936.0" y="604" width="90.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="981" y="625" font-size="18" fill="#2969A7" font-weight="400" text-anchor="middle">查詢結果</text>
+<rect x="1300.0" y="564" width="144.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1372" y="585" font-size="18" fill="#B66A1D" font-weight="400" text-anchor="middle">排程抓取／回傳</text>
+<rect x="1049.0" y="778" width="90.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1094" y="799" font-size="18" fill="#B66A1D" font-weight="400" text-anchor="middle">寫入資料</text>
+<rect x="1417.0" y="743" width="54.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1444" y="764" font-size="18" fill="#8154AE" font-weight="400" text-anchor="middle">正文</text>
+<rect x="1417.0" y="848" width="54.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1444" y="869" font-size="18" fill="#8154AE" font-weight="400" text-anchor="middle">摘要</text>
+<ellipse cx="82" cy="991" rx="5" ry="5" fill="#2969A7" stroke="none" stroke-width="1.5" transform="rotate(0 82 991)"/>
+<text x="99" y="999" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">查詢與回應</text>
+<ellipse cx="322" cy="991" rx="5" ry="5" fill="#B66A1D" stroke="none" stroke-width="1.5" transform="rotate(0 322 991)"/>
+<text x="339" y="999" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">背景資料更新</text>
+<ellipse cx="597" cy="991" rx="5" ry="5" fill="#8154AE" stroke="none" stroke-width="1.5" transform="rotate(0 597 991)"/>
+<text x="614" y="999" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">Gemini 新聞摘要</text>
+<ellipse cx="902" cy="991" rx="5" ry="5" fill="#7A8F82" stroke="none" stroke-width="1.5" transform="rotate(0 902 991)"/>
+<text x="919" y="999" font-size="20" fill="#435A4D" font-weight="400" text-anchor="start">按鍵與畫面</text>
+<text x="1838" y="1000" font-size="18" fill="#6B7F73" font-weight="400" text-anchor="end">各國資料來源依設定啟用</text>
+<text x="1838" y="1031" font-size="17" fill="#6B7F73" font-weight="400" text-anchor="end">Gemini 僅用於新聞摘要與作物標註</text></svg>

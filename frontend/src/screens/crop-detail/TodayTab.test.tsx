@@ -90,16 +90,13 @@ describe('crop detail · 行情 tab (T27)', () => {
     expect(app.path()).toBe('/crop/onion/compare')
   })
 
-  it('offers other areas and the trend when the area has not updated today', async () => {
+  it('still shows the last price when the area has not updated today', async () => {
+    // Markets publish during the day, so "not today" is the normal morning case: the price
+    // stays on screen and the info bar says which day it is from (docs/02 §6).
     const app = await renderApp('/crop/onion/today?area=kolar')
-    expect(await screen.findByText('Kolar 縣 今天還沒更新')).toBeInTheDocument()
-    expect(screen.getByText('這個地區通常 14:00 前更新')).toBeInTheDocument()
-    expect(screen.getByText('最近一筆（3 天前）：3,467 ₹/100公斤')).toBeInTheDocument()
-    expect(app.focusedId()).toBe('other-areas')
-    expect(app.softKey('center')).toBe('選取')
-
-    await press(app, '2')
-    expect(app.path()).toBe('/crop/onion/trend?area=kolar')
+    expect(await screen.findByText('3,467')).toBeInTheDocument()
+    expect(screen.getAllByText('3 天前')[0]).toBeInTheDocument() // info bar, both sizes
+    expect(app.path()).toBe('/crop/onion/today?area=kolar')
   })
 
   it('explains missing retail prices and switches back to wholesale', async () => {
@@ -244,7 +241,7 @@ describe('crop detail · 行情 tab · nearby prices', () => {
 
   it('is left out while the area has not updated today', async () => {
     await renderApp('/crop/onion/today?area=kolar')
-    await screen.findByText('Kolar 縣 今天還沒更新')
+    await screen.findByText('3,467')
     expect(screen.queryByText(/附近最/)).not.toBeInTheDocument()
   })
 

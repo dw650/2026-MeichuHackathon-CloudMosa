@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title description"><title id="title">AgriPrice 系統架構與資料流程</title><desc id="description">按鍵手機透過 CloudMosa 雲端 Chromium 執行 React。Caddy 轉發請求至 FastAPI，後者查詢 PostgreSQL。Worker 抓取台灣、印度、馬來西亞行情、世界銀行月資料、匯率與新聞，整理後寫入資料庫。Gemini 處理新聞摘要與作物標註。</desc><defs><marker id="blue" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#0879C2"/></marker><marker id="orange" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#C87117"/></marker><marker id="purple" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#8151BF"/></marker><marker id="grey" viewBox="0 -5 10 10" refX="9" refY="0" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M0,-4 L9,0 L0,4 Z" fill="#778B9C"/></marker></defs><style>text { font-family: "Noto Sans CJK TC", "Microsoft JhengHei", "PingFang TC", sans-serif; }</style><rect x="0" y="0" width="1920" height="1080" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="960" y="79" font-size="44" fill="#142F4A" font-weight="700" text-anchor="middle">AgriPrice 農價｜系統技術架構圖</text>
+<text x="960" y="121" font-size="24" fill="#667D90" font-weight="400" text-anchor="middle">技術元件、職責與資料流向</text>
+<rect x="38" y="151" width="1456" height="154" rx="18" fill="#F4F7FA" stroke="#C8D5DF" stroke-width="1.5"/>
+<text x="59" y="183" font-size="22" fill="#142F4A" font-weight="700" text-anchor="start">CI/CD 部署流程</text>
+<rect x="62" y="205" width="270" height="78" rx="12" fill="#FFFFFF" stroke="#C6D4E0" stroke-width="1.5"/>
+<rect x="424" y="205" width="300" height="78" rx="12" fill="#FFFFFF" stroke="#C6D4E0" stroke-width="1.5"/>
+<rect x="812" y="205" width="225" height="78" rx="12" fill="#FFFFFF" stroke="#C6D4E0" stroke-width="1.5"/>
+<rect x="1128" y="205" width="340" height="78" rx="12" fill="#FFFFFF" stroke="#C6D4E0" stroke-width="1.5"/>
+<g transform="translate(79 226)"><path d="M8 5V31M8 22C8 14 24 19 24 7" stroke="#2E445B" stroke-width="2.5" fill="none"/><g fill="#FFFFFF" stroke="#2E445B" stroke-width="2.5"><circle cx="8" cy="5" r="4"/><circle cx="8" cy="31" r="4"/><circle cx="24" cy="7" r="4"/></g></g>
+<text x="121" y="239" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">GitHub Repository</text>
+<text x="121" y="267" font-size="17" fill="#667D90" font-weight="400" text-anchor="start">程式碼版本管理</text>
+<g transform="translate(443 222)"><path d="M7 7V29H24" fill="none" stroke="#0879C2" stroke-width="2.5"/><g fill="#FFFFFF" stroke="#0879C2" stroke-width="2.5"><circle cx="7" cy="7" r="5"/><circle cx="7" cy="29" r="5"/><circle cx="24" cy="29" r="5"/></g></g>
+<text x="484" y="240" font-size="24" fill="#142F4A" font-weight="700" text-anchor="start">GitHub Actions</text>
+<text x="484" y="267" font-size="18" fill="#667D90" font-weight="400" text-anchor="start">Lint / Test / Build</text>
+<text x="836" y="240" font-size="25" fill="#142F4A" font-weight="700" text-anchor="start">deploy 分支</text>
+<text x="836" y="267" font-size="17" fill="#667D90" font-weight="400" text-anchor="start">main 通過 CI 的版本</text>
+<g transform="translate(1147 224)"><path d="M10 27C-3 27-2 11 8 10C8-3 28-3 30 11C43 12 41 27 30 27Z" fill="#778B9C"/></g>
+<text x="1201" y="240" font-size="24" fill="#142F4A" font-weight="700" text-anchor="start">應用伺服器（VM）</text>
+<text x="1150" y="268" font-size="18" fill="#667D90" font-weight="400" text-anchor="start">定時拉取、部署與健康檢查</text>
+<path d="M 332,245 L 424,245" fill="none" stroke="#778B9C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<path d="M 724,245 L 812,245" fill="none" stroke="#778B9C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<path d="M 1037,245 L 1128,245" fill="none" stroke="#778B9C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<rect x="349.4375" y="211" width="57.125" height="29" rx="7" fill="#F4F7FA" stroke="none" stroke-width="1.5"/>
+<text x="378" y="231" font-size="17" fill="#778B9C" font-weight="400" text-anchor="middle">push</text>
+<rect x="733.765625" y="212" width="68.46875" height="28" rx="7" fill="#F4F7FA" stroke="none" stroke-width="1.5"/>
+<text x="768" y="231" font-size="16" fill="#778B9C" font-weight="400" text-anchor="middle">CI 通過</text>
+<rect x="1049.0" y="212" width="66.0" height="28" rx="7" fill="#F4F7FA" stroke="none" stroke-width="1.5"/>
+<text x="1082" y="231" font-size="16" fill="#778B9C" font-weight="400" text-anchor="middle">每分鐘</text>
+<rect x="666" y="357" width="830" height="606" rx="22" fill="#F5F9FC" stroke="#98B5CB" stroke-width="2"/>
+<g transform="translate(704 378)"><g fill="#0879C2"><rect x="5" y="10" width="9" height="8" rx="1"/><rect x="16" y="10" width="9" height="8" rx="1"/><rect x="27" y="10" width="9" height="8" rx="1"/><rect x="16" y="0" width="9" height="8" rx="1"/><rect x="27" y="0" width="9" height="8" rx="1"/><path d="M1 20H39C42 20 43 15 48 15L49 20H51C48 31 42 33 20 33C8 33 2 29 1 20Z"/></g></g>
+<text x="769" y="410" font-size="30" fill="#142F4A" font-weight="700" text-anchor="start">Docker Compose</text>
+<text x="1458" y="408" font-size="19" fill="#667D90" font-weight="400" text-anchor="end">四個容器服務</text>
+<path d="M 1298,305 L 1298,357" fill="none" stroke="#778B9C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<rect x="1337.0" y="318" width="90.0" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1382" y="339" font-size="18" fill="#778B9C" font-weight="400" text-anchor="middle">部署服務</text>
+<g transform="translate(246 356)"><path d="M26 92C-3 73 11 37 39 38C42 9 81 4 99 23C122-12 177-2 186 33C215 2 263 19 267 47C310 24 354 54 347 91C373 95 383 120 368 144V390Q368 419 337 419H40Q10 419 10 390V129C-2 114 6 96 26 92Z" fill="#EEF8FF" stroke="#8BBFE4" stroke-width="2.5"/></g>
+<g transform="translate(286 423)"><path d="M10 27C-3 27-2 11 8 10C8-3 28-3 30 11C43 12 41 27 30 27Z" fill="#0879C2"/></g>
+<text x="337" y="434" font-size="24" fill="#142F4A" font-weight="700" text-anchor="start">CloudMosa</text>
+<text x="337" y="462" font-size="19" fill="#667D90" font-weight="400" text-anchor="start">雲端 Chromium</text>
+<path d="M 198,554 L 282,554" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 282,634 L 198,634" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 588,554 L 711,554" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 711,634 L 588,634" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 876,554 L 980,554" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 980,634 L 876,634" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 1194,554 L 1284,554" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 1284,634 L 1194,634" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<path d="M 1542,744 L 1515,744 L 1515,824 L 1460,824" fill="none" stroke="#C87117" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#orange)" marker-start="url(#orange)"/>
+<path d="M 1370,811 L 1370,718" fill="none" stroke="#C87117" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#orange)"/>
+<path d="M 1460,865 L 1542,865" fill="none" stroke="#8151BF" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#purple)"/>
+<path d="M 1542,916 L 1460,916" fill="none" stroke="#8151BF" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#purple)"/>
+<rect x="38" y="473" width="160" height="280" rx="16" fill="#F0F8EC" stroke="#AECDA0" stroke-width="1.5"/>
+<rect x="87" y="505" width="62" height="123" rx="11" fill="#40554C" stroke="#294036" stroke-width="2"/>
+<rect x="95" y="518" width="46" height="47" rx="5" fill="#C8E3BE" stroke="#A7C6A0" stroke-width="1.5"/>
+<ellipse cx="118" cy="581" rx="6" ry="6" fill="#ADC3BA" stroke="none" stroke-width="1.5" transform="rotate(0 118 581)"/>
+<rect x="97" y="594" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="112" y="594" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="127" y="594" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="97" y="603" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="112" y="603" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="127" y="603" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="97" y="612" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="112" y="612" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<rect x="127" y="612" width="10" height="5" rx="2" fill="#ADC3BA" stroke="none" stroke-width="1.5"/>
+<text x="118" y="674" font-size="24" fill="#142F4A" font-weight="700" text-anchor="middle">按鍵型手機</text>
+<text x="118" y="712" font-size="20" fill="#3B5268" font-weight="400" text-anchor="middle">農夫／商販</text>
+<rect x="282" y="485" width="306" height="243" rx="16" fill="#F6FBFF" stroke="#6FB2E2" stroke-width="2"/>
+<ellipse cx="435" cy="540" rx="36" ry="13" fill="none" stroke="#0879C2" stroke-width="2.7" transform="rotate(0 435 540)"/>
+<ellipse cx="435" cy="540" rx="36" ry="13" fill="none" stroke="#0879C2" stroke-width="2.7" transform="rotate(60 435 540)"/>
+<ellipse cx="435" cy="540" rx="36" ry="13" fill="none" stroke="#0879C2" stroke-width="2.7" transform="rotate(120 435 540)"/>
+<ellipse cx="435" cy="540" rx="5.5" ry="5.5" fill="#0879C2" stroke="none" stroke-width="1.5" transform="rotate(0 435 540)"/>
+<text x="435" y="611" font-size="34" fill="#142F4A" font-weight="700" text-anchor="middle">React 前端</text>
+<text x="435" y="652" font-size="21" fill="#3B5268" font-weight="400" text-anchor="middle">TypeScript + Vite</text>
+<text x="435" y="695" font-size="20" fill="#3B5268" font-weight="400" text-anchor="middle">行情・走勢・比價・新聞</text>
+<rect x="711" y="492" width="165" height="228" rx="14" fill="#FFFFFF" stroke="#B0C7D8" stroke-width="2"/>
+<rect x="765" y="521" width="57" height="57" rx="14" fill="#E1EFE7" stroke="none" stroke-width="1.5"/>
+<text x="793.5" y="563" font-size="39" fill="#29744E" font-weight="700" text-anchor="middle">C</text>
+<text x="793.5" y="617" font-size="31" fill="#142F4A" font-weight="700" text-anchor="middle">Caddy</text>
+<text x="793.5" y="659" font-size="19" fill="#3B5268" font-weight="400" text-anchor="middle">前端靜態檔</text>
+<text x="793.5" y="693" font-size="19" fill="#3B5268" font-weight="400" text-anchor="middle">反向代理</text>
+<rect x="980" y="492" width="214" height="228" rx="14" fill="#F0FBF8" stroke="#5DB9B0" stroke-width="2"/>
+<g transform="translate(1060 521)"><g transform="scale(1.542857142857143)"><circle cx="17.5" cy="17.5" r="17.5" fill="#059B91"/><path d="M20 5L9 20H16L14 31L27 15H19Z" fill="#FFFFFF"/></g></g>
+<text x="1087" y="617" font-size="35" fill="#142F4A" font-weight="700" text-anchor="middle">FastAPI</text>
+<text x="1087" y="660" font-size="19" fill="#3B5268" font-weight="400" text-anchor="middle">Python / REST API</text>
+<text x="1087" y="695" font-size="19" fill="#3B5268" font-weight="400" text-anchor="middle">查詢、統計與比價</text>
+<path d="M1284,476 C1284,444.0 1460,444.0 1460,476 L1460,694 C1460,726.0 1284,726.0 1284,694 Z" fill="#ECF6FF" stroke="#5B9BCB" stroke-width="2.2"/>
+<ellipse cx="1372.0" cy="476" rx="88.0" ry="24" fill="#CAE4F8" stroke="#5B9BCB" stroke-width="2.2"/>
+<g transform="translate(1339 506)"><ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" width="66" height="68" viewBox="0 0 432.071 445.383" xml:space="preserve" preserveAspectRatio="xMidYMid meet">
+<ns0:g id="postgresql-orginal" style="fill-rule:nonzero;clip-rule:nonzero;stroke:#000000;stroke-miterlimit:4;">
+	</ns0:g>
+<ns0:g id="postgresql-Layer_x0020_3" style="fill-rule:nonzero;clip-rule:nonzero;fill:none;stroke:#FFFFFF;stroke-width:12.4651;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;">
+<ns0:path style="fill:#000000;stroke:#000000;stroke-width:37.3953;stroke-linecap:butt;stroke-linejoin:miter;" d="M323.205,324.227c2.833-23.601,1.984-27.062,19.563-23.239l4.463,0.392c13.517,0.615,31.199-2.174,41.587-7c22.362-10.376,35.622-27.7,13.572-23.148c-50.297,10.376-53.755-6.655-53.755-6.655c53.111-78.803,75.313-178.836,56.149-203.322    C352.514-5.534,262.036,26.049,260.522,26.869l-0.482,0.089c-9.938-2.062-21.06-3.294-33.554-3.496c-22.761-0.374-40.032,5.967-53.133,15.904c0,0-161.408-66.498-153.899,83.628c1.597,31.936,45.777,241.655,98.47,178.31    c19.259-23.163,37.871-42.748,37.871-42.748c9.242,6.14,20.307,9.272,31.912,8.147l0.897-0.765c-0.281,2.876-0.157,5.689,0.359,9.019c-13.572,15.167-9.584,17.83-36.723,23.416c-27.457,5.659-11.326,15.734-0.797,18.367c12.768,3.193,42.305,7.716,62.268-20.224    l-0.795,3.188c5.325,4.26,4.965,30.619,5.72,49.452c0.756,18.834,2.017,36.409,5.856,46.771c3.839,10.36,8.369,37.05,44.036,29.406c29.809-6.388,52.6-15.582,54.677-101.107" />
+<ns0:path style="fill:#336791;stroke:none;" d="M402.395,271.23c-50.302,10.376-53.76-6.655-53.76-6.655c53.111-78.808,75.313-178.843,56.153-203.326c-52.27-66.785-142.752-35.2-144.262-34.38l-0.486,0.087c-9.938-2.063-21.06-3.292-33.56-3.496c-22.761-0.373-40.026,5.967-53.127,15.902    c0,0-161.411-66.495-153.904,83.63c1.597,31.938,45.776,241.657,98.471,178.312c19.26-23.163,37.869-42.748,37.869-42.748c9.243,6.14,20.308,9.272,31.908,8.147l0.901-0.765c-0.28,2.876-0.152,5.689,0.361,9.019c-13.575,15.167-9.586,17.83-36.723,23.416    c-27.459,5.659-11.328,15.734-0.796,18.367c12.768,3.193,42.307,7.716,62.266-20.224l-0.796,3.188c5.319,4.26,9.054,27.711,8.428,48.969c-0.626,21.259-1.044,35.854,3.147,47.254c4.191,11.4,8.368,37.05,44.042,29.406c29.809-6.388,45.256-22.942,47.405-50.555    c1.525-19.631,4.976-16.729,5.194-34.28l2.768-8.309c3.192-26.611,0.507-35.196,18.872-31.203l4.463,0.392c13.517,0.615,31.208-2.174,41.591-7c22.358-10.376,35.618-27.7,13.573-23.148z" />
+<ns0:path d="M215.866,286.484c-1.385,49.516,0.348,99.377,5.193,111.495c4.848,12.118,15.223,35.688,50.9,28.045c29.806-6.39,40.651-18.756,45.357-46.051c3.466-20.082,10.148-75.854,11.005-87.281" />
+<ns0:path d="M173.104,38.256c0,0-161.521-66.016-154.012,84.109c1.597,31.938,45.779,241.664,98.473,178.316c19.256-23.166,36.671-41.335,36.671-41.335" />
+<ns0:path d="M260.349,26.207c-5.591,1.753,89.848-34.889,144.087,34.417c19.159,24.484-3.043,124.519-56.153,203.329" />
+<ns0:path style="stroke-linejoin:bevel;" d="M348.282,263.953c0,0,3.461,17.036,53.764,6.653c22.04-4.552,8.776,12.774-13.577,23.155c-18.345,8.514-59.474,10.696-60.146-1.069c-1.729-30.355,21.647-21.133,19.96-28.739c-1.525-6.85-11.979-13.573-18.894-30.338    c-6.037-14.633-82.796-126.849,21.287-110.183c3.813-0.789-27.146-99.002-124.553-100.599c-97.385-1.597-94.19,119.762-94.19,119.762" />
+<ns0:path d="M188.604,274.334c-13.577,15.166-9.584,17.829-36.723,23.417c-27.459,5.66-11.326,15.733-0.797,18.365c12.768,3.195,42.307,7.718,62.266-20.229c6.078-8.509-0.036-22.086-8.385-25.547c-4.034-1.671-9.428-3.765-16.361,3.994z" />
+<ns0:path d="M187.715,274.069c-1.368-8.917,2.93-19.528,7.536-31.942c6.922-18.626,22.893-37.255,10.117-96.339c-9.523-44.029-73.396-9.163-73.436-3.193c-0.039,5.968,2.889,30.26-1.067,58.548c-5.162,36.913,23.488,68.132,56.479,64.938" />
+<ns0:path style="fill:#FFFFFF;stroke-width:4.155;stroke-linecap:butt;stroke-linejoin:miter;" d="M172.517,141.7c-0.288,2.039,3.733,7.48,8.976,8.207c5.234,0.73,9.714-3.522,9.998-5.559c0.284-2.039-3.732-4.285-8.977-5.015c-5.237-0.731-9.719,0.333-9.996,2.367z" />
+<ns0:path style="fill:#FFFFFF;stroke-width:2.0775;stroke-linecap:butt;stroke-linejoin:miter;" d="M331.941,137.543c0.284,2.039-3.732,7.48-8.976,8.207c-5.238,0.73-9.718-3.522-10.005-5.559c-0.277-2.039,3.74-4.285,8.979-5.015c5.239-0.73,9.718,0.333,10.002,2.368z" />
+<ns0:path d="M350.676,123.432c0.863,15.994-3.445,26.888-3.988,43.914c-0.804,24.748,11.799,53.074-7.191,81.435" />
+<ns0:path style="stroke-width:3;" d="M0,60.232" />
+</ns0:g>
+</ns0:svg></g>
+<text x="1372" y="607" font-size="23" fill="#142F4A" font-weight="700" text-anchor="middle">PostgreSQL</text>
+<text x="1372" y="641" font-size="24" fill="#142F4A" font-weight="700" text-anchor="middle">資料庫</text>
+<text x="1372" y="671" font-size="18" fill="#3B5268" font-weight="400" text-anchor="middle">行情・匯率</text>
+<text x="1372" y="699" font-size="18" fill="#3B5268" font-weight="400" text-anchor="middle">新聞・歷史價格</text>
+<rect x="1000" y="811" width="460" height="124" rx="15" fill="#FFF8EF" stroke="#DEC092" stroke-width="2"/>
+<g transform="translate(1022 831)"><ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns2="http://www.inkscape.org/namespaces/inkscape" xmlns:ns3="http://www.w3.org/1999/xlink" version="1.0" id="python-svg2" ns1:version="0.32" ns2:version="1.2.1 (9c6d41e410, 2022-07-14)" ns1:docname="python-logo-only.svg" width="48" height="58" ns2:export-filename="python-logo-only.png" ns2:export-xdpi="232.44" ns2:export-ydpi="232.44" viewBox="0 0 111.16135599999998 134.66810666666666" preserveAspectRatio="xMidYMid meet">
+  <ns0:defs id="python-defs4">
+    <ns0:linearGradient id="python-linearGradient2795">
+      <ns0:stop style="stop-color:#b8b8b8;stop-opacity:0.49803922;" offset="0" id="python-stop2797" />
+      <ns0:stop style="stop-color:#7f7f7f;stop-opacity:0;" offset="1" id="python-stop2799" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="python-linearGradient2787">
+      <ns0:stop style="stop-color:#7f7f7f;stop-opacity:0.5;" offset="0" id="python-stop2789" />
+      <ns0:stop style="stop-color:#7f7f7f;stop-opacity:0;" offset="1" id="python-stop2791" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="python-linearGradient3676">
+      <ns0:stop style="stop-color:#b2b2b2;stop-opacity:0.5;" offset="0" id="python-stop3678" />
+      <ns0:stop style="stop-color:#b3b3b3;stop-opacity:0;" offset="1" id="python-stop3680" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="python-linearGradient3236">
+      <ns0:stop style="stop-color:#f4f4f4;stop-opacity:1" offset="0" id="python-stop3244" />
+      <ns0:stop style="stop-color:white;stop-opacity:1" offset="1" id="python-stop3240" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="python-linearGradient4671">
+      <ns0:stop style="stop-color:#ffd43b;stop-opacity:1;" offset="0" id="python-stop4673" />
+      <ns0:stop style="stop-color:#ffe873;stop-opacity:1" offset="1" id="python-stop4675" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="python-linearGradient4689">
+      <ns0:stop style="stop-color:#5a9fd4;stop-opacity:1;" offset="0" id="python-stop4691" />
+      <ns0:stop style="stop-color:#306998;stop-opacity:1;" offset="1" id="python-stop4693" />
+    </ns0:linearGradient>
+    <ns0:linearGradient x1="224.23996" y1="144.75717" x2="-65.308502" y2="144.75717" id="python-linearGradient2987" ns3:href="#python-linearGradient4671" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" />
+    <ns0:linearGradient x1="172.94208" y1="77.475983" x2="26.670298" y2="76.313133" id="python-linearGradient2990" ns3:href="#python-linearGradient4689" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4689" id="python-linearGradient2587" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" x1="172.94208" y1="77.475983" x2="26.670298" y2="76.313133" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4671" id="python-linearGradient2589" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" x1="224.23996" y1="144.75717" x2="-65.308502" y2="144.75717" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4689" id="python-linearGradient2248" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" x1="172.94208" y1="77.475983" x2="26.670298" y2="76.313133" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4671" id="python-linearGradient2250" gradientUnits="userSpaceOnUse" gradientTransform="translate(100.2702,99.61116)" x1="224.23996" y1="144.75717" x2="-65.308502" y2="144.75717" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4671" id="python-linearGradient2255" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-11.5974,-7.60954)" x1="224.23996" y1="144.75717" x2="-65.308502" y2="144.75717" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4689" id="python-linearGradient2258" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-11.5974,-7.60954)" x1="172.94208" y1="76.176224" x2="26.670298" y2="76.313133" />
+    <ns0:radialGradient ns2:collect="always" ns3:href="#python-linearGradient2795" id="python-radialGradient2801" cx="61.518883" cy="132.28575" fx="61.518883" fy="132.28575" r="29.036913" gradientTransform="matrix(1,0,0,0.177966,0,108.7434)" gradientUnits="userSpaceOnUse" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4671" id="python-linearGradient1475" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-14.99112,-11.702371)" x1="150.96111" y1="192.35176" x2="112.03144" y2="137.27299" />
+    <ns0:linearGradient ns2:collect="always" ns3:href="#python-linearGradient4689" id="python-linearGradient1478" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-14.99112,-11.702371)" x1="26.648937" y1="20.603781" x2="135.66525" y2="114.39767" />
+    <ns0:radialGradient ns2:collect="always" ns3:href="#python-linearGradient2795" id="python-radialGradient1480" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.7490565e-8,-0.23994696,1.054668,3.7915457e-7,-83.7008,142.46201)" cx="61.518883" cy="132.28575" fx="61.518883" fy="132.28575" r="29.036913" />
+  </ns0:defs>
+  <ns0:path style="fill:url(#python-linearGradient1478);fill-opacity:1" d="M 54.918785,9.1927421e-4 C 50.335132,0.02221727 45.957846,0.41313697 42.106285,1.0946693 30.760069,3.0991731 28.700036,7.2947714 28.700035,15.032169 v 10.21875 h 26.8125 v 3.40625 h -26.8125 -10.0625 c -7.792459,0 -14.6157588,4.683717 -16.7499998,13.59375 -2.46181998,10.212966 -2.57101508,16.586023 0,27.25 1.9059283,7.937852 6.4575432,13.593748 14.2499998,13.59375 h 9.21875 v -12.25 c 0,-8.849902 7.657144,-16.656248 16.75,-16.65625 h 26.78125 c 7.454951,0 13.406253,-6.138164 13.40625,-13.625 v -25.53125 c 0,-7.2663386 -6.12998,-12.7247771 -13.40625,-13.9374997 C 64.281548,0.32794397 59.502438,-0.02037903 54.918785,9.1927421e-4 Z m -14.5,8.21875012579 c 2.769547,0 5.03125,2.2986456 5.03125,5.1249996 -2e-6,2.816336 -2.261703,5.09375 -5.03125,5.09375 -2.779476,-1e-6 -5.03125,-2.277415 -5.03125,-5.09375 -10e-7,-2.826353 2.251774,-5.1249996 5.03125,-5.1249996 z" id="python-path1948" />
+  <ns0:path style="fill:url(#python-linearGradient1475);fill-opacity:1" d="m 85.637535,28.657169 v 11.90625 c 0,9.230755 -7.825895,16.999999 -16.75,17 h -26.78125 c -7.335833,0 -13.406249,6.278483 -13.40625,13.625 v 25.531247 c 0,7.266344 6.318588,11.540324 13.40625,13.625004 8.487331,2.49561 16.626237,2.94663 26.78125,0 6.750155,-1.95439 13.406253,-5.88761 13.40625,-13.625004 V 86.500919 h -26.78125 v -3.40625 h 26.78125 13.406254 c 7.792461,0 10.696251,-5.435408 13.406241,-13.59375 2.79933,-8.398886 2.68022,-16.475776 0,-27.25 -1.92578,-7.757441 -5.60387,-13.59375 -13.406241,-13.59375 z m -15.0625,64.65625 c 2.779478,3e-6 5.03125,2.277417 5.03125,5.093747 -2e-6,2.826354 -2.251775,5.125004 -5.03125,5.125004 -2.76955,0 -5.03125,-2.29865 -5.03125,-5.125004 2e-6,-2.81633 2.261697,-5.093747 5.03125,-5.093747 z" id="python-path1950" />
+  <ns0:ellipse style="opacity:0.44382;fill:url(#python-radialGradient1480);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:15.4174;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="python-path1894" cx="55.816761" cy="127.70079" rx="35.930977" ry="6.9673119" />
+</ns0:svg></g>
+<text x="1084" y="861" font-size="31" fill="#142F4A" font-weight="700" text-anchor="start">Python Worker</text>
+<text x="1438" y="891" font-size="20" fill="#3B5268" font-weight="400" text-anchor="end">APScheduler + HTTPX</text>
+<text x="1024" y="917" font-size="19" fill="#3B5268" font-weight="400" text-anchor="start">排程抓取 → 正規化 → 檢查 → 彙整</text>
+<rect x="1542" y="151" width="340" height="620" rx="18" fill="#FFFAF1" stroke="#E9BB7E" stroke-width="2"/>
+<ellipse cx="1577" cy="190" rx="18" ry="18" fill="none" stroke="#0879C2" stroke-width="2" transform="rotate(0 1577 190)"/>
+<ellipse cx="1577" cy="190" rx="8" ry="18" fill="none" stroke="#0879C2" stroke-width="1.5" transform="rotate(0 1577 190)"/>
+<ellipse cx="1577" cy="190" rx="18" ry="7" fill="none" stroke="#0879C2" stroke-width="1.5" transform="rotate(0 1577 190)"/>
+<text x="1610" y="199" font-size="27" fill="#142F4A" font-weight="700" text-anchor="start">外部資料來源</text>
+<text x="1712" y="231" font-size="18" fill="#667D90" font-weight="400" text-anchor="middle">資料來源依設定啟用</text>
+<rect x="1558" y="248" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="278" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">台灣農業部 API</text>
+<text x="1574" y="304" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">FarmTransData · 批發行情</text>
+<rect x="1558" y="331" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="361" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">印度 Agmarknet API</text>
+<text x="1574" y="387" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">批發市場行情</text>
+<rect x="1558" y="414" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="444" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">馬來西亞 PriceCatcher</text>
+<text x="1574" y="470" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">CSV 開放資料 · 市場報價</text>
+<rect x="1558" y="497" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="527" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">World Bank Pink Sheet</text>
+<text x="1574" y="553" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">XLSX 月資料 · 國際價格</text>
+<rect x="1558" y="580" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="610" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">ExchangeRate-API</text>
+<text x="1574" y="636" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">匯率資料</text>
+<rect x="1558" y="663" width="308" height="71" rx="10" fill="#FFFFFF" stroke="#CCD9E1" stroke-width="1.5"/>
+<text x="1574" y="693" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">Google News RSS</text>
+<text x="1574" y="719" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">農業新聞與原文</text>
+<rect x="1542" y="833" width="340" height="127" rx="16" fill="#F7F0FF" stroke="#B799DC" stroke-width="2"/>
+<g transform="translate(1564 854)"><path d="M18.5 0C21 11 26 16 37 18.5C26 21 21 26 18.5 37C16 26 11 21 0 18.5C11 16 16 11 18.5 0Z" fill="#8151BF"/></g>
+<text x="1618" y="885" font-size="31" fill="#142F4A" font-weight="700" text-anchor="start">Gemini API</text>
+<text x="1566" y="933" font-size="22" fill="#3B5268" font-weight="400" text-anchor="start">新聞摘要・作物標籤</text>
+<rect x="197.0" y="521" width="86.0" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="240" y="541" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">按鍵操作</text>
+<rect x="197.0" y="643" width="86.0" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="240" y="663" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">畫面更新</text>
+<rect x="602.59375" y="520" width="92.8125" height="30" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="649" y="541" font-size="18" fill="#0879C2" font-weight="400" text-anchor="middle">REST API</text>
+<rect x="592.4375" y="643" width="113.125" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="649" y="663" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">網頁／JSON</text>
+<rect x="887.046875" y="521" width="81.90625" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="928" y="541" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">API 查詢</text>
+<rect x="878.03125" y="643" width="99.9375" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="928" y="663" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">JSON 回應</text>
+<rect x="1195.109375" y="521" width="87.78125" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1239" y="541" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">SQL 查詢</text>
+<rect x="1196.0" y="643" width="86.0" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1239" y="663" font-size="17" fill="#0879C2" font-weight="400" text-anchor="middle">查詢結果</text>
+<rect x="1468.5" y="772" width="93.0" height="27" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1515" y="790" font-size="15" fill="#C87117" font-weight="400" text-anchor="middle">抓取／回傳</text>
+<rect x="1298.0" y="754" width="144.0" height="30" rx="7" fill="#F5F9FC" stroke="none" stroke-width="1.5"/>
+<text x="1370" y="775" font-size="18" fill="#C87117" font-weight="400" text-anchor="middle">行情／摘要寫入</text>
+<rect x="1475.0" y="831" width="52.0" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1501" y="851" font-size="17" fill="#8151BF" font-weight="400" text-anchor="middle">正文</text>
+<rect x="1475.0" y="924" width="52.0" height="29" rx="7" fill="#FFFFFF" stroke="none" stroke-width="1.5"/>
+<text x="1501" y="944" font-size="17" fill="#8151BF" font-weight="400" text-anchor="middle">摘要</text>
+<rect x="38" y="824" width="580" height="139" rx="15" fill="#FBFCFE" stroke="#D6E0E8" stroke-width="1.5"/>
+<text x="60" y="857" font-size="21" fill="#142F4A" font-weight="700" text-anchor="start">箭頭說明</text>
+<path d="M 62,888 L 107,888" fill="none" stroke="#0879C2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#blue)"/>
+<text x="122" y="895" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">使用者查詢與回應</text>
+<path d="M 330,888 L 375,888" fill="none" stroke="#C87117" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#orange)"/>
+<text x="390" y="895" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">背景抓取與資料寫入</text>
+<path d="M 62,929 L 107,929" fill="none" stroke="#8151BF" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#purple)"/>
+<text x="122" y="936" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">Gemini 新聞摘要與標籤</text>
+<path d="M 330,929 L 375,929" fill="none" stroke="#778B9C" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" marker-end="url(#grey)"/>
+<text x="390" y="936" font-size="17" fill="#3B5268" font-weight="400" text-anchor="start">CI/CD 建置與部署</text>
+<text x="47" y="1015" font-size="20" fill="#667D90" font-weight="400" text-anchor="start">API 讀取整理後的資料；Worker 持續依排程更新。</text>
+<text x="1879" y="1015" font-size="18" fill="#667D90" font-weight="400" text-anchor="end">Gemini 產生的摘要經 Worker 存入資料庫，再由 API 提供查詢。</text></svg>

@@ -62,7 +62,14 @@ export function DetailFrame({ detail, quote, softKeys, sheet, error, children }:
   return (
     <Shell title={pick(detail.crop?.name) || t('app.name')} softKeys={keys} overlay={overlay}>
       <InfoBar
-        small={<PriceTypeTag type={type} label={estimate.typeLabel(type)} />}
+        small={
+          <>
+            <PriceTypeTag type={type} label={estimate.typeLabel(type)} />
+            {/* 128×160 drops the right cell, but a price that is not today's must still say
+                so (docs/02 §5.4); today's fetch time is left out, there is no room. */}
+            {quote.data && quote.data.staleness.state !== 'today' && <DataTime quote={quote} />}
+          </>
+        }
         left={
           <>
             <UiIcon name="pin" />

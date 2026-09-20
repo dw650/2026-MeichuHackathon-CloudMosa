@@ -18,15 +18,18 @@ test('API failure without old data: error box with a retry exit', async ({ page,
   )
 })
 
-test('my area not updated today: the detail screen says so, with two exits', async ({
+test('my area not updated today: the last price stays, with its date', async ({
   page,
   errors,
-}) => {
+}, info) => {
+  // Markets publish during the day, so "not today" is the normal morning case: the screen
+  // keeps the price instead of replacing it with a notice (docs/02 §6).
   await seed(page, { country: 'IN', stale: true })
   await page.goto('/crop/onion/today')
   await settled(page)
-  await expect(page.getByText('今天還沒更新')).toBeVisible()
-  await expect(page.getByText('看其他地區')).toBeVisible()
+  await expect(page.getByText('本地區', { exact: false }).first()).toBeVisible()
+  // 240×320 carries the date in the info bar; 128×160 drops that cell (docs/03 §6).
+  if (info.project.name === 'qvga') await expect(page.getByText(/天前|昨天/).first()).toBeVisible()
   await expectCleanScreen(page, errors)
 })
 

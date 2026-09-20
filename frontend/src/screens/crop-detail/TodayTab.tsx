@@ -9,14 +9,12 @@ import { KeyCap } from '@/components/KeyCap/KeyCap'
 import { type Metric, MetricGrid } from '@/components/MetricGrid/MetricGrid'
 import { Note } from '@/components/Note/Note'
 import { Pill } from '@/components/Pill/Pill'
-import { StatusBox } from '@/components/StatusBox/StatusBox'
 import { Tile } from '@/components/Tile/Tile'
 import { useFocusList } from '@/focus/useFocusList'
 import { UiIcon } from '@/icons/ui'
 import type { KeyHandlers } from '@/keys/keyScope'
 import { useKeys } from '@/keys/useKeys'
 import { DIRECTION_GLYPH, directionOf } from '@/lib/change'
-import { describeFreshness } from '@/lib/dates'
 import { MISSING } from '@/lib/format'
 import { useEstimate } from '@/screens/shared/useEstimate'
 import { usePriceFormat, type PriceFormat } from '@/screens/shared/usePriceFormat'
@@ -27,14 +25,13 @@ import styles from './CropDetailScreen.module.css'
 import { DetailFrame } from './DetailFrame'
 import { NearbyCards } from './NearbyCards'
 import { type NearbyTarget, nearbyTargets } from './nearbyRows'
-import { ExitCard, FailedState, LoadingState, NoRetailState, StaleDataCard } from './states'
+import { FailedState, LoadingState, NoRetailState, StaleDataCard } from './states'
 import { type Detail, isNoRetail, RETRY, stageOf, useDetailQuote, WHOLESALE } from './useDetail'
 
 const MARKETS = 'markets'
 const OTHER_AREAS = 'other-areas'
 const TREND = 'trend'
 /** 「通常 14:00 前更新」: the mockup's time; the API has no per-area update time yet. */
-const USUAL_UPDATE = '14:00'
 /** Arrivals within ±5% of the 7-day average get no ▲▼ (mockup). */
 const ARRIVALS_STEADY = 0.05
 
@@ -181,40 +178,12 @@ function Ready({ detail, quote, fmt, keyCapOf }: ReadyProps) {
   )
 }
 
-/** The area has not reported today: the latest price and two ways on (docs/02 §6). */
-function NotUpdated({ detail, quote, fmt }: ContentProps) {
-  const { t, dates } = useText()
-  const estimate = useEstimate()
-  const { text } = describeFreshness(quote.staleness, quote.trade_date, dates)
-  return (
-    <>
-      <StatusBox
-        icon="store"
-        title={t('states.notUpdated', { area: detail.areaName })}
-        details={[
-          t('states.usualUpdate', { time: USUAL_UPDATE }),
-          t('states.lastPrice', {
-            when: text,
-            price: `${fmt.price(quote.price_per_kg)} ${fmt.unitLabel}`,
-          }),
-        ]}
-      />
-      <Note text={estimate.note(quote.type, detail.cropId)} />
-      <CardList>
-        <ExitCard focusId={OTHER_AREAS} icon="store" label={t('states.otherAreas')} keyCap={1} />
-        <ExitCard focusId={TREND} icon="trend" label={t('states.seeTrend')} keyCap={2} />
-      </CardList>
-    </>
-  )
-}
-
-type View = 'loading' | 'failed' | 'noRetail' | 'notUpdated' | 'ready'
+type View = 'loading' | 'failed' | 'noRetail' | 'ready'
 
 const ITEMS: Record<View, (wholesaleMarkets: boolean) => string[]> = {
   loading: () => [],
   failed: () => [RETRY],
   noRetail: () => [WHOLESALE],
-  notUpdated: () => [OTHER_AREAS, TREND],
   ready: (markets) => (markets ? [MARKETS] : []),
 }
 
@@ -228,13 +197,7 @@ export function TodayTab({ detail }: { detail: Detail }) {
   const data = quote.data
   const stage = stageOf(data, quote.error)
   const view: View =
-    stage !== 'ready' || !data
-      ? stage
-      : isNoRetail(data.reason)
-        ? 'noRetail'
-        : data.staleness.state === 'stale' && data.price_per_kg !== null
-          ? 'notUpdated'
-          : 'ready'
+    stage !== 'ready' || !data ? stage : isNoRetail(data.reason) ? 'noRetail' : 'ready'
   const withMarkets = data?.type === 'wholesale' && (data.markets?.total ?? 0) > 0
   const nearby: NearbyTarget[] = view === 'ready' ? nearbyTargets(data?.nearby) : []
   // Old data after a failed refresh: an alert card on top retries (docs/02 §6).
@@ -307,7 +270,6 @@ export function TodayTab({ detail }: { detail: Detail }) {
         {view === 'noRetail' && data && isNoRetail(data.reason) && (
           <NoRetailState reason={data.reason} />
         )}
-        {view === 'notUpdated' && data && <NotUpdated detail={detail} quote={data} fmt={fmt} />}
         {view === 'ready' && data && (
           <Ready detail={detail} quote={data} fmt={fmt} keyCapOf={keyCapOf} />
         )}
