@@ -2,6 +2,7 @@
 
 from app.ingest.news.match import (
     Matcher,
+    SourceFilter,
     TermIndex,
     area_terms,
     clean_title,
@@ -199,3 +200,52 @@ def test_matcher_for_english_headlines() -> None:
     assert matcher.relevant("Onion supply at 32/kg soon")
     assert not matcher.relevant("Onion supply improves")
     assert not matcher.relevant("Mahindra XUV400 on road price Ramganj Mandi")
+
+
+def test_publishers_of_other_countries_are_never_kept() -> None:
+    """A foreign content farm that publishes in the local language (docs/06 §1.6)."""
+    blocked = SourceFilter(["vietnam.vn", "IndexBox", ".in"])
+    assert blocked.blocked("vietnam.vn", "vietnam.vn")
+    assert blocked.blocked("Vietnam.vn", "www.vietnam.vn")  # the www form is the same site
+    assert blocked.blocked("Vietnam.vn", "en.vietnam.vn")  # and so is a subdomain
+    assert blocked.blocked("Vietnam.vn", None)  # the name alone is enough
+    assert blocked.blocked("IndexBox", "indexbox.io")
+    assert blocked.blocked("DT Next", "dtnext.in")  # a whole top-level domain
+    # A local publisher that merely writes about Vietnam, or one whose domain only ends in
+    # the same letters, stays.
+    assert not blocked.blocked("Berita Vietnam Malaysia", "bharian.com.my")
+    assert not blocked.blocked("NST Online", "nst.com.my")
+    assert not blocked.blocked("Not Vietnam.vnx", "notvietnam.vn.example")
+    assert not blocked.blocked("", None)
+    assert not SourceFilter([]).blocked("vietnam.vn", "vietnam.vn")
+
+
+def test_the_matcher_blocks_the_configured_publishers() -> None:
+    matcher = Matcher.build(
+        crops=TW_CROPS,
+        areas=TW_AREAS,
+        crop_aliases={},
+        area_aliases={},
+        keywords=["菜價"],
+        exclude_sources=["indexbox.io"],
+    )
+    assert matcher.blocked_source("IndexBox", "indexbox.io")
+    assert not matcher.blocked_source("中時新聞網", "chinatimes.com")
+
+
+def test_another_countrys_market_report_is_not_price_news_here() -> None:
+    """A headline about another country's market has a topic word and a price word, so only
+    `exclude` keeps it out (docs/06 §1.6)."""
+    matcher = Matcher.build(
+        crops=IN_CROPS,
+        areas=IN_AREAS,
+        crop_aliases={},
+        area_aliases={},
+        keywords=["vegetable price"],
+        topics=["vegetable"],
+        price_words=["price", "kg"],
+        exclude=["ringgit", "pasar borong"],
+    )
+    assert not matcher.relevant("Vegetable prices at the pasar borong ease")
+    assert not matcher.relevant("Tomato at 4 ringgit a kg")
+    assert matcher.relevant("Vegetable prices ease in Nashik")  # local news is unchanged

@@ -31,8 +31,18 @@ class CountryNews(_Model):
     # The language the summaries are written in (docs/06 §1.6), not the reader's.
     summary_lang: Literal["zh-TW", "en", "ms", "hi"]
     feeds: list[Feed] = Field(min_length=1)
+    # Negative terms added to every search of this country, the way `when:Nd` is: Google News
+    # honours plain words and matches them against the whole article, so they thin the answer
+    # before the filters below run (docs/06 §1.6).
+    query_exclude: list[str] = []
+    # Publishers never kept, whatever they write: a foreign site that translates another
+    # country's market reports into the local language. An entry matches the publisher's
+    # domain and its subdomains, or its name as a whole word; a leading dot is a whole
+    # top-level domain (".in").
+    exclude_sources: list[str] = []
     # A headline is kept when it has a keyword, or a crop or topic word and a price word, and
-    # no `exclude` word.
+    # no `exclude` word. `exclude` also holds the other countries' market words, so an article
+    # about another country's market is left out.
     keywords: list[str] = []
     topics: list[str] = []
     price_words: list[str] = []

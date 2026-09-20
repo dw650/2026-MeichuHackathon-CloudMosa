@@ -40,6 +40,21 @@ def test_aliases_point_at_crops_and_areas_of_the_seed() -> None:
         assert set(news.area_aliases) <= {a.id for a in seed.areas}
 
 
+def test_every_country_keeps_other_countries_market_reports_out() -> None:
+    """Both layers of docs/06 §1.6: negative terms in the search, and the publisher and
+    foreign-market filters on the answer."""
+    for cc, c in CONFIG.countries.items():
+        assert "vietnam.vn" in c.exclude_sources, cc
+        assert c.query_exclude, cc
+        assert c.exclude, cc
+    # A country never excludes itself, and India keeps its own market words (mandi, ₹).
+    assert not {"india", "mandi", "₹"} & set(CONFIG.countries["IN"].exclude)
+    assert {"india", "vietnam"} <= set(CONFIG.countries["MY"].exclude)
+    assert "印度" in CONFIG.countries["TW"].exclude
+    # 中國時報 is a Taiwanese paper, so 中國 is not an excluded word.
+    assert "中國" not in CONFIG.countries["TW"].exclude
+
+
 def test_a_broken_file_fails_on_load(tmp_path: Path) -> None:
     path = tmp_path / "sources.yaml"
     path.write_text("countries:\n  TW:\n    summary_lang: fr\n    feeds: []\n", encoding="utf-8")
