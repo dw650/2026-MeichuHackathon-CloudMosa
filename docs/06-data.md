@@ -114,7 +114,32 @@ FAO GIEWS FPMA、WFP、FEWS NET、世界銀行 Pink Sheet 都是**月資料**，
 
 - `https://news.google.com/rss/search?q=<關鍵字> when:<N>d&hl=<語言>&gl=<國家>&ceid=<版本>`，不需金鑰，一次約 0.5 秒。每則有標題（結尾自動加上「 - 發布者」）、news.google.com 的連結、發布時間（GMT）與發布者（名稱與首頁網址）；`description` 只是重複標題，不用。
 - 每個國家的搜尋字與版本在 `backend/app/ingest/news/sources.yaml`（不放在 seed 檔）：（`summary_lang` 是摘要的語言，和搜尋用的語言無關）。台灣用繁中（菜價、蔬菜 批發價、蔬菜價格、果菜市場、水果價格）、印度用英文（mandi prices、onion prices India…，`hl=en-IN&gl=IN&ceid=IN:en`）、馬來西亞用英文與馬來文兩個版本（馬來文要 `hl=ms-MY&ceid=MY:ms` 才找得到），作物另外加上馬來文別名（kubis→甘藍、cili→辣椒、sawi→小白菜…）。
-- 搜尋結果很雜（例：「菜價」會找到「開胃菜」、「果菜市場」會找到發加倍券與選舉掃街），所以只保留**價格新聞**：標題有 `keywords`（菜價、批發價、mandi prices…），或同時有「作物名稱或 `topics`（蔬菜、水果、vegetable…）」與「`price_words`（價、漲、跌、price、rate、₹、kg…）」；有 `exclude` 的（別國的批發市場報告、車價）一律不收。2026-09-20 用當天的真實搜尋結果檢查過；仍會混到少數別國的價格新聞，這是已知限制。
+- 搜尋結果很雜（例：「菜價」會找到「開胃菜」、「果菜市場」會找到發加倍券與選舉掃街），所以只保留**價格新聞**：標題有 `keywords`（菜價、批發價、mandi prices…），或同時有「作物名稱或 `topics`（蔬菜、水果、vegetable…）」與「`price_words`（價、漲、跌、price、rate、₹、kg…）」；有 `exclude` 的（別國的行情報導、車價）一律不收。2026-09-20 用當天的真實搜尋結果檢查過。別國的行情報導怎麼擋見下面一段。
+**不要別國的行情報導**（2026-09-20 追加）
+
+使用者在馬來西亞的新聞頁看到印度新聞。實際抓下來的 6 則裡只有 2 則是馬來西亞的，兩種漏洞：
+
+1. **別國的行情報導通得過相關性檢查**：「India considers cutting vegetable oil import taxes as prices climb」有 topic（vegetable）也有 price word（price），所以被當成馬來西亞的價格新聞留下來。
+2. **外國的內容農場用當地語言發稿**：`vietnam.vn` 把越南的行情報導自動翻成馬來文（「Kemas kini harga pagi: Hujan berterusan…」），標題裡連國名都沒有，任何標題規則都抓不到，只能**按發布者**擋。
+
+分兩層擋，設定都在 `sources.yaml`：
+
+| 層 | 設定 | 做什麼 |
+|---|---|---|
+| 搜尋 | `query_exclude` | 每個搜尋字後面加上否定詞（`-越南`），和 `when:Nd` 一樣。Google 新聞**認得純文字的否定詞，而且是拿整篇文章比對**，所以答案裡一開始就少了別國的新聞；`-site:` 會把搜尋整個打歪（`harga sayur -site:vietnam.vn` 回 100 則購物與社群貼文），`-source:` 直接被忽略（結果和加一個不存在的字一樣）【查核 2026-09-20】 |
+| 答案 | `exclude_sources` | 發布者一律不收：`vietnam.vn`（越南的內容農場）、`indexbox.io`（每個國家的批發行情都發，台灣頁出現過「愛爾蘭第38週農產品批發價格」「底特律批發市場蔬菜價格」）。比對**網域與它的子網域**（`vietnam.vn` 也擋 `www.vietnam.vn`、`en.vietnam.vn`），或發布者**名稱的整個詞**（所以只是提到越南的馬來西亞媒體不會被擋）；開頭加點是整個頂級網域（馬來西亞的 `.in` 擋掉所有印度媒體，例如把清奈行情發到馬來西亞頁的 `dtnext.in`） |
+| 答案 | `exclude` | 標題有別國的行情用語就不收：馬來西亞加 `india`、`vietnam`、`indonesia`、`mandi price`、`mandi rate`、`apmc`、`agmarknet`、`quintal`、`rupee`、`₹`、`lakh`、`crore`、`rupiah`；台灣加 `印度`、`越南`、`泰國`、`印尼`、`韓國`、`馬來西亞`、`菲律賓`、`盧比`、`令吉`、`泰銖`、`₹`；印度只加別國的行情用語 `harga`、`pasar borong`、`ringgit`、`rupiah` |
+
+選字的取捨（兩個方向的誤判都要顧）：
+
+- **行情用語比國名準**，但國名在「整則就是在講那個國家」時也可以用。印度**只加用語、不加國名**：印度自己的行情新聞本來就會提到別國（洋蔥出口孟加拉、棕櫚油來自馬來西亞、稻米和越南泰國競爭），加了國名會把自己的新聞擋掉。馬來西亞與台灣加國名，因為雜訊正是從那些國家來的。
+- **不加的字**：`中國`（中國時報是台灣的報紙）、`日本`（台灣自己的外銷新聞會提到）、`mandi` 單用（馬來文是「洗澡」，所以只用 `mandi price`、`mandi rate`）、`indian`（ikan kembung 的英文是 Indian mackerel，濕巴剎的行情新聞常寫到）、`bangladesh`／`nepal`／`sri lanka`（印度洋蔥的出口地，這些新聞就是在講印度的價格）、`thailand` 之於馬來西亞（泰國是馬來西亞最大的蔬菜進口來源，提到泰國多半是在講馬來西亞的供應）。印度自己的 `mandi`、`₹` 是它的 `price_words`，沒有動。
+- **`query_exclude` 只放一個字**（台灣 `越南`、馬來西亞 `vietnam`，印度 `harga`、`ringgit`、`rupiah`）。實測否定詞是拿整篇文章比對的，多加一個字就多丟掉一些本國新聞：加了 `-india -indonesia` 之後，馬來西亞當天真正的兩則之一（Kosmo「Super El Nino: Naik harga sayur…」，內文提到印尼）就不見了。擋內容農場靠它（`vietnam.vn` 一度占掉 `harga sayur` 18 則裡的 8 則，把本國新聞擠掉），其餘交給上面兩層——那兩層不花 recall，而且 Google 的排序本來就不保證。
+- **已存的新聞不會因為規則變嚴而被刪掉**：新規則只擋**正在收進來**的項目。摘要用的是免費額度，刪掉就補不回來，所以不回頭清理、不重算，保留原本的 7 天期限。
+- **還是會漏的**：全球性的產業媒體（FreshPlaza 的「Iraq bans tomato imports…」）和其他國家的行情報導還是可能混進來。這類媒體也發真正的本國新聞，所以不整個擋。
+
+**驗證**（2026-09-20，真實搜尋，`GEMINI_API_KEY` 空的所以不呼叫模型）：馬來西亞從 6 則（2 則 `vietnam.vn`、2 則印度食用油、1 則 `dtnext.in` 的清奈行情）變成 2 則，都是馬來西亞的（NST、Kosmo）；台灣從 24 則變成 20–21 則，少掉的是 2 則 IndexBox（愛爾蘭、底特律）與 1 則越南水果崩盤；印度 44 則只少掉 1 則 IndexBox（愛爾蘭），`mandi`、`₹` 的新聞全部留著。
+
 - **條款**：RSS 的版權聲明寫明只供個人、非商業的閱讀器使用。本 App 是黑客松的非商業作品，只顯示標題、發布者與我們自己的摘要，不轉載原文、也不在手機上開外部網站；要商業化時要換成有授權的新聞來源。
 - 每次搜尋間隔 1.5 秒；429、5xx、網路錯誤重試一次。一個國家的搜尋全部失敗時，這次執行記為失敗，已存的新聞不動。
 

@@ -963,3 +963,13 @@
 - 決定：`NEWS_DAILY_ARTICLES` 與 `NEWS_DAILY_MODEL_CALLS` 的預設都改成 60（`app/config.py`、`app/ingest/news/job.py`、`.env.example`）。額度仍然保留，用途是「程式出錯時不要燒完一天的額度」，不是配給。`GEMINI_PACE_S` 維持 7 秒（每分鐘少於 10 次，低於 15 的上限）。
 - 理由：一國一次最多只摘要清單上的 9 則，所以正常一天最多約 27 次呼叫；原本每國每次 10 次的配額剛好卡在 9 則的邊緣，提高到每國 20 次之後，只問作物的呼叫與手動執行都有餘裕，離免費層的 500 次還很遠。
 - 影響：`backend/app/config.py`、`backend/app/ingest/news/job.py`、`.env.example`、`backend/tests/news/test_pipeline.py`；docs/06 §1.6。
+
+## 2026-09-20 新聞只留本國的行情，別國的用發布者與用語擋掉
+- 情況：使用者在馬來西亞的新聞頁看到印度新聞。真實抓取的 6 則裡只有 2 則是馬來西亞的：「India considers cutting vegetable oil import taxes as prices climb」有 topic 也有 price word 所以通過相關性檢查，而 `vietnam.vn` 把越南的行情報導翻成馬來文，標題裡沒有任何國名，標題規則抓不到。
+- 決定（`sources.yaml` 三個新設定，兩層過濾）：
+  1. `query_exclude`：每個搜尋字後面加否定詞（`-越南`），和 `when:Nd` 一樣。【查核 2026-09-20】Google 新聞認得純文字否定詞、拿整篇文章比對；`-site:` 會把搜尋打歪（回 100 則購物與社群貼文），`-source:` 被忽略。因為是整篇比對，多一個否定詞就多丟一些本國新聞（`-india -indonesia` 會丟掉 Kosmo 那則），所以每國只放最會洗掉本國新聞的那一個字。
+  2. `exclude_sources`：發布者一律不收（`vietnam.vn`、`indexbox.io`，馬來西亞另加 `.in`）。比對網域與其子網域，或發布者名稱的整個詞；開頭加點是整個頂級網域。在 `new_rows` 收資料時擋，不動相關性規則。
+  3. `exclude` 加別國的行情用語與國名：印度只加用語（`harga`、`pasar borong`、`ringgit`、`rupiah`）不加國名，因為印度自己的行情新聞會提到孟加拉、馬來西亞、越南；馬來西亞與台灣加國名，雜訊是從那邊來的。不加 `中國`（中國時報）、`日本`、單用的 `mandi`（馬來文是洗澡）、`indian`（Indian mackerel＝ikan kembung）、`bangladesh`／`nepal`／`sri lanka`、馬來西亞的 `thailand`。
+  4. **已存的新聞不刪**（使用者決定）：新規則只擋正在收進來的項目，不回頭清理、不重算，7 天期限不變。摘要吃免費額度，刪掉補不回來。
+- 理由：別國的行情報導和本國的長得一樣（都是作物＋價格），只有發布者與當地的行情用語能分。國名是最強的訊號，但只有在雜訊從那個國家來、而且本國新聞不常提到它的時候才划算。
+- 影響：`backend/app/ingest/news/{config.py,match.py,rss.py,pipeline.py,sources.yaml}`、`backend/tests/news/{test_config.py,test_match.py,test_rss.py,test_pipeline.py}`；docs/06 §1.6。已知限制：全球性的產業媒體（FreshPlaza 的「Iraq bans tomato imports…」）還是會混進來，因為它也發真正的本國新聞。
