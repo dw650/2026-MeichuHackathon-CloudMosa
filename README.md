@@ -1,4 +1,4 @@
-# 農價 AgriPrice
+# 穀價 AgriPrice
 
 **按鍵型手機上的農產品行情 App。** 農夫與商販在 CloudMosa Cloud Phone（240×320 按鍵機）上按幾個鍵，就能看到自己地區今天的農產品價格、近期走勢，以及同一個國家各地區的價格比較。
 
@@ -55,6 +55,10 @@ make up                 # 起 db、api、worker、web；worker 啟動時就寫�
 | 新聞摘要（選用；`.env` 設 `GEMINI_API_KEY`，見 [docs/06 §1.6](docs/06-data.md)）／手動抓一次新聞 | `docker compose exec worker python -m app.news --once [--country TW]` |
 
 ## 架構
+
+![架構圖](docs/diagrams/agriprice-architecture-v2.png)
+
+> 以程式繪製（[`docs/diagrams/`](docs/diagrams/)），同時提供 4K PNG、向量 SVG、PDF 與可編輯的 draw.io。
 
 ```mermaid
 flowchart TB

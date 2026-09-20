@@ -16,7 +16,7 @@ describe('i18n setup', () => {
   it('switches to Traditional Chinese and marks the page zh-Hant', () => {
     expect(setLanguage('zh-TW')).toBe('zh-TW')
     expect(i18n.language).toBe('zh-TW')
-    expect(i18n.t('app.name')).toBe('農價')
+    expect(i18n.t('app.name')).toBe('穀價')
     expect(document.documentElement.lang).toBe('zh-Hant')
     expect(document.documentElement.matches(':lang(zh)')).toBe(true)
   })
