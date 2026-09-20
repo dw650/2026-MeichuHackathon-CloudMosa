@@ -987,3 +987,13 @@
 - 情況：同一天稍早才把「附近」定成 100 km 內的所有地區。接上 Agmarknet 的真實資料後，印度的地區變成三個邦的 64 個縣，但縣與縣之間多半超過 100 km（Nashik 最近的 Dhule 是 108 km、Chh. Sambhajinagar 112 km、Palghar 118 km），所以印度幾乎看不到「附近最高／最低」的卡片。
 - 決定（使用者）：`NEARBY_MAX_KM` 改成 **150 km**，約貨車 2–3 小時的距離，各國仍然統一、不限個數。印度多數的縣因此有 1–4 個鄰居；德里（整個 NCT 只有一個縣）仍然沒有。台灣的縣市距離沒變（最近的仍在 50 km 內），只是鄰居數會多一點。
 - 影響：`backend/app/services/nearby.py`、`backend/tests/{unit,api}/test_nearby.py`、msw fixtures、`frontend/src/screens/crop-detail/TodayTab.test.tsx`、`frontend/src/screens/about/AboutScreen.test.tsx`、四種語言的 `about.nearby`、docs/02 §5.4、docs/04 §6。
+
+## 2026-09-20 新聞只留本國的行情，別國的用發布者與用語擋掉
+- 情況：使用者在馬來西亞的新聞頁看到印度新聞。真實抓取的 6 則裡只有 2 則是馬來西亞的：「India considers cutting vegetable oil import taxes as prices climb」有 topic 也有 price word 所以通過相關性檢查，而 `vietnam.vn` 把越南的行情報導翻成馬來文，標題裡沒有任何國名，標題規則抓不到。
+- 決定（`sources.yaml` 三個新設定，兩層過濾）：
+  1. `query_exclude`：每個搜尋字後面加否定詞（`-越南`），和 `when:Nd` 一樣。【查核 2026-09-20】Google 新聞認得純文字否定詞、拿整篇文章比對；`-site:` 會把搜尋打歪（回 100 則購物與社群貼文），`-source:` 被忽略。因為是整篇比對，多一個否定詞就多丟一些本國新聞（`-india -indonesia` 會丟掉 Kosmo 那則），所以每國只放最會洗掉本國新聞的那一個字。
+  2. `exclude_sources`：發布者一律不收（`vietnam.vn`、`indexbox.io`，馬來西亞另加 `.in`）。比對網域與其子網域，或發布者名稱的整個詞；開頭加點是整個頂級網域。在 `new_rows` 收資料時擋，不動相關性規則。
+  3. `exclude` 加別國的行情用語與國名：印度只加用語（`harga`、`pasar borong`、`ringgit`、`rupiah`）不加國名，因為印度自己的行情新聞會提到孟加拉、馬來西亞、越南；馬來西亞與台灣加國名，雜訊是從那邊來的。不加 `中國`（中國時報）、`日本`、單用的 `mandi`（馬來文是洗澡）、`indian`（Indian mackerel＝ikan kembung）、`bangladesh`／`nepal`／`sri lanka`、馬來西亞的 `thailand`。
+  4. **已存的新聞不刪**（使用者決定）：新規則只擋正在收進來的項目，不回頭清理、不重算，7 天期限不變。摘要吃免費額度，刪掉補不回來。
+- 理由：別國的行情報導和本國的長得一樣（都是作物＋價格），只有發布者與當地的行情用語能分。國名是最強的訊號，但只有在雜訊從那個國家來、而且本國新聞不常提到它的時候才划算。
+- 影響：`backend/app/ingest/news/{config.py,match.py,rss.py,pipeline.py,sources.yaml}`、`backend/tests/news/{test_config.py,test_match.py,test_rss.py,test_pipeline.py}`；docs/06 §1.6。已知限制：全球性的產業媒體（FreshPlaza 的「Iraq bans tomato imports…」）還是會混進來，因為它也發真正的本國新聞。

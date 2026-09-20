@@ -105,6 +105,26 @@ def test_search_params_add_the_window_and_edition() -> None:
     }
 
 
+def test_search_params_add_the_negative_terms() -> None:
+    """Google News honours plain negative words, and matches them against the whole article
+    (docs/06 §1.6), so they thin the answer before the country filters run."""
+    assert search_params(TW_FEED, "菜價", 2, ["越南", "印度"])["q"] == "菜價 -越南 -印度 when:2d"
+    phrase = search_params(TW_FEED, "菜價", 2, ["pasar borong"])
+    assert phrase["q"] == '菜價 -"pasar borong" when:2d'
+
+
+async def test_fetch_appends_the_countrys_negative_terms() -> None:
+    script = Script({SEARCH_URL: [rss("gnews_rss_TW.xml")]})
+    time = FakeTime()
+    config = TW.model_copy(update={"query_exclude": ["越南"]})
+    source = GoogleNewsSource(transport=script.transport(), sleep=time.sleep, clock=time.clock)
+    await source.fetch("TW", config, 2)
+    assert [r.url.params["q"] for r in script.requests] == [
+        "菜價 -越南 when:2d",
+        "果菜市場 -越南 when:2d",
+    ]
+
+
 async def test_fetch_runs_every_search_spaced_out() -> None:
     script = Script({SEARCH_URL: [rss("gnews_rss_TW.xml")]})
     time = FakeTime()

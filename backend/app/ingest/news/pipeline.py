@@ -90,6 +90,7 @@ def matcher_for(catalog: CountryCatalog, config: CountryNews) -> Matcher:
         topics=config.topics,
         price_words=config.price_words,
         exclude=config.exclude,
+        exclude_sources=config.exclude_sources,
         confusable=config.confusable,
     )
 
@@ -114,14 +115,18 @@ def new_rows(
     known: tuple[set[str], set[str]],
     now: datetime,
 ) -> tuple[int, list[dict[str, object]]]:
-    """(on-topic items in the answer, rows to add): recent, on topic, not stored yet, and not
-    repeated within the answer (same guid or same title)."""
+    """(on-topic items in the answer, rows to add): recent, from a publisher we keep, on topic,
+    not stored yet, and not repeated within the answer (same guid or same title).
+
+    Only what comes in is filtered; stored items are never removed by these rules."""
     oldest = now - timedelta(days=NEWS_KEEP_DAYS)
     guids, keys = set(known[0]), set(known[1])
     on_topic = 0
     rows: list[dict[str, object]] = []
     for item in raw:
         if not (oldest <= item.published_at <= now + FUTURE_SLACK) or not item.title:
+            continue
+        if matcher.blocked_source(item.source_name, item.source_domain):
             continue
         if not matcher.relevant(item.title):
             continue

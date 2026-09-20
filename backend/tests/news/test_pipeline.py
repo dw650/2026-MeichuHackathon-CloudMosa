@@ -225,8 +225,9 @@ async def test_malay_headlines_of_malaysia(seeded: AsyncSession) -> None:
     assert run.status == "ok"
     titles = [i.title for i in await items(seeded, "MY")]
     # 「harga sayur」 is price news; wet-market and sugar stories are not about Malaysia's crops.
-    assert len(titles) == 2
-    assert all("harga sayur" in t.lower() for t in titles)
+    # The saved answer also holds Vietnam's market report in Malay, which its publisher
+    # (vietnam.vn) keeps out (docs/06 §1.6).
+    assert titles == ["Super El Nino: Naik harga sayur melampau boleh dikenakan tindakan"]
 
 
 BANANA = RawNews(
@@ -688,3 +689,65 @@ def test_allowance_is_a_share_of_what_is_left() -> None:
     assert allowance(30, 30, 2) == 0
     assert allowance(30, 0, 3) == 10
     assert allowance(30, 0, 0) == 30
+
+
+async def test_a_blocked_publisher_is_never_stored(seeded: AsyncSession) -> None:
+    """vietnam.vn auto-translates Vietnam's market reports into Malay, so no title rule can
+    catch them; the publisher filter does (docs/06 §1.6)."""
+    config = CONFIG.countries["MY"]
+    farm = RawNews(
+        guid="vn-1",
+        title="Kemas kini harga pagi: kenaikan mendadak harga sayur-sayuran",
+        url="https://news.google.test/vn-1",
+        published_at=NOW - timedelta(hours=1),
+        source_name="vietnam.vn",
+        source_domain="www.vietnam.vn",
+        lang="ms",
+    )
+    local = RawNews(
+        **{
+            **farm.__dict__,
+            "guid": "my-1",
+            "title": "Harga sayur di pasar borong naik",
+            "source_name": "NST Online",
+            "source_domain": "nst.com.my",
+        }
+    )
+    run = await run_country(seeded, "MY", config, FakeSource([farm, local]), clock=clock)
+    assert run.items_in == 1  # the blocked publisher is not even counted as price news
+    assert [i.source_domain for i in await items(seeded, "MY")] == ["nst.com.my"]
+
+
+async def test_another_countrys_market_report_is_left_out(seeded: AsyncSession) -> None:
+    config = CONFIG.countries["MY"]
+    foreign = RawNews(
+        guid="in-1",
+        title="India considers cutting vegetable oil import taxes as prices climb",
+        url="https://news.google.test/in-1",
+        published_at=NOW - timedelta(hours=1),
+        source_name="Reuters",
+        source_domain="reuters.com",
+        lang="en",
+    )
+    await run_country(seeded, "MY", config, FakeSource([foreign]), clock=clock)
+    assert await items(seeded, "MY") == []
+
+
+async def test_the_filters_never_remove_what_is_already_stored(seeded: AsyncSession) -> None:
+    """Items stored before a filter existed stay: their summaries cannot be made again
+    (user decision 2026-09-20, docs/06 §1.6)."""
+    config = CONFIG.countries["MY"]
+    old = RawNews(
+        guid="vn-old",
+        title="Harga sayur naik, harga buah membanjiri pasaran.",
+        url="https://news.google.test/vn-old",
+        published_at=NOW - timedelta(hours=2),
+        source_name="vietnam.vn",
+        source_domain="vietnam.vn",
+        lang="ms",
+    )
+    plain = config.model_copy(update={"exclude_sources": [], "exclude": []})
+    await run_country(seeded, "MY", plain, FakeSource([old]), clock=clock)
+    assert len(await items(seeded, "MY")) == 1
+    await run_country(seeded, "MY", config, FakeSource([]), clock=clock)
+    assert [i.guid for i in await items(seeded, "MY")] == ["vn-old"]

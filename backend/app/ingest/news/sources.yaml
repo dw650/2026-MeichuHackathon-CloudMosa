@@ -7,7 +7,18 @@
 #   keywords: price news on their own (菜價, mandi prices); a headline with one is kept
 #   topics / price_words: otherwise a headline needs a crop or a topic word AND a price word
 #          (「果菜市場發加倍券」 has a topic but no price word, so it is left out)
-#   exclude: headlines with one of these are left out (other countries' market reports)
+#   exclude: headlines with one of these are left out: another country's market report
+#          (印度, mandi price, ringgit) or something else that reads like price news (車價)
+#   exclude_sources: publishers never kept, whatever they write: a foreign site that
+#          translates another country's market reports into the local language (vietnam.vn)
+#          or publishes every country's wholesale report (indexbox.io). An entry matches the
+#          domain and its subdomains, or the publisher name as a whole word; a leading dot is
+#          a whole top-level domain (".in" is every Indian publisher)
+#   query_exclude: negative terms added to every search, the way "when:Nd" is. Google News
+#          honours plain words and matches them against the whole article, so the answer has
+#          fewer foreign items to begin with; "site:" and "source:" do not work there. Each
+#          term also costs a little recall, so the list stays short and the filters above
+#          stay the layer we rely on
 #   confusable: longer phrases that contain a crop name but are not that crop
 #          (香蕉葡萄 is a Korean grape, kelapa sawit is oil palm); a crop matched inside one
 #          of them does not count. Crop names inside other crop names (薜 in 薜黃, kubis in
@@ -25,7 +36,11 @@ countries:
     keywords: [菜價, 批發價, 產地價, 拍賣價, 果菜價, 蔬菜價格, 水果價格, 農產品價格]
     topics: [蔬菜, 蔬果, 果菜, 青菜, 葉菜, 水果, 農產品, 菜農, 果農, 農損]
     price_words: [價, 漲, 跌, 貴, 便宜]
-    exclude: [裝運點, 終端市場, 美股]
+    # 中國 is not here on purpose: 中國時報 is a Taiwanese paper. 日本 neither: Taiwan's own
+    # export news names it.
+    exclude: [裝運點, 終端市場, 美股, 印度, 越南, 泰國, 印尼, 韓國, 馬來西亞, 菲律賓, 盧比, 令吉, 泰銖, ₹]
+    exclude_sources: [vietnam.vn, indexbox.io]
+    query_exclude: [越南]
     confusable: [香蕉葡萄]  # a Korean grape variety, not 香蕉
     crop_aliases:
       cabbage: [高麗菜]
@@ -87,7 +102,11 @@ countries:
       - ₹
       - kg
       - quintal
-    exclude: [usda, terminal market, shipping point, on road price, pakistan]
+    # Only the other countries' market words, not their names: India's own market stories name
+    # them (onion exports to Bangladesh, palm oil from Malaysia, rice against Vietnam).
+    exclude: [usda, terminal market, shipping point, on road price, pakistan, harga, pasar borong, ringgit, rupiah]
+    exclude_sources: [vietnam.vn, indexbox.io]
+    query_exclude: [harga, ringgit, rupiah]
     crop_aliases:
       chilli: [chili, green chilli]
       maize: [corn]
@@ -124,7 +143,11 @@ countries:
     keywords: [harga sayur, vegetable price, vegetables price, fruit price]
     topics: [sayur, sayur-sayuran, buah, buah-buahan, petani, fama, pasar borong, vegetable, fruit, farmer]
     price_words: [harga, naik, turun, mahal, murah, price, rate, cost, rm, kg]
-    exclude: [usda, terminal market, shipping point]
+    # India's market words and names. "mandi" alone is not here: it is Malay for "to bathe".
+    # "indian" neither: ikan kembung is the Indian mackerel of every wet-market price story.
+    exclude: [usda, terminal market, shipping point, india, vietnam, indonesia, mandi price, mandi rate, apmc, agmarknet, quintal, rupee, lakh, crore, rupiah, ₹]
+    exclude_sources: [vietnam.vn, indexbox.io, .in]
+    query_exclude: [vietnam]
     confusable: [kelapa sawit, minyak sawit]  # oil palm, not the coconut alias kelapa
     crop_aliases:
       cabbage: [kubis]

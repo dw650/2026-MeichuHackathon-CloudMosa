@@ -8,6 +8,7 @@ import asyncio
 import logging
 import time
 import xml.etree.ElementTree as ET
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
@@ -38,9 +39,15 @@ class RssItem:
     source_url: str | None
 
 
-def search_params(feed: Feed, query: str, days: int) -> dict[str, str]:
-    """Query string of one search: the words plus Google's `when:` window, and the edition."""
-    return {"q": f"{query} when:{days}d", "hl": feed.hl, "gl": feed.gl, "ceid": feed.ceid}
+def search_params(feed: Feed, query: str, days: int, exclude: Sequence[str] = ()) -> dict[str, str]:
+    """Query string of one search: the words, the country's negative terms, Google's `when:`
+    window, and the edition.
+
+    Google News honours plain negative words and matches them against the whole article
+    (docs/06 §1.6), which keeps another country's market reports out of the answer before we
+    filter it. The `site:` and `source:` operators do not work here."""
+    words = " ".join([query, *(f'-"{t}"' if " " in t else f"-{t}" for t in exclude)])
+    return {"q": f"{words} when:{days}d", "hl": feed.hl, "gl": feed.gl, "ceid": feed.ceid}
 
 
 def _published(text: str | None) -> datetime | None:
@@ -131,7 +138,8 @@ class GoogleNewsSource:
                 for query in feed.queries:
                     searches += 1
                     try:
-                        items = await self._search(client, search_params(feed, query, days))
+                        params = search_params(feed, query, days, config.query_exclude)
+                        items = await self._search(client, params)
                     except UpstreamError as exc:
                         failures += 1
                         logger.warning("news %s: search %r failed: %s", country, query, exc)

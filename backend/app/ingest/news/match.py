@@ -11,7 +11,9 @@ before it (「不是香蕉苒果」, "not onions") and when it sits inside a lon
 matched (薜 inside 薜黃, kubis inside kubis bunga, 香蕉 inside the configured 香蕉葡萄, Taipei
 inside New Taipei). Keywords, topics, price words and excludes are matched without the guard:
 they only decide whether a headline is price news at all, and a negated price word
-(「沒有蔬菜漲價」) still means the headline is about prices."""
+(「沒有蔬菜漲價」) still means the headline is about prices.
+
+Publishers are matched by `SourceFilter`, on the domain rather than the headline."""
 
 import re
 import unicodedata
@@ -185,6 +187,34 @@ def _words(values: Sequence[str]) -> TermIndex:
     return TermIndex({value: [value] for value in values})
 
 
+class SourceFilter:
+    """Publishers whose items are never kept (docs/06 §1.6). A foreign content farm that
+    translates another country's market reports into the local language carries no country
+    word at all, so no title rule can catch it.
+
+    An entry matches the publisher's domain, either exactly or as a parent of it
+    (`vietnam.vn` also blocks `www.vietnam.vn` and `en.vietnam.vn`), and the publisher's name
+    as a whole word, so a local paper that merely writes about Vietnam stays. An entry that
+    starts with a dot is a whole top-level domain (`.in` blocks every Indian publisher) and is
+    never matched against a name."""
+
+    def __init__(self, entries: Sequence[str]) -> None:
+        cleaned = [(e.startswith("."), _host(e)) for e in map(normalize, entries)]
+        self._domains = frozenset(host for _, host in cleaned if host)
+        self._names = _words([host for tld, host in cleaned if host and not tld])
+
+    def blocked(self, name: str, domain: str | None) -> bool:
+        host = _host(domain or "")
+        if host and any(host == d or host.endswith(f".{d}") for d in self._domains):
+            return True
+        return bool(name and self._names.find(name))
+
+
+def _host(value: str) -> str:
+    """`  WWW.Vietnam.VN/ ` → `vietnam.vn`, `.in` → `in`."""
+    return normalize(value).strip(" ./").removeprefix("www.")
+
+
 @dataclass(frozen=True)
 class Matcher:
     """What one country's headlines mention: crops, areas, and whether they are on topic."""
@@ -195,6 +225,7 @@ class Matcher:
     topics: TermIndex
     price_words: TermIndex
     exclude: TermIndex
+    exclude_sources: SourceFilter
 
     @classmethod
     def build(
@@ -208,6 +239,7 @@ class Matcher:
         topics: Sequence[str] = (),
         price_words: Sequence[str] = (),
         exclude: Sequence[str] = (),
+        exclude_sources: Sequence[str] = (),
         confusable: Sequence[str] = (),
     ) -> "Matcher":
         return cls(
@@ -217,7 +249,12 @@ class Matcher:
             topics=_words(topics),
             price_words=_words(price_words),
             exclude=_words(exclude),
+            exclude_sources=SourceFilter(exclude_sources),
         )
+
+    def blocked_source(self, name: str, domain: str | None) -> bool:
+        """True when this publisher is never kept, whatever the headline says."""
+        return self.exclude_sources.blocked(name, domain)
 
     def crop_ids(self, text: str) -> list[str]:
         return self.crops.find(text)
