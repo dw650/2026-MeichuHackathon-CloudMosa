@@ -24,7 +24,7 @@ async def test_countries_lists_every_country_with_its_settings(api: httpx.AsyncC
         "id": "qtl",
         "per_kg": 100,
         "decimals": 0,
-        "label": {"zh-TW": "₹/公擔", "en": "₹/qtl"},
+        "label": {"zh-TW": "₹/100公斤", "en": "₹/qtl"},
     }
     assert taiwan["up_is_pos"] is False
     assert taiwan["units"]["retail"]["default"] == "kg"
@@ -99,17 +99,19 @@ async def test_areas_carry_coordinates_and_freshness(api: httpx.AsyncClient) -> 
     assert body["country"] == "IN"
     assert body["today"] == "2026-09-19"
     areas = {a["id"]: a for a in body["areas"]}
-    assert len(areas) == 11
+    assert len(areas) == 64
     nashik = areas["nashik"]
-    assert (nashik["lat"], nashik["lon"], nashik["has_retail"]) == (20.0, 73.79, True)
+    assert (nashik["lat"], nashik["lon"], nashik["has_retail"]) == (20.23, 74.1, True)
     assert nashik["region"] == {"zh-TW": "Maharashtra", "en": "Maharashtra"}
     assert nashik["latest_trade_date"] == "2026-09-19"
     assert nashik["staleness"] == {"days": 0, "state": "today"}
     assert areas["jalgaon"]["staleness"] == {"days": 1, "state": "stale"}
     assert areas["kolar"]["staleness"] == {"days": 3, "state": "stale"}
-    assert areas["kurnool"]["latest_trade_date"] is None
-    assert areas["kurnool"]["staleness"] == {"days": None, "state": "none"}
-    assert [a["id"] for a in body["areas"]][:3] == ["nashik", "pune", "ahmednagar"]
+    assert areas["dakshinakannada"]["latest_trade_date"] is None
+    assert areas["dakshinakannada"]["staleness"] == {"days": None, "state": "none"}
+    # Maharashtra first, then Karnataka and Delhi, each by name (docs/06 §7.2).
+    assert [a["id"] for a in body["areas"]][:3] == ["ahmednagar", "akola", "amravati"]
+    assert [a["id"] for a in body["areas"]][-1] == "delhi"
 
 
 async def test_crops_list_names_categories_and_retail(api: httpx.AsyncClient) -> None:

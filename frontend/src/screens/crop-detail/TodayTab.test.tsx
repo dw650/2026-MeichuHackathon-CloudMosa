@@ -22,14 +22,14 @@ const QUOTE = '*/api/v1/crops/:crop/quote'
 describe('crop detail · 行情 tab (T27)', () => {
   it('shows the median price, three metrics and opens the markets card on OK', async () => {
     const app = await renderApp('/crop/onion/today', { history: ['/'] })
-    expect(await screen.findByText('2,395')).toBeInTheDocument()
-    expect(screen.getByText('7 個市場中位數 · ₹/公擔')).toBeInTheDocument()
-    expect(screen.getByText('+109')).toBeInTheDocument()
-    expect(screen.getByText('本地區 10 個市場')).toBeInTheDocument()
-    expect(screen.getByText('最高 2,522・最低 2,264')).toBeInTheDocument()
-    expect(screen.getByText('+5.5%')).toBeInTheDocument()
+    expect(await screen.findByText('3,969')).toBeInTheDocument()
+    expect(screen.getByText('7 個市場中位數 · ₹/100公斤')).toBeInTheDocument()
+    expect(screen.getByText('+93')).toBeInTheDocument()
+    expect(screen.getByText('本地區 24 個市場')).toBeInTheDocument()
+    expect(screen.getByText('最高 4,476・最低 3,871')).toBeInTheDocument()
+    expect(screen.getByText('+3.3%')).toBeInTheDocument()
     expect(screen.getByText('偏多 ▲18%')).toBeInTheDocument()
-    expect(screen.getByText('高檔 100%')).toBeInTheDocument()
+    expect(screen.getByText('高檔 87%')).toBeInTheDocument()
     expect(screen.getByText('9/19 11:40')).toBeInTheDocument()
     expect(app.focusedId()).toBe('markets')
     expect([app.softKey('left'), app.softKey('center'), app.softKey('right')]).toEqual([
@@ -44,7 +44,7 @@ describe('crop detail · 行情 tab (T27)', () => {
 
   it('switches tabs with ◀ ▶, opens the area panel with # and the menu with the left key', async () => {
     const app = await renderApp('/crop/onion/today?area=pune')
-    await screen.findByText('本地區 10 個市場')
+    await screen.findByText('本地區 24 個市場')
     await press(app, '#')
     expect(app.path()).toBe('/crop/onion/today?area=pune&sheet=area')
     expect(app.softKey('center')).toBe('選取')
@@ -60,15 +60,15 @@ describe('crop detail · 行情 tab (T27)', () => {
 
   it('turns every label, number and unit to retail with *', async () => {
     const app = await renderApp('/crop/onion/today')
-    await screen.findByText('2,395')
+    await screen.findByText('3,969')
     await press(app, '*')
     expect(useSettings.getState().priceType).toBe('retail')
     expect(await screen.findByText('零售調查價 · ₹/公斤')).toBeInTheDocument()
-    expect(screen.getByText('38.1')).toBeInTheDocument()
+    expect(screen.getByText('64.9')).toBeInTheDocument()
     expect(screen.getByText('零售價以地區為單位，沒有市場細項')).toBeInTheDocument()
     expect(screen.getByText('波動')).toBeInTheDocument()
     expect(screen.getByText('普通')).toBeInTheDocument()
-    expect(screen.queryByText('本地區 10 個市場')).not.toBeInTheDocument()
+    expect(screen.queryByText('本地區 24 個市場')).not.toBeInTheDocument()
   })
 
   it('goes on to 比價 on OK when retail has nothing to select', async () => {
@@ -80,9 +80,9 @@ describe('crop detail · 行情 tab (T27)', () => {
       ),
     )
     const app = await renderApp('/crop/onion/today')
-    await screen.findByText('2,395')
+    await screen.findByText('3,969')
     await press(app, '*')
-    expect(await screen.findByText('38.1')).toBeInTheDocument()
+    expect(await screen.findByText('64.9')).toBeInTheDocument()
     expect(app.focusedId()).toBeNull()
     expect(app.softKey('center')).toBe('比價')
 
@@ -94,7 +94,7 @@ describe('crop detail · 行情 tab (T27)', () => {
     const app = await renderApp('/crop/onion/today?area=kolar')
     expect(await screen.findByText('Kolar 縣 今天還沒更新')).toBeInTheDocument()
     expect(screen.getByText('這個地區通常 14:00 前更新')).toBeInTheDocument()
-    expect(screen.getByText('最近一筆（3 天前）：2,420 ₹/公擔')).toBeInTheDocument()
+    expect(screen.getByText('最近一筆（3 天前）：3,467 ₹/100公斤')).toBeInTheDocument()
     expect(app.focusedId()).toBe('other-areas')
     expect(app.softKey('center')).toBe('選取')
 
@@ -104,7 +104,7 @@ describe('crop detail · 行情 tab (T27)', () => {
 
   it('explains missing retail prices and switches back to wholesale', async () => {
     const app = await renderApp('/crop/chilli/today')
-    await screen.findByText('本地區 10 個市場')
+    await screen.findByText('本地區 24 個市場')
     await press(app, '*')
     expect(await screen.findByText('尚無零售資料')).toBeInTheDocument()
     expect(screen.getByText('這個作物沒有零售回報')).toBeInTheDocument()
@@ -113,11 +113,11 @@ describe('crop detail · 行情 tab (T27)', () => {
 
     await press(app, 'Enter')
     expect(useSettings.getState().priceType).toBe('wholesale')
-    expect(await screen.findByText('本地區 10 個市場')).toBeInTheDocument()
+    expect(await screen.findByText('本地區 24 個市場')).toBeInTheDocument()
   })
 
   it('shows — and 無資料 for an area without any price', async () => {
-    await renderApp('/crop/onion/today?area=kurnool')
+    await renderApp('/crop/onion/today?area=dakshinakannada')
     expect(await screen.findByText('—')).toBeInTheDocument()
     expect(screen.getByText('無資料')).toBeInTheDocument()
     expect(screen.queryByText('比 7 日均價')).not.toBeInTheDocument()
@@ -145,7 +145,7 @@ describe('crop detail · 行情 tab (T27)', () => {
 
     server.resetHandlers()
     await press(app, 'Enter')
-    expect(await screen.findByText('2,395')).toBeInTheDocument()
+    expect(await screen.findByText('3,969')).toBeInTheDocument()
   })
 })
 
@@ -157,7 +157,7 @@ const ownRow = (label: string) =>
 
 describe('crop detail · 行情 tab · nearby prices', () => {
   it('names the highest and the lowest nearby area and opens one on OK', async () => {
-    // Around New Taipei: Taipei (11 km) pays more, Taoyuan (16 km) less.
+    // Within 150 km of New Taipei: Taipei (11 km) pays most, Changhua (139 km) least.
     const app = await renderApp('/crop/cabbage/today?area=newtaipei', {
       country: 'TW',
       history: ['/'],
@@ -169,9 +169,9 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(high.getByText('+0.7')).toBeInTheDocument()
     expect(high.getByText('2')).toBeInTheDocument() // digit key cap
     const low = within(nearbyCard('nearby-low'))
-    expect(low.getByText('桃園市')).toBeInTheDocument()
-    expect(low.getByText('附近最低 · 直線 16 km')).toBeInTheDocument()
-    expect(low.getByText('31.3')).toBeInTheDocument()
+    expect(low.getByText('彰化縣')).toBeInTheDocument()
+    expect(low.getByText('附近最低 · 直線 139 km')).toBeInTheDocument()
+    expect(low.getByText('28.4')).toBeInTheDocument()
     expect(low.getByText('3')).toBeInTheDocument()
 
     // The markets card stays first; ↓ reaches the nearby cards.
@@ -181,7 +181,7 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(app.softKey('center')).toBe('查看')
     await press(app, 'ArrowDown')
     await press(app, 'Enter')
-    expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
+    expect(app.path()).toBe('/crop/cabbage/today?area=changhua')
 
     // Back returns to the same card.
     await app.back()
@@ -191,9 +191,9 @@ describe('crop detail · 行情 tab · nearby prices', () => {
 
   it('opens a nearby area with its digit key', async () => {
     const app = await renderApp('/crop/cabbage/today?area=newtaipei', { country: 'TW' })
-    await screen.findByText('附近最低 · 直線 16 km')
+    await screen.findByText('附近最低 · 直線 139 km')
     await press(app, '3')
-    expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
+    expect(app.path()).toBe('/crop/cabbage/today?area=changhua')
   })
 
   it('says so when the viewed area itself is the highest', async () => {
@@ -204,10 +204,10 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(own.getByText('你')).toBeInTheDocument()
     expect(ownRow('附近最高')).not.toHaveAttribute('data-focus-id')
     const low = within(nearbyCard('nearby-low'))
-    expect(low.getByText('桃園市')).toBeInTheDocument()
-    expect(low.getByText('附近最低 · 直線 27 km')).toBeInTheDocument()
-    expect(low.getByText('31.3')).toBeInTheDocument()
-    expect(low.getByText('−1.1')).toBeInTheDocument()
+    expect(low.getByText('彰化縣')).toBeInTheDocument()
+    expect(low.getByText('附近最低 · 直線 148 km')).toBeInTheDocument()
+    expect(low.getByText('28.4')).toBeInTheDocument()
+    expect(low.getByText('−4.0')).toBeInTheDocument()
     // The own row cannot be opened, so the lowest one comes right after the markets card.
     expect(low.getByText('2')).toBeInTheDocument()
     await press(app, 'ArrowDown')
@@ -223,19 +223,19 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     await screen.findByText('54.8')
     expect(within(ownRow('附近最高')).getByText('台北市')).toBeInTheDocument()
     const low = within(nearbyCard('nearby-low'))
-    expect(low.getByText('桃園市')).toBeInTheDocument()
-    expect(low.getByText('51.5')).toBeInTheDocument()
-    expect(low.getByText('−3.3')).toBeInTheDocument()
+    expect(low.getByText('彰化縣')).toBeInTheDocument()
+    expect(low.getByText('49.6')).toBeInTheDocument()
+    expect(low.getByText('−5.2')).toBeInTheDocument()
     // Retail has no markets card: the nearby card is the only thing to select.
     expect(app.focusedId()).toBe('nearby-low')
     expect(app.softKey('center')).toBe('查看')
     await press(app, '1')
-    expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
+    expect(app.path()).toBe('/crop/cabbage/today?area=changhua')
   })
 
-  it('is left out when no nearby area has a price today', async () => {
-    const app = await renderApp('/crop/onion/today?area=bengaluru')
-    await screen.findByText('2,785')
+  it('is left out when no other area is within 150 km', async () => {
+    const app = await renderApp('/crop/onion/today?area=delhi')
+    await screen.findByText('4,124')
     expect(screen.queryByText(/附近最/)).not.toBeInTheDocument()
     expect(app.focusedId()).toBe('markets')
     await press(app, 'ArrowDown')
@@ -255,14 +255,14 @@ describe('crop detail · 行情 tab · nearby prices', () => {
     expect(own.getByText('Taipei')).toBeInTheDocument()
     expect(own.getByText('You')).toBeInTheDocument()
     const low = within(nearbyCard('nearby-low'))
-    expect(low.getByText('Taoyuan')).toBeInTheDocument()
-    expect(low.getByText('Lowest · 27 km (straight)')).toBeInTheDocument()
-    expect(low.getByText('31.3')).toBeInTheDocument()
-    expect(low.getByText('−1.1')).toBeInTheDocument()
+    expect(low.getByText('Changhua')).toBeInTheDocument()
+    expect(low.getByText('Lowest · 148 km (straight)')).toBeInTheDocument()
+    expect(low.getByText('28.4')).toBeInTheDocument()
+    expect(low.getByText('−4.0')).toBeInTheDocument()
     await press(app, 'ArrowDown')
     expect(app.softKey('center')).toBe('View')
     await press(app, 'Enter')
-    expect(app.path()).toBe('/crop/cabbage/today?area=taoyuan')
+    expect(app.path()).toBe('/crop/cabbage/today?area=changhua')
   })
 })
 
@@ -284,7 +284,7 @@ describe('crop detail · estimated prices (docs/06 §3.6)', () => {
       ),
     )
     const app = await renderApp('/crop/onion/today', { history: ['/'] })
-    expect(await screen.findByText('2,395')).toBeInTheDocument()
+    expect(await screen.findByText('3,969')).toBeInTheDocument()
     expect(screen.queryByText(/推估/)).not.toBeInTheDocument()
 
     await press(app, '*')

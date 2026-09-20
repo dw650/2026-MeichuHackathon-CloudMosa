@@ -86,10 +86,13 @@ async def run_once(
     *,
     refresh: str | None = None,
     startup: bool = False,
+    daily: str | None = None,
 ) -> list[RunSummary]:
     """Syncs the seed, removes prices of sources no longer enabled for a country, then runs the
     enabled sources (only `refresh` when given). Network sources fetch what the fetch policy
-    plans; at start-up they may be skipped after a recent success."""
+    plans; at start-up they may be skipped after a recent success. `daily` is the country whose
+    daily job this is: network sources of other countries wait for their own country's job, so
+    each source is asked once a day, not once per country."""
     engine = create_engine(settings)
     maker = create_sessionmaker(engine)
     try:
@@ -111,6 +114,8 @@ async def run_once(
         for info in infos:
             countries = cover[info.id]
             if (refresh and info.id != refresh) or not countries:
+                continue
+            if daily and info.network and daily not in countries:
                 continue
             context = BuildContext(seeds=seeds, countries=countries, today_of=today_of)
             if info.network:
@@ -146,6 +151,7 @@ def schedule_daily(scheduler: AsyncIOScheduler, settings: Settings, seeds: list[
             run_once,
             CronTrigger(hour=0, minute=5, timezone=tz),
             args=[settings],
+            kwargs={"daily": seed.country.code},
             id=f"daily-{seed.country.code}",
             coalesce=True,
             max_instances=1,

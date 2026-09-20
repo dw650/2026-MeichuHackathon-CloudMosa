@@ -20,7 +20,7 @@ test('* switches price, tag, unit and indicators together on the detail screen',
   const before = await page.locator('main').innerText()
   expect(before).toContain('批發')
   expect(before).toContain('市場中位數')
-  if (info.project.name === 'qvga') expect(before).toContain('₹/公擔')
+  if (info.project.name === 'qvga') expect(before).toContain('₹/100公斤')
 
   await page.keyboard.press('*')
   await settled(page)

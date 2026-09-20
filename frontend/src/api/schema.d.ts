@@ -1430,7 +1430,7 @@ export interface operations {
                      *                   "id": "qtl",
                      *                   "label": {
                      *                     "en": "₹/qtl",
-                     *                     "zh-TW": "₹/公擔"
+                     *                     "zh-TW": "₹/100公斤"
                      *                   },
                      *                   "per_kg": 100
                      *                 }
@@ -1444,7 +1444,7 @@ export interface operations {
                      *                   "id": "qtl",
                      *                   "label": {
                      *                     "en": "₹/qtl",
-                     *                     "zh-TW": "₹/公擔"
+                     *                     "zh-TW": "₹/100公斤"
                      *                   },
                      *                   "per_kg": 100
                      *                 },

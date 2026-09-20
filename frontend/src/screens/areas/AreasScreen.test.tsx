@@ -21,22 +21,22 @@ describe('AreasScreen (選擇地區, F07)', () => {
     expect(screen.getByRole('heading', { name: '選擇地區' })).toBeInTheDocument()
     expect(screen.getByText('最近使用')).toBeInTheDocument()
     expect(screen.getByText('全部地區')).toBeInTheDocument()
-    expect(ids()).toEqual(
-      [
-        ...['nashik', 'pune', 'ahmednagar'],
-        ...['jalgaon', 'solapur', 'indore', 'kurnool', 'bengaluru', 'kolar', 'agra', 'delhi'],
-      ]
-        .map((id) => `area:${id}`)
-        .concat('country'),
+    // The three recent districts, then the other 61 by distance, then 「更改國家…」.
+    expect(ids()).toHaveLength(3 + 61 + 1)
+    expect(ids().slice(0, 7)).toEqual(
+      ['nashik', 'pune', 'ahmednagar', 'dhule', 'sambhajinagar', 'palghar', 'thane'].map(
+        (id) => `area:${id}`,
+      ),
     )
+    expect(ids().at(-1)).toBe('country')
     expect(app.focusedId()).toBe('area:nashik')
     expect(softKeys(app)).toEqual(['', '選取', '返回'])
     // Region and straight-line distance from my area; status text only for exceptions.
     expect(row('area:nashik')).toBe('1Nashik 縣 ✓Maharashtra')
-    expect(row('area:pune')).toBe('2Pune 縣Maharashtra · 直線 165 km')
+    expect(row('area:pune')).toBe('2Pune 縣Maharashtra · 直線 178 km')
     expect(row('area:jalgaon')).toContain('昨天')
     expect(row('area:kolar')).toContain('3 天前')
-    expect(row('area:kurnool')).toContain('無資料')
+    expect(row('area:dakshinakannada')).toContain('無資料')
     expect(row('country')).toBe('更改國家…')
   })
 
@@ -45,14 +45,14 @@ describe('AreasScreen (選擇地區, F07)', () => {
     await screen.findByText('Nashik 縣 ✓')
     app.press('4')
     expect(app.path()).toBe('/settings')
-    expect(useSettings.getState().areaId).toBe('jalgaon')
-    expect(useSettings.getState().recentAreaIds).toEqual(['jalgaon', 'nashik', 'pune'])
+    expect(useSettings.getState().areaId).toBe('dhule') // the nearest after the recents
+    expect(useSettings.getState().recentAreaIds).toEqual(['dhule', 'nashik', 'pune'])
   })
 
   it('opens country setup from the last row and restores the focus on return', async () => {
     const app = await renderApp('/areas?for=home', { history: ['/'] })
     await screen.findByText('Nashik 縣 ✓')
-    for (let i = 0; i < 11; i++) app.press('ArrowDown')
+    for (let i = 0; i < 64; i++) app.press('ArrowDown')
     expect(app.focusedId()).toBe('country')
     app.press('Enter')
     expect(app.path()).toBe('/setup/country')

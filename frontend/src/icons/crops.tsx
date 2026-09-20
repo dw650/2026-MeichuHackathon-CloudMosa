@@ -832,6 +832,113 @@ const ART: Readonly<Record<CropIconId, ReactElement>> = {
       </g>
     </>
   ),
+  jowar: (
+    <>
+      <path
+        d="M11 22c.3-3 .7-5.6 1-8"
+        stroke="#7FA33A"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path
+        d="M11.4 18.6C12 15.2 14.6 12.6 19.4 11.8c-3.2 1.6-5.8 4-7.2 7.8zM11.2 20.4C9.6 17.6 7.2 16 3.8 16c2.8 1.2 5 2.8 6.6 5.4z"
+        fill="#4E9A3E"
+      />
+      <g fill="#EFD59A" stroke="#A8743A" strokeWidth=".5">
+        <circle cx="11.6" cy="3" r="1.25" />
+        <circle cx="14" cy="3.4" r="1.25" />
+        <circle cx="10.4" cy="5.1" r="1.25" />
+        <circle cx="12.8" cy="5.2" r="1.25" />
+        <circle cx="15.2" cy="5.5" r="1.25" />
+        <circle cx="9.4" cy="7.3" r="1.25" />
+        <circle cx="11.8" cy="7.4" r="1.25" />
+        <circle cx="14.2" cy="7.6" r="1.25" />
+        <circle cx="16.4" cy="8" r="1.2" />
+        <circle cx="10" cy="9.6" r="1.25" />
+        <circle cx="12.4" cy="9.7" r="1.25" />
+        <circle cx="14.8" cy="10" r="1.25" />
+        <circle cx="10.9" cy="11.9" r="1.2" />
+        <circle cx="13.3" cy="12" r="1.2" />
+      </g>
+    </>
+  ),
+  mungbean: (
+    <>
+      <g fill="#6F9A33" stroke="#46621E" strokeWidth=".6">
+        <ellipse rx="2.4" ry="1.65" transform="translate(4.8 18.3) rotate(-20)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(9.4 19) rotate(5)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(14.4 18.9) rotate(-8)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(19.2 17.9) rotate(25)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(7.6 15.2) rotate(30)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(12.2 15.6) rotate(-10)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(16.6 14.8) rotate(-35)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(10.2 12) rotate(-15)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(14.4 11.6) rotate(20)" />
+        <ellipse rx="2.4" ry="1.65" transform="translate(12 8.6) rotate(-4)" />
+      </g>
+      <g fill="#C3DD84">
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(4.8 18.3) rotate(-20)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(9.4 19) rotate(5)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(14.4 18.9) rotate(-8)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(19.2 17.9) rotate(25)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(7.6 15.2) rotate(30)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(12.2 15.6) rotate(-10)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(16.6 14.8) rotate(-35)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(10.2 12) rotate(-15)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(14.4 11.6) rotate(20)" />
+        <ellipse cx="-.7" cy="-.6" rx=".9" ry=".45" transform="translate(12 8.6) rotate(-4)" />
+      </g>
+    </>
+  ),
+  apple: (
+    <>
+      <path
+        d="M12 7.6C10.5 6.3 8.6 6 7 6.6 4.2 7.7 3.3 11 4 14.2 4.8 17.8 7.3 21 9.8 21c1 0 1.5-.5 2.2-.5s1.2.5 2.2.5c2.5 0 5-3.2 5.8-6.8.7-3.2-.2-6.5-3-7.6-1.6-.6-3.5-.3-5 1z"
+        fill="#D8313B"
+      />
+      <path
+        d="M12 7.6c-.1-1.8.3-3.3 1.2-4.6"
+        stroke="#6B5314"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <path d="M13 4.7c1.2-1.7 3.4-2.3 5.4-1.7-1.1 1.8-3.4 2.5-5.4 1.7z" fill="#3E9A3A" />
+      <ellipse
+        cx="7.6"
+        cy="11.4"
+        rx="1.3"
+        ry="2.2"
+        transform="rotate(18 7.6 11.4)"
+        fill="#F58B8B"
+        opacity=".75"
+      />
+    </>
+  ),
+  jaggery: (
+    <>
+      <path
+        d="M9.4 7c0-.5.1-.9.5-1.3l1.8-1.8c.4-.4.8-.5 1.3-.5h7.4c.6 0 1 .4 1 1v6.9c0 .5-.2.9-.5 1.3l-1.8 1.8c-.4.4-.8.5-1.3.5h-7.4c-.6 0-1-.4-1-1zM2 12.6c0-.5.1-.9.5-1.3l2.2-2.2c.4-.4.8-.5 1.3-.5h9.1c.6 0 1 .4 1 1v8c0 .5-.2.9-.5 1.3l-2.2 2.2c-.4.4-.8.5-1.3.5H3c-.6 0-1-.4-1-1z"
+        fill="#C27C34"
+      />
+      <path
+        d="M18.2 6.8l2.2-3.4c.6 0 1 .4 1 1v6.9c0 .5-.2.9-.5 1.3l-1.8 1.8c-.3.3-.6.5-.9.5zM12.6 12.4l2.5-3.8c.6 0 1 .4 1 1v8c0 .5-.2.9-.5 1.3l-2.2 2.2c-.3.3-.5.4-.8.5z"
+        fill="#95561F"
+      />
+      <path
+        d="M9.4 7c0-.5.1-.9.5-1.3l1.8-1.8c.4-.4.8-.5 1.3-.5h7.4c.8 0 1 .5.5 1.1l-2 2.1c-.3.3-.7.4-1.1.4zM2 12.6c0-.5.1-.9.5-1.3l2.2-2.2c.4-.4.8-.5 1.3-.5h9.1c.6 0 .8.5.4.9l-2.5 2.6c-.3.3-.7.5-1.1.5z"
+        fill="#EDBE6E"
+      />
+      <g fill="#8A4E1A">
+        <circle cx="4.8" cy="15.4" r=".5" />
+        <circle cx="9" cy="17.6" r=".5" />
+        <circle cx="6.6" cy="19.6" r=".4" />
+        <circle cx="17.1" cy="11.4" r=".4" />
+        <circle cx="12" cy="10" r=".4" />
+      </g>
+    </>
+  ),
   oil: (
     <>
       <path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11z" fill="#E8B92F" />

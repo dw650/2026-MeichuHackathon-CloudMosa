@@ -35,7 +35,7 @@ import styles from './DebugComponents.module.css'
 // Sample data only: this page shows every component in its main states at both screen sizes
 // (T24 checks it with Playwright). Prices are per kg, as the API sends them.
 
-const INDIA = { locale: 'en-IN', unit: UNITS.qtl, unitLabel: { 'zh-TW': '₹/公擔', en: '₹/qtl' } }
+const INDIA = { locale: 'en-IN', unit: UNITS.qtl, unitLabel: { 'zh-TW': '₹/100公斤', en: '₹/qtl' } }
 const TAIWAN = { locale: 'zh-TW', unit: UNITS.kg, unitLabel: { 'zh-TW': '元/公斤', en: 'NT$/kg' } }
 const AREA: LocalizedText = { 'zh-TW': 'Nashik 縣', en: 'Nashik' }
 const TODAY = '2026-09-19'

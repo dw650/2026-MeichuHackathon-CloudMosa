@@ -17,21 +17,20 @@ def maps() -> SourceMaps:
     return maps_from_seeds(SEEDS, "mock")
 
 
-def mandi(**overrides: str) -> dict[str, str]:
-    row = {
+def mandi(**overrides: object) -> dict[str, object]:
+    """An Agmarknet row as the mock prints it (APMC Lasalgaon, Nashik, onion)."""
+    row: dict[str, object] = {
         "_country": "IN",
         "_type": "wholesale",
-        "state": "Maharashtra",
-        "district": "Nashik",
-        "market": "Lasalgaon",
-        "commodity": "Onion",
+        "stateId": "20",
+        "commodityId": "23",
+        "marketName": "APMC Lasalgaon",
+        "arrivalDate": "19/09/2026",
+        "arrivals": 124.0,
         "variety": "Red",
-        "grade": "FAQ",
-        "arrival_date": "19/09/2026",
-        "min_price": "1900",
-        "max_price": "2610",
-        "modal_price": "2350",
-        "arrival_qtl": "1240.0",
+        "minimumPrice": 1900.0,
+        "maximumPrice": 2610.0,
+        "modalPrice": 2350.0,
     }
     return row | overrides
 
@@ -50,24 +49,24 @@ def test_india_wholesale_is_converted_from_quintal_to_kg(maps: SourceMaps) -> No
     assert q.rep_price == pytest.approx(23.5)
     assert q.low_price == pytest.approx(19.0)
     assert q.high_price == pytest.approx(26.1)
-    assert q.volume_kg == pytest.approx(124000)
+    assert q.volume_kg == pytest.approx(124000)  # tonnes → kg
     assert q.variety == "Red"
 
 
 def test_unmapped_market_or_crop_returns_none(maps: SourceMaps) -> None:
-    assert PROVIDER.normalize(mandi(market="Nowhere"), maps) is None
-    assert PROVIDER.normalize(mandi(commodity="Durian"), maps) is None
+    assert PROVIDER.normalize(mandi(marketName="Nowhere"), maps) is None
+    assert PROVIDER.normalize(mandi(commodityId="999"), maps) is None
 
 
 def test_missing_modal_price_is_kept_for_the_validator(maps: SourceMaps) -> None:
-    q = PROVIDER.normalize(mandi(modal_price=""), maps)
+    q = PROVIDER.normalize(mandi(modalPrice=""), maps)
     assert q is not None
     assert q.rep_price is None
 
 
 def test_malformed_date_raises_row_error(maps: SourceMaps) -> None:
     with pytest.raises(RowError):
-        PROVIDER.normalize(mandi(arrival_date="2026-09-19"), maps)
+        PROVIDER.normalize(mandi(arrivalDate="2026-09-19"), maps)
 
 
 def test_india_retail_maps_the_centre_to_an_area(maps: SourceMaps) -> None:
@@ -76,7 +75,7 @@ def test_india_retail_maps_the_centre_to_an_area(maps: SourceMaps) -> None:
         "_type": "retail",
         "centre": "Pune",
         "state": "Maharashtra",
-        "commodity": "Onion",
+        "commodity": "23",
         "date": "18/09/2026",
         "retail_price": "40.25",
     }
@@ -129,7 +128,7 @@ async def test_every_generated_row_normalizes(maps: SourceMaps) -> None:
 def test_normalize_all_counts_unmapped_and_malformed_rows(maps: SourceMaps) -> None:
     from app.ingest.normalize import normalize_all
 
-    rows = [mandi(), mandi(market="Nowhere"), mandi(commodity="Durian"), mandi(arrival_date="?")]
+    rows = [mandi(), mandi(marketName="Nowhere"), mandi(commodityId="999"), mandi(arrivalDate="?")]
     quotes, counts = normalize_all(PROVIDER, rows, maps)
     assert len(quotes) == 1
     assert counts == {"unmapped": 2, "malformed": 1}

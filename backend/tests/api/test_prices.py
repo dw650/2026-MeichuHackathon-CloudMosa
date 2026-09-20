@@ -35,12 +35,12 @@ async def test_quote_matches_the_documented_shape(api: httpx.AsyncClient) -> Non
     assert (q["today"], q["trade_date"]) == ("2026-09-19", "2026-09-19")
     assert q["staleness"] == {"days": 0, "state": "today"}
     assert q["fetched_at"] == "2026-09-19T11:40:00+05:30"
-    assert q["price_per_kg"] == pytest.approx(23.5, rel=0.03)
+    assert q["price_per_kg"] == pytest.approx(39.7, rel=0.03)
     assert q["reason"] is None
-    assert (q["markets"]["count"], q["markets"]["total"]) == (7, 10)
+    assert (q["markets"]["count"], q["markets"]["total"]) == (7, 24)
     assert q["markets"]["min_per_kg"] <= q["price_per_kg"] <= q["markets"]["max_per_kg"]
     assert q["change"]["direction"] == "up"
-    assert q["change"]["pct"] == pytest.approx(0.042, abs=0.03)
+    assert q["change"]["pct"] == pytest.approx(0.021, abs=0.03)
     assert q["change"]["prev_trade_date"] == "2026-09-18"
     assert q["stats"]["arrivals"] in {"low", "normal", "high"}
     assert 0 <= q["stats"]["pos30"] <= 1
@@ -65,7 +65,7 @@ async def test_quote_series_has_one_entry_per_day_and_nulls_on_closed_days(
 async def test_retail_quote_has_no_market_block_and_no_arrivals(api: httpx.AsyncClient) -> None:
     params = IN_NASHIK | {"type": "retail"}
     q = (await api.get("/api/v1/crops/onion/quote", params=params)).json()
-    assert q["price_per_kg"] == pytest.approx(37.6, rel=0.04)
+    assert q["price_per_kg"] == pytest.approx(64.9, rel=0.04)
     assert q["markets"] is None
     assert q["stats"]["arrivals"] is None
     assert q["stats"]["volatility"] in {"low", "mid", "high"}
@@ -87,7 +87,7 @@ async def test_missing_retail_prices_carry_a_reason(
 
 
 async def test_area_without_any_data(api: httpx.AsyncClient) -> None:
-    params = IN_NASHIK | {"area": "kurnool"}
+    params = IN_NASHIK | {"area": "dakshinakannada"}
     q = (await api.get("/api/v1/crops/onion/quote", params=params)).json()
     assert (q["price_per_kg"], q["reason"], q["trade_date"]) == (None, "no_data", None)
     assert q["staleness"] == {"days": None, "state": "none"}
@@ -175,27 +175,30 @@ async def test_compare_ranks_every_area_of_the_country(api: httpx.AsyncClient) -
     assert res.status_code == 200
     body = res.json()
     rows = {r["area_id"]: r for r in body["rows"]}
-    assert len(rows) == 11
-    assert body["rank"]["total"] == 10
+    assert len(rows) == 64
+    assert body["rank"]["total"] == 63
     assert body["rank"]["position"] == rows["nashik"]["rank"]
     assert rows["nashik"]["is_base"] is True
     assert rows["nashik"]["diff_per_kg"] == 0
-    assert rows["pune"]["distance_km"] == 165
+    assert rows["ahmednagar"]["distance_km"] == 143
     assert rows["pune"]["diff_per_kg"] == pytest.approx(
         rows["pune"]["price_per_kg"] - rows["nashik"]["price_per_kg"]
     )
-    assert (rows["kurnool"]["price_per_kg"], rows["kurnool"]["rank"]) == (None, None)
+    assert (rows["dakshinakannada"]["price_per_kg"], rows["dakshinakannada"]["rank"]) == (
+        None,
+        None,
+    )
     assert rows["kolar"]["staleness"]["state"] == "stale"
     ranked = sorted((r for r in body["rows"] if r["rank"]), key=lambda r: r["rank"])
     prices = [r["price_per_kg"] for r in ranked]
     assert prices == sorted(prices, reverse=True)
-    assert body["rows"][-1]["area_id"] == "kurnool"  # no data last
+    assert body["rows"][-1]["area_id"] == "dakshinakannada"  # no data last
 
 
 async def test_compare_from_an_area_without_data_is_unranked(api: httpx.AsyncClient) -> None:
-    params = IN_NASHIK | {"area": "kurnool"}
+    params = IN_NASHIK | {"area": "dakshinakannada"}
     body = (await api.get("/api/v1/crops/onion/compare", params=params)).json()
-    assert body["rank"] == {"position": None, "total": 10}
+    assert body["rank"] == {"position": None, "total": 63}
     assert all(r["diff_per_kg"] is None for r in body["rows"])
 
 
@@ -210,21 +213,24 @@ async def test_markets_of_an_area_with_their_difference_from_the_median(
     quote = (await api.get("/api/v1/crops/onion/quote", params=IN_NASHIK)).json()
     assert body["median_per_kg"] == quote["price_per_kg"]
     rows = {r["market_id"]: r for r in body["rows"]}
-    assert len(rows) == 10
+    assert len(rows) == 24
     assert rows["yeola"]["staleness"] == {"days": 3, "state": "stale"}
     assert rows["malegaon"]["staleness"] == {"days": 1, "state": "stale"}
     assert (rows["manmad"]["price_per_kg"], rows["manmad"]["staleness"]["state"]) == (None, "none")
-    assert body["rows"][-1]["market_id"] == "manmad"
+    # Markets without a price come last; the demo only quotes the ten Nashik market yards.
+    quoted = [r["market_id"] for r in body["rows"] if r["price_per_kg"] is not None]
+    assert len(quoted) == 9  # the tenth, Manmad, never reports
+    assert "manmad" in {r["market_id"] for r in body["rows"][len(quoted) :]}
     lasalgaon = rows["lasalgaon"]
     assert lasalgaon["name"] == {"zh-TW": "Lasalgaon", "en": "Lasalgaon"}
-    assert lasalgaon["km_from_center"] == 32
+    assert lasalgaon["km_from_center"] is None  # Agmarknet gives no market coordinates
     assert lasalgaon["diff_per_kg"] == pytest.approx(
         lasalgaon["price_per_kg"] - body["median_per_kg"]
     )
 
 
 async def test_markets_of_an_area_without_data(api: httpx.AsyncClient) -> None:
-    params = {"country": "IN", "area": "kurnool"}
+    params = {"country": "IN", "area": "dakshinakannada"}
     body = (await api.get("/api/v1/crops/onion/markets", params=params)).json()
     assert body["median_per_kg"] is None
     assert [r["price_per_kg"] for r in body["rows"]] == [None]

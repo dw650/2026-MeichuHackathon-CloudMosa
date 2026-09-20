@@ -9,9 +9,9 @@
    {
     "country": "IN",
     "currency": "INR",
-    "local_per_kg": 12.435,
-    "n_areas": 8,
-    "price_per_kg": 0.5287,
+    "local_per_kg": 12.07,
+    "n_areas": 61,
+    "price_per_kg": 0.5132,
     "reason": null,
     "trade_date": "2026-09-19",
     "type": "wholesale"

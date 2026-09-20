@@ -1,9 +1,9 @@
 {
  "area_id": "nashik",
  "change": {
-  "diff_per_kg": 1.09,
+  "diff_per_kg": 0.925,
   "direction": "up",
-  "pct": 0.047682,
+  "pct": 0.023862,
   "prev_trade_date": "2026-09-18"
  },
  "crop_id": "onion",
@@ -11,12 +11,27 @@
  "fetched_at": "2026-09-19T11:40:00+05:30",
  "markets": {
   "count": 7,
-  "max_per_kg": 25.22,
-  "min_per_kg": 22.64,
-  "total": 10
+  "max_per_kg": 44.76,
+  "min_per_kg": 38.71,
+  "total": 24
  },
- "nearby": null,
- "price_per_kg": 23.95,
+ "nearby": {
+  "highest": {
+   "area_id": "palghar",
+   "diff_per_kg": 10.56,
+   "distance_km": 118,
+   "is_base": false,
+   "price_per_kg": 50.25
+  },
+  "lowest": {
+   "area_id": "nandurbar",
+   "diff_per_kg": -5.05,
+   "distance_km": 149,
+   "is_base": false,
+   "price_per_kg": 34.64
+  }
+ },
+ "price_per_kg": 39.69,
  "reason": null,
  "series": [
   {
@@ -25,27 +40,27 @@
   },
   {
    "date": "2026-09-14",
-   "price_per_kg": 22.03
+   "price_per_kg": 37.68
   },
   {
    "date": "2026-09-15",
-   "price_per_kg": 22.72
+   "price_per_kg": 38.76
   },
   {
    "date": "2026-09-16",
-   "price_per_kg": 22.4
+   "price_per_kg": 37.88
   },
   {
    "date": "2026-09-17",
-   "price_per_kg": 22.225
+   "price_per_kg": 37.765
   },
   {
    "date": "2026-09-18",
-   "price_per_kg": 22.86
+   "price_per_kg": 38.765
   },
   {
    "date": "2026-09-19",
-   "price_per_kg": 23.95
+   "price_per_kg": 39.69
   }
  ],
  "source": {
@@ -61,17 +76,17 @@
  },
  "stats": {
   "arrivals": "high",
-  "arrivals_ratio": 1.180005,
-  "change30_pct": 0.106236,
-  "change7_pct": 0.087154,
-  "high30_per_kg": 23.95,
-  "high7_per_kg": 23.95,
-  "low30_per_kg": 21.65,
-  "low7_per_kg": 22.03,
-  "pos30": 1.0,
+  "arrivals_ratio": 1.179873,
+  "change30_pct": 0.089188,
+  "change7_pct": 0.053344,
+  "high30_per_kg": 40.16,
+  "high7_per_kg": 39.69,
+  "low30_per_kg": 36.44,
+  "low7_per_kg": 37.68,
+  "pos30": 0.873656,
   "volatility": "mid",
-  "volatility_pct": 0.025894,
-  "vs_avg7_pct": 0.055182
+  "volatility_pct": 0.020949,
+  "vs_avg7_pct": 0.032966
  },
  "today": "2026-09-19",
  "trade_date": "2026-09-19",

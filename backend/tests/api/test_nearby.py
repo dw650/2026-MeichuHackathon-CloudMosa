@@ -66,11 +66,15 @@ async def _prices(
     return {r["area_id"]: r["price_per_kg"] for r in rows if r["price_per_kg"] is not None}
 
 
-async def test_the_highest_and_lowest_within_100_km(api: httpx.AsyncClient) -> None:
-    # Around Taipei: New Taipei 11 km, Taoyuan 27 km, Yilan 38 km (3 days old, left out).
+# Within 150 km of Taipei: New Taipei 11 km, Taoyuan 27, Yilan 38 (3 days old, left out),
+# Hualien 117 (no data), Taichung 134, Changhua 148.
+TAIPEI_POOL = ("taipei", "newtaipei", "taoyuan", "taichung", "changhua")
+
+
+async def test_the_highest_and_lowest_within_150_km(api: httpx.AsyncClient) -> None:
     nearby = await _nearby(api, "taipei", crop="cabbage", country="TW")
     prices = await _prices(api, crop="cabbage", country="TW")
-    pool = {a: prices[a] for a in ("taipei", "newtaipei", "taoyuan")}
+    pool = {a: prices[a] for a in TAIPEI_POOL}
     high = max(pool, key=lambda a: pool[a])
     low = min(pool, key=lambda a: pool[a])
     assert (nearby["highest"]["area_id"], nearby["lowest"]["area_id"]) == (high, low)
@@ -78,6 +82,18 @@ async def test_the_highest_and_lowest_within_100_km(api: httpx.AsyncClient) -> N
         diff = pool[row["area_id"]] - pool["taipei"]
         assert row["diff_per_kg"] == pytest.approx(diff, abs=1e-4)
         assert row["is_base"] is (row["area_id"] == "taipei")
+
+
+async def test_india_districts_are_compared_too(api: httpx.AsyncClient) -> None:
+    # Around Nashik: Dhule 108 km, Chh. Sambhajinagar 112, Palghar 118, Thane 122,
+    # Ahilyanagar 143, Nandurbar 149.
+    nearby = await _nearby(api, "nashik")
+    prices = await _prices(api)
+    assert nearby is not None
+    assert (nearby["highest"]["area_id"], nearby["highest"]["distance_km"]) == ("palghar", 118)
+    assert (nearby["lowest"]["area_id"], nearby["lowest"]["distance_km"]) == ("nandurbar", 149)
+    for row in nearby.values():
+        assert row["price_per_kg"] == prices[row["area_id"]]
 
 
 async def test_the_viewed_area_itself_can_be_the_highest_or_lowest(
@@ -91,10 +107,9 @@ async def test_the_viewed_area_itself_can_be_the_highest_or_lowest(
 @pytest.mark.parametrize(
     ("area", "why"),
     [
-        ("nashik", "no other area within 100 km"),
-        ("bengaluru", "Kolar (61 km) is 3 days old"),
+        ("delhi", "the whole NCT is one district and no other is within 150 km"),
         ("kolar", "the viewed area itself is 3 days old"),
-        ("kurnool", "the viewed area has no price at all"),
+        ("dakshinakannada", "the viewed area has no price at all"),
     ],
 )
 async def test_nothing_nearby_when_no_area_qualifies(
@@ -107,8 +122,8 @@ async def test_retail_compares_retail_prices_only(api: httpx.AsyncClient) -> Non
     nearby = await _nearby(api, "taipei", crop="cabbage", country="TW", price_type="retail")
     prices = await _prices(api, crop="cabbage", country="TW", price_type="retail")
     shown = {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]}
-    assert shown <= {"taipei", "newtaipei", "taoyuan"}
-    compared = [prices[a] for a in ("taipei", "newtaipei", "taoyuan")]
+    assert shown <= set(TAIPEI_POOL)
+    compared = [prices[a] for a in TAIPEI_POOL if a in prices]
     assert nearby["highest"]["price_per_kg"] == max(compared)
     assert nearby["lowest"]["price_per_kg"] == min(compared)
 
@@ -124,7 +139,7 @@ async def test_demo_stale_areas_drop_out(demo: httpx.AsyncClient) -> None:
     nearby = await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_new_taipei)
     shown = {nearby["highest"]["area_id"], nearby["lowest"]["area_id"]}
     assert "newtaipei" not in shown
-    assert shown <= {"taipei", "taoyuan"}
+    assert shown <= set(TAIPEI_POOL) - {"newtaipei"}
     assert fresh is not None
     stale_taipei = {"X-Demo-Stale": "taipei:3"}
     assert await _nearby(demo, "taipei", crop="cabbage", country="TW", headers=stale_taipei) is None

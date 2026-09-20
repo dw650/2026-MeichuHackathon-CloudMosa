@@ -1,11 +1,372 @@
 {
  "areas": [
   {
+   "has_retail": false,
+   "id": "ahmednagar",
+   "lat": 19.16,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.86,
+   "name": {
+    "en": "Ahilyanagar",
+    "zh-TW": "Ahilyanagar"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "akola",
+   "lat": 20.76,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.19,
+   "name": {
+    "en": "Akola",
+    "zh-TW": "Akola"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "amravati",
+   "lat": 21.15,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.64,
+   "name": {
+    "en": "Amravati",
+    "zh-TW": "Amravati"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "beed",
+   "lat": 18.99,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.91,
+   "name": {
+    "en": "Beed",
+    "zh-TW": "Beed"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "bhandara",
+   "lat": 21.12,
+   "latest_trade_date": "2026-09-19",
+   "lon": 79.79,
+   "name": {
+    "en": "Bhandara",
+    "zh-TW": "Bhandara"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "buldhana",
+   "lat": 20.56,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.41,
+   "name": {
+    "en": "Buldhana",
+    "zh-TW": "Buldhana"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "chandrapur",
+   "lat": 20.1,
+   "latest_trade_date": "2026-09-19",
+   "lon": 79.5,
+   "name": {
+    "en": "Chandrapur",
+    "zh-TW": "Chandrapur"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "sambhajinagar",
+   "lat": 20.02,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.15,
+   "name": {
+    "en": "Chh. Sambhajinagar",
+    "zh-TW": "Chh. Sambhajinagar"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "dharashiv",
+   "lat": 18.17,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.12,
+   "name": {
+    "en": "Dharashiv",
+    "zh-TW": "Dharashiv"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "dhule",
+   "lat": 21.13,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.49,
+   "name": {
+    "en": "Dhule",
+    "zh-TW": "Dhule"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "hingoli",
+   "lat": 19.54,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.17,
+   "name": {
+    "en": "Hingoli",
+    "zh-TW": "Hingoli"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "jalgaon",
+   "lat": 20.84,
+   "latest_trade_date": "2026-09-18",
+   "lon": 75.53,
+   "name": {
+    "en": "Jalgaon",
+    "zh-TW": "Jalgaon"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 1,
+    "state": "stale"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "jalna",
+   "lat": 19.92,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.87,
+   "name": {
+    "en": "Jalna",
+    "zh-TW": "Jalna"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kolhapur",
+   "lat": 16.46,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.09,
+   "name": {
+    "en": "Kolhapur",
+    "zh-TW": "Kolhapur"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "latur",
+   "lat": 18.36,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.75,
+   "name": {
+    "en": "Latur",
+    "zh-TW": "Latur"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "mumbai",
+   "lat": 18.97,
+   "latest_trade_date": "2026-09-19",
+   "lon": 72.83,
+   "name": {
+    "en": "Mumbai",
+    "zh-TW": "Mumbai"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "nagpur",
+   "lat": 21.15,
+   "latest_trade_date": "2026-09-19",
+   "lon": 79.01,
+   "name": {
+    "en": "Nagpur",
+    "zh-TW": "Nagpur"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "nanded",
+   "lat": 19.09,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.48,
+   "name": {
+    "en": "Nanded",
+    "zh-TW": "Nanded"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "nandurbar",
+   "lat": 21.51,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.54,
+   "name": {
+    "en": "Nandurbar",
+    "zh-TW": "Nandurbar"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
    "has_retail": true,
    "id": "nashik",
-   "lat": 20.0,
+   "lat": 20.23,
    "latest_trade_date": "2026-09-19",
-   "lon": 73.79,
+   "lon": 74.1,
    "name": {
     "en": "Nashik",
     "zh-TW": "Nashik"
@@ -20,11 +381,49 @@
    }
   },
   {
+   "has_retail": false,
+   "id": "palghar",
+   "lat": 19.76,
+   "latest_trade_date": "2026-09-19",
+   "lon": 73.09,
+   "name": {
+    "en": "Palghar",
+    "zh-TW": "Palghar"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "parbhani",
+   "lat": 19.29,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.6,
+   "name": {
+    "en": "Parbhani",
+    "zh-TW": "Parbhani"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
    "has_retail": true,
    "id": "pune",
-   "lat": 18.52,
+   "lat": 18.64,
    "latest_trade_date": "2026-09-19",
-   "lon": 73.86,
+   "lon": 73.92,
    "name": {
     "en": "Pune",
     "zh-TW": "Pune"
@@ -40,13 +439,70 @@
   },
   {
    "has_retail": false,
-   "id": "ahmednagar",
-   "lat": 19.09,
+   "id": "raigad",
+   "lat": 18.49,
    "latest_trade_date": "2026-09-19",
-   "lon": 74.74,
+   "lon": 73.14,
    "name": {
-    "en": "Ahmednagar",
-    "zh-TW": "Ahmednagar"
+    "en": "Raigad",
+    "zh-TW": "Raigad"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "ratnagiri",
+   "lat": 17.28,
+   "latest_trade_date": "2026-09-19",
+   "lon": 73.46,
+   "name": {
+    "en": "Ratnagiri",
+    "zh-TW": "Ratnagiri"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "sangli",
+   "lat": 17.17,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.59,
+   "name": {
+    "en": "Sangli",
+    "zh-TW": "Sangli"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "satara",
+   "lat": 17.64,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.3,
+   "name": {
+    "en": "Satara",
+    "zh-TW": "Satara"
    },
    "region": {
     "en": "Maharashtra",
@@ -59,29 +515,10 @@
   },
   {
    "has_retail": true,
-   "id": "jalgaon",
-   "lat": 21.0,
-   "latest_trade_date": "2026-09-18",
-   "lon": 75.56,
-   "name": {
-    "en": "Jalgaon",
-    "zh-TW": "Jalgaon"
-   },
-   "region": {
-    "en": "Maharashtra",
-    "zh-TW": "Maharashtra"
-   },
-   "staleness": {
-    "days": 1,
-    "state": "stale"
-   }
-  },
-  {
-   "has_retail": true,
    "id": "solapur",
-   "lat": 17.66,
+   "lat": 17.85,
    "latest_trade_date": "2026-09-19",
-   "lon": 75.91,
+   "lon": 75.28,
    "name": {
     "en": "Solapur",
     "zh-TW": "Solapur"
@@ -97,17 +534,169 @@
   },
   {
    "has_retail": true,
-   "id": "indore",
-   "lat": 22.72,
+   "id": "thane",
+   "lat": 19.37,
    "latest_trade_date": "2026-09-19",
-   "lon": 75.86,
+   "lon": 73.37,
    "name": {
-    "en": "Indore",
-    "zh-TW": "Indore"
+    "en": "Thane",
+    "zh-TW": "Thane"
    },
    "region": {
-    "en": "Madhya Pradesh",
-    "zh-TW": "Madhya Pradesh"
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "wardha",
+   "lat": 20.83,
+   "latest_trade_date": "2026-09-19",
+   "lon": 78.61,
+   "name": {
+    "en": "Wardha",
+    "zh-TW": "Wardha"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "washim",
+   "lat": 20.29,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.24,
+   "name": {
+    "en": "Washim",
+    "zh-TW": "Washim"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "yavatmal",
+   "lat": 20.06,
+   "latest_trade_date": "2026-09-19",
+   "lon": 78.36,
+   "name": {
+    "en": "Yavatmal",
+    "zh-TW": "Yavatmal"
+   },
+   "region": {
+    "en": "Maharashtra",
+    "zh-TW": "Maharashtra"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "bagalkot",
+   "lat": 16.29,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.59,
+   "name": {
+    "en": "Bagalkot",
+    "zh-TW": "Bagalkot"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "ballari",
+   "lat": 15.35,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.81,
+   "name": {
+    "en": "Ballari",
+    "zh-TW": "Ballari"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "belagavi",
+   "lat": 16.16,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.89,
+   "name": {
+    "en": "Belagavi",
+    "zh-TW": "Belagavi"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "bengalururural",
+   "lat": 13.18,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.34,
+   "name": {
+    "en": "Bengaluru Rural",
+    "zh-TW": "Bengaluru Rural"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "bengalurusouth",
+   "lat": 12.72,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.32,
+   "name": {
+    "en": "Bengaluru South",
+    "zh-TW": "Bengaluru South"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
    },
    "staleness": {
     "days": 0,
@@ -117,9 +706,9 @@
   {
    "has_retail": true,
    "id": "bengaluru",
-   "lat": 12.97,
+   "lat": 12.95,
    "latest_trade_date": "2026-09-19",
-   "lon": 77.59,
+   "lon": 77.55,
    "name": {
     "en": "Bengaluru Urban",
     "zh-TW": "Bengaluru Urban"
@@ -135,10 +724,257 @@
   },
   {
    "has_retail": false,
+   "id": "bidar",
+   "lat": 18.02,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.25,
+   "name": {
+    "en": "Bidar",
+    "zh-TW": "Bidar"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "chamarajanagar",
+   "lat": 11.95,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.11,
+   "name": {
+    "en": "Chamarajanagar",
+    "zh-TW": "Chamarajanagar"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "chikkaballapur",
+   "lat": 13.59,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.78,
+   "name": {
+    "en": "Chikkaballapur",
+    "zh-TW": "Chikkaballapur"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "chikkamagaluru",
+   "lat": 13.41,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.64,
+   "name": {
+    "en": "Chikkamagaluru",
+    "zh-TW": "Chikkamagaluru"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "chitradurga",
+   "lat": 14.3,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.53,
+   "name": {
+    "en": "Chitradurga",
+    "zh-TW": "Chitradurga"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "dakshinakannada",
+   "lat": 12.82,
+   "latest_trade_date": null,
+   "lon": 75.23,
+   "name": {
+    "en": "Dakshina Kannada",
+    "zh-TW": "Dakshina Kannada"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": null,
+    "state": "none"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "davangere",
+   "lat": 14.26,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.83,
+   "name": {
+    "en": "Davangere",
+    "zh-TW": "Davangere"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "dharwad",
+   "lat": 15.37,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.13,
+   "name": {
+    "en": "Dharwad",
+    "zh-TW": "Dharwad"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "gadag",
+   "lat": 15.42,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.68,
+   "name": {
+    "en": "Gadag",
+    "zh-TW": "Gadag"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "hassan",
+   "lat": 13.03,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.17,
+   "name": {
+    "en": "Hassan",
+    "zh-TW": "Hassan"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "haveri",
+   "lat": 14.72,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.37,
+   "name": {
+    "en": "Haveri",
+    "zh-TW": "Haveri"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "kalaburagi",
+   "lat": 17.24,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.77,
+   "name": {
+    "en": "Kalaburagi",
+    "zh-TW": "Kalaburagi"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "kodagu",
+   "lat": 12.38,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.66,
+   "name": {
+    "en": "Kodagu",
+    "zh-TW": "Kodagu"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
    "id": "kolar",
-   "lat": 13.14,
+   "lat": 13.18,
    "latest_trade_date": "2026-09-16",
-   "lon": 78.13,
+   "lon": 78.27,
    "name": {
     "en": "Kolar",
     "zh-TW": "Kolar"
@@ -153,18 +989,18 @@
    }
   },
   {
-   "has_retail": true,
-   "id": "delhi",
-   "lat": 28.7,
+   "has_retail": false,
+   "id": "koppal",
+   "lat": 15.57,
    "latest_trade_date": "2026-09-19",
-   "lon": 77.1,
+   "lon": 76.31,
    "name": {
-    "en": "North Delhi",
-    "zh-TW": "North Delhi"
+    "en": "Koppal",
+    "zh-TW": "Koppal"
    },
    "region": {
-    "en": "Delhi",
-    "zh-TW": "Delhi"
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
    },
    "staleness": {
     "days": 0,
@@ -173,36 +1009,207 @@
   },
   {
    "has_retail": false,
-   "id": "kurnool",
-   "lat": 15.83,
-   "latest_trade_date": null,
-   "lon": 78.04,
+   "id": "mandya",
+   "lat": 12.64,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.73,
    "name": {
-    "en": "Kurnool",
-    "zh-TW": "Kurnool"
+    "en": "Mandya",
+    "zh-TW": "Mandya"
    },
    "region": {
-    "en": "Andhra Pradesh",
-    "zh-TW": "Andhra Pradesh"
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
    },
    "staleness": {
-    "days": null,
-    "state": "none"
+    "days": 0,
+    "state": "today"
    }
   },
   {
    "has_retail": true,
-   "id": "agra",
-   "lat": 27.18,
+   "id": "mysuru",
+   "lat": 12.2,
    "latest_trade_date": "2026-09-19",
-   "lon": 78.01,
+   "lon": 76.61,
    "name": {
-    "en": "Agra",
-    "zh-TW": "Agra"
+    "en": "Mysuru",
+    "zh-TW": "Mysuru"
    },
    "region": {
-    "en": "Uttar Pradesh",
-    "zh-TW": "Uttar Pradesh"
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "raichur",
+   "lat": 16.05,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.9,
+   "name": {
+    "en": "Raichur",
+    "zh-TW": "Raichur"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "shivamogga",
+   "lat": 14.06,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.24,
+   "name": {
+    "en": "Shivamogga",
+    "zh-TW": "Shivamogga"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "tumakuru",
+   "lat": 13.42,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.88,
+   "name": {
+    "en": "Tumakuru",
+    "zh-TW": "Tumakuru"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "udupi",
+   "lat": 13.53,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.87,
+   "name": {
+    "en": "Udupi",
+    "zh-TW": "Udupi"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "uttarakannada",
+   "lat": 14.73,
+   "latest_trade_date": "2026-09-19",
+   "lon": 74.64,
+   "name": {
+    "en": "Uttara Kannada",
+    "zh-TW": "Uttara Kannada"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "vijayanagara",
+   "lat": 14.94,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.04,
+   "name": {
+    "en": "Vijayanagara",
+    "zh-TW": "Vijayanagara"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "vijayapura",
+   "lat": 16.81,
+   "latest_trade_date": "2026-09-19",
+   "lon": 75.89,
+   "name": {
+    "en": "Vijayapura",
+    "zh-TW": "Vijayapura"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": false,
+   "id": "yadgir",
+   "lat": 16.57,
+   "latest_trade_date": "2026-09-19",
+   "lon": 76.93,
+   "name": {
+    "en": "Yadgir",
+    "zh-TW": "Yadgir"
+   },
+   "region": {
+    "en": "Karnataka",
+    "zh-TW": "Karnataka"
+   },
+   "staleness": {
+    "days": 0,
+    "state": "today"
+   }
+  },
+  {
+   "has_retail": true,
+   "id": "delhi",
+   "lat": 28.63,
+   "latest_trade_date": "2026-09-19",
+   "lon": 77.22,
+   "name": {
+    "en": "Delhi",
+    "zh-TW": "Delhi"
+   },
+   "region": {
+    "en": "Delhi",
+    "zh-TW": "Delhi"
    },
    "staleness": {
     "days": 0,

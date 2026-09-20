@@ -6,11 +6,13 @@ import { renderApp } from '@/test/renderApp'
 describe('AboutScreen', () => {
   it('shows the notes, the data source and the credits, with nothing to select', async () => {
     const app = await renderApp('/about', { history: ['/'] })
-    expect(await screen.findByText('Agmarknet・消費者事務部（印度政府）')).toBeInTheDocument()
+    expect(
+      await screen.findByText('Agmarknet（印度農業部，data.gov.in，GODL-India）'),
+    ).toBeInTheDocument()
     expect(screen.getByRole('heading')).toHaveTextContent('關於與資料說明')
     for (const text of [
       '地區價＝該地區各市場代表價的中位數，並標出市場數。',
-      '附近最高、最低＝直線 100 km 內，和這裡同一個交易日有價格的所有地區。',
+      '附近最高、最低＝直線 150 km 內，和這裡同一個交易日有價格的所有地區。',
       '批發和零售的差額不是利潤，還包含運費、損耗、包裝等成本。',
       '新聞：Google 新聞搜尋到的農產品價格新聞，保留 7 天。摘要由 AI 依原文寫成，可能有誤；讀不到原文時只顯示標題。',
       '資料來源',
@@ -45,7 +47,7 @@ describe('AboutScreen', () => {
     expect(screen.getByText('We never ask for money, PINs or codes.')).toBeInTheDocument()
     expect(
       screen.getByText(
-        'Highest and lowest nearby = every area within 100 km (straight line) priced on the same trading day as here.',
+        'Highest and lowest nearby = every area within 150 km (straight line) priced on the same trading day as here.',
       ),
     ).toBeInTheDocument()
   })

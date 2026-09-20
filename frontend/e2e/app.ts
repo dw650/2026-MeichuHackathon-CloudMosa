@@ -8,7 +8,7 @@ const DEFAULTS: Record<Country, { area: string; recent: string[]; watch: string[
   IN: {
     area: 'nashik',
     recent: ['nashik', 'pune', 'ahmednagar'],
-    watch: ['onion', 'tomato', 'potato', 'chilli', 'soybean', 'maize', 'wheat'],
+    watch: ['onion', 'tomato', 'potato', 'chilli', 'chickpea', 'maize', 'wheat'],
   },
   TW: {
     area: 'taipei',

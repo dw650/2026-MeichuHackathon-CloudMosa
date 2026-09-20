@@ -17,7 +17,7 @@ const IN_SCREENS = [
   '/crop/onion/compare',
   '/crop/onion/compare?sheet=sort',
   '/crop/onion/today?area=kolar',
-  '/crop/onion/today?area=kurnool',
+  '/crop/onion/today?area=dakshinakannada',
   '/crop/onion/markets',
   '/crop/onion/markets/lasalgaon',
   '/areas?for=home',
@@ -28,12 +28,13 @@ const IN_SCREENS = [
   '/about',
   '/cat/recent',
   '/crop/onion/today?area=jalgaon',
-  // Nearby prices: no area within 100 km has today's price (Kolar is 3 days old).
+  // Nearby prices: no other district within 150 km / districts of Karnataka nearby.
+  '/crop/onion/today?area=delhi',
   '/crop/onion/today?area=bengaluru',
   '/crop/onion/compare?sort=distance_asc',
   // 各國參考價: wheat also carries the World Bank world price row.
   '/crop/wheat/compare',
-  '/crop/onion/markets?area=kurnool',
+  '/crop/onion/markets?area=dakshinakannada',
   '/intl',
   '/intl/rice',
   '/intl/sugar',

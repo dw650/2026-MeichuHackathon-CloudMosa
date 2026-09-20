@@ -48,7 +48,7 @@
 | `SITE_ADDRESS` | Caddy 的站台位址。本機只用 HTTP；正式環境填網域，Caddy 自動申請 HTTPS | `:8080` |
 | `WEB_PORT`、`DB_PORT` | 本機對外的埠號（網頁、給本機測試連的資料庫）；兩個 worktree 同時開發時各用不同的值 | `8080`、`5432` |
 | `POSTGRES_PASSWORD`、`DATABASE_URL` | 資料庫連線 | — |
-| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2）、`my_pricecatcher`（馬來西亞改用 PriceCatcher 真實零售價，見 [06](06-data.md) §1.5） | `mock` |
+| `PROVIDERS` | 啟用的資料來源，逗號分隔：`mock`、`tw_moa`（台灣改用農業部真實批發價，見 [06](06-data.md) §1.2）、`my_pricecatcher`（馬來西亞改用 PriceCatcher 真實零售價，見 [06](06-data.md) §1.5）、`in_agmarknet`（印度改用 Agmarknet 真實批發價，見 [06](06-data.md) §1.6） | `mock` |
 | `INTL_PRICES` | worker 下載國際參考價（B5：世界銀行 Pink Sheet 與匯率，只在到期時下載，見 [06](06-data.md) §8）；`false` 不下載 | `true` |
 | `PINK_SHEET_URL` | 固定使用的 Pink Sheet 月資料檔；空白＝用官方頁上目前連結的檔案（[06](06-data.md) §1.3） | 空 |
 | `DEMO_MODE` | 開啟 demo 開關（F18） | `false` |
@@ -248,7 +248,7 @@ class PriceProvider(Protocol):
 - 沒有資料時 `price_per_kg` 為 `null`，並附 `reason`：`no_retail_area`、`no_retail_crop`、`no_data`，讓前端顯示對應說明。
 - `staleness.state`：`today`、`closed`（中間只有休市日）、`stale`、`none`（[06](06-data.md) §3.5）。
 - `nearby`（2026-09-20 追加，行情頁的「附近最高／最低」，[02](02-product-spec.md) §5.4）：在這個地區和附近地區之間，價格最高與最低的各一列，手機只要下載兩列，不必下載所有地區。
-  - 附近＝同一個國家內直線距離 100 km 以內的所有地區（`NEARBY_MAX_KM`）；只算最新交易日和這個地區相同的。這個地區的價格要是新的（`staleness.state` 是 `today` 或 `closed`）。
+  - 附近＝同一個國家內直線距離 150 km 以內的所有地區（`NEARBY_MAX_KM`）；只算最新交易日和這個地區相同的。這個地區的價格要是新的（`staleness.state` 是 `today` 或 `closed`）。
   - 每列：`area_id`、`price_per_kg`、`diff_per_kg`（那個地區減這個地區）、`distance_km`（直線）、`is_base`（這個地區本身就是最高或最低；這時差額與距離都是 0）。同價時算這個地區，附近地區之間同價時取近的。
   - 這個地區沒有價格或是舊資料、沒有符合的附近地區、或附近都和這裡同價時為 `null`。
   - 走勢頁也會收到這個欄位（同一個端點），不使用。

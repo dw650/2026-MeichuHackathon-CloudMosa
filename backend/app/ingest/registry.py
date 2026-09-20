@@ -5,14 +5,14 @@ Adding a source = writing its provider module with an `INFO` and listing it here
 import logging
 from collections.abc import Sequence
 
-from app.ingest.providers import mock, my_pricecatcher, tw_moa
+from app.ingest.providers import in_agmarknet, mock, my_pricecatcher, tw_moa
 from app.ingest.providers.base import SourceInfo
 from app.seed.schema import SeedFile
 
 logger = logging.getLogger("app.ingest.registry")
 
 SOURCES: dict[str, SourceInfo] = {
-    info.id: info for info in (mock.INFO, tw_moa.INFO, my_pricecatcher.INFO)
+    info.id: info for info in (mock.INFO, tw_moa.INFO, my_pricecatcher.INFO, in_agmarknet.INFO)
 }
 
 

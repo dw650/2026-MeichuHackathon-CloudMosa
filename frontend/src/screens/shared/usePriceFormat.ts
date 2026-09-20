@@ -11,7 +11,7 @@ import { useText } from './useText'
 export interface PriceFormat {
   type: PriceType
   unit: UnitSpec
-  /** e.g. ₹/公擔, NT$/kg (docs/06 §5); the display currency's once converted. */
+  /** e.g. ₹/100公斤, NT$/kg (docs/06 §5); the display currency's once converted. */
   unitLabel: string
   locale: string
   /** The currency the prices are shown in, and why (F19). */

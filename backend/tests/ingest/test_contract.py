@@ -16,7 +16,7 @@ import pytest
 from app.ingest import registry
 from app.ingest.maps import maps_from_seeds
 from app.ingest.normalize import normalize_all
-from app.ingest.providers import my_pricecatcher, tw_moa
+from app.ingest.providers import in_agmarknet, my_pricecatcher, tw_moa
 from app.ingest.providers.base import (
     BuildContext,
     FetchStats,
@@ -27,6 +27,8 @@ from app.ingest.providers.base import (
 )
 from app.ingest.validate import MAX_AGE_DAYS
 from app.seed.loader import load_seed_files
+from tests.ingest.test_in_agmarknet import TODAY as IN_DAY
+from tests.ingest.test_in_agmarknet import FakeAgmarknet
 from tests.ingest.test_my_pricecatcher import TODAY as MY_DAY
 from tests.ingest.test_my_pricecatcher import FakeStorage
 from tests.ingest.test_tw_moa import DAY as TW_DAY
@@ -65,10 +67,23 @@ def _my_pricecatcher(ctx: BuildContext) -> PriceProvider:
     )
 
 
+def _in_agmarknet(ctx: BuildContext) -> PriceProvider:
+    states, commodities = in_agmarknet.codes_from_seeds(ctx.seeds)
+    return in_agmarknet.AgmarknetProvider(
+        states,
+        commodities,
+        ctx.today_of,
+        plan=ctx.days,
+        transport=httpx.MockTransport(FakeAgmarknet()),
+        sleep=Sleeps(),
+    )
+
+
 CASES: dict[str, Case] = {
     "mock": Case(today=date(2026, 9, 19), build=registry.SOURCES["mock"].build),
     "tw_moa": Case(today=TW_DAY, build=_tw_moa),
     "my_pricecatcher": Case(today=MY_DAY, build=_my_pricecatcher),
+    "in_agmarknet": Case(today=IN_DAY, build=_in_agmarknet),
 }
 SOURCE_IDS = sorted(registry.SOURCES)
 

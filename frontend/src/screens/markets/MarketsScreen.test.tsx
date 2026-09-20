@@ -34,38 +34,39 @@ describe('MarketsScreen', () => {
 
   it('ranks the markets against the median and opens one with OK or its digit', async () => {
     const app = await renderApp(LIST)
-    await screen.findByText('Pimpalgaon')
+    await screen.findByText('Pimpalgaon Baswant')
 
     expect(screen.getByRole('heading')).toHaveTextContent('洋蔥')
     expect(screen.getByText('Nashik 縣')).toBeInTheDocument()
-    expect(screen.getByText('與中位數 2,395 比較')).toBeInTheDocument()
+    expect(screen.getByText('與中位數 3,969 比較')).toBeInTheDocument()
     expect(app.focusedId()).toBe('market:pimpalgaon')
     expect(softKeys(app)).toEqual(['選單', '開啟', '返回'])
 
-    // Rank, distance, price and the difference with the median; freshness only when not today.
-    expect(row('pimpalgaon')).toBe('1Pimpalgaon22 km2,522▲+127')
-    expect(row('malegaon')).toContain('95 km · 昨天')
-    expect(row('yeola')).toContain('60 km · 3 天前')
-    // No data comes last, with 「—」 and the reason.
+    // Rank, price and the difference with the median; freshness only when not today.
+    // Agmarknet gives no market coordinates, so no Indian market shows a distance.
+    expect(row('pimpalgaon')).toBe('1Pimpalgaon Baswant4,476▲+507')
+    expect(row('malegaon')).toContain('昨天')
+    expect(row('yeola')).toContain('3 天前')
+    // Markets without a price come last, with 「—」 and the reason.
     const items = document.querySelectorAll('[data-focus-id]')
-    expect(items[items.length - 1]?.getAttribute('data-focus-id')).toBe('market:manmad')
-    expect(row('manmad')).toBe('10Manmad70 km · 無資料—')
+    expect(items[items.length - 1]?.textContent).toContain('無資料')
+    expect(row('manmad')).toBe('17Manmad無資料—')
 
     app.press('ArrowDown')
-    expect(app.focusedId()).toBe('market:satana')
+    expect(app.focusedId()).toBe('market:nashikm')
     app.press('Enter')
-    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/satana?area=nashik'))
+    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/nashikm?area=nashik'))
 
     await app.back()
-    await screen.findByText('Pimpalgaon')
-    expect(app.focusedId()).toBe('market:satana')
+    await screen.findByText('Pimpalgaon Baswant')
+    expect(app.focusedId()).toBe('market:nashikm')
     app.press('3')
-    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/nashikm?area=nashik'))
+    await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/lasalgaon?area=nashik'))
   })
 
   it('opens the area panel with #, the menu with the left soft key, and toggles retail with *', async () => {
     const app = await renderApp('/crop/onion/markets')
-    await screen.findByText('Pimpalgaon')
+    await screen.findByText('Pimpalgaon Baswant')
 
     app.press('#')
     await waitFor(() => expect(app.path()).toBe('/crop/onion/markets?sheet=area'))
@@ -77,13 +78,13 @@ describe('MarketsScreen', () => {
     // Retail has no market detail: a note and a way back to wholesale.
     app.press('*')
     expect(screen.getByText('零售價以地區為單位，沒有市場細項')).toBeInTheDocument()
-    expect(screen.queryByText('Pimpalgaon')).not.toBeInTheDocument()
+    expect(screen.queryByText('Pimpalgaon Baswant')).not.toBeInTheDocument()
     expect(app.focusedId()).toBe('wholesale')
     expect(softKeys(app)).toEqual(['選單', '選取', '返回'])
 
     app.press('Enter')
     expect(useSettings.getState().priceType).toBe('wholesale')
-    await screen.findByText('Pimpalgaon')
+    await screen.findByText('Pimpalgaon Baswant')
     expect(app.focusedId()).toBe('market:pimpalgaon')
   })
 
@@ -101,14 +102,14 @@ describe('MarketsScreen', () => {
 
     server.resetHandlers()
     app.press('Enter')
-    expect(await screen.findByText('Pimpalgaon')).toBeInTheDocument()
+    expect(await screen.findByText('Pimpalgaon Baswant')).toBeInTheDocument()
     expect(screen.queryByText('連線失敗')).not.toBeInTheDocument()
   })
 
   it('keeps the old list when a later refresh fails', async () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     const app = await renderApp(LIST)
-    await screen.findByText('Pimpalgaon')
+    await screen.findByText('Pimpalgaon Baswant')
     app.press('Enter')
     await waitFor(() => expect(app.path()).toBe('/crop/onion/markets/pimpalgaon?area=nashik'))
 
@@ -119,7 +120,7 @@ describe('MarketsScreen', () => {
 
     expect(await screen.findByText('連線失敗', {}, { timeout: 3000 })).toBeInTheDocument()
     expect(screen.getByText('先顯示 9/19 週六 的資料')).toBeInTheDocument()
-    expect(screen.getByText('Pimpalgaon')).toBeInTheDocument()
+    expect(screen.getByText('Pimpalgaon Baswant')).toBeInTheDocument()
     expect(app.focusedId()).toBe('market:pimpalgaon')
     app.press('ArrowUp')
     expect(app.focusedId()).toBe('retry')
@@ -128,6 +129,6 @@ describe('MarketsScreen', () => {
     server.resetHandlers()
     app.press('Enter')
     await waitFor(() => expect(screen.queryByText('連線失敗')).not.toBeInTheDocument())
-    expect(screen.getByText('Pimpalgaon')).toBeInTheDocument()
+    expect(screen.getByText('Pimpalgaon Baswant')).toBeInTheDocument()
   })
 })

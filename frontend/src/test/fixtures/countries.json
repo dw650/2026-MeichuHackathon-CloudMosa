@@ -75,8 +75,8 @@
    ],
    "code": "IN",
    "coverage": {
-    "en": "6 states, 11 districts",
-    "zh-TW": "6 個邦、11 個縣"
+    "en": "2 states & Delhi, 64 districts",
+    "zh-TW": "2 個邦與德里、64 個縣"
    },
    "currency": "INR",
    "default_area_id": "nashik",
@@ -91,7 +91,7 @@
     "tomato",
     "potato",
     "chilli",
-    "soybean",
+    "chickpea",
     "maize",
     "wheat"
    ],
@@ -106,8 +106,8 @@
     "zh-TW": "常見價"
    },
    "source_label": {
-    "en": "Agmarknet · Dept of Consumer Affairs",
-    "zh-TW": "Agmarknet・消費者事務部（印度政府）"
+    "en": "Agmarknet (Govt of India, data.gov.in, GODL-India)",
+    "zh-TW": "Agmarknet（印度農業部，data.gov.in，GODL-India）"
    },
    "today": "2026-09-19",
    "units": {
@@ -128,7 +128,7 @@
        "id": "qtl",
        "label": {
         "en": "₹/qtl",
-        "zh-TW": "₹/公擔"
+        "zh-TW": "₹/100公斤"
        },
        "per_kg": 100.0
       }
@@ -142,7 +142,7 @@
        "id": "qtl",
        "label": {
         "en": "₹/qtl",
-        "zh-TW": "₹/公擔"
+        "zh-TW": "₹/100公斤"
        },
        "per_kg": 100.0
       },

@@ -90,7 +90,7 @@ describe('AreaSheet (#, F07)', () => {
     const app = await renderHarness('/')
     app.press('#')
     expect(app.path()).toBe('/?sheet=area')
-    expect(rowLabels()).toEqual(['Nashik 縣', 'Pune 縣', 'Ahmednagar 縣', '其他地區…'])
+    expect(rowLabels()).toEqual(['Nashik 縣', 'Pune 縣', 'Ahilyanagar 縣', '其他地區…'])
     expect(app.focusedId()).toBe('area:nashik')
     expect(document.querySelector('[aria-current]')?.getAttribute('data-focus-id')).toBe(
       'area:nashik',

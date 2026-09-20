@@ -32,12 +32,12 @@ describe('WatchScreen', () => {
 
   it('watches an unwatched crop further down and saves it at once', async () => {
     const app = await renderApp('/watch', { history: ['/'] })
-    await screen.findByText('葡萄')
+    await screen.findByText('甘藍')
     for (let i = 0; i < 7; i += 1) app.press('ArrowDown')
-    expect(app.focusedId()).toBe('grapes')
+    expect(app.focusedId()).toBe('cabbage')
     app.press('Enter')
-    expect(useSettings.getState().watchlist.at(-1)).toBe('grapes')
-    expect(localStorage.getItem('agriprice.settings')).toContain('grapes')
+    expect(useSettings.getState().watchlist.at(-1)).toBe('cabbage')
+    expect(localStorage.getItem('agriprice.settings')).toContain('cabbage')
     await app.back()
     expect(app.path()).toBe('/')
   })
